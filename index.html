@@ -1,0 +1,1144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Molecuzzle</title>
+<style>
+  :root {
+    --bg: #0e1320;
+    --panel: #161d2e;
+    --panel-2: #1d2639;
+    --line: #2a3550;
+    --text: #e6ebf5;
+    --muted: #93a0bb;
+    --accent: #3ce0b4;
+    --accent-2: #7dd3ff;
+    --warn: #ffb347;
+    --bad: #ff6b6b;
+    --bond: #c9d3e6;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+  button {
+    font: inherit;
+    color: var(--text);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .05s;
+  }
+  button:hover { background: #24304a; border-color: #3a4870; }
+  button:active { transform: translateY(1px); }
+  button:disabled { opacity: .4; cursor: default; }
+  button.primary { background: var(--accent); color: #062a20; border-color: transparent; font-weight: 600; }
+  button.primary:hover { background: #5cebc5; }
+  sub { font-size: .72em; line-height: 0; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .brand { font-weight: 800; font-size: 20px; letter-spacing: .3px; display: flex; align-items: center; gap: 10px; }
+  .brand .logo { width: 28px; height: 28px; }
+  .brand span b { color: var(--accent); }
+  header nav { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  main {
+    flex: 1; min-height: 0;
+    display: grid; grid-template-columns: 1fr 340px; gap: 16px; padding: 16px;
+  }
+  #panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    padding: 18px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;
+  }
+  .lvl-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 13px; }
+  .badge { font-size: 12px; padding: 2px 8px; border-radius: 99px; background: var(--panel-2); border: 1px solid var(--line); }
+  .badge.solved { color: var(--accent); border-color: rgba(60,224,180,.4); }
+  .badge.revealed { color: var(--warn); border-color: rgba(255,179,71,.4); }
+  #lvlName { margin: 0; font-size: 26px; line-height: 1.15; }
+  #lvlFormula { font-size: 22px; color: var(--accent-2); font-weight: 600; margin-top: -6px; }
+  #lvlIntro { margin: 0; color: var(--text); }
+  .section-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  #inventory { display: flex; flex-direction: column; gap: 6px; }
+  .chip { display: flex; align-items: center; gap: 10px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+  .chip .ball { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; flex: none; box-shadow: inset -3px -3px 6px rgba(0,0,0,.25); }
+  .chip .count { font-weight: 700; min-width: 28px; }
+  .chip .val { margin-left: auto; color: var(--muted); font-size: 13px; }
+  #hintBox { background: rgba(255,179,71,.08); border: 1px solid rgba(255,179,71,.35); color: #ffd9a3; border-radius: 10px; padding: 10px 12px; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .levelnav { display: flex; gap: 8px; margin-top: auto; }
+  .levelnav button { flex: 1; }
+
+  #stage {
+    position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
+    background-color: #111827;
+    background-image: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1.2px);
+    background-size: 26px 26px;
+    min-height: 380px;
+  }
+  #board { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; display: block; }
+  #status {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    background: rgba(14,19,32,.88); border: 1px solid var(--line); border-radius: 12px;
+    padding: 10px 14px; pointer-events: none; backdrop-filter: blur(4px);
+  }
+  #status.good { border-color: rgba(60,224,180,.6); color: #b9f7e4; }
+  #status.warn { border-color: rgba(255,179,71,.5); color: #ffe0b3; }
+  #boardTarget {
+    display: none; position: absolute; top: 10px; left: 12px; pointer-events: none;
+    background: rgba(14,19,32,.85); border: 1px solid var(--line); border-radius: 10px; padding: 4px 10px; font-size: 14px;
+  }
+  #boardTarget b { color: var(--accent-2); }
+  #toast {
+    position: absolute; top: 12px; left: 50%; transform: translate(-50%, -20px);
+    background: #2a3550; border: 1px solid #3d4b72; padding: 8px 14px; border-radius: 99px;
+    opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; white-space: nowrap; max-width: calc(100% - 24px);
+    overflow: hidden; text-overflow: ellipsis; font-size: 14px;
+  }
+  #toast.show { opacity: 1; transform: translate(-50%, 0); }
+  #toast.discovery { background: #123d33; border-color: var(--accent); }
+
+  /* board elements */
+  .bond line.vis { stroke: var(--bond); stroke-width: 3.4; stroke-linecap: round; }
+  .bond line.hit { stroke: transparent; stroke-width: 20; cursor: pointer; }
+  .bond:hover line.vis { stroke: #fff; }
+  #preview { stroke: var(--accent-2); stroke-width: 2; stroke-dasharray: 6 6; pointer-events: none; }
+  .atom { cursor: grab; }
+  .atom .body { stroke-width: 2; transition: filter .2s; transform-box: fill-box; transform-origin: center; }
+  .atom .shine { fill: #fff; opacity: .22; pointer-events: none; }
+  .atom .sym { font-weight: 700; font-size: 16px; pointer-events: none; }
+  .atom .sel-ring { fill: none; stroke: var(--accent-2); stroke-width: 2.5; stroke-dasharray: 5 4; opacity: 0; }
+  .atom.selected .sel-ring { opacity: 1; animation: march .8s linear infinite; }
+  .atom.ok .body { filter: drop-shadow(0 0 5px rgba(60,224,180,.75)); }
+  .atom .dots circle { fill: var(--warn); stroke: #3a2600; stroke-width: 1; }
+  @keyframes march { to { stroke-dashoffset: -18; } }
+  .win .atom .body { animation: pulse .55s ease-in-out 3; }
+  @keyframes pulse { 50% { transform: scale(1.2); } }
+
+  /* overlays */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(5,8,15,.7); display: grid; place-items: center; z-index: 10; padding: 16px;
+    backdrop-filter: blur(3px);
+  }
+  .overlay[hidden] { display: none; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px;
+    width: min(640px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    animation: pop .2s ease-out;
+  }
+  @keyframes pop { from { transform: scale(.95); opacity: 0; } }
+  .card h2 { margin: 0 0 4px; font-size: 24px; }
+  .card .formula { color: var(--accent-2); font-weight: 600; font-size: 18px; }
+  .card .fact { color: var(--text); background: var(--panel-2); border-radius: 12px; padding: 12px 14px; border: 1px solid var(--line); }
+  .card .btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+  .card ul { padding-left: 20px; }
+  .card li { margin: 6px 0; }
+  .eyebrow { color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+  .level-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 14px; }
+  .level-grid button { text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 10px; position: relative; }
+  .level-grid .n { font-size: 12px; color: var(--muted); }
+  .level-grid .nm { font-weight: 600; line-height: 1.2; }
+  .level-grid .f { color: var(--accent-2); font-size: 13px; }
+  .level-grid .st { position: absolute; top: 8px; right: 10px; font-size: 13px; }
+  .level-grid button.solved { border-color: rgba(60,224,180,.45); }
+  .level-grid button.current { outline: 2px solid var(--accent-2); }
+  .coll-list { display: grid; gap: 8px; margin-top: 14px; }
+  .coll-item { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  .coll-item .hd { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
+  .coll-item .hd .f { color: var(--accent-2); }
+  .coll-item p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .coll-item.locked { opacity: .55; }
+  .progressbar { height: 8px; background: var(--panel-2); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+  .progressbar div { height: 100%; background: var(--accent); }
+  kbd { background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; font-size: 13px; }
+
+  @media (max-width: 820px) {
+    main { grid-template-columns: 1fr; padding: 10px 16px 16px; gap: 10px; }
+    #stage { height: 62dvh; }
+    #boardTarget { display: block; }
+    #toast { top: 48px; }
+    #panel { overflow: visible; }
+    #lvlName { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+      <line x1="10" y1="20" x2="22" y2="11" stroke="#c9d3e6" stroke-width="2.5"/>
+      <line x1="10" y1="20" x2="22" y2="25" stroke="#c9d3e6" stroke-width="2.5"/>
+      <circle cx="10" cy="20" r="7" fill="#e5443f"/>
+      <circle cx="23" cy="10" r="5" fill="#eef2f7"/>
+      <circle cx="23" cy="25" r="5" fill="#eef2f7"/>
+    </svg>
+    <span>Molec<b>uzzle</b></span>
+  </div>
+  <nav>
+    <button id="btnLevels">Levels</button>
+    <button id="btnCollection">Collection <span id="collCount"></span></button>
+    <button id="btnHelp">How to play</button>
+  </nav>
+</header>
+
+<main>
+  <section id="stage">
+    <svg id="board" xmlns="http://www.w3.org/2000/svg">
+      <g id="bondsLayer"></g>
+      <line id="preview" visibility="hidden"></line>
+      <g id="atomsLayer"></g>
+    </svg>
+    <div id="boardTarget"></div>
+    <div id="toast"></div>
+    <div id="status"></div>
+  </section>
+
+  <aside id="panel">
+    <div class="lvl-top"><span id="lvlNum"></span><span id="lvlBadge" class="badge"></span></div>
+    <div>
+      <div class="section-label">Build this molecule</div>
+      <h1 id="lvlName"></h1>
+    </div>
+    <div id="lvlFormula"></div>
+    <p id="lvlIntro"></p>
+    <div>
+      <div class="section-label">Atoms you have</div>
+      <div id="inventory"></div>
+    </div>
+    <div id="hintBox" hidden></div>
+    <div class="actions">
+      <button id="btnHint">Hint</button>
+      <button id="btnUndo" title="Ctrl+Z">Undo</button>
+      <button id="btnTidy" title="Arrange atoms neatly">Tidy up</button>
+      <button id="btnClear">Clear bonds</button>
+      <button id="btnShuffle">Shuffle atoms</button>
+      <button id="btnSolve">Show solution</button>
+    </div>
+    <div class="levelnav">
+      <button id="btnPrev">← Previous</button>
+      <button id="btnNext">Next →</button>
+    </div>
+  </aside>
+</main>
+
+<div id="overlay" class="overlay" hidden>
+  <div class="card" id="card"></div>
+</div>
+
+<script>
+"use strict";
+
+/* ------------------------------------------------------------------
+   Chemistry data
+   Simplified valence model: no charges, no lone-pair bookkeeping.
+------------------------------------------------------------------- */
+const ELEMENTS = {
+  H:  { name: "Hydrogen",   valences: [1],       color: "#eef2f7", stroke: "#9aa6b8", text: "#2a2f38", r: 17 },
+  C:  { name: "Carbon",     valences: [4],       color: "#454b55", stroke: "#1e2228", text: "#ffffff", r: 22 },
+  N:  { name: "Nitrogen",   valences: [3],       color: "#3d6ef5", stroke: "#1f3f9e", text: "#ffffff", r: 22 },
+  O:  { name: "Oxygen",     valences: [2],       color: "#e5443f", stroke: "#8f201d", text: "#ffffff", r: 22 },
+  F:  { name: "Fluorine",   valences: [1],       color: "#9be06e", stroke: "#4d8a2a", text: "#173d0b", r: 19 },
+  Cl: { name: "Chlorine",   valences: [1],       color: "#2fb84f", stroke: "#17692a", text: "#ffffff", r: 21 },
+  S:  { name: "Sulfur",     valences: [2, 4, 6], color: "#f0c419", stroke: "#8f7200", text: "#3d2f00", r: 23 },
+  P:  { name: "Phosphorus", valences: [3, 5],    color: "#f08c2a", stroke: "#94500d", text: "#ffffff", r: 23 },
+};
+
+// Every molecule the game can recognise. `formula` overrides the Hill formula for display.
+const CATALOG = {
+  hydrogen:      { name: "Hydrogen", smiles: "[H][H]", formula: "H2", fact: "The simplest molecule there is, and the most abundant in the universe — stars are made mostly of hydrogen." },
+  water:         { name: "Water", smiles: "O", formula: "H2O", fact: "Water is bent (about 104.5°), which makes it polar — the reason it dissolves so many substances." },
+  ammonia:       { name: "Ammonia", smiles: "N", formula: "NH3", fact: "Made on a vast scale by the Haber–Bosch process, mostly for fertiliser that helps feed billions of people." },
+  methane:       { name: "Methane", smiles: "C", fact: "The main component of natural gas, and a far more potent greenhouse gas than CO₂ over short timescales." },
+  oxygen:        { name: "Oxygen", smiles: "O=O", formula: "O2", fact: "About 21% of the air. Fun twist: real O₂ has two unpaired electrons, which is why liquid oxygen sticks to a magnet." },
+  co2:           { name: "Carbon dioxide", smiles: "O=C=O", fact: "A perfectly straight molecule. Plants pull it from the air and turn it into sugar during photosynthesis." },
+  nitrogen:      { name: "Nitrogen", smiles: "N#N", formula: "N2", fact: "78% of the air. The N≡N triple bond is one of the strongest chemical bonds, which makes nitrogen gas very unreactive." },
+  hcn:           { name: "Hydrogen cyanide", smiles: "C#N", formula: "HCN", fact: "Highly toxic, yet common in comets and interstellar clouds — and a possible ingredient in the origin of life." },
+  formaldehyde:  { name: "Formaldehyde", smiles: "C=O", fact: "The simplest aldehyde. Dissolved in water it becomes formalin, used to preserve biological specimens." },
+  peroxide:      { name: "Hydrogen peroxide", smiles: "OO", formula: "H2O2", fact: "A bleach and disinfectant. It slowly falls apart into water and oxygen — the fizz you see on a cut." },
+  ethylene:      { name: "Ethylene", smiles: "C=C", fact: "A plant hormone that makes fruit ripen, and the raw material for polyethylene, the world's most common plastic." },
+  acetylene:     { name: "Acetylene", smiles: "C#C", fact: "Burned with pure oxygen it gives a flame of over 3,000 °C — hot enough to cut and weld steel." },
+  methanol:      { name: "Methanol", smiles: "CO", fact: "“Wood alcohol”. Unlike ethanol it is poisonous: the body turns it into formaldehyde and formic acid." },
+  freon:         { name: "Freon-12", smiles: "ClC(Cl)(F)F", fact: "Dichlorodifluoromethane was once a common refrigerant — until it was found to destroy the ozone layer. The 1987 Montreal Protocol phased it out." },
+  ethanol:       { name: "Ethanol", smiles: "CCO", fact: "The alcohol in beer and wine. It has the same atoms as dimethyl ether, yet ethanol boils at 78 °C while the ether is a gas." },
+  dimethylEther: { name: "Dimethyl ether", smiles: "COC", fact: "An isomer of ethanol: identical atoms, different arrangement. It boils at −24 °C and is used as an aerosol propellant." },
+  cyclopropane:  { name: "Cyclopropane", smiles: "C1CC1", fact: "Its 60° bond angles are badly strained, which makes it reactive. It was once used as a general anaesthetic." },
+  propene:       { name: "Propene", smiles: "C=CC", fact: "Same formula as cyclopropane, but a chain with a double bond. It is turned into polypropylene plastic." },
+  acetic:        { name: "Acetic acid", smiles: "CC(=O)O", fact: "The sour taste of vinegar, which is about 4–8% acetic acid in water." },
+  methylFormate: { name: "Methyl formate", smiles: "COC=O", fact: "An isomer of acetic acid with a fruity smell. It has also been detected in interstellar space." },
+  glycolaldehyde:{ name: "Glycolaldehyde", smiles: "OCC=O", fact: "A simple sugar-like molecule, detected in the gas around a young Sun-like star." },
+  acetone:       { name: "Acetone", smiles: "CC(=O)C", fact: "The classic nail-polish remover. Your body makes small amounts when it burns fat for fuel." },
+  propanal:      { name: "Propanal", smiles: "CCC=O", fact: "An isomer of acetone: moving the C=O to the end of the chain turns a ketone into an aldehyde." },
+  allylAlcohol:  { name: "Allyl alcohol", smiles: "C=CCO", fact: "A C₃H₆O isomer with both a C=C double bond and an OH group." },
+  propyleneOxide:{ name: "Propylene oxide", smiles: "CC1CO1", fact: "A three-membered ring containing oxygen. In 2016 it became the first chiral molecule detected in interstellar space." },
+  oxetane:       { name: "Oxetane", smiles: "C1COC1", fact: "A four-membered ring containing oxygen, increasingly popular in drug design." },
+  cyclopropanol: { name: "Cyclopropanol", smiles: "OC1CC1", fact: "A strained three-carbon ring carrying an OH group." },
+  methylVinylEther: { name: "Methyl vinyl ether", smiles: "COC=C", fact: "Yet another C₃H₆O isomer, used to make polymers and adhesives." },
+  urea:          { name: "Urea", smiles: "NC(N)=O", fact: "In 1828 Friedrich Wöhler made urea from inorganic salts, showing that “organic” molecules need no living force." },
+  glycine:       { name: "Glycine", smiles: "NCC(=O)O", fact: "The simplest amino acid, a building block of proteins. Traces have even been found in samples from comets." },
+  methylCarbamate: { name: "Methyl carbamate", smiles: "COC(N)=O", fact: "An isomer of glycine: the same atoms, arranged as a carbamate instead of an amino acid." },
+  glycolamide:   { name: "Glycolamide", smiles: "NC(=O)CO", fact: "An isomer of glycine where the nitrogen sits in an amide group." },
+  sulfuric:      { name: "Sulfuric acid", smiles: "OS(=O)(=O)O", formula: "H2SO4", fact: "The most-produced industrial chemical in the world. In this bonding model, sulfur forms six bonds." },
+  phosphoric:    { name: "Phosphoric acid", smiles: "OP(=O)(O)O", formula: "H3PO4", fact: "Gives cola its tang. Phosphate groups also form the backbone of DNA." },
+  benzene:       { name: "Benzene", smiles: "C1=CC=CC=C1", fact: "Kekulé said the ring structure came to him in a daydream of a snake biting its own tail. In reality the electrons are spread evenly around the ring." },
+  phenol:        { name: "Phenol", smiles: "OC1=CC=CC=C1", fact: "As “carbolic acid”, Joseph Lister used it in the 1860s to sterilise surgery — a breakthrough for antiseptic medicine." },
+  prismane:      { name: "Prismane", smiles: "C12C3C1C4C2C34", fact: "A benzene isomer shaped like a triangular prism. Extremely strained; it was first made in 1973." },
+  dewarBenzene:  { name: "Dewar benzene", smiles: "C1=CC2C=CC12", fact: "A bent, bicyclic benzene isomer that slowly springs back into ordinary benzene." },
+  fulvene:       { name: "Fulvene", smiles: "C=C1C=CC=C1", fact: "A benzene isomer with a five-membered ring, known for its yellow-orange colour." },
+  hexadiyne:     { name: "Hexa-1,5-diyne", smiles: "C#CCCC#C", fact: "A straight-chain benzene isomer with two triple bonds." },
+  // Smaller molecules you can stumble upon as fragments
+  ethane:        { name: "Ethane", smiles: "CC", fact: "The second-simplest alkane, found in natural gas." },
+  acetaldehyde:  { name: "Acetaldehyde", smiles: "CC=O", fact: "Formed in your body when it breaks down alcohol — and partly to blame for hangovers." },
+  ethyleneOxide: { name: "Ethylene oxide", smiles: "C1CO1", fact: "A strained three-membered ring, used to sterilise medical equipment." },
+  vinylAlcohol:  { name: "Vinyl alcohol", smiles: "C=CO", fact: "Unstable on its own: it quickly rearranges into acetaldehyde." },
+  ketene:        { name: "Ketene", smiles: "C=C=O", fact: "A reactive gas with two double bonds in a row: C=C=O." },
+  formicAcid:    { name: "Formic acid", smiles: "OC=O", fact: "The sting in ant bites — “formica” is Latin for ant." },
+  formamide:     { name: "Formamide", smiles: "NC=O", fact: "Contains the amide bond, the same link that joins amino acids in proteins." },
+  methylamine:   { name: "Methylamine", smiles: "CN", fact: "Smells fishy. A simple building block for many other chemicals." },
+  methanimine:   { name: "Methanimine", smiles: "C=N", fact: "The simplest imine, detected in interstellar clouds." },
+  isocyanicAcid: { name: "Isocyanic acid", smiles: "N=C=O", formula: "HNCO", fact: "When urea is heated it breaks down into isocyanic acid and ammonia." },
+  cyanamide:     { name: "Cyanamide", smiles: "NC#N", fact: "Urea minus a water molecule. It is used in agriculture." },
+  hydrazine:     { name: "Hydrazine", smiles: "NN", formula: "N2H4", fact: "A powerful rocket fuel used in spacecraft thrusters." },
+  diazene:       { name: "Diazene", smiles: "N=N", formula: "N2H2", fact: "A reactive, short-lived molecule with an N=N double bond." },
+  hydroxylamine: { name: "Hydroxylamine", smiles: "NO", formula: "NH2OH", fact: "An unstable compound used in the manufacture of nylon." },
+  h2s:           { name: "Hydrogen sulfide", smiles: "S", formula: "H2S", fact: "The smell of rotten eggs — noticeable even at tiny concentrations." },
+  so2:           { name: "Sulfur dioxide", smiles: "O=S=O", formula: "SO2", fact: "Released by volcanoes and burning coal; a cause of acid rain." },
+  so3:           { name: "Sulfur trioxide", smiles: "O=S(=O)=O", formula: "SO3", fact: "Add water and you get sulfuric acid — exactly how it is made industrially." },
+  chlorine:      { name: "Chlorine", smiles: "ClCl", formula: "Cl2", fact: "A toxic yellow-green gas, used in small amounts to disinfect drinking water." },
+  fluorine:      { name: "Fluorine", smiles: "FF", formula: "F2", fact: "The most reactive element of all; it attacks almost anything." },
+  clf:           { name: "Chlorine monofluoride", smiles: "ClF", formula: "ClF", fact: "A highly reactive interhalogen gas." },
+};
+
+const LEVELS = [
+  { key: "hydrogen",     intro: "Welcome! Click one H atom, then the other, to join them with a bond.", hint: "Just one bond between the two hydrogens." },
+  { key: "water",        intro: "Every element forms a fixed number of bonds: oxygen 2, hydrogen 1. The orange dots show bonds an atom still needs.", hint: "Oxygen in the middle, one hydrogen on each side." },
+  { key: "ammonia",      intro: "Nitrogen forms 3 bonds.", hint: "Bond each hydrogen to the nitrogen." },
+  { key: "methane",      intro: "Carbon — the backbone of life — forms 4 bonds.", hint: "Carbon in the centre, bonded to all four hydrogens." },
+  { key: "oxygen",       intro: "Atoms can share more than one bond. Click the bonded pair again (or click the bond line) to make it a double bond.", hint: "One double bond between the two oxygens." },
+  { key: "co2",          intro: "Double bonds let carbon reach its four bonds with only two partners.", hint: "Carbon in the middle, with a double bond to each oxygen: O=C=O." },
+  { key: "nitrogen",     intro: "Bonds go up to triple. Clicking a bond cycles it: single → double → triple → removed.", hint: "A triple bond: click the bond until it shows three lines." },
+  { key: "hcn",          intro: "Mix single and triple bonds.", hint: "H–C≡N: carbon bonds once to H and three times to N." },
+  { key: "formaldehyde", intro: "A carbon double-bonded to oxygen is a carbonyl group, found in countless molecules.", hint: "Carbon holds both hydrogens and has a double bond to the oxygen." },
+  { key: "peroxide",     intro: "Atoms of the same element can bond to each other.", hint: "H–O–O–H: the two oxygens bond to each other." },
+  { key: "ethylene",     intro: "Your first carbon–carbon double bond.", hint: "Two carbons joined by a double bond, each holding two hydrogens." },
+  { key: "acetylene",    intro: "Now a carbon–carbon triple bond.", hint: "H–C≡C–H." },
+  { key: "methanol",     intro: "An OH group attached to a carbon makes an alcohol.", hint: "The oxygen sits between the carbon and one hydrogen: H₃C–O–H." },
+  { key: "freon",        intro: "Fluorine and chlorine (the halogens) form just 1 bond each, like hydrogen.", hint: "All four halogens bond directly to the carbon." },
+  { key: "ethanol",      intro: "Now it gets tricky: the same atoms can often be joined in more than one valid way. These are isomers — and only one of them is ethanol.", hint: "CH₃–CH₂–OH: the two carbons bond to each other, and the oxygen sits at the end with an H." },
+  { key: "dimethylEther",intro: "Same atoms as ethanol, different molecule. Build the other isomer.", hint: "Put the oxygen between the two carbons: CH₃–O–CH₃." },
+  { key: "cyclopropane", intro: "Chains can close up into rings.", hint: "Join the three carbons in a triangle; each carbon gets two hydrogens." },
+  { key: "acetic",       intro: "The carboxylic acid group: a C=O and an OH on the same carbon.", hint: "CH₃–C(=O)–OH: the second carbon has a double-bonded O and an O–H." },
+  { key: "acetone",      intro: "C₃H₆O has at least seven real isomers. Build the right one — and try finding the others for your collection!", hint: "The middle carbon has a double bond to O and is flanked by two CH₃ groups." },
+  { key: "urea",         intro: "The molecule that launched organic chemistry.", hint: "A central C=O, with an NH₂ group on each side of the carbon." },
+  { key: "glycine",      intro: "An amino acid: an amine group (NH₂) and an acid group in one molecule.", hint: "H₂N–CH₂–C(=O)–OH." },
+  { key: "sulfuric",     intro: "Sulfur is flexible: it can form 2, 4 or 6 bonds.", hint: "Sulfur in the centre with 6 bonds: two S=O double bonds and two S–O–H groups." },
+  { key: "phosphoric",   intro: "Phosphorus can form 3 or 5 bonds.", hint: "Phosphorus in the centre with 5 bonds: one P=O and three P–O–H groups." },
+  { key: "benzene",      intro: "The most famous ring in chemistry. Every carbon still needs four bonds.", hint: "Six carbons in a hexagon with alternating single and double bonds, and one H on each carbon." },
+  { key: "phenol",       intro: "Build on what you learned with benzene.", hint: "A benzene ring where one hydrogen is replaced by an O–H group." },
+];
+
+/* ------------------------------------------------------------------
+   Molecule graphs: parsing, normalising, comparing
+------------------------------------------------------------------- */
+function defaultH(el, bondSum) {
+  const v = ELEMENTS[el].valences.find(v => v >= bondSum);
+  return v === undefined ? 0 : v - bondSum;
+}
+
+// Minimal SMILES parser: atoms, [bracket atoms], - = #, branches, ring closures.
+function parseSmiles(s) {
+  const atoms = [], edges = [], stack = [], rings = {};
+  let prev = null, order = 1, i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if (ch === "(") { stack.push(prev); i++; continue; }
+    if (ch === ")") { prev = stack.pop(); i++; continue; }
+    if (ch === "-") { order = 1; i++; continue; }
+    if (ch === "=") { order = 2; i++; continue; }
+    if (ch === "#") { order = 3; i++; continue; }
+    if (/\d/.test(ch)) {
+      if (rings[ch]) { edges.push({ a: rings[ch].atom, b: prev, order: Math.max(rings[ch].order, order) }); delete rings[ch]; }
+      else rings[ch] = { atom: prev, order };
+      order = 1; i++; continue;
+    }
+    let el, fixedH = null;
+    if (ch === "[") {
+      const j = s.indexOf("]", i);
+      const m = s.slice(i + 1, j).match(/^([A-Z][a-z]?)(H(\d*))?$/);
+      el = m[1]; fixedH = m[2] ? (m[3] ? +m[3] : 1) : 0; i = j + 1;
+    } else {
+      const two = s.slice(i, i + 2);
+      if (two === "Cl" || two === "Br") { el = two; i += 2; } else { el = ch; i++; }
+    }
+    const idx = atoms.length;
+    atoms.push({ el, fixedH });
+    if (prev !== null) edges.push({ a: prev, b: idx, order });
+    order = 1; prev = idx;
+  }
+  const nodes = atoms.map((a, idx) => {
+    const sum = edges.reduce((t, e) => t + (e.a === idx || e.b === idx ? e.order : 0), 0);
+    return { el: a.el, h: a.fixedH !== null ? a.fixedH : defaultH(a.el, sum) };
+  });
+  return { nodes, edges };
+}
+
+// Treat 6-rings of alternating single/double bonds as aromatic, so both Kekulé drawings match.
+function aromatize(n, edges) {
+  const adj = Array.from({ length: n }, () => []);
+  edges.forEach((e, k) => { adj[e.a].push([e.b, k]); adj[e.b].push([e.a, k]); });
+  const mark = new Set();
+  const dfs = (start, cur, pathNodes, pathEdges) => {
+    for (const [nb, k] of adj[cur]) {
+      if (pathEdges.includes(k)) continue;
+      if (nb === start && pathEdges.length === 5) {
+        const cyc = [...pathEdges, k], o = cyc.map(x => edges[x].order);
+        if (o.every(v => v === 1 || v === 2) && o.every((v, j) => v !== o[(j + 1) % 6])) cyc.forEach(x => mark.add(x));
+      } else if (nb > start && !pathNodes.includes(nb) && pathEdges.length < 5) {
+        dfs(start, nb, [...pathNodes, nb], [...pathEdges, k]);
+      }
+    }
+  };
+  for (let s = 0; s < n; s++) dfs(s, s, [s], []);
+  mark.forEach(k => { edges[k].order = 1.5; });
+}
+
+function buildGraph(nodes, rawEdges) {
+  const edges = rawEdges.map(e => ({ ...e }));
+  aromatize(nodes.length, edges);
+  const adj = nodes.map(() => []);
+  edges.forEach(e => { adj[e.a].push([e.b, e.order]); adj[e.b].push([e.a, e.order]); });
+  const counts = {};
+  nodes.forEach(nd => {
+    counts[nd.el] = (counts[nd.el] || 0) + 1;
+    if (nd.h) counts.H = (counts.H || 0) + nd.h;
+  });
+  return { nodes, edges, adj, counts, fkey: formulaKey(counts) };
+}
+
+function formulaKey(c) { return Object.keys(c).sort().map(k => k + c[k]).join(""); }
+function hillOrder(c) {
+  const ks = Object.keys(c);
+  if (!c.C) return ks.sort();
+  return ["C", ...(c.H ? ["H"] : []), ...ks.filter(k => k !== "C" && k !== "H").sort()];
+}
+function hill(c) { return hillOrder(c).map(k => k + (c[k] > 1 ? c[k] : "")).join(""); }
+function fmt(f) { return f.replace(/(\d+)/g, "<sub>$1</sub>"); }
+
+function isomorphic(g1, g2) {
+  const n = g1.nodes.length;
+  if (n !== g2.nodes.length || g1.edges.length !== g2.edges.length || g1.fkey !== g2.fkey) return false;
+  const sig = (g, i) => g.nodes[i].el + "|" + g.nodes[i].h + "|" + g.adj[i].map(e => e[1]).sort().join(",");
+  const s1 = g1.nodes.map((_, i) => sig(g1, i)), s2 = g2.nodes.map((_, i) => sig(g2, i));
+  if ([...s1].sort().join(";") !== [...s2].sort().join(";")) return false;
+  // Visit g1 in BFS order so each new node has mapped neighbours to constrain it.
+  const order = [], seen = new Array(n).fill(false);
+  for (let s = 0; s < n; s++) {
+    if (seen[s]) continue;
+    const q = [s]; seen[s] = true;
+    while (q.length) { const u = q.shift(); order.push(u); for (const [w] of g1.adj[u]) if (!seen[w]) { seen[w] = true; q.push(w); } }
+  }
+  const map = new Array(n).fill(-1), inv = new Array(n).fill(-1);
+  const edgeOrder = (g, i, j) => { const e = g.adj[i].find(e => e[0] === j); return e ? e[1] : 0; };
+  const bt = k => {
+    if (k === n) return true;
+    const u = order[k];
+    for (let v = 0; v < n; v++) {
+      if (inv[v] >= 0 || s1[u] !== s2[v]) continue;
+      let ok = true, mappedU = 0, mappedV = 0;
+      for (const [w, o] of g1.adj[u]) if (map[w] >= 0) { mappedU++; if (edgeOrder(g2, v, map[w]) !== o) { ok = false; break; } }
+      if (!ok) continue;
+      for (const [x] of g2.adj[v]) if (inv[x] >= 0) mappedV++;
+      if (mappedU !== mappedV) continue;
+      map[u] = v; inv[v] = u;
+      if (bt(k + 1)) return true;
+      map[u] = -1; inv[v] = -1;
+    }
+    return false;
+  };
+  return bt(0);
+}
+
+// Precompute catalog graphs
+for (const key in CATALOG) {
+  const m = CATALOG[key];
+  m.key = key;
+  m.raw = parseSmiles(m.smiles);
+  m.graph = buildGraph(m.raw.nodes, m.raw.edges);
+  m.display = m.formula || hill(m.graph.counts);
+}
+const CATALOG_KEYS = Object.keys(CATALOG).sort((a, b) => {
+  const na = CATALOG[a].raw.nodes.length + Object.values(CATALOG[a].graph.counts).reduce((x, y) => x + y, 0);
+  const nb = CATALOG[b].raw.nodes.length + Object.values(CATALOG[b].graph.counts).reduce((x, y) => x + y, 0);
+  return na - nb || CATALOG[a].display.localeCompare(CATALOG[b].display);
+});
+
+function identify(graph) {
+  for (const key of CATALOG_KEYS) {
+    const m = CATALOG[key];
+    if (m.graph.fkey === graph.fkey && isomorphic(m.graph, graph)) return key;
+  }
+  return null;
+}
+
+/* ------------------------------------------------------------------
+   Persistence
+------------------------------------------------------------------- */
+const STORE_KEY = "molecuzzle-v1";
+function loadProgress() {
+  try {
+    const p = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (p && typeof p === "object") return { solved: p.solved || {}, discovered: p.discovered || [], current: p.current || 0, seenHelp: !!p.seenHelp };
+  } catch (e) {}
+  return { solved: {}, discovered: [], current: 0, seenHelp: false };
+}
+function saveProgress() { try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch (e) {} }
+let progress = loadProgress();
+
+/* ------------------------------------------------------------------
+   Game state
+------------------------------------------------------------------- */
+const $ = s => document.querySelector(s);
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, parent) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+const board = $("#board"), bondsLayer = $("#bondsLayer"), atomsLayer = $("#atomsLayer"), previewLine = $("#preview");
+const state = { level: 0, atoms: [], bonds: [], selected: null, history: [], revealed: false, won: false };
+const atomEls = new Map();
+let boardW = 800, boardH = 560, nextId = 1, lastPointer = null, drag = null;
+
+const atomById = id => state.atoms.find(a => a.id === id);
+const findBond = (a, b) => state.bonds.find(x => (x.a === a && x.b === b) || (x.a === b && x.b === a));
+const bondSum = id => state.bonds.reduce((t, b) => t + (b.a === id || b.b === id ? b.order : 0), 0);
+const neighbors = id => state.bonds.filter(b => b.a === id || b.b === id).map(b => (b.a === id ? b.b : b.a));
+const maxVal = el => ELEMENTS[el].valences[ELEMENTS[el].valences.length - 1];
+const freeSlots = a => maxVal(a.el) - bondSum(a.id);
+const isSatisfied = a => ELEMENTS[a.el].valences.includes(bondSum(a.id));
+function openBonds(a) {
+  const s = bondSum(a.id), v = ELEMENTS[a.el].valences.find(v => v >= s);
+  return v === undefined ? 0 : v - s;
+}
+
+function measureBoard() {
+  const r = board.getBoundingClientRect();
+  boardW = Math.max(300, r.width || 800);
+  boardH = Math.max(300, r.height || 560);
+  board.setAttribute("viewBox", `0 0 ${boardW} ${boardH}`);
+}
+const MARGIN = 34, BOTTOM_PAD = 64;
+function clampPos(a) {
+  const r = ELEMENTS[a.el].r + 6;
+  a.x = Math.min(boardW - r, Math.max(r, a.x));
+  a.y = Math.min(boardH - r - 50, Math.max(r, a.y));
+}
+
+/* ---------- level setup ---------- */
+function startLevel(i) {
+  i = Math.max(0, Math.min(LEVELS.length - 1, i));
+  const lv = LEVELS[i], mol = CATALOG[lv.key];
+  Object.assign(state, { level: i, atoms: [], bonds: [], selected: null, history: [], revealed: false, won: false });
+  progress.current = i; saveProgress();
+
+  for (const el of hillOrder(mol.graph.counts)) {
+    for (let k = 0; k < mol.graph.counts[el]; k++) state.atoms.push({ id: nextId++, el, x: 0, y: 0, tx: null, ty: null });
+  }
+  atomsLayer.innerHTML = ""; atomEls.clear();
+  state.atoms.forEach(createAtomEl);
+  measureBoard();
+  scatter();
+  board.classList.remove("win");
+  $("#hintBox").hidden = true;
+  renderPanel();
+  renderAll();
+  evaluate();
+}
+
+function scatter() {
+  const placed = [];
+  const atoms = [...state.atoms].sort(() => Math.random() - 0.5);
+  for (const a of atoms) {
+    let best = null, bestD = -1;
+    for (let t = 0; t < 80; t++) {
+      const x = MARGIN + 10 + Math.random() * (boardW - 2 * MARGIN - 20);
+      const y = MARGIN + 10 + Math.random() * (boardH - MARGIN - BOTTOM_PAD - 20);
+      const d = placed.reduce((m, p) => Math.min(m, Math.hypot(p.x - x, p.y - y)), Infinity);
+      if (d > bestD) { bestD = d; best = { x, y }; }
+      if (d > 95) break;
+    }
+    a.tx = best.x; a.ty = best.y;
+    if (!a.x && !a.y) { a.x = boardW / 2; a.y = boardH / 2; }
+    placed.push(best);
+  }
+  animate();
+}
+
+/* ---------- rendering ---------- */
+function createAtomEl(a) {
+  const E = ELEMENTS[a.el];
+  const g = svgEl("g", { class: "atom" }, atomsLayer);
+  svgEl("circle", { r: E.r + 6, class: "sel-ring" }, g);
+  const body = svgEl("circle", { r: E.r, class: "body", fill: E.color, stroke: E.stroke }, g);
+  svgEl("circle", { r: E.r * 0.42, cx: -E.r * 0.32, cy: -E.r * 0.36, class: "shine" }, g);
+  const t = svgEl("text", { class: "sym", "text-anchor": "middle", "dominant-baseline": "central", fill: E.text, y: 1 }, g);
+  t.textContent = a.el;
+  const dots = svgEl("g", { class: "dots" }, g);
+  g.addEventListener("pointerdown", e => onAtomDown(e, a));
+  atomEls.set(a.id, { g, body, dots });
+}
+
+function renderPositions() {
+  for (const a of state.atoms) atomEls.get(a.id).g.setAttribute("transform", `translate(${a.x.toFixed(1)},${a.y.toFixed(1)})`);
+  renderBonds();
+  updatePreview();
+}
+
+function renderBonds() {
+  bondsLayer.innerHTML = "";
+  for (const b of state.bonds) {
+    const A = atomById(b.a), B = atomById(b.b);
+    const dx = B.x - A.x, dy = B.y - A.y, len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    const g = svgEl("g", { class: "bond" }, bondsLayer);
+    const offs = b.order === 1 ? [0] : b.order === 2 ? [-4.5, 4.5] : [-8, 0, 8];
+    for (const o of offs) svgEl("line", { class: "vis", x1: A.x + nx * o, y1: A.y + ny * o, x2: B.x + nx * o, y2: B.y + ny * o }, g);
+    svgEl("line", { class: "hit", x1: A.x, y1: A.y, x2: B.x, y2: B.y }, g);
+    g.addEventListener("pointerdown", e => { e.stopPropagation(); e.preventDefault(); select(null); cycleBond(b); });
+  }
+}
+
+function renderAtomStates() {
+  for (const a of state.atoms) {
+    const { g, dots } = atomEls.get(a.id);
+    g.classList.toggle("selected", state.selected === a.id);
+    g.classList.toggle("ok", isSatisfied(a));
+    dots.innerHTML = "";
+    const n = openBonds(a), r = ELEMENTS[a.el].r + 7;
+    for (let k = 0; k < n; k++) {
+      const ang = -Math.PI / 2 + (k * 2 * Math.PI) / n;
+      svgEl("circle", { cx: Math.cos(ang) * r, cy: Math.sin(ang) * r, r: 3.6 }, dots);
+    }
+  }
+}
+
+function renderAll() { renderPositions(); renderAtomStates(); }
+
+function updatePreview() {
+  const s = state.selected !== null ? atomById(state.selected) : null;
+  if (!s || !lastPointer || drag) { previewLine.setAttribute("visibility", "hidden"); return; }
+  previewLine.setAttribute("x1", s.x); previewLine.setAttribute("y1", s.y);
+  previewLine.setAttribute("x2", lastPointer.x); previewLine.setAttribute("y2", lastPointer.y);
+  previewLine.setAttribute("visibility", "visible");
+}
+
+function renderPanel() {
+  const lv = LEVELS[state.level], mol = CATALOG[lv.key];
+  $("#lvlNum").textContent = `Level ${state.level + 1} of ${LEVELS.length}`;
+  const st = progress.solved[state.level];
+  const badge = $("#lvlBadge");
+  badge.className = "badge " + (st || "");
+  badge.textContent = st === "solved" ? "✓ Solved" : st === "revealed" ? "Solution seen" : "Unsolved";
+  $("#lvlName").textContent = mol.name;
+  $("#lvlFormula").innerHTML = fmt(mol.display);
+  $("#lvlIntro").textContent = lv.intro;
+  $("#boardTarget").innerHTML = `${state.level + 1}. Build <b>${mol.name}</b> · ${fmt(mol.display)}`;
+  const inv = $("#inventory"); inv.innerHTML = "";
+  for (const el of hillOrder(mol.graph.counts)) {
+    const E = ELEMENTS[el], v = E.valences;
+    const chip = document.createElement("div");
+    chip.className = "chip";
+    chip.innerHTML = `<span class="ball" style="background:${E.color};color:${E.text}">${el}</span>
+      <span class="count">×${mol.graph.counts[el]}</span><span>${E.name}</span>
+      <span class="val">${v.join(" / ")} bond${v.length === 1 && v[0] === 1 ? "" : "s"}</span>`;
+    inv.appendChild(chip);
+  }
+  $("#btnPrev").disabled = state.level === 0;
+  $("#btnNext").disabled = state.level === LEVELS.length - 1;
+  $("#btnUndo").disabled = state.history.length === 0;
+  $("#collCount").textContent = `${progress.discovered.length}/${CATALOG_KEYS.length}`;
+}
+
+/* ---------- toast & status ---------- */
+let toastTimer = null;
+function toast(msg, kind) {
+  const t = $("#toast");
+  t.innerHTML = msg; t.className = "show" + (kind ? " " + kind : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = kind || ""; }, kind === "discovery" ? 2600 : 1900);
+}
+function setStatus(html, kind) { const s = $("#status"); s.innerHTML = html; s.className = kind || ""; }
+
+/* ---------- interaction ---------- */
+function svgPoint(e) {
+  const pt = board.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  return pt.matrixTransform(board.getScreenCTM().inverse());
+}
+
+function onAtomDown(e, a) {
+  e.stopPropagation(); e.preventDefault();
+  const p = svgPoint(e);
+  drag = { atom: a, ox: p.x - a.x, oy: p.y - a.y, sx: p.x, sy: p.y, moved: false, pid: e.pointerId };
+  try { board.setPointerCapture(e.pointerId); } catch (err) {}
+}
+
+board.addEventListener("pointermove", e => {
+  const p = svgPoint(e);
+  lastPointer = p;
+  if (drag && e.pointerId === drag.pid) {
+    if (!drag.moved && Math.hypot(p.x - drag.sx, p.y - drag.sy) > 5) { drag.moved = true; drag.atom.tx = null; }
+    if (drag.moved) {
+      drag.atom.x = p.x - drag.ox; drag.atom.y = p.y - drag.oy; clampPos(drag.atom);
+      renderPositions();
+      return;
+    }
+  }
+  updatePreview();
+});
+board.addEventListener("pointerup", e => {
+  if (drag && e.pointerId === drag.pid) {
+    const d = drag; drag = null;
+    if (!d.moved) atomClicked(d.atom);
+    updatePreview();
+  }
+});
+board.addEventListener("pointercancel", () => { drag = null; });
+board.addEventListener("pointerleave", () => { if (!drag) { lastPointer = null; updatePreview(); } });
+board.addEventListener("pointerdown", e => { if (!drag) select(null); });
+
+function select(id) { state.selected = id; renderAtomStates(); updatePreview(); }
+
+function atomClicked(a) {
+  if (state.selected === null) { select(a.id); return; }
+  if (state.selected === a.id) { select(null); return; }
+  const other = atomById(state.selected);
+  select(null);
+  strengthen(other, a);
+}
+
+function fullMessage(A, B) {
+  const full = freeSlots(A) < 1 ? A : B;
+  const E = ELEMENTS[full.el], m = maxVal(full.el);
+  return `${E.name} can't form more than ${m} bond${m > 1 ? "s" : ""}.`;
+}
+
+function strengthen(A, B) {
+  const b = findBond(A.id, B.id);
+  if (b && b.order >= 3) { toast("Triple bonds are as strong as it gets."); return; }
+  if (freeSlots(A) < 1 || freeSlots(B) < 1) { toast(fullMessage(A, B)); return; }
+  pushHistory();
+  if (b) b.order++; else state.bonds.push({ a: A.id, b: B.id, order: 1 });
+  changed();
+}
+
+function cycleBond(b) {
+  pushHistory();
+  const A = atomById(b.a), B = atomById(b.b);
+  if (b.order < 3 && freeSlots(A) >= 1 && freeSlots(B) >= 1) b.order++;
+  else state.bonds = state.bonds.filter(x => x !== b);
+  changed();
+}
+
+function pushHistory() {
+  state.history.push(JSON.stringify(state.bonds));
+  if (state.history.length > 300) state.history.shift();
+}
+function undo() {
+  if (!state.history.length) return;
+  state.bonds = JSON.parse(state.history.pop());
+  changed();
+}
+
+function changed() {
+  board.classList.remove("win");
+  if (!state.bonds.length) { state.revealed = false; state.won = false; }
+  renderBonds();
+  renderAtomStates();
+  evaluate();
+  $("#btnUndo").disabled = state.history.length === 0;
+}
+
+/* ---------- checking the molecule ---------- */
+function components() {
+  const seen = new Set(), comps = [];
+  for (const a of state.atoms) {
+    if (seen.has(a.id)) continue;
+    const comp = [], q = [a.id]; seen.add(a.id);
+    while (q.length) { const id = q.shift(); comp.push(id); for (const n of neighbors(id)) if (!seen.has(n)) { seen.add(n); q.push(n); } }
+    comps.push(comp);
+  }
+  return comps;
+}
+
+// Collapse hydrogens bonded to a heavier atom into an H-count, then build a comparable graph.
+function graphFromAtoms(ids) {
+  const set = new Set(ids), nodes = [], index = new Map(), collapsed = new Map();
+  for (const id of ids) {
+    const a = atomById(id);
+    if (a.el === "H") {
+      const bs = state.bonds.filter(b => b.a === id || b.b === id);
+      if (bs.length === 1 && bs[0].order === 1) {
+        const o = bs[0].a === id ? bs[0].b : bs[0].a;
+        if (atomById(o).el !== "H") { collapsed.set(id, o); continue; }
+      }
+    }
+    index.set(id, nodes.length);
+    nodes.push({ el: a.el, h: 0 });
+  }
+  for (const p of collapsed.values()) nodes[index.get(p)].h++;
+  const edges = [];
+  for (const b of state.bonds) {
+    if (!set.has(b.a) || !set.has(b.b) || collapsed.has(b.a) || collapsed.has(b.b)) continue;
+    edges.push({ a: index.get(b.a), b: index.get(b.b), order: b.order });
+  }
+  return buildGraph(nodes, edges);
+}
+
+function discover(key) {
+  if (progress.discovered.includes(key)) return false;
+  progress.discovered.push(key); saveProgress();
+  $("#collCount").textContent = `${progress.discovered.length}/${CATALOG_KEYS.length}`;
+  return true;
+}
+
+function evaluate() {
+  const lv = LEVELS[state.level], target = CATALOG[lv.key];
+  const comps = components();
+  const unsat = state.atoms.filter(a => !isSatisfied(a));
+
+  // Record any complete, recognised piece for the collection.
+  const pieceNames = [];
+  for (const comp of comps) {
+    if (comp.length < 2 || !comp.every(id => isSatisfied(atomById(id)))) { pieceNames.push(null); continue; }
+    const key = identify(graphFromAtoms(comp));
+    pieceNames.push(key);
+    if (key && key !== lv.key && discover(key)) toast(`New in your collection: <b>${CATALOG[key].name}</b>`, "discovery");
+  }
+
+  if (!state.bonds.length) {
+    setStatus("Click an atom, then another atom, to bond them. Drag atoms to move them.");
+    return;
+  }
+  if (unsat.length) {
+    const n = unsat.length;
+    setStatus(`${n} atom${n > 1 ? "s" : ""} still ${n > 1 ? "need" : "needs"} bonds <span style="color:var(--muted)">(orange dots)</span>.`);
+    return;
+  }
+  if (comps.length > 1) {
+    const names = pieceNames.map(k => (k ? `<b>${CATALOG[k].name}</b>` : "an unknown piece"));
+    setStatus(`Every bond is filled, but you built ${comps.length} separate molecules: ${names.join(" + ")}. Use all atoms in <b>one</b> molecule.`, "warn");
+    return;
+  }
+  const key = pieceNames[0];
+  if (key === lv.key) { win(); return; }
+  if (key) {
+    setStatus(`That's <b>${CATALOG[key].name}</b> — a real molecule with the same atoms, but not ${target.name}. Rearrange the bonds!`, "warn");
+  } else {
+    setStatus(`All the bonding rules are satisfied, but this isn't ${target.name}. Try a different arrangement.`, "warn");
+  }
+}
+
+function win() {
+  const lv = LEVELS[state.level], mol = CATALOG[lv.key];
+  discover(lv.key);
+  if (state.revealed) {
+    setStatus(`Here is <b>${mol.name}</b>. Clear the bonds and try building it yourself to mark it solved.`, "good");
+    if (progress.solved[state.level] !== "solved") progress.solved[state.level] = "revealed";
+    saveProgress(); renderPanel();
+    return;
+  }
+  setStatus(`✓ You built <b>${mol.name}</b>!`, "good");
+  if (state.won) return;
+  state.won = true;
+  progress.solved[state.level] = "solved"; saveProgress(); renderPanel();
+  void board.getBoundingClientRect();
+  board.classList.add("win");
+  setTimeout(() => showWin(), 900);
+}
+
+/* ---------- layout (Tidy up / solution) ---------- */
+function initialPositions(cx, cy) {
+  // Depth-first order follows rings and chains, so a circle start keeps them untangled.
+  const P = new Map(), heavy = state.atoms.filter(a => a.el !== "H"), order = [], seen = new Set();
+  const dfs = id => {
+    seen.add(id); order.push(id);
+    const nbs = neighbors(id).filter(n => atomById(n).el !== "H").sort(() => Math.random() - 0.5);
+    for (const n of nbs) if (!seen.has(n)) dfs(n);
+  };
+  const starts = [...heavy].sort(() => Math.random() - 0.5);
+  for (const s of starts) if (!seen.has(s.id)) dfs(s.id);
+  const R = order.length > 1 ? 30 + order.length * 14 : 0, rot = Math.random() * Math.PI * 2;
+  order.forEach((id, i) => {
+    const t = rot + (i / order.length) * Math.PI * 2;
+    P.set(id, { x: cx + R * Math.cos(t), y: cy + R * Math.sin(t) });
+  });
+  for (const a of state.atoms) {
+    if (P.has(a.id)) continue;
+    const par = neighbors(a.id).map(n => P.get(n)).find(Boolean);
+    const base = par || { x: cx, y: cy };
+    // Point hydrogens away from the centre
+    const t = Math.atan2(base.y - cy, base.x - cx) + (Math.random() - 0.5) * 1.5;
+    P.set(a.id, { x: base.x + 50 * Math.cos(t), y: base.y + 50 * Math.sin(t) });
+  }
+  return P;
+}
+
+function relax(P, cx, cy) {
+  const ids = state.atoms.map(a => a.id);
+  const springs = state.bonds.map(b => ({ a: b.a, b: b.b, L: atomById(b.a).el === "H" || atomById(b.b).el === "H" ? 54 : 78 }));
+  let temp = 40;
+  for (let it = 0; it < 600; it++) {
+    const D = new Map(ids.map(id => [id, { x: 0, y: 0 }]));
+    for (let i = 0; i < ids.length; i++) {
+      for (let j = i + 1; j < ids.length; j++) {
+        const p = P.get(ids[i]), q = P.get(ids[j]);
+        let dx = p.x - q.x, dy = p.y - q.y, d = Math.hypot(dx, dy);
+        if (d < 0.1) { dx = Math.random() - 0.5; dy = Math.random() - 0.5; d = 0.5; }
+        const f = 6000 / (d * d);
+        const fx = (dx / d) * f, fy = (dy / d) * f;
+        D.get(ids[i]).x += fx; D.get(ids[i]).y += fy;
+        D.get(ids[j]).x -= fx; D.get(ids[j]).y -= fy;
+      }
+    }
+    for (const s of springs) {
+      const p = P.get(s.a), q = P.get(s.b);
+      const dx = q.x - p.x, dy = q.y - p.y, d = Math.hypot(dx, dy) || 0.1;
+      const f = 0.45 * (d - s.L), fx = (dx / d) * f, fy = (dy / d) * f;
+      D.get(s.a).x += fx; D.get(s.a).y += fy;
+      D.get(s.b).x -= fx; D.get(s.b).y -= fy;
+    }
+    for (const id of ids) {
+      const p = P.get(id), d = D.get(id);
+      d.x += (cx - p.x) * 0.012; d.y += (cy - p.y) * 0.012;
+      const m = Math.hypot(d.x, d.y);
+      if (m > temp) { d.x *= temp / m; d.y *= temp / m; }
+      p.x += d.x; p.y += d.y;
+    }
+    temp = Math.max(0.6, temp * 0.985);
+  }
+  return P;
+}
+
+// Lower is better: bond crossings dominate, then atoms that sit too close together.
+function layoutScore(P) {
+  let score = 0;
+  const segs = state.bonds.map(b => [P.get(b.a), P.get(b.b), b.a, b.b]);
+  const cross = (p1, p2, p3, p4) => {
+    const d = (a, b, c) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+    return d(p1, p2, p3) * d(p1, p2, p4) < 0 && d(p3, p4, p1) * d(p3, p4, p2) < 0;
+  };
+  for (let i = 0; i < segs.length; i++)
+    for (let j = i + 1; j < segs.length; j++) {
+      const [a1, a2, i1, i2] = segs[i], [b1, b2, j1, j2] = segs[j];
+      if (i1 === j1 || i1 === j2 || i2 === j1 || i2 === j2) continue;
+      if (cross(a1, a2, b1, b2)) score += 1000;
+    }
+  const pts = [...P.values()];
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i + 1; j < pts.length; j++) {
+      const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+      if (d < 48) score += 48 - d;
+    }
+  return score;
+}
+
+function computeLayout(fromScratch) {
+  const cx = boardW / 2, cy = (boardH - 40) / 2;
+  let P;
+  if (fromScratch) {
+    let best = Infinity;
+    for (let trial = 0; trial < 8 && best > 0; trial++) {
+      const cand = relax(initialPositions(cx, cy), cx, cy), s = layoutScore(cand);
+      if (s < best) { best = s; P = cand; }
+    }
+  } else {
+    P = new Map();
+    state.atoms.forEach(a => P.set(a.id, { x: a.tx ?? a.x, y: a.ty ?? a.y }));
+    relax(P, cx, cy);
+  }
+
+  // Fit into the board
+  const xs = [...P.values()].map(p => p.x), ys = [...P.values()].map(p => p.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  const availW = boardW - 2 * MARGIN - 20, availH = boardH - MARGIN - BOTTOM_PAD - 20;
+  const scale = Math.min(1, availW / Math.max(1, maxX - minX), availH / Math.max(1, maxY - minY));
+  const mx = (minX + maxX) / 2, my = (minY + maxY) / 2;
+  const tcx = boardW / 2, tcy = MARGIN + 10 + availH / 2;
+  for (const a of state.atoms) {
+    const p = P.get(a.id);
+    a.tx = tcx + (p.x - mx) * scale; a.ty = tcy + (p.y - my) * scale;
+  }
+  animate();
+}
+
+let animating = false;
+function animate() {
+  if (animating) return;
+  animating = true;
+  const step = () => {
+    let any = false;
+    for (const a of state.atoms) {
+      if (a.tx == null) continue;
+      a.x += (a.tx - a.x) * 0.16; a.y += (a.ty - a.y) * 0.16;
+      if (Math.hypot(a.tx - a.x, a.ty - a.y) < 0.4) { a.x = a.tx; a.y = a.ty; a.tx = a.ty = null; } else any = true;
+    }
+    renderPositions();
+    if (any) requestAnimationFrame(step); else animating = false;
+  };
+  requestAnimationFrame(step);
+}
+
+function showSolution() {
+  const mol = CATALOG[LEVELS[state.level].key], raw = mol.raw;
+  const pool = {};
+  state.atoms.forEach(a => (pool[a.el] = pool[a.el] || []).push(a.id));
+  const nodeId = raw.nodes.map(n => pool[n.el].shift());
+  pushHistory();
+  const bonds = raw.edges.map(e => ({ a: nodeId[e.a], b: nodeId[e.b], order: e.order }));
+  raw.nodes.forEach((n, i) => { for (let k = 0; k < n.h; k++) bonds.push({ a: nodeId[i], b: pool.H.shift(), order: 1 }); });
+  state.bonds = bonds;
+  state.revealed = true;
+  select(null);
+  computeLayout(true);
+  changed();
+}
+
+/* ---------- overlays ---------- */
+function openCard(html) {
+  $("#card").innerHTML = html;
+  $("#overlay").hidden = false;
+}
+function closeCard() { $("#overlay").hidden = true; }
+$("#overlay").addEventListener("pointerdown", e => { if (e.target.id === "overlay") closeCard(); });
+
+function showWin() {
+  const lv = LEVELS[state.level], mol = CATALOG[lv.key];
+  const last = state.level === LEVELS.length - 1;
+  const solvedCount = Object.values(progress.solved).filter(v => v === "solved").length;
+  openCard(`
+    <div class="eyebrow">Molecule complete</div>
+    <h2>${mol.name}</h2>
+    <div class="formula">${fmt(mol.display)}</div>
+    <p class="fact">${mol.fact}</p>
+    <p style="color:var(--muted);margin:0">${solvedCount} of ${LEVELS.length} levels solved · ${progress.discovered.length} of ${CATALOG_KEYS.length} molecules collected</p>
+    <div class="btns">
+      <button data-act="stay">Stay here</button>
+      ${last ? `<button class="primary" data-act="collection">See your collection</button>`
+             : `<button class="primary" data-act="next">Next level →</button>`}
+    </div>`);
+}
+
+function showLevels() {
+  const items = LEVELS.map((lv, i) => {
+    const m = CATALOG[lv.key], st = progress.solved[i];
+    return `<button data-level="${i}" class="${st === "solved" ? "solved" : ""} ${i === state.level ? "current" : ""}">
+      <span class="n">Level ${i + 1}</span><span class="nm">${m.name}</span><span class="f">${fmt(m.display)}</span>
+      <span class="st">${st === "solved" ? "✓" : st === "revealed" ? "👁" : ""}</span></button>`;
+  }).join("");
+  const solved = Object.values(progress.solved).filter(v => v === "solved").length;
+  openCard(`<h2>Levels</h2>
+    <div style="color:var(--muted)">${solved} of ${LEVELS.length} solved</div>
+    <div class="progressbar"><div style="width:${(solved / LEVELS.length) * 100}%"></div></div>
+    <div class="level-grid">${items}</div>
+    <div class="btns"><button data-act="reset-progress">Reset progress</button><button class="primary" data-act="close">Close</button></div>`);
+}
+
+function showCollection() {
+  const items = CATALOG_KEYS.map(k => {
+    const m = CATALOG[k], got = progress.discovered.includes(k);
+    return got
+      ? `<div class="coll-item"><div class="hd"><span>${m.name}</span><span class="f">${fmt(m.display)}</span></div><p>${m.fact}</p></div>`
+      : `<div class="coll-item locked"><div class="hd"><span>???</span><span class="f">${fmt(m.display)}</span></div><p>Not discovered yet.</p></div>`;
+  }).join("");
+  const n = progress.discovered.length;
+  openCard(`<h2>Molecule collection</h2>
+    <div style="color:var(--muted)">${n} of ${CATALOG_KEYS.length} discovered. Solving levels adds molecules — but many are hidden.
+    Build isomers (a different arrangement of a level's atoms) or complete smaller molecules on the board to find them.</div>
+    <div class="progressbar"><div style="width:${(n / CATALOG_KEYS.length) * 100}%"></div></div>
+    <div class="coll-list">${items}</div>
+    <div class="btns"><button class="primary" data-act="close">Close</button></div>`);
+}
+
+function showHelp() {
+  progress.seenHelp = true; saveProgress();
+  openCard(`<div class="eyebrow">How to play</div>
+    <h2>Build molecules from atoms</h2>
+    <p>Each level gives you a set of atoms and a target molecule. Connect <b>all</b> of them into that molecule.</p>
+    <ul>
+      <li><b>Bond:</b> click an atom, then another atom.</li>
+      <li><b>Double / triple bond:</b> click the same pair again, or click the bond line. Clicking a triple bond removes it.</li>
+      <li><b>Move:</b> drag atoms around the board.</li>
+      <li><b>Bond rules:</b> H, F, Cl form 1 bond · O forms 2 · N forms 3 · C forms 4 · P forms 3 or 5 · S forms 2, 4 or 6.
+        <span style="color:var(--warn)">Orange dots</span> show bonds an atom still needs; a glowing atom is complete.</li>
+      <li><b>Isomers:</b> the same atoms can form several real molecules. Only the target counts — but any other real molecule you build is added to your collection.</li>
+    </ul>
+    <p style="color:var(--muted)">Shortcuts: <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo · <kbd>Esc</kbd> deselect. The game uses a simplified bonding model (no ions or formal charges).</p>
+    <div class="btns"><button class="primary" data-act="close">Let's build!</button></div>`);
+}
+
+$("#card").addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  if (btn.dataset.level !== undefined) { closeCard(); startLevel(+btn.dataset.level); return; }
+  const act = btn.dataset.act;
+  if (act === "close" || act === "stay") closeCard();
+  else if (act === "next") { closeCard(); startLevel(state.level + 1); }
+  else if (act === "collection") showCollection();
+  else if (act === "reset-progress") {
+    if (confirm("Reset all level progress and your molecule collection?")) {
+      progress = { solved: {}, discovered: [], current: 0, seenHelp: true };
+      saveProgress(); closeCard(); startLevel(0);
+    }
+  }
+});
+
+/* ---------- buttons & keys ---------- */
+$("#btnHint").addEventListener("click", () => {
+  const box = $("#hintBox");
+  box.textContent = "💡 " + LEVELS[state.level].hint;
+  box.hidden = !box.hidden;
+});
+$("#btnUndo").addEventListener("click", undo);
+$("#btnTidy").addEventListener("click", () => computeLayout(false));
+$("#btnClear").addEventListener("click", () => {
+  if (!state.bonds.length) return;
+  pushHistory(); state.bonds = []; select(null); changed();
+});
+$("#btnShuffle").addEventListener("click", () => scatter());
+$("#btnSolve").addEventListener("click", () => {
+  if (confirm("Show the solution? The level will be marked as 'solution seen' until you build it yourself.")) showSolution();
+});
+$("#btnPrev").addEventListener("click", () => startLevel(state.level - 1));
+$("#btnNext").addEventListener("click", () => startLevel(state.level + 1));
+$("#btnLevels").addEventListener("click", showLevels);
+$("#btnCollection").addEventListener("click", showCollection);
+$("#btnHelp").addEventListener("click", showHelp);
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { if (!$("#overlay").hidden) closeCard(); else select(null); }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); undo(); }
+});
+
+window.addEventListener("resize", () => {
+  measureBoard();
+  state.atoms.forEach(a => { clampPos(a); if (a.tx != null) { a.tx = Math.min(a.tx, boardW - 30); a.ty = Math.min(a.ty, boardH - 80); } });
+  renderPositions();
+});
+
+/* ---------- go ---------- */
+startLevel(progress.current || 0);
+if (!progress.seenHelp) showHelp();
+</script>
+</body>
+</html>
