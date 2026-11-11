@@ -1,0 +1,55 @@
+# Builds the game on every push and, if the build succeeds, publishes it to
+# GitHub Pages: main at the root, other branches in branches/<name>/. Tests
+# don't run here: run `npm run check` before pushing.
+# A deleted branch's build is removed. See "Branch builds" in README.md.
+name: Pages
+
+on:
+  push:
+    branches: ["**"]
+  delete:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-${{ github.event.ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    if: github.event_name != 'delete'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Publish to gh-pages
+        env:
+          BRANCH: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: scripts/publish-pages.sh publish "$BRANCH" dist
+      - name: Link
+        env:
+          BRANCH: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          SITE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+        run: |
+          if [ "$BRANCH" = "$DEFAULT_BRANCH" ]; then url="$SITE/"; else url="$SITE/branches/$(printf '%s' "$BRANCH" | tr -c 'A-Za-z0-9._-' '-')/"; fi
+          echo "Published to $url (live once GitHub Pages has deployed it)" >> "$GITHUB_STEP_SUMMARY"
+
+  remove:
+    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove the branch's build
+        env:
+          BRANCH: ${{ github.event.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: scripts/publish-pages.sh remove "$BRANCH"

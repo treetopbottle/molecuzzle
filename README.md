@@ -2,6 +2,8 @@
 
 A puzzle game in the browser where you bond atoms on a grid until they form a real molecule; plain JavaScript, built into one HTML file.
 
+**Play it: <https://treetopbottle.github.io/molecuzzle/>** (built from `main`; a prototype, not reviewed yet)
+
 ## Why?
 
 Mission: let people learn how atoms bond, and how many bonds each atom needs, by solving puzzles that turn into real molecules, without installing anything.
@@ -31,7 +33,8 @@ Domain entities, capitalized, each with an example the spec can reuse:
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): the working agreement
 - `src/`: the code, as ES modules: `game.js` (the rules), `grid.js`, `solver.js`, `puzzles.js`, `board.js` (the Board in SVG), `puzzle-list.js`, `progress.js`, `app.js` (wires the page) and `index.html` with `style.css`
-- `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles
+- `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `publish-pages.sh` publishes a build to GitHub Pages
+- `.github/workflows/pages.yml`: builds and publishes every branch
 - `tests/`: `unit/` (Vitest: rules, components in happy-dom), `ui/` (Playwright, on the built page), `helpers/`
 - `prototypes/`: try-outs of other puzzle modes, outside the spec
 - [docs/spec/](docs/spec/README.md): the specification for the software, with its schemas
@@ -41,10 +44,20 @@ Domain entities, capitalized, each with an example the spec can reuse:
 
 ## Development
 
-From this folder, with Node.js 22 or newer:
+From this folder, with Node.js 22.12 or newer (an even-numbered release):
 
 - Install: `npm install`, and once `npx playwright install chromium`, or set `CHROMIUM_PATH` to a Chromium already installed (e.g. `/usr/bin/chromium`).
 - Build: `npm run build` writes `dist/index.html`, the whole game in one file; open it in a browser, no server needed.
 - Test: `npm test` (unit and component tests), `npm run test:ui` (UI tests; builds first).
 - Check: `npm run check` builds and runs all tests.
 - New Puzzle: `node scripts/generate.js "<bonds>"` prints a layout with exactly one solution; see the comment at its top.
+
+## Branch builds
+
+Every push builds `dist/index.html` on GitHub Actions and, if the build succeeds, publishes it to GitHub Pages (via the `gh-pages` branch). The tests don't run there, so a branch build may have failing tests: run `npm run check` before pushing.
+
+- `main`: <https://treetopbottle.github.io/molecuzzle/>
+- any other branch: `https://treetopbottle.github.io/molecuzzle/branches/<branch>/`, with characters other than letters, digits, `.`, `_` and `-` replaced by `-` (`feature/x` becomes `feature-x`); all of them are listed at <https://treetopbottle.github.io/molecuzzle/branches/>
+- deleting a branch removes its build
+
+Setup, once: after the first run has made the `gh-pages` branch, set Settings → Pages → Source to "Deploy from a branch", branch `gh-pages`, folder `/ (root)`.

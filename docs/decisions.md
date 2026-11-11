@@ -22,6 +22,7 @@ One short entry per decision. Don't renumber or rewrite: mark one `Superseded by
 - [0014: ES modules, built into one HTML file](#0014)
 - [0015: Vitest for rules and components, Playwright for the UI](#0015)
 - [0016: Every Puzzle has exactly one solution](#0016)
+- [0017: A GitHub Pages build per branch, from a gh-pages branch](#0017)
 
 <a id="0001"></a>
 ## 0001: One HTML file, plain JavaScript, no dependencies
@@ -194,3 +195,14 @@ A solver (`src/solver.js`) counts the solutions of a Grid; a test checks each Pu
 - **Why:** a logic puzzle needs one answer to reason towards; with it, no graph matching ([0004](#0004)) or aromatic rings ([0005](#0005)) are needed.
 - **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions; Grids must be searched for, which `scripts/generate.js` does.
 - **Alternatives:** accept any valid Board and name it: back to matching Molecules, and Puzzles with many answers.
+
+<a id="0017"></a>
+## 0017: A GitHub Pages build per branch, from a gh-pages branch
+
+Accepted (2026-11-11)
+
+GitHub Actions builds every push, and `scripts/publish-pages.sh` commits the build to the `gh-pages` branch: `main` at the root, other branches in `branches/<name>/`. Pages serves that branch.
+
+- **Why:** anyone can try a branch from a link, without installing anything; every branch that builds is published, so work in progress can be tried too.
+- **Cost:** a `gh-pages` branch that grows with every publish, and our own script to keep it; Pages has to be set to deploy from that branch once, by hand. The tests don't run on GitHub, so a published build can have failing tests; with few or no pull requests, tests blocking merges isn't worth setting up.
+- **Alternatives:** `actions/deploy-pages`: replaces the whole site on each deploy, so only one branch can be online. Netlify or Vercel previews: another service and account.
