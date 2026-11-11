@@ -1,0 +1,17 @@
+{
+  "name": "molecuzzle",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "vitest run",
+    "test:ui": "playwright test",
+    "check": "npm run build && npm test && npm run test:ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "esbuild": "^0.28.2",
+    "happy-dom": "^21.0.4",
+    "vitest": "^5.1.0"
+  }
+}

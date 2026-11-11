@@ -1,0 +1,96 @@
+// The puzzles, easiest first. Atoms are [Element, row, column], in reading
+// order; the solution lists [atom, atom, Bond order]. Layouts come from
+// scripts/generate.js; tests check each has exactly this one solution.
+export const PUZZLES = [
+  {
+    id: "water", name: "Water", formula: "H2O",
+    fact: "About 60% of your body is water. Its bent shape makes it polar, so it dissolves many substances.",
+    rows: 2, cols: 2,
+    atoms: [["H",0,0],["O",0,1],["H",1,1]],
+    solution: [[0,1,1],[1,2,1]],
+  },
+  {
+    id: "ammonia", name: "Ammonia", formula: "NH3",
+    fact: "Ammonia is made from the nitrogen in air on a huge scale, mostly for fertilisers.",
+    rows: 3, cols: 2,
+    atoms: [["H",0,0],["N",1,0],["H",1,1],["H",2,0]],
+    solution: [[0,1,1],[1,2,1],[1,3,1]],
+  },
+  {
+    id: "formaldehyde", name: "Formaldehyde", formula: "CH2O",
+    fact: "Dissolved in water as formalin, formaldehyde has long been used to preserve biological specimens.",
+    rows: 3, cols: 2,
+    atoms: [["H",0,0],["C",1,0],["H",1,1],["O",2,0]],
+    solution: [[0,1,1],[1,2,1],[1,3,2]],
+  },
+  {
+    id: "hydrogen-cyanide", name: "Hydrogen cyanide", formula: "HCN",
+    fact: "Hydrogen cyanide is very poisonous, and has been found in space, including in the tails of comets.",
+    rows: 1, cols: 3,
+    atoms: [["H",0,0],["C",0,1],["N",0,2]],
+    solution: [[0,1,1],[1,2,3]],
+  },
+  {
+    id: "methanol", name: "Methanol", formula: "CH4O",
+    fact: "Methanol is also called wood alcohol, because it was once made by heating wood. It is poisonous to drink.",
+    rows: 3, cols: 3,
+    atoms: [["H",0,1],["O",1,0],["C",1,1],["H",1,2],["H",2,0],["H",2,1]],
+    solution: [[0,2,1],[1,2,1],[1,4,1],[2,3,1],[2,5,1]],
+  },
+  {
+    id: "ethylene", name: "Ethylene", formula: "C2H4",
+    fact: "Ethylene is a plant hormone: ripe bananas give it off, which makes fruit nearby ripen faster.",
+    rows: 3, cols: 2,
+    atoms: [["H",0,0],["H",0,1],["C",1,0],["C",1,1],["H",2,0],["H",2,1]],
+    solution: [[0,2,1],[1,3,1],[2,3,2],[2,4,1],[3,5,1]],
+  },
+  {
+    id: "acrylonitrile", name: "Acrylonitrile", formula: "C3H3N",
+    fact: "Acrylonitrile is the building block of acrylic fibres, used in sweaters and blankets.",
+    rows: 4, cols: 2,
+    atoms: [["N",0,1],["H",1,0],["C",1,1],["C",2,0],["C",2,1],["H",3,0],["H",3,1]],
+    solution: [[0,2,3],[1,3,1],[2,4,1],[3,4,2],[3,5,1],[4,6,1]],
+  },
+  {
+    id: "acetic-acid", name: "Acetic acid", formula: "C2H4O2",
+    fact: "Vinegar is acetic acid in water, about 4 to 8% of it.",
+    rows: 3, cols: 5,
+    atoms: [["H",0,0],["O",0,1],["C",0,2],["O",0,4],["H",1,1],["C",1,2],["H",1,3],["H",2,2]],
+    solution: [[0,1,1],[1,2,1],[2,3,2],[2,5,1],[4,5,1],[5,6,1],[5,7,1]],
+  },
+  {
+    id: "urea", name: "Urea", formula: "CH4N2O",
+    fact: "In 1828 Friedrich Wöhler made urea from non-living materials, the first time a compound from living things was made in a lab.",
+    rows: 3, cols: 4,
+    atoms: [["H",0,0],["N",0,1],["H",0,2],["C",1,1],["O",1,3],["H",2,0],["N",2,1],["H",2,2]],
+    solution: [[0,1,1],[1,2,1],[1,3,1],[3,4,2],[3,6,1],[5,6,1],[6,7,1]],
+  },
+  {
+    id: "ethanol", name: "Ethanol", formula: "C2H6O",
+    fact: "Ethanol is the alcohol in drinks, made by yeast from sugar. It is also mixed into petrol as a fuel.",
+    rows: 3, cols: 4,
+    atoms: [["H",0,1],["H",0,2],["H",1,0],["C",1,1],["C",1,2],["H",1,3],["H",2,1],["O",2,2],["H",2,3]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,6,1],[4,5,1],[4,7,1],[7,8,1]],
+  },
+  {
+    id: "glycine", name: "Glycine", formula: "C2H5NO2",
+    fact: "Glycine is the simplest amino acid, one of the building blocks of proteins. Traces have even been found in samples from comets.",
+    rows: 4, cols: 5,
+    atoms: [["O",0,1],["C",0,2],["O",0,3],["H",0,4],["H",1,0],["C",1,2],["H",1,4],["H",3,1],["N",3,2],["H",3,3]],
+    solution: [[0,1,2],[1,2,1],[1,5,1],[2,3,1],[4,5,1],[5,6,1],[5,8,1],[7,8,1],[8,9,1]],
+  },
+  {
+    id: "acetone", name: "Acetone", formula: "C3H6O",
+    fact: "Acetone is the solvent in many nail polish removers. Your body makes a little of it when it burns fat.",
+    rows: 5, cols: 4,
+    atoms: [["H",0,2],["H",1,1],["C",1,2],["H",1,3],["O",2,0],["C",2,2],["H",3,1],["C",3,2],["H",3,3],["H",4,2]],
+    solution: [[0,2,1],[1,2,1],[2,3,1],[2,5,1],[4,5,2],[5,7,1],[6,7,1],[7,8,1],[7,9,1]],
+  },
+  {
+    id: "alanine", name: "Alanine", formula: "C3H7NO2",
+    fact: "Alanine is one of the 20 amino acids that make up proteins. Silk is rich in it.",
+    rows: 4, cols: 4,
+    atoms: [["H",0,0],["N",0,1],["H",0,2],["O",0,3],["H",1,0],["C",1,1],["C",1,3],["H",2,0],["C",2,1],["H",2,2],["O",2,3],["H",3,1],["H",3,3]],
+    solution: [[0,1,1],[1,2,1],[1,5,1],[3,6,2],[4,5,1],[5,6,1],[5,8,1],[6,10,1],[7,8,1],[8,9,1],[8,11,1],[10,12,1]],
+  },
+];

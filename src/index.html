@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Molecuzzle</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <b>Molecuzzle</b>
+  <span id="score" class="legend"></span>
+</header>
+<main>
+  <section>
+    <div class="stage"><svg id="board"></svg></div>
+    <div id="status" role="status"></div>
+  </section>
+  <aside class="panel">
+    <nav class="puzzle-nav" aria-label="Puzzle">
+      <button id="prev" aria-label="Previous puzzle">‹</button>
+      <span id="counter"></span>
+      <button id="next" aria-label="Next puzzle">›</button>
+      <span id="badge" class="badge"></span>
+    </nav>
+    <div>
+      <div class="eyebrow">Mystery molecule</div>
+      <h1 id="title">?</h1>
+      <div id="formula" class="legend"></div>
+    </div>
+    <p id="fact" class="legend" hidden></p>
+    <button id="nextPuzzle" class="primary" hidden>Next puzzle →</button>
+    <ol class="rules">
+      <li>Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.</li>
+      <li>Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.</li>
+      <li>Bonds can't cross.</li>
+      <li>Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.</li>
+      <li>All atoms join into one molecule. There is exactly one solution.</li>
+    </ol>
+    <div class="actions">
+      <button id="btnUndo">Undo</button>
+      <button id="btnReset">Reset</button>
+      <button id="btnSolve">Show solution</button>
+    </div>
+    <div>
+      <div class="eyebrow">Puzzles</div>
+      <ol id="puzzles" class="puzzle-list" aria-label="Puzzles"></ol>
+    </div>
+  </aside>
+</main>
+<div id="toast" role="alert"></div>
+<script type="module" src="main.js"></script>
+</body>
+</html>

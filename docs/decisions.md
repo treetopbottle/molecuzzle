@@ -1,8 +1,8 @@
 # Decisions
 
-Why things are the way they are. If we throw the code away, this is what we keep.
+Any decision made about the project.
 
-One short entry per decision. Don't renumber or rewrite: mark one `Superseded by NNNN` instead. An open question is `Undecided`. Add each entry to the index.
+One short entry per decision. Don't renumber or rewrite: mark one `Superseded by NNNN` instead. An open question is `Undecided`. Make sure to add each entry to the index.
 
 ## Index
 
@@ -18,11 +18,15 @@ One short entry per decision. Don't renumber or rewrite: mark one `Superseded by
 - [0010: Progress lives in the browser](#0010)
 - [0011: Layout by forces, from a depth-first circle](#0011)
 - [0012: How to test](#0012)
+- [0013: The bond grid is the game](#0013)
+- [0014: ES modules, built into one HTML file](#0014)
+- [0015: Vitest for rules and components, Playwright for the UI](#0015)
+- [0016: Every Puzzle has exactly one solution](#0016)
 
 <a id="0001"></a>
 ## 0001: One HTML file, plain JavaScript, no dependencies
 
-Accepted (2026-11-10)
+Accepted (2026-11-10), superseded by [0014](#0014)
 
 The game is a single `index.html` with inline CSS and JavaScript, and loads nothing else.
 
@@ -55,7 +59,7 @@ The Player places and bonds every H, instead of hydrogens being implied as in sk
 <a id="0004"></a>
 ## 0004: Molecules are compared as graphs
 
-Accepted (2026-11-10)
+Accepted (2026-11-10), superseded by [0016](#0016)
 
 The Board is turned into a graph of non-hydrogen Atoms, each with its count of bonded H, and compared to Known Molecules by backtracking isomorphism, matching Element, H count and Bond orders.
 
@@ -66,7 +70,7 @@ The Board is turned into a graph of non-hydrogen Atoms, each with its count of b
 <a id="0005"></a>
 ## 0005: Alternating six-rings count as aromatic
 
-Accepted (2026-11-10)
+Accepted (2026-11-10), superseded by [0016](#0016)
 
 Before comparing, every six-ring of alternating single and double Bonds gets Bond order 1.5, on both sides.
 
@@ -77,7 +81,7 @@ Before comparing, every six-ring of alternating single and double Bonds gets Bon
 <a id="0006"></a>
 ## 0006: Known Molecules are written in a SMILES subset
 
-Accepted (2026-11-10)
+Accepted (2026-11-10), superseded by [0013](#0013)
 
 Each Known Molecule is one line of SMILES, read by a small parser: atoms, `[H]`, `-` `=` `#`, branches and ring closures. Implicit H fill each atom up to its smallest valence that fits.
 
@@ -88,7 +92,7 @@ Each Known Molecule is one line of SMILES, read by a small parser: atoms, `[H]`,
 <a id="0007"></a>
 ## 0007: Other Known Molecules go to the Collection, not count as solved
 
-Accepted (2026-11-10)
+Accepted (2026-11-10), superseded by [0013](#0013)
 
 Only the target solves a Level. Any other Known Molecule the Player builds gets named and added to the Collection.
 
@@ -132,7 +136,7 @@ Progress is kept in `localStorage`, key `molecuzzle-v1`; the game works without 
 <a id="0011"></a>
 ## 0011: Layout by forces, from a depth-first circle
 
-Accepted (2026-11-10)
+Accepted (2026-11-10), superseded by [0013](#0013)
 
 Show solution and Tidy up place Atoms with a force simulation: Bonds pull, all Atoms push apart. For Show solution it starts from the non-hydrogen Atoms on a circle in depth-first order, and keeps the best of 8 tries by fewest crossing Bonds, then fewest Atoms too close.
 
@@ -143,6 +147,50 @@ Show solution and Tidy up place Atoms with a force simulation: Bonds pull, all A
 <a id="0012"></a>
 ## 0012: How to test
 
-Undecided
+Undecided, superseded by [0015](#0015)
 
 There are no automated tests yet. While the game was built, it was checked by loading `index.html` in headless Chromium with an injected script that solved every Level with Show solution and checked one Isomer message, plus screenshots at 1280×800 and 390×844. A setup plan should settle the tool and the helpers that turn the spec's rules into tests.
+
+<a id="0013"></a>
+## 0013: The bond grid is the game
+
+Accepted (2026-11-11)
+
+The game is the bond grid prototype, grown to several Puzzles. The first game, where Atoms are dragged and bonded freely to build a target, is kept as `prototypes/drag-and-bond.html`, outside the spec.
+
+- **Why:** each Puzzle is a logic puzzle with one answer, which the Player can reason out from the valences alone; no dragging, so it plays the same with mouse, touch and keys.
+- **Cost:** no Isomers, Collection or Known Molecules ([0006](#0006), [0007](#0007)); no free layout ([0011](#0011)); each Puzzle needs a Grid layout, found with `scripts/generate.js`; only H, C, N and O for now.
+- **Alternatives:** keep the drag-and-bond game and add the grid as a mode: two games to spec and test, before knowing which one works.
+
+<a id="0014"></a>
+## 0014: ES modules, built into one HTML file
+
+Accepted (2026-11-11)
+
+The code is plain JavaScript in ES modules in `src/`; `npm run build` bundles them with esbuild and inlines the bundle and CSS into `dist/index.html`. Dependencies are for development only.
+
+- **Why:** modules are components with small interfaces that tests import directly; the built file still opens from disk, offline, with no server, as in [0001](#0001).
+- **Cost:** a build step and Node.js to develop; `dist/` isn't in git, so playing needs a build.
+- **Alternatives:** loading `src/` as modules in the browser: needs a server, since browsers don't load modules from `file://`. A framework: more than the page needs.
+
+<a id="0015"></a>
+## 0015: Vitest for rules and components, Playwright for the UI
+
+Accepted (2026-11-11)
+
+Rules and components (`board.js`, `puzzle-list.js` in happy-dom) are tested with Vitest; the built page with Playwright in Chromium, at 1280×800 and, for layout, 390×844. Expected results are inline snapshots: the Board drawn as text (`tests/helpers/draw.js`) and accessibility snapshots of the page. A test's name starts with the rule ids it covers.
+
+- **Why:** inline snapshots read like the spec's examples; testing the page through roles and names also keeps the Board usable with a screen reader and keys.
+- **Cost:** two test runners; Playwright needs a Chromium download or `CHROMIUM_PATH`.
+- **Alternatives:** `node:test`: no inline snapshots. Only Playwright: slower, and rules are hard to reach through the page.
+
+<a id="0016"></a>
+## 0016: Every Puzzle has exactly one solution
+
+Accepted (2026-11-11)
+
+A solver (`src/solver.js`) counts the solutions of a Grid; a test checks each Puzzle has exactly one, and that it is the one Show solution shows. Any Board where every Atom is complete and all join up is then that solution, so the game doesn't compare Molecules.
+
+- **Why:** a logic puzzle needs one answer to reason towards; with it, no graph matching ([0004](#0004)) or aromatic rings ([0005](#0005)) are needed.
+- **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions; Grids must be searched for, which `scripts/generate.js` does.
+- **Alternatives:** accept any valid Board and name it: back to matching Molecules, and Puzzles with many answers.

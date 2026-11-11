@@ -1,19 +1,17 @@
 # Plans
 
-One folder per slice of work, `NN-<slug>/`: the plan is its `README.md`, next to its reviews. Finished plans stay as history.
+One folder per feature or slice of work, `NN-<slug>/`: the plan is its `README.md` and every review is a separate file. Finished plans stay as history.
 
-The first version of the game was built before the GAAD template was in place, without a plan; the [spec](../spec/README.md) and [decisions](../decisions.md) describe it as it is.
+The bond grid game, its tests and the move to the GAAD template's latest layout were done on request, without a plan; the [spec](../spec/README.md) and [decisions](../decisions.md) describe them as they are.
 
 | Plan | Status |
 |---|---|
 
 ## Backlog
 
-- Setup: test tooling and helpers that turn the spec's rules into tests, settling [decision 0012](../decisions.md#0012); then tests for the existing rules.
-- Accessibility: bonding and moving Atoms with the keyboard, and names for screen readers.
-- More Levels, with targets that fit the valence model ([decision 0002](../decisions.md#0002)).
+Contains features, slices or small tasks to work on, in order of importance.
 
-Small tasks, done without a plan:
-
-- Remove the unused `body` field kept per Atom in `atomEls` in `index.html`.
-- Order the Collection by Atom count: the current sort counts non-hydrogen Atoms twice.
+- Review the bond grid game against the spec ([review](../workflow/review.md) of the decisions and the code).
+- More Puzzles, larger and harder, maybe with Elements such as Cl or S; `scripts/generate.js` finds the layouts.
+- Moving between Dotted lines with the arrow keys, instead of only Tab.
+- Reset progress, from the Puzzles list.
