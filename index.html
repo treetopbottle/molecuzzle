@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Molecuzzle</title>
+<style>
+:root {
+  --bg: #0e1320; --panel: #161d2e; --panel-2: #1d2639; --line: #2a3550;
+  --text: #e6ebf5; --muted: #93a0bb; --accent: #3ce0b4; --accent-2: #7dd3ff; --warn: #ffb347; --bond: #c9d3e6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+button { font: inherit; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+button:hover:not(:disabled) { background: #24304a; }
+button:disabled { opacity: .4; cursor: default; }
+button.primary { background: #1f6f5c; border-color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+sub { font-size: .72em; line-height: 0; }
+header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+header b { font-size: 18px; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+section { min-width: 0; }
+.stage { background-color: #111827; border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: flex; justify-content: center; }
+svg { max-width: 100%; height: auto; display: block; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+h1 { margin: 0; font-size: 24px; }
+p { margin: 0; }
+.eyebrow { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.legend { color: var(--muted); font-size: 14px; }
+.rules { margin: 0; padding-left: 20px; font-size: 14px; }
+.rules li { margin: 4px 0; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.puzzle-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; white-space: nowrap; }
+.puzzle-nav button { padding: 4px 12px; }
+.puzzle-nav .badge { margin-left: auto; font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 2px 10px; }
+.puzzle-nav .badge.solved { color: var(--accent); border-color: rgba(60,224,180,.6); }
+.puzzle-nav .badge.revealed { color: var(--warn); border-color: rgba(255,179,71,.5); }
+.puzzle-list { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.puzzle-list button { min-width: 44px; padding: 6px 8px; font-size: 14px; }
+.puzzle-list button[aria-current] { border-color: var(--accent-2); box-shadow: 0 0 0 1px var(--accent-2); }
+#status { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
+#status.good { border-color: rgba(60,224,180,.6); color: #b9f7e4; }
+#status.warn { border-color: rgba(255,179,71,.5); color: #ffe0b3; }
+#toast { position: fixed; top: 64px; left: 50%; transform: translate(-50%, -10px); background: #2a3550; border: 1px solid #3d4b72; padding: 8px 14px; border-radius: 99px; opacity: 0; transition: .2s; pointer-events: none; }
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.cell { fill: rgba(255,255,255,.09); }
+.edge { outline: none; }
+.edge .maybe { stroke: rgba(201,211,230,.22); stroke-width: 2; stroke-dasharray: 3 7; stroke-linecap: round; }
+.edge .vis { stroke: var(--bond); stroke-width: 3.4; stroke-linecap: round; }
+.edge .hit { fill: transparent; cursor: pointer; }
+.edge:hover .maybe, .edge:focus-visible .maybe { stroke: rgba(125,211,255,.7); }
+.edge:hover .vis, .edge:focus-visible .vis { stroke: #fff; }
+.edge:focus-visible .hit { fill: rgba(125,211,255,.14); }
+.atom { pointer-events: none; }
+.atom .body { stroke-width: 2; transition: filter .2s; }
+.atom .shine { fill: #fff; opacity: .22; }
+.atom .sym { font-weight: 700; font-size: 16px; }
+.atom.ok .body { filter: drop-shadow(0 0 5px rgba(60,224,180,.8)); }
+.atom .badge circle { fill: var(--warn); stroke: #3a2600; }
+.atom .badge text { font-size: 11px; font-weight: 700; fill: #3a2600; }
+.atom.ok .badge { display: none; }
+.solved .atom .body { animation: pulse .55s ease-in-out 3; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 50% { transform: scale(1.2); } }
+@media (prefers-reduced-motion: reduce) { .solved .atom .body { animation: none; } }
+
+@media (max-width: 820px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <b>Molecuzzle</b>
+  <span id="score" class="legend"></span>
+</header>
+<main>
+  <section>
+    <div class="stage"><svg id="board"></svg></div>
+    <div id="status" role="status"></div>
+  </section>
+  <aside class="panel">
+    <nav class="puzzle-nav" aria-label="Puzzle">
+      <button id="prev" aria-label="Previous puzzle">‹</button>
+      <span id="counter"></span>
+      <button id="next" aria-label="Next puzzle">›</button>
+      <span id="badge" class="badge"></span>
+    </nav>
+    <div>
+      <div class="eyebrow">Mystery molecule</div>
+      <h1 id="title">?</h1>
+      <div id="formula" class="legend"></div>
+    </div>
+    <p id="fact" class="legend" hidden></p>
+    <button id="nextPuzzle" class="primary" hidden>Next puzzle →</button>
+    <ol class="rules">
+      <li>Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.</li>
+      <li>Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.</li>
+      <li>Bonds can't cross.</li>
+      <li>Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.</li>
+      <li>All atoms join into one molecule. There is exactly one solution.</li>
+    </ol>
+    <div class="actions">
+      <button id="btnUndo">Undo</button>
+      <button id="btnReset">Reset</button>
+      <button id="btnSolve">Show solution</button>
+    </div>
+    <div>
+      <div class="eyebrow">Puzzles</div>
+      <ol id="puzzles" class="puzzle-list" aria-label="Puzzles"></ol>
+    </div>
+  </aside>
+</main>
+<div id="toast" role="alert"></div>
+<script>
+(() => {
+  // src/puzzles.js
+  var PUZZLES = [
+    {
+      id: "water",
+      name: "Water",
+      formula: "H2O",
+      fact: "About 60% of your body is water. Its bent shape makes it polar, so it dissolves many substances.",
+      rows: 2,
+      cols: 2,
+      atoms: [["H", 0, 0], ["O", 0, 1], ["H", 1, 1]],
+      solution: [[0, 1, 1], [1, 2, 1]]
+    },
+    {
+      id: "ammonia",
+      name: "Ammonia",
+      formula: "NH3",
+      fact: "Ammonia is made from the nitrogen in air on a huge scale, mostly for fertilisers.",
+      rows: 3,
+      cols: 2,
+      atoms: [["H", 0, 0], ["N", 1, 0], ["H", 1, 1], ["H", 2, 0]],
+      solution: [[0, 1, 1], [1, 2, 1], [1, 3, 1]]
+    },
+    {
+      id: "formaldehyde",
+      name: "Formaldehyde",
+      formula: "CH2O",
+      fact: "Dissolved in water as formalin, formaldehyde has long been used to preserve biological specimens.",
+      rows: 3,
+      cols: 2,
+      atoms: [["H", 0, 0], ["C", 1, 0], ["H", 1, 1], ["O", 2, 0]],
+      solution: [[0, 1, 1], [1, 2, 1], [1, 3, 2]]
+    },
+    {
+      id: "hydrogen-cyanide",
+      name: "Hydrogen cyanide",
+      formula: "HCN",
+      fact: "Hydrogen cyanide is very poisonous, and has been found in space, including in the tails of comets.",
+      rows: 1,
+      cols: 3,
+      atoms: [["H", 0, 0], ["C", 0, 1], ["N", 0, 2]],
+      solution: [[0, 1, 1], [1, 2, 3]]
+    },
+    {
+      id: "methanol",
+      name: "Methanol",
+      formula: "CH4O",
+      fact: "Methanol is also called wood alcohol, because it was once made by heating wood. It is poisonous to drink.",
+      rows: 3,
+      cols: 3,
+      atoms: [["H", 0, 1], ["O", 1, 0], ["C", 1, 1], ["H", 1, 2], ["H", 2, 0], ["H", 2, 1]],
+      solution: [[0, 2, 1], [1, 2, 1], [1, 4, 1], [2, 3, 1], [2, 5, 1]]
+    },
+    {
+      id: "ethylene",
+      name: "Ethylene",
+      formula: "C2H4",
+      fact: "Ethylene is a plant hormone: ripe bananas give it off, which makes fruit nearby ripen faster.",
+      rows: 3,
+      cols: 2,
+      atoms: [["H", 0, 0], ["H", 0, 1], ["C", 1, 0], ["C", 1, 1], ["H", 2, 0], ["H", 2, 1]],
+      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 2], [2, 4, 1], [3, 5, 1]]
+    },
+    {
+      id: "acrylonitrile",
+      name: "Acrylonitrile",
+      formula: "C3H3N",
+      fact: "Acrylonitrile is the building block of acrylic fibres, used in sweaters and blankets.",
+      rows: 4,
+      cols: 2,
+      atoms: [["N", 0, 1], ["H", 1, 0], ["C", 1, 1], ["C", 2, 0], ["C", 2, 1], ["H", 3, 0], ["H", 3, 1]],
+      solution: [[0, 2, 3], [1, 3, 1], [2, 4, 1], [3, 4, 2], [3, 5, 1], [4, 6, 1]]
+    },
+    {
+      id: "acetic-acid",
+      name: "Acetic acid",
+      formula: "C2H4O2",
+      fact: "Vinegar is acetic acid in water, about 4 to 8% of it.",
+      rows: 3,
+      cols: 5,
+      atoms: [["H", 0, 0], ["O", 0, 1], ["C", 0, 2], ["O", 0, 4], ["H", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 2]],
+      solution: [[0, 1, 1], [1, 2, 1], [2, 3, 2], [2, 5, 1], [4, 5, 1], [5, 6, 1], [5, 7, 1]]
+    },
+    {
+      id: "urea",
+      name: "Urea",
+      formula: "CH4N2O",
+      fact: "In 1828 Friedrich W\xF6hler made urea from non-living materials, the first time a compound from living things was made in a lab.",
+      rows: 3,
+      cols: 4,
+      atoms: [["H", 0, 0], ["N", 0, 1], ["H", 0, 2], ["C", 1, 1], ["O", 1, 3], ["H", 2, 0], ["N", 2, 1], ["H", 2, 2]],
+      solution: [[0, 1, 1], [1, 2, 1], [1, 3, 1], [3, 4, 2], [3, 6, 1], [5, 6, 1], [6, 7, 1]]
+    },
+    {
+      id: "ethanol",
+      name: "Ethanol",
+      formula: "C2H6O",
+      fact: "Ethanol is the alcohol in drinks, made by yeast from sugar. It is also mixed into petrol as a fuel.",
+      rows: 3,
+      cols: 4,
+      atoms: [["H", 0, 1], ["H", 0, 2], ["H", 1, 0], ["C", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 1], ["O", 2, 2], ["H", 2, 3]],
+      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 7, 1], [7, 8, 1]]
+    },
+    {
+      id: "glycine",
+      name: "Glycine",
+      formula: "C2H5NO2",
+      fact: "Glycine is the simplest amino acid, one of the building blocks of proteins. Traces have even been found in samples from comets.",
+      rows: 4,
+      cols: 5,
+      atoms: [["O", 0, 1], ["C", 0, 2], ["O", 0, 3], ["H", 0, 4], ["H", 1, 0], ["C", 1, 2], ["H", 1, 4], ["H", 3, 1], ["N", 3, 2], ["H", 3, 3]],
+      solution: [[0, 1, 2], [1, 2, 1], [1, 5, 1], [2, 3, 1], [4, 5, 1], [5, 6, 1], [5, 8, 1], [7, 8, 1], [8, 9, 1]]
+    },
+    {
+      id: "acetone",
+      name: "Acetone",
+      formula: "C3H6O",
+      fact: "Acetone is the solvent in many nail polish removers. Your body makes a little of it when it burns fat.",
+      rows: 5,
+      cols: 4,
+      atoms: [["H", 0, 2], ["H", 1, 1], ["C", 1, 2], ["H", 1, 3], ["O", 2, 0], ["C", 2, 2], ["H", 3, 1], ["C", 3, 2], ["H", 3, 3], ["H", 4, 2]],
+      solution: [[0, 2, 1], [1, 2, 1], [2, 3, 1], [2, 5, 1], [4, 5, 2], [5, 7, 1], [6, 7, 1], [7, 8, 1], [7, 9, 1]]
+    },
+    {
+      id: "alanine",
+      name: "Alanine",
+      formula: "C3H7NO2",
+      fact: "Alanine is one of the 20 amino acids that make up proteins. Silk is rich in it.",
+      rows: 4,
+      cols: 4,
+      atoms: [["H", 0, 0], ["N", 0, 1], ["H", 0, 2], ["O", 0, 3], ["H", 1, 0], ["C", 1, 1], ["C", 1, 3], ["H", 2, 0], ["C", 2, 1], ["H", 2, 2], ["O", 2, 3], ["H", 3, 1], ["H", 3, 3]],
+      solution: [[0, 1, 1], [1, 2, 1], [1, 5, 1], [3, 6, 2], [4, 5, 1], [5, 6, 1], [5, 8, 1], [6, 10, 1], [7, 8, 1], [8, 9, 1], [8, 11, 1], [10, 12, 1]]
+    }
+  ];
+
+  // src/elements.js
+  var ELEMENTS = {
+    H: { name: "Hydrogen", valence: 1, color: "#eef2f7", stroke: "#9aa6b8", text: "#2a2f38", r: 17 },
+    C: { name: "Carbon", valence: 4, color: "#454b55", stroke: "#1e2228", text: "#ffffff", r: 22 },
+    N: { name: "Nitrogen", valence: 3, color: "#3d6ef5", stroke: "#1f3f9e", text: "#ffffff", r: 22 },
+    O: { name: "Oxygen", valence: 2, color: "#e5443f", stroke: "#8f201d", text: "#ffffff", r: 22 }
+  };
+  var MAX_ORDER = 3;
+
+  // src/grid.js
+  function candidateBonds(atoms) {
+    const bonds = [];
+    atoms.forEach((a, i) => {
+      let right = -1, down = -1;
+      atoms.forEach((b, j) => {
+        if (b.r === a.r && b.c > a.c && (right < 0 || b.c < atoms[right].c)) right = j;
+        if (b.c === a.c && b.r > a.r && (down < 0 || b.r < atoms[down].r)) down = j;
+      });
+      if (right >= 0) bonds.push({ a: i, b: right, horizontal: true });
+      if (down >= 0) bonds.push({ a: i, b: down, horizontal: false });
+    });
+    return bonds;
+  }
+  function crosses(atoms, e, f) {
+    if (e.horizontal === f.horizontal) return false;
+    const h = e.horizontal ? e : f, v = e.horizontal ? f : e;
+    const r = atoms[h.a].r, c = atoms[v.a].c;
+    return c > atoms[h.a].c && c < atoms[h.b].c && r > atoms[v.a].r && r < atoms[v.b].r;
+  }
+  function connected(atomCount, bonds, order) {
+    if (atomCount === 0) return true;
+    const seen = /* @__PURE__ */ new Set([0]), queue = [0];
+    while (queue.length) {
+      const u = queue.pop();
+      bonds.forEach((e, k) => {
+        if (!order[k] || e.a !== u && e.b !== u) return;
+        const v = e.a === u ? e.b : e.a;
+        if (!seen.has(v)) {
+          seen.add(v);
+          queue.push(v);
+        }
+      });
+    }
+    return seen.size === atomCount;
+  }
+
+  // src/game.js
+  var UNDO_LIMIT = 300;
+  function createGame(puzzle) {
+    const atoms = puzzle.atoms.map(([el2, r, c]) => ({ el: el2, r, c }));
+    const bonds = candidateBonds(atoms);
+    let order = bonds.map(() => 0);
+    let history = [];
+    let revealed = false;
+    const bondCount = (i) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? order[k] : 0), 0);
+    const remaining = (i) => ELEMENTS[atoms[i].el].valence - bondCount(i);
+    function status() {
+      const open = atoms.filter((_, i) => remaining(i) > 0).length;
+      if (!order.some(Boolean)) return { kind: "empty" };
+      if (open) return { kind: "open", open };
+      if (!connected(atoms.length, bonds, order)) return { kind: "pieces" };
+      return { kind: revealed ? "revealed" : "solved" };
+    }
+    const done = () => ["solved", "revealed"].includes(status().kind);
+    function commit(next) {
+      history.push(order);
+      if (history.length > UNDO_LIMIT) history.shift();
+      order = next;
+      if (!order.some(Boolean)) revealed = false;
+    }
+    function change(k, dir) {
+      if (done()) return { changed: false };
+      const e = bonds[k], cur = order[k];
+      let next = cur + dir;
+      if (dir > 0 && cur === 0) {
+        const full = [e.a, e.b].find((i) => remaining(i) === 0);
+        if (full !== void 0) return { changed: false, message: `${ELEMENTS[atoms[full].el].name} already has all its bonds.` };
+      }
+      if (dir > 0 && (next > MAX_ORDER || next - cur > Math.min(remaining(e.a), remaining(e.b)))) next = 0;
+      if (next < 0 || next === cur) return { changed: false };
+      if (cur === 0 && bonds.some((f, j) => order[j] && crosses(atoms, e, f)))
+        return { changed: false, message: "Bonds can't cross." };
+      const copy = [...order];
+      copy[k] = next;
+      commit(copy);
+      return { changed: true };
+    }
+    function undo() {
+      if (!history.length) return false;
+      order = history.pop();
+      if (!order.some(Boolean)) revealed = false;
+      return true;
+    }
+    function reset() {
+      if (!order.some(Boolean)) return false;
+      commit(bonds.map(() => 0));
+      return true;
+    }
+    function showSolution() {
+      const next = bonds.map((e) => {
+        const s = puzzle.solution.find(([a, b]) => a === e.a && b === e.b || a === e.b && b === e.a);
+        return s ? s[2] : 0;
+      });
+      if (!done()) revealed = true;
+      if (next.some((o, k) => o !== order[k])) commit(next);
+    }
+    return {
+      puzzle,
+      atoms,
+      bonds,
+      get order() {
+        return [...order];
+      },
+      get canUndo() {
+        return history.length > 0;
+      },
+      remaining,
+      status,
+      done,
+      change,
+      undo,
+      reset,
+      showSolution
+    };
+  }
+  function statusText(status, puzzle) {
+    switch (status.kind) {
+      case "empty":
+        return "Click a dotted line between two atoms to bond them.";
+      case "open":
+        return `${status.open} atom${status.open > 1 ? "s" : ""} still need${status.open > 1 ? "" : "s"} bonds.`;
+      case "pieces":
+        return "Every atom has its bonds, but they form more than one molecule. Everything must join up.";
+      case "solved":
+        return `\u2713 Solved! It's ${puzzle.name}.`;
+      case "revealed":
+        return `Here is ${puzzle.name}. Reset and build it yourself to mark it solved.`;
+    }
+  }
+
+  // src/board.js
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var CELL = 84;
+  var PAD = 46;
+  var SCALE = 1.25;
+  var HIT = 22;
+  var ORDER_NAMES = ["no bond", "single bond", "double bond", "triple bond"];
+  var OFFSETS = [[], [0], [-4.5, 4.5], [-8, 0, 8]];
+  function el(tag, attrs, parent) {
+    const e = parent.ownerDocument.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  }
+  var place = (a) => `${a.r + 1},${a.c + 1}`;
+  function createBoard(svg, game, { onChange }) {
+    const { puzzle, atoms, bonds } = game;
+    const xy = (a) => [PAD + a.c * CELL, PAD + a.r * CELL];
+    svg.replaceChildren();
+    svg.classList.remove("solved");
+    const width = PAD * 2 + (puzzle.cols - 1) * CELL, height = PAD * 2 + (puzzle.rows - 1) * CELL;
+    svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+    svg.setAttribute("width", width * SCALE);
+    svg.setAttribute("role", "group");
+    svg.setAttribute("aria-label", `Board, ${puzzle.rows} by ${puzzle.cols}`);
+    const cells = el("g", { "aria-hidden": "true" }, svg), edgesLayer = el("g", {}, svg), atomsLayer = el("g", {}, svg);
+    for (let r = 0; r < puzzle.rows; r++)
+      for (let c = 0; c < puzzle.cols; c++) el("circle", { class: "cell", cx: PAD + c * CELL, cy: PAD + r * CELL, r: 2.5 }, cells);
+    const edgeEls = bonds.map((e, k) => {
+      const g = el("g", { class: "edge", role: "button", tabindex: 0, "data-bond": k }, edgesLayer);
+      const lines = el("g", {}, g);
+      const [x1, y1] = xy(atoms[e.a]), [x2, y2] = xy(atoms[e.b]);
+      el("rect", e.horizontal ? { class: "hit", x: x1, y: y1 - HIT / 2, width: x2 - x1, height: HIT } : { class: "hit", x: x1 - HIT / 2, y: y1, width: HIT, height: y2 - y1 }, g);
+      g.addEventListener("click", () => onChange(k, 1));
+      g.addEventListener("contextmenu", (ev) => {
+        ev.preventDefault();
+        onChange(k, -1);
+      });
+      g.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter" || ev.key === " ") {
+          ev.preventDefault();
+          onChange(k, 1);
+        } else if (ev.key === "Backspace" || ev.key === "Delete" || ev.key === "-") {
+          ev.preventDefault();
+          onChange(k, -1);
+        }
+      });
+      return { g, lines };
+    });
+    const atomEls = atoms.map((a) => {
+      const E = ELEMENTS[a.el], [x, y] = xy(a);
+      const g = el("g", { class: "atom", role: "img", transform: `translate(${x},${y})` }, atomsLayer);
+      el("circle", { class: "body", r: E.r, fill: E.color, stroke: E.stroke }, g);
+      el("circle", { class: "shine", r: E.r * 0.42, cx: -E.r * 0.32, cy: -E.r * 0.36 }, g);
+      const t = el("text", { class: "sym", "text-anchor": "middle", "dominant-baseline": "central", fill: E.text, y: 1 }, g);
+      t.textContent = a.el;
+      const badge = el("g", { class: "badge", transform: `translate(${E.r * 0.78},${-E.r * 0.78})` }, g);
+      el("circle", { r: 9 }, badge);
+      const count = el("text", { "text-anchor": "middle", "dominant-baseline": "central", y: 0.5 }, badge);
+      return { g, count };
+    });
+    function render() {
+      const order = game.order;
+      bonds.forEach((e, k) => {
+        const A = atoms[e.a], B = atoms[e.b], [x1, y1] = xy(A), [x2, y2] = xy(B), o = order[k];
+        const [nx, ny] = e.horizontal ? [0, 1] : [1, 0];
+        const { g, lines } = edgeEls[k];
+        lines.replaceChildren();
+        if (!o) el("line", { class: "maybe", x1, y1, x2, y2 }, lines);
+        for (const d of OFFSETS[o])
+          el("line", { class: "vis", x1: x1 + nx * d, y1: y1 + ny * d, x2: x2 + nx * d, y2: y2 + ny * d }, lines);
+        g.setAttribute("data-order", o);
+        g.setAttribute("aria-label", `${A.el} ${place(A)} to ${B.el} ${place(B)}: ${ORDER_NAMES[o]}`);
+      });
+      atoms.forEach((a, i) => {
+        const left = game.remaining(i), { g, count } = atomEls[i];
+        g.classList.toggle("ok", left === 0);
+        count.textContent = left;
+        g.setAttribute("aria-label", `${ELEMENTS[a.el].name} ${place(a)}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
+      });
+      svg.classList.toggle("solved", game.status().kind === "solved");
+    }
+    render();
+    return { render };
+  }
+
+  // src/puzzle-list.js
+  var STATE_TEXT = { solved: "solved", revealed: "solution seen" };
+  var MARK = { solved: "\u2713", revealed: "\u{1F441}" };
+  function renderPuzzleList(list, puzzles, progress, current, onPick) {
+    const doc = list.ownerDocument;
+    list.replaceChildren(...puzzles.map((p, i) => {
+      const state = progress.puzzles[p.id];
+      const li = doc.createElement("li");
+      const button = doc.createElement("button");
+      button.type = "button";
+      button.textContent = `${i + 1}${state ? ` ${MARK[state]}` : ""}`;
+      button.setAttribute("aria-label", `Puzzle ${i + 1}${state ? `: ${p.name}, ${STATE_TEXT[state]}` : ""}`);
+      if (state) button.title = p.name;
+      if (i === current) button.setAttribute("aria-current", "true");
+      button.addEventListener("click", () => onPick(i));
+      li.append(button);
+      return li;
+    }));
+  }
+  function formulaNodes(doc, formula) {
+    return formula.split(/(\d+)/).filter(Boolean).map((part) => {
+      if (!/^\d+$/.test(part)) return doc.createTextNode(part);
+      const sub = doc.createElement("sub");
+      sub.textContent = part;
+      return sub;
+    });
+  }
+
+  // src/progress.js
+  var STORAGE_KEY = "molecuzzle-v2";
+  function loadProgress(storage2) {
+    const empty = { puzzles: {}, current: null };
+    try {
+      const data = JSON.parse(storage2?.getItem(STORAGE_KEY) ?? "null");
+      if (!data || typeof data !== "object") return empty;
+      const puzzles = {};
+      for (const [id, state] of Object.entries(data.puzzles ?? {}))
+        if (state === "solved" || state === "revealed") puzzles[id] = state;
+      return { puzzles, current: typeof data.current === "string" ? data.current : null };
+    } catch {
+      return empty;
+    }
+  }
+  function saveProgress(storage2, progress) {
+    try {
+      storage2?.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch {
+    }
+  }
+  function mark(progress, id, state) {
+    if (state === "revealed" && progress.puzzles[id] === "solved") return progress;
+    return { ...progress, puzzles: { ...progress.puzzles, [id]: state } };
+  }
+
+  // src/app.js
+  var BADGES = { solved: "\u2713 Solved", revealed: "Solution seen" };
+  function startApp(doc, { storage: storage2, puzzles = PUZZLES, confirm = (q) => doc.defaultView.confirm(q) } = {}) {
+    const $ = (id) => doc.getElementById(id);
+    let progress = loadProgress(storage2);
+    let index = Math.max(0, puzzles.findIndex((p) => p.id === progress.current));
+    let game, board, toastTimer;
+    function toast(text) {
+      const t = $("toast");
+      t.textContent = text;
+      t.className = "show";
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.className = "", 1800);
+    }
+    function open(i) {
+      index = i;
+      game = createGame(puzzles[i]);
+      board = createBoard($("board"), game, { onChange });
+      progress = { ...progress, current: puzzles[i].id };
+      saveProgress(storage2, progress);
+      update();
+    }
+    function onChange(k, dir) {
+      const result = game.change(k, dir);
+      if (result.message) toast(result.message);
+      if (result.changed) update();
+    }
+    function update() {
+      const puzzle = puzzles[index], status = game.status(), done = game.done();
+      if (done) {
+        const next = mark(progress, puzzle.id, status.kind);
+        if (next !== progress) {
+          progress = next;
+          saveProgress(storage2, progress);
+        }
+      }
+      board.render();
+      $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
+      $("prev").disabled = index === 0;
+      $("next").disabled = index === puzzles.length - 1;
+      const state = progress.puzzles[puzzle.id];
+      $("badge").textContent = BADGES[state] ?? "Unsolved";
+      $("badge").className = `badge ${state ?? ""}`;
+      $("title").textContent = done ? puzzle.name : "?";
+      if (done) $("formula").replaceChildren(...formulaNodes(doc, puzzle.formula));
+      else $("formula").textContent = "Bond every atom to find out what it is.";
+      $("fact").textContent = puzzle.fact;
+      $("fact").hidden = !done;
+      $("nextPuzzle").hidden = !done || index === puzzles.length - 1;
+      const line = $("status");
+      line.textContent = statusText(status, puzzle);
+      line.className = { solved: "good", revealed: "good", pieces: "warn" }[status.kind] ?? "";
+      $("btnUndo").disabled = !game.canUndo;
+      $("btnReset").disabled = !game.order.some(Boolean);
+      const solvedCount = puzzles.filter((p) => progress.puzzles[p.id] === "solved").length;
+      $("score").textContent = `Solved ${solvedCount} of ${puzzles.length}`;
+      renderPuzzleList($("puzzles"), puzzles, progress, index, open);
+    }
+    $("prev").addEventListener("click", () => index > 0 && open(index - 1));
+    $("next").addEventListener("click", () => index < puzzles.length - 1 && open(index + 1));
+    $("nextPuzzle").addEventListener("click", () => index < puzzles.length - 1 && open(index + 1));
+    $("btnUndo").addEventListener("click", () => game.undo() && update());
+    $("btnReset").addEventListener("click", () => game.reset() && update());
+    $("btnSolve").addEventListener("click", () => {
+      if (!confirm("Show the solution?")) return;
+      game.showSolution();
+      update();
+    });
+    doc.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (game.undo()) update();
+      }
+    });
+    open(index);
+    return { get game() {
+      return game;
+    }, open };
+  }
+
+  // src/main.js
+  var storage;
+  try {
+    storage = window.localStorage;
+  } catch {
+  }
+  startApp(document, { storage });
+})();
+</script>
+</body>
+</html>
