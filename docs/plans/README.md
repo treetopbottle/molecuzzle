@@ -15,3 +15,4 @@ Contains features, slices or small tasks to work on, in order of importance.
 - More Puzzles, larger and harder, maybe with Elements such as Cl or S; `scripts/generate.js` finds the layouts.
 - Moving between Dotted lines with the arrow keys, instead of only Tab.
 - Reset progress, from the Puzzles list.
+- Formatting and linting: there are none yet. Add a formatter and a linter (Biome alone, or Prettier with ESLint) and run them in `npm run check`.
