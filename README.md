@@ -42,6 +42,70 @@ Domain entities, capitalized, each with an example the spec can reuse:
 - [docs/plans/](docs/plans/README.md): the backlog, including specific plans for implementing features/slices
 - [docs/workflow/](docs/workflow/): documentation of the development process
 
+### How `src/` fits together
+
+Solid arrows are imports, dotted arrows are calls at runtime (the page loading files, callbacks, the browser's storage).
+
+```mermaid
+flowchart TD
+  subgraph page["Page"]
+    html["index.html"]
+    css["style.css"]
+    main["main.js<br/>(entry point)"]
+  end
+
+  subgraph ui["UI (DOM)"]
+    app["app.js<br/>wires the page"]
+    board["board.js<br/>Board in SVG"]
+    list["puzzle-list.js<br/>puzzle buttons, formulas"]
+  end
+
+  subgraph rules["Rules (no DOM)"]
+    game["game.js<br/>Bond orders, undo, status"]
+    grid["grid.js<br/>candidate Bonds, crossings, connected"]
+    solver["solver.js<br/>finds solutions"]
+  end
+
+  subgraph data["Data"]
+    puzzles["puzzles.js<br/>PUZZLES"]
+    elements["elements.js<br/>ELEMENTS, valence"]
+    progress["progress.js<br/>load, save, mark"]
+  end
+
+  storage[("localStorage")]
+  generate["scripts/generate.js"]
+  tests["tests/"]
+
+  html -.-> css
+  html -.-> main
+  main --> app
+  main -. "passes" .-> storage
+
+  app --> puzzles
+  app --> game
+  app --> board
+  app --> list
+  app --> progress
+
+  board --> elements
+  board -. "onChange(bond, ±1)" .-> app
+  board -. "reads state of" .-> game
+  list -. "onPick(index)" .-> app
+
+  game --> elements
+  game --> grid
+  solver --> elements
+  solver --> grid
+
+  progress -.-> storage
+
+  generate --> grid
+  generate --> solver
+  tests -. "check every Puzzle<br/>has one solution" .-> solver
+```
+
+`solver.js` is not part of the game itself: `scripts/generate.js` uses it to find new layouts, and the tests use it to check the Puzzles in `puzzles.js`.
+
 ## Development
 
 From this folder, with Node.js 22.12 or newer (an even-numbered release):
