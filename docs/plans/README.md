@@ -6,12 +6,12 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 
 | Plan | Status |
 |---|---|
+| [02: Components](02-components/README.md) | Draft |
 
 ## Backlog
 
 Contains features, slices or small tasks to work on, in order of importance.
 
-- Review the bond grid game against the spec ([review](../workflow/review.md) of the decisions and the code).
 - Deploy the puzzle that is build from the `main` branch to a production environment, GitHub Pages is only for testing.
 - More Puzzles, larger and harder; `scripts/generate.js` finds the layouts.
 - The halogens (F, Cl, Br, I; 1 Bond) and S (2 Bonds) as Elements, for more real Molecules: chloroform, vinyl chloride, thiols, CS₂. They play like H and O, so they add variety, not harder logic.
