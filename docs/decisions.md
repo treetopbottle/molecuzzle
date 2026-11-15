@@ -22,6 +22,8 @@ How the code and its data are built.
 
 - [0005: Progress lives in the browser](#0005)
 - [0006: ES modules, built into one HTML file](#0006)
+- [0011: Four components, wired in one place](#0011)
+- [0012: Schemas as JSON files, checked by the tests](#0012)
 
 ### Testing and publishing
 
@@ -30,6 +32,7 @@ How changes are checked and shared.
 - [0007: Vitest for rules and components, Playwright for the UI](#0007)
 - [0009: A GitHub Pages build per branch, from a gh-pages branch](#0009)
 - [0010: Failing checks block production, not branch builds](#0010)
+- [0013: Screenshots in the spec, compared by the end-to-end tests](#0013)
 
 <a id="0001"></a>
 ## 0001: A simplified valence model
@@ -140,3 +143,36 @@ The Pages workflow doesn't run the tests: every branch that builds is published.
 - **Why:** a branch build is continuous delivery: it is there to try a change, also one that doesn't pass its checks yet, while it is fixed. Production is what Players get, so only that has to pass every check.
 - **Cost:** a branch build can be broken. Nothing on GitHub enforces the checks yet: they are run by hand before merging, and a push straight to `main` is published without them.
 - **Alternatives:** run the tests in the Pages workflow and publish only passing builds: a change with a failing check can't be tried from a link. Run the checks on GitHub and require them for `main`: enforced, but with few or no pull requests not worth setting up yet.
+
+<a id="0011"></a>
+## 0011: Four components, wired in one place
+
+Accepted (2026-11-15)
+
+The code is four components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Data (`src/data/`: what is kept in the browser), UI (`src/ui/`: the page, what it shows and what the Player does) and the Glue (`src/app.js`, `src/main.js`). A component imports only from itself; the Glue imports from all of them, and hands each what it needs from the others as arguments. The rules produce no text: they give a status or a reason, and the UI words it. The spec has a file per component, except the Glue, which adds no behavior.
+
+- **Why:** each component can be read, specified and tested on its own, and replaced: the Glue gets the storage and the Puzzles passed in, so tests can pass their own.
+- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know.
+- **Alternatives:** the flat `src/` as it was: fewer files, but the boundaries were only in comments, and `app.js` mixed wiring with the panel's DOM. A framework or a container for dependency injection: more than the page needs ([0006](#0006)).
+
+<a id="0012"></a>
+## 0012: Schemas as JSON files, checked by the tests
+
+Accepted (2026-11-15)
+
+The schemas are JSON Schema files in `docs/spec/schemas/`, described in [schemas.md](spec/schemas.md). The tests check the data against them with Ajv: every Puzzle, the Board of a game, and the stored Progress.
+
+- **Why:** a schema that is checked stays true; a JSON file can be read by the tests, and by any tool in any language.
+- **Cost:** a development dependency; the schemas are outside the Markdown, so schemas.md links them instead of showing them.
+- **Alternatives:** schemas inline in schemas.md, as before: one place to read, but unchecked, or the tests have to parse Markdown. Checks written by hand in JavaScript: no dependency, but a second description of each format, which can drift from the schema.
+
+<a id="0013"></a>
+## 0013: Screenshots in the spec, compared by the end-to-end tests
+
+Accepted (2026-11-15)
+
+The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/spec/screenshots/`. Playwright compares the page with them (`toHaveScreenshot`), with a small tolerance. They are made, and after an intended change remade, with `npm run test:e2e -- --update-snapshots`, and looked at in the diff before a commit.
+
+- **Why:** the spec shows the look, which words can't, and a change in the look fails a test until its screenshot is remade on purpose.
+- **Cost:** a screenshot depends on the browser and its fonts (the page uses `system-ui`), so another Chromium or OS can differ beyond the tolerance, and they have to be remade there. Images in git, a new copy with every change.
+- **Alternatives:** Playwright's Docker image, for the same browser and fonts everywhere: needs Docker for the tests. A font inlined in the page: the same text everywhere, but a bigger file. Only accessibility snapshots, as before: they don't show the look.
