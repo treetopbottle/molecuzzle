@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { solve } from "../../src/solver.js";
+import { solve } from "../../../src/puzzle/solver.js";
 
 const atoms = list => list.map(([el, r, c]) => ({ el, r, c }));
 

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { loadProgress, saveProgress, markSolved, STORAGE_KEY } from "../../src/progress.js";
+import { loadProgress, saveProgress, markSolved, STORAGE_KEY } from "../../../src/storage/progress.js";
 
 function memoryStorage(initial = {}) {
   const data = { ...initial };
@@ -7,7 +7,7 @@ function memoryStorage(initial = {}) {
 }
 
 describe("Progress", () => {
-  test("Progress.01 saved in the format of the schema, and read back", () => {
+  test("Progress.01, Progress.03 saved in the format of the schema, and read back", () => {
     const storage = memoryStorage();
     let progress = loadProgress(storage);
     progress = markSolved(progress, "water");
@@ -23,7 +23,7 @@ describe("Progress", () => {
     expect(loadProgress(storage)).toEqual({ puzzles: { water: "solved" }, current: "formaldehyde" });
   });
 
-  test("Progress.01 unreadable or unknown values count as empty", () => {
+  test("Progress.03 unreadable or unknown values count as empty", () => {
     expect(loadProgress(memoryStorage({ [STORAGE_KEY]: "{not json" }))).toEqual({ puzzles: {}, current: null });
     expect(loadProgress(memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"water":"maybe","ammonia":"revealed"},"current":3}' })))
       .toEqual({ puzzles: {}, current: null });

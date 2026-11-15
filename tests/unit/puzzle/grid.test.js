@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { candidateBonds, crosses, connected } from "../../src/grid.js";
-import { createGame } from "../../src/game.js";
-import { PUZZLES } from "../../src/puzzles.js";
-import { draw } from "../helpers/draw.js";
+import { candidateBonds, crosses, connected } from "../../../src/puzzle/grid.js";
+import { createGame } from "../../../src/puzzle/game.js";
+import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { draw } from "../../helpers/draw.js";
 
 const atoms = list => list.map(([el, r, c]) => ({ el, r, c }));
 const glycine = PUZZLES.find(p => p.id === "glycine");

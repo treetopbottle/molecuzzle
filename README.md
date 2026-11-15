@@ -33,10 +33,14 @@ Domain entities, capitalized, each with an example the spec can reuse:
 ## Where things are
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): the working agreement
-- `src/`: the code, as ES modules: `game.js` (the rules), `grid.js`, `solver.js`, `puzzles.js`, `board.js` (the Board in SVG), `puzzle-list.js`, `progress.js`, `app.js` (wires the page) and `index.html` with `style.css`
+- `src/`: the code, as ES modules, in components ([0011](docs/decisions.md#0011)):
+  - `puzzle/`: the Puzzles and the rules: `game.js`, `grid.js`, `solver.js`, `puzzles.js`, `elements.js`
+  - `storage/`: what is kept in the browser: `progress.js`
+  - `ui/`: the page: `index.html` with `style.css`, `board.js` (the Board in SVG), `puzzle-list.js`
+  - `app.js` (wires the page) and `browser.js` (the entry point): the Glue
 - `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `publish-pages.sh` publishes a build to GitHub Pages
 - `.github/workflows/pages.yml`: builds and publishes every branch
-- `tests/`: `unit/` (Vitest: rules, components in happy-dom), `ui/` (Playwright, on the built page), `helpers/`
+- `tests/`: `unit/` (Vitest: `puzzle/`, `storage/` and `ui/`, the UI in happy-dom), `e2e/` (Playwright, on the built page), `helpers/`
 - `prototypes/`: try-outs of other puzzle modes, outside the spec
 - [docs/spec/](docs/spec/README.md): the specification for the software, with its schemas
 - [docs/decisions.md](docs/decisions.md): any decisions made about the project
@@ -49,38 +53,38 @@ Solid arrows are imports, dotted arrows are calls at runtime (the page loading f
 
 ```mermaid
 flowchart TD
-  subgraph page["Page"]
-    html["index.html"]
-    css["style.css"]
-    main["main.js<br/>(entry point)"]
+  subgraph glue["Glue"]
+    browser["browser.js<br/>(entry point)"]
+    app["app.js<br/>wires the page"]
   end
 
-  subgraph ui["UI (DOM)"]
-    app["app.js<br/>wires the page"]
+  subgraph ui["UI: ui/"]
+    html["index.html"]
+    css["style.css"]
     board["board.js<br/>Board in SVG"]
     list["puzzle-list.js<br/>puzzle buttons, formulas"]
   end
 
-  subgraph rules["Rules (no DOM)"]
+  subgraph puzzle["Puzzle: puzzle/ (no DOM)"]
+    puzzles["puzzles.js<br/>PUZZLES"]
     game["game.js<br/>Bond orders, undo, status"]
     grid["grid.js<br/>candidate Bonds, crossings, connected"]
     solver["solver.js<br/>finds solutions"]
+    elements["elements.js<br/>ELEMENTS, valence"]
   end
 
-  subgraph data["Data"]
-    puzzles["puzzles.js<br/>PUZZLES"]
-    elements["elements.js<br/>ELEMENTS, valence"]
+  subgraph storage["Storage: storage/"]
     progress["progress.js<br/>load, save, mark"]
   end
 
-  storage[("localStorage")]
+  local[("localStorage")]
   generate["scripts/generate.js"]
   tests["tests/"]
 
   html -.-> css
-  html -.-> main
-  main --> app
-  main -. "passes" .-> storage
+  html -.-> browser
+  browser --> app
+  browser -. "passes" .-> local
 
   app --> puzzles
   app --> game
@@ -98,7 +102,7 @@ flowchart TD
   solver --> elements
   solver --> grid
 
-  progress -.-> storage
+  progress -.-> local
 
   generate --> grid
   generate --> solver
@@ -113,7 +117,7 @@ Commands are run in this folder, with Node.js 22.12 or newer (an even-numbered r
 
 - Install: `npm install`, and once `npx playwright install chromium`, or set `CHROMIUM_PATH` to a Chromium already installed (e.g. `/usr/bin/chromium`).
 - Build: `npm run build` writes `dist/index.html`, the whole game in one file; open it in a browser, no server needed.
-- Test: `npm test` (unit and component tests), `npm run test:ui` (UI tests; builds first).
+- Test: `npm test` (unit and component tests), `npm run test:e2e` (end-to-end tests; builds first).
 - Check: `npm run check` builds and runs all tests.
 - New Puzzle: `node scripts/generate.js "<bonds>"` prints a layout with exactly one solution; see the comment at its top.
 

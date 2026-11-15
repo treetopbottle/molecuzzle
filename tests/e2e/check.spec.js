@@ -5,14 +5,14 @@ test.beforeEach(async ({ page }) => {
   await start(page);
 });
 
-test("Check.01, Check.02 the status line says what is left to do", async ({ page }) => {
+test("Messages.01 the status line says what is left to do", async ({ page }) => {
   await openPuzzle(page, 2);
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
   await clickBond(page, "1,1", "2,1");
   await expect(status(page)).toHaveText("3 atoms still need bonds.");
 });
 
-test("Check.03 every Atom complete, but in two pieces", async ({ page }) => {
+test("Messages.01 every Atom complete, but in two pieces", async ({ page }) => {
   await openPuzzle(page, 5); // Methanol: . H . / O C H / H H .
   await clickBond(page, "3,1", "3,2"); // H–H
   await clickBond(page, "2,1", "2,2", { times: 2 }); // O=C
@@ -22,7 +22,7 @@ test("Check.03 every Atom complete, but in two pieces", async ({ page }) => {
   await expect(status(page)).toHaveClass("warn");
 });
 
-test("Check.04 building the molecule solves the puzzle and names it", async ({ page }) => {
+test("Board.03, Messages.01, Panel.03, List.02, Progress.01 building the molecule solves the puzzle and names it", async ({ page }) => {
   await openPuzzle(page, 11);
   await build(page, PUZZLES[10]);
   await expect(status(page)).toHaveText("✓ Solved! It's Glycine.");
@@ -50,14 +50,14 @@ test("Check.04 building the molecule solves the puzzle and names it", async ({ p
   await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 13");
 });
 
-test("Check.04 the last puzzle has no Next puzzle button", async ({ page }) => {
+test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
   await openPuzzle(page, 13);
   await build(page, PUZZLES[12]);
   await expect(status(page)).toHaveText("✓ Solved! It's Alanine.");
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
-test("Help.01 Show solution asks first, then shows the molecule, still unsolved", async ({ page }) => {
+test("Input.04, Messages.01, Panel.01, List.02 Show solution asks first, then shows the molecule, still unsolved", async ({ page }) => {
   await openPuzzle(page, 9);
   page.once("dialog", dialog => dialog.dismiss());
   await page.getByRole("button", { name: "Show solution" }).click();
@@ -73,7 +73,7 @@ test("Help.01 Show solution asks first, then shows the molecule, still unsolved"
   await expect(page.locator("#score")).toHaveText("Solved 0 of 13");
 });
 
-test("Help.01 Show solution on a solved puzzle keeps it solved", async ({ page }) => {
+test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it solved", async ({ page }) => {
   await start(page, { puzzles: { urea: "solved" }, current: "urea" });
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
@@ -82,7 +82,7 @@ test("Help.01 Show solution on a solved puzzle keeps it solved", async ({ page }
   await expect(page.locator("#score")).toHaveText("Solved 1 of 13");
 });
 
-test("Help.02 after Reset, building it marks it solved", async ({ page }) => {
+test("Messages.01, Panel.01 after Reset, building it marks it solved", async ({ page }) => {
   await openPuzzle(page, 9);
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();

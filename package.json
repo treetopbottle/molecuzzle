@@ -5,8 +5,8 @@
   "scripts": {
     "build": "node scripts/build.js",
     "test": "vitest run",
-    "test:ui": "playwright test",
-    "check": "npm run build && npm test && npm run test:ui"
+    "test:e2e": "playwright test",
+    "check": "npm run build && npm test && npm run test:e2e"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",

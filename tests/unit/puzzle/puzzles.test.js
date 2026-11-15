@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
-import { PUZZLES } from "../../src/puzzles.js";
-import { ELEMENTS } from "../../src/elements.js";
-import { solve } from "../../src/solver.js";
-import { createGame } from "../../src/game.js";
-import { draw } from "../helpers/draw.js";
+import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { ELEMENTS } from "../../../src/puzzle/elements.js";
+import { solve } from "../../../src/puzzle/solver.js";
+import { createGame } from "../../../src/puzzle/game.js";
+import { draw } from "../../helpers/draw.js";
 
 const count = list => list.reduce((m, x) => ({ ...m, [x]: (m[x] ?? 0) + 1 }), {});
 const formulaCount = f => Object.fromEntries([...f.matchAll(/([A-Z][a-z]?)(\d*)/g)].map(([, el, n]) => [el, Number(n || 1)]));

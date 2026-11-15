@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { start, openPuzzle, build, PUZZLES, storedProgress } from "./helpers.js";
 
-test("Puzzle.02 a puzzle starts with no Bonds and its name hidden", async ({ page }) => {
+test("Panel.02, Board.04 a puzzle starts with no Bonds and its name hidden", async ({ page }) => {
   await start(page);
   await openPuzzle(page, 3);
   await expect(page.getByRole("complementary")).toMatchAriaSnapshot(`
@@ -26,7 +26,7 @@ test("Puzzle.02 a puzzle starts with no Bonds and its name hidden", async ({ pag
   `);
 });
 
-test("Puzzle.03 any puzzle opens from the list, or with previous and next", async ({ page }) => {
+test("Panel.01, List.01 any puzzle opens from the list, or with previous and next", async ({ page }) => {
   await start(page);
   await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 13");
   await expect(page.getByRole("button", { name: "Previous puzzle" })).toBeDisabled();
@@ -38,7 +38,7 @@ test("Puzzle.03 any puzzle opens from the list, or with previous and next", asyn
   await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 13");
 });
 
-test("Puzzle.04, Puzzle.05 the list and the badge show what is solved", async ({ page }) => {
+test("Panel.01, List.01, List.02 the list and the badge show what is solved", async ({ page }) => {
   await start(page, { puzzles: { water: "solved" }, current: "formaldehyde" });
   await expect(page.getByRole("list", { name: "Puzzles" })).toMatchAriaSnapshot(`
     - listitem:
@@ -57,7 +57,7 @@ test("Puzzle.04, Puzzle.05 the list and the badge show what is solved", async ({
   await expect(page.locator("#badge")).toHaveText("Unsolved");
 });
 
-test("Progress.01 solved puzzles and the open puzzle are kept over a reload", async ({ page }) => {
+test("Progress.01, Progress.03 solved puzzles and the open puzzle are kept over a reload", async ({ page }) => {
   await start(page);
   await build(page, PUZZLES[0]);
   await openPuzzle(page, 4);

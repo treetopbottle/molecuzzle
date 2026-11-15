@@ -1,10 +1,10 @@
 // Wires the page together: the open puzzle, its Board, the panel, the
 // puzzle list and Progress.
-import { PUZZLES } from "./puzzles.js";
-import { createGame, statusText } from "./game.js";
-import { createBoard } from "./board.js";
-import { renderPuzzleList, formulaNodes } from "./puzzle-list.js";
-import { loadProgress, saveProgress, markSolved } from "./progress.js";
+import { PUZZLES } from "./puzzle/puzzles.js";
+import { createGame, statusText } from "./puzzle/game.js";
+import { createBoard } from "./ui/board.js";
+import { renderPuzzleList, formulaNodes } from "./ui/puzzle-list.js";
+import { loadProgress, saveProgress, markSolved } from "./storage/progress.js";
 
 const BADGES = { solved: "✓ Solved" };
 

@@ -1,8 +1,8 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { createBoard } from "../../src/board.js";
-import { createGame } from "../../src/game.js";
-import { PUZZLES } from "../../src/puzzles.js";
+import { createBoard } from "../../../src/ui/board.js";
+import { createGame } from "../../../src/puzzle/game.js";
+import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 let svg;
@@ -15,7 +15,7 @@ const labels = selector => [...svg.querySelectorAll(selector)].map(e => e.getAtt
 const edge = name => [...svg.querySelectorAll(".edge")].find(e => e.getAttribute("aria-label").startsWith(name));
 
 describe("Board", () => {
-  test("Grid.01, Valence.01 names each Atom with what it needs, and each dotted line", () => {
+  test("Board.04, Board.02 names each Atom with what it needs, and each dotted line", () => {
     createBoard(svg, createGame(puzzle("formaldehyde")), { onChange() {} });
     expect(svg.getAttribute("aria-label")).toBe("Board, 3 by 2");
     expect(labels(".atom")).toMatchInlineSnapshot(`
@@ -36,7 +36,7 @@ describe("Board", () => {
     expect(svg.querySelectorAll(".edge .maybe")).toHaveLength(3);
   });
 
-  test("Bond.01, Bond.06, Bond.07 clicks, right-clicks and keys on a Bond go to onChange", () => {
+  test("Input.01, Input.02 clicks, right-clicks and keys on a Bond go to onChange", () => {
     const onChange = vi.fn();
     createBoard(svg, createGame(puzzle("water")), { onChange });
     const bond = edge("H 1,1 to O 1,2");
@@ -49,7 +49,7 @@ describe("Board", () => {
     expect(bond.getAttribute("role")).toBe("button");
   });
 
-  test("Valence.01, Valence.02 render shows Bonds, what Atoms still need, and complete Atoms", () => {
+  test("Board.01, Board.02 render shows Bonds, what Atoms still need, and complete Atoms", () => {
     const game = createGame(puzzle("formaldehyde"));
     const board = createBoard(svg, game, { onChange() {} });
     game.change(2, 1);
@@ -62,7 +62,7 @@ describe("Board", () => {
     expect(svg.querySelectorAll(".atom .badge text")[1].textContent).toBe("2");
   });
 
-  test("Check.04 a solved Board is marked solved, so its Atoms pulse", () => {
+  test("Board.03 a solved Board is marked solved, so its Atoms pulse", () => {
     const game = createGame(puzzle("water"));
     const board = createBoard(svg, game, { onChange() {} });
     game.change(0, 1);

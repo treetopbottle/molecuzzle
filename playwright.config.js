@@ -5,8 +5,8 @@ import { defineConfig } from "@playwright/test";
 const launchOptions = process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {};
 
 export default defineConfig({
-  testDir: "tests/ui",
-  globalSetup: "./tests/ui/build.js",
+  testDir: "tests/e2e",
+  globalSetup: "./tests/e2e/build.js",
   fullyParallel: true,
   reporter: process.env.CI ? "dot" : "list",
   use: { launchOptions, trace: "retain-on-failure" },

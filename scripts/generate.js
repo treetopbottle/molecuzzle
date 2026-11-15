@@ -1,12 +1,12 @@
 // Searches for a grid layout of a Molecule that makes a puzzle with exactly
-// one solution, and prints it as an entry for src/puzzles.js.
+// one solution, and prints it as an entry for src/puzzle/puzzles.js.
 //
 //   node scripts/generate.js "O1=C1 C1-O2 O2-H1 ..." [tries] [maxRows] [maxCols] [seed]
 //
 // Bonds are written between labelled Atoms: the label's letters are the
 // Element, `-` `=` `#` the Bond order.
-import { candidateBonds, crossings } from "../src/grid.js";
-import { solve } from "../src/solver.js";
+import { candidateBonds, crossings } from "../src/puzzle/grid.js";
+import { solve } from "../src/puzzle/solver.js";
 
 const [spec, tries = "20000", maxRows = "5", maxCols = "6", seed = "1"] = process.argv.slice(2);
 if (!spec) { console.error("usage: node scripts/generate.js \"<bonds>\" [tries] [maxRows] [maxCols] [seed]"); process.exit(1); }

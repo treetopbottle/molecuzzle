@@ -1,6 +1,6 @@
 // The Board: draws a game's Atoms and candidate Bonds as SVG, and turns
 // clicks and keys on a Bond into onChange(bond, +1 or -1).
-import { ELEMENTS } from "./elements.js";
+import { ELEMENTS } from "../puzzle/elements.js";
 
 const SVGNS = "http://www.w3.org/2000/svg";
 export const CELL = 84, PAD = 46, SCALE = 1.25, HIT = 22;
@@ -19,7 +19,7 @@ export const place = a => `${a.r + 1},${a.c + 1}`;
 
 /**
  * @param {SVGSVGElement} svg
- * @param {ReturnType<import("./game.js").createGame>} game
+ * @param {ReturnType<import("../puzzle/game.js").createGame>} game
  * @param {{ onChange: (bond: number, dir: 1 | -1) => void }} handlers
  */
 export function createBoard(svg, game, { onChange }) {

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { createGame, statusText, UNDO_LIMIT } from "../../src/game.js";
-import { PUZZLES } from "../../src/puzzles.js";
-import { draw, click, build, bondIndex } from "../helpers/draw.js";
+import { createGame, statusText, UNDO_LIMIT } from "../../../src/puzzle/game.js";
+import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { draw, click, build, bondIndex } from "../../helpers/draw.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 const status = game => statusText(game.status(), game.puzzle);

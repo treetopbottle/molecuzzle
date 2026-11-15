@@ -1,8 +1,8 @@
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { expect } from "@playwright/test";
-import { PUZZLES } from "../../src/puzzles.js";
-import { STORAGE_KEY } from "../../src/progress.js";
+import { PUZZLES } from "../../src/puzzle/puzzles.js";
+import { STORAGE_KEY } from "../../src/storage/progress.js";
 
 export { PUZZLES, STORAGE_KEY };
 export const GAME_URL = pathToFileURL(resolve("dist/index.html")).href;

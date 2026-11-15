@@ -106,7 +106,7 @@ The code is plain JavaScript in ES modules in `src/`; `npm run build` bundles th
 
 Accepted (2026-11-11)
 
-Rules and components (`board.js`, `puzzle-list.js` in happy-dom) are tested with Vitest; the built page with Playwright in Chromium, at 1280×800 and, for layout, 390×844. Expected results are inline snapshots: the Board drawn as text (`tests/helpers/draw.js`) and accessibility snapshots of the page. A test's name starts with the rule ids it covers.
+Rules and components (`src/ui/board.js`, `src/ui/puzzle-list.js` in happy-dom) are tested with Vitest; the built page with Playwright in Chromium, at 1280×800 and, for layout, 390×844. Expected results are inline snapshots: the Board drawn as text (`tests/helpers/draw.js`) and accessibility snapshots of the page. A test's name starts with the rule ids it covers.
 
 - **Why:** inline snapshots read like the spec's examples; testing the page through roles and names also keeps the Board usable with a screen reader and keys.
 - **Cost:** two test runners; Playwright needs a Chromium download or `CHROMIUM_PATH`.
@@ -117,7 +117,7 @@ Rules and components (`board.js`, `puzzle-list.js` in happy-dom) are tested with
 
 Accepted (2026-11-11)
 
-A solver (`src/solver.js`) counts the solutions of a Grid; a test checks each Puzzle has exactly one, and that it is the one Show solution shows. Any Board where every Atom is complete and all join up is then that solution, so the game doesn't compare Molecules.
+A solver (`src/puzzle/solver.js`) counts the solutions of a Grid; a test checks each Puzzle has exactly one, and that it is the one Show solution shows. Any Board where every Atom is complete and all join up is then that solution, so the game doesn't compare Molecules.
 
 - **Why:** a logic puzzle needs one answer to reason towards; with it, the game never has to match the Board against a Molecule.
 - **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions.
