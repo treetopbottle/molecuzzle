@@ -15,7 +15,6 @@ What the Player does and what the rules are.
 - [0003: All Puzzles are open](#0003)
 - [0004: Show solution doesn't solve a Puzzle](#0004)
 - [0008: Every Puzzle has exactly one solution](#0008)
-- [0014: Only the open Puzzle's Board is kept](#0014) (superseded by 0015)
 - [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 
 ### Technical
@@ -179,24 +178,13 @@ The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/s
 - **Cost:** a screenshot depends on the browser and its fonts (the page uses `system-ui`), so another Chromium or OS can differ beyond the tolerance, and they have to be remade there. Images in git, a new copy with every change.
 - **Alternatives:** Playwright's Docker image, for the same browser and fonts everywhere: needs Docker for the tests. A font inlined in the page: the same text everywhere, but a bigger file. Only accessibility snapshots, as before: they don't show the look.
 
-<a id="0014"></a>
-## 0014: Only the open Puzzle's Board is kept
-
-Superseded by [0015](#0015)
-
-Progress keeps the Bonds of the open Puzzle, and whether they show the solution, after every change; not the Boards of other Puzzles, and not the undo history.
-
-- **Why:** a Player whose browser closes or crashes goes on where they were. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)).
-- **Cost:** opening another Puzzle drops the Board of the one left; after a reload there is nothing to undo.
-- **Alternatives:** a Board per Puzzle: coming back to a Puzzle keeps its Bonds, but more to store, and to clear for a Player who wants to start again. Keeping the undo history too: up to 300 Boards stored, rewritten on every change.
-
 <a id="0015"></a>
 ## 0015: Every Puzzle in progress is kept, until it is solved or reset
 
 Accepted (2026-11-15)
 
-Progress keeps, for every Puzzle in progress, its Bonds, whether the solution was shown, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone. Show solution now writes to Progress, but never a solved mark: the Progress of [0004](#0004) is the solved marks. Each save reads what is stored first, and changes only what its page changed.
+Progress keeps, for every Puzzle in progress, its Bonds, whether the solution was shown, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone. Show solution now writes to Progress, but never a solved mark: the Progress of [0004](#0004) is the solved marks.
 
 - **Why:** a Player can leave any Puzzle, or lose the browser, and come back to it as they left it, Undo included. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)). Once a Puzzle is solved its Board tells nothing more, and Reset is how a Player starts again, so both end what is kept.
-- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 300 Boards per Puzzle in the browser, all read and rewritten on every change, and when the storage is full the Puzzles in progress aren't kept; a Puzzle left half done stays there until it is solved or reset. A build without this, such as `main` before it is merged, drops the Puzzles in progress on its next save, as the origin is shared ([0009](#0009)).
-- **Alternatives:** only the open Puzzle's Board ([0014](#0014)): less to store, but leaving a Puzzle loses it, and Undo after a reload. Boards without the undo history: smaller, but nothing to undo after coming back. Reset that Undo brings back, as before: then only solving ends the history. Reset that Undo brings back until the page closes, without keeping that: less final, but the Board after a reload isn't the one before it. Saving the page's whole Progress, as before: simpler, but two tabs undo each other's Progress on every change.
+- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 300 Boards per Puzzle in the browser, all rewritten on every change, and a full storage keeps nothing; a Puzzle left half done stays there until it is solved or reset. With the game in two tabs, the last one to save wins. A build without this, such as `main` before it is merged, drops the Puzzles in progress on its next save, as the origin is shared ([0009](#0009)).
+- **Alternatives:** only the open Puzzle's Board: less to store, but leaving a Puzzle loses it, and Undo after a reload. Boards without the undo history: smaller, but nothing to undo after coming back. Reset that Undo brings back, as before: then only solving ends the history. Reset that Undo brings back until the page closes, without keeping that: less final, but the Board after a reload isn't the one before it. Saves that read what is stored first and change only what their page changed: two tabs keep each other's Progress, but more code for a rare case.
