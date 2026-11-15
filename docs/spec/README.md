@@ -2,7 +2,13 @@
 
 The functional specification of Molecuzzle from a user perspective, using examples for further clarification. Roles and domain entities can be found in the [README](../../README.md); the reasons are in the [decisions](../decisions.md).
 
-Feature specification can be found in [features.md](./features.md). Each feature lists its rules. A rule has an id, `<Feature>.<NN>`, and an example. Each rule is tested by a unit test or a UI test whose name starts with its id.
+The features are in one file per component ([0011](../decisions.md#0011)):
+
+- [puzzle.md](puzzle.md): the Puzzles and the rules of the game
+- [data.md](data.md): what is kept in the browser, where, how and who can read it
+- [ui.md](ui.md): what the Player sees and does, with screenshots
+
+The Glue that wires them into the game adds no behavior, so it has no features. Each feature lists its rules. A rule has an id, `<Feature>.<NN>`, unique over all files, and an example. Each rule is tested by a unit, component or end-to-end test whose name starts with its id.
 
 A general narrative is used to describe a typical usage flow, see [narratives.md](./narratives.md).
 
@@ -14,7 +20,7 @@ Left out: building freely without a Grid, recognising other Molecules (Isomers),
 
 ## Examples
 
-The examples fit inline. The format of the stored Progress is in [schemas.md](schemas.md#progress).
+The examples fit inline, or are screenshots. The formats of a Puzzle, a Board and the stored Progress are in [schemas.md](schemas.md).
 
 Boards in examples are drawn as text, as the unit tests do: Atoms by Element at the Grid points, `·` a Dotted line, `─ │` single, `═ ║` double, and `≡ ⦀` triple Bonds. Places are written "row,column", counted from 1. Glycine, with no Bonds and solved:
 

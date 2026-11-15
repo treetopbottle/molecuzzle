@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "progress.schema.json",
+  "title": "Progress",
+  "type": "object",
+  "properties": {
+    "puzzles": {
+      "type": "object",
+      "description": "Per Puzzle, by its id",
+      "additionalProperties": { "enum": ["solved"] }
+    },
+    "current": { "type": "string", "description": "The id of the open Puzzle" }
+  }
+}

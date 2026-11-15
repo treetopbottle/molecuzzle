@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "board.schema.json",
+  "title": "Board",
+  "description": "The Bonds of a Puzzle, by first Atom, then second",
+  "type": "array",
+  "items": {
+    "type": "array",
+    "prefixItems": [
+      { "type": "integer", "minimum": 0, "description": "The first Atom, its index in the Puzzle's atoms" },
+      { "type": "integer", "minimum": 0, "description": "The second Atom, a higher index" },
+      { "enum": [1, 2, 3], "description": "Single, double or triple" }
+    ],
+    "items": false,
+    "minItems": 3
+  }
+}

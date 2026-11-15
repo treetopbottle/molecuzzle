@@ -26,6 +26,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
 - Molecule: Atoms are connected by Bonds into one molecule; Water H2O
 - Grid: the rows and columns of points the Atoms of a Puzzle sit on; Glycine's Grid of 4 rows and 5 columns
 - Dotted line: where a Bond can go, from an Atom to the nearest Atom in the same row or column; the dotted line from O 1,2 down to H 4,2 in Glycine
+- Board: a Puzzle being played, with the Bonds the Player has made; Formaldehyde with only C═O
 - Bond: a link along a Dotted line between two Atoms, single, double or triple; the C=O double Bond in Formaldehyde
 - Progress: which Puzzles are solved, and the open Puzzle; stored in the browser
 
