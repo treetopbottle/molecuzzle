@@ -54,6 +54,7 @@ And the Dotted lines and Bonds are "H 1,1 to C 2,1: no bond", "C 2,1 to H 2,2: n
 - Keys: Tab reaches each Dotted line and Bond; Enter or Space acts as a click, Backspace, Delete or - as a right-click; Ctrl+Z or Cmd+Z as Undo (Input.02)
 - Actions: Undo ([Bond.08](puzzle.md#bond)), disabled with nothing to undo; Reset ([Bond.09](puzzle.md#bond)), disabled with no Bonds; and Show solution (Input.03)
 - Confirm: Show solution asks "Show the solution?", and only after OK shows it ([Help.01](puzzle.md#help)) (Input.04)
+- Confirm reset: Reset asks "Reset this puzzle? Its bonds and undo history are removed.", and only after OK resets it, since that can't be undone ([Bond.09](puzzle.md#bond)) (Input.05)
 
 Example (Input.01, Input.02):
 
@@ -65,6 +66,16 @@ When the Player tabs to it and presses Delete
 Then it is C─N
 When the Player presses Ctrl+Z
 Then it is C═N
+```
+
+Example (Input.05):
+
+```
+Given Puzzle 2, Ammonia, with H 1,1 to N 2,1
+When the Player clicks Reset and cancels
+Then H 1,1 to N 2,1 is still there, and Undo is enabled
+When the Player clicks Reset and confirms
+Then there are no Bonds, and Undo is disabled
 ```
 
 Example (Input.03), with Bonds and something to undo:

@@ -22,7 +22,7 @@ Example: Puzzle 1.
 
 [board.schema.json](schemas/board.schema.json): the Bonds of a Puzzle, as `[atom, atom, order]` ([Bond.11](puzzle.md#bond)). Atoms are indexes into the Puzzle's `atoms`, the lower first, and the Bonds are in order of their first Atom, then their second. Also: each pair of Atoms is a Dotted line of the Grid, and appears once.
 
-It is only the Bonds, the same for a Puzzle's solution as for a Board being played: the undo history isn't kept ([0014](../decisions.md#0014)), and whether the solution is shown is kept next to it, in [Progress](#progress).
+It is only the Bonds, the same for a Puzzle's solution as for a Board being played: whether the solution is shown, and the undo history, are kept next to it, in [Progress](#progress).
 
 Example: Water with both Bonds, the solution above.
 
@@ -32,15 +32,16 @@ Example: Water with both Bonds, the solution above.
 
 ## Progress
 
-[progress.schema.json](schemas/progress.schema.json): stored in the browser ([Progress.03](data.md#progress)). Every field is optional. `board` and `revealed` belong to the `current` Puzzle ([Progress.05](data.md#progress)). A Puzzle's id is its `id` in `src/puzzle/puzzles.js`, e.g. `acetic-acid`.
+[progress.schema.json](schemas/progress.schema.json): stored in the browser ([Progress.03](data.md#progress)). Every field is optional. `boards` has an entry only for a Puzzle in progress ([Progress.05](data.md#progress)), and each Board in it is one of that Puzzle's. A Puzzle's id is its `id` in `src/puzzle/puzzles.js`, e.g. `acetic-acid`.
 
-Example: Puzzles 1 and 2 solved, and Puzzle 3 open, with C═O.
+Example: Puzzles 1 and 2 solved, and Puzzle 3 open, with C═O made in two clicks.
 
 ```json
 {
   "puzzles": { "water": "solved", "ammonia": "solved" },
   "current": "formaldehyde",
-  "board": [[1, 3, 2]],
-  "revealed": false
+  "boards": {
+    "formaldehyde": { "bonds": [[1, 3, 2]], "revealed": false, "undo": [[], [[1, 3, 1]]] }
+  }
 }
 ```

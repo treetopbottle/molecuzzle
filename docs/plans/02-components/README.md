@@ -10,14 +10,13 @@ Covers every rule of the spec, now split into [puzzle.md](../../spec/puzzle.md),
 
 - Puzzle: Puzzle.01–03, Generate.01–02, Grid.01–02, Bond.01–06, Bond.08–11, Valence.01–02, Check.01–04, Help.01–02
 - Data: Progress.01–05
-- UI: Page.01, Layout.01–02, Board.01–04, Input.01–04, Messages.01–02, Panel.01–04, List.01–02
+- UI: Page.01, Layout.01–02, Board.01–04, Input.01–05, Messages.01–02, Panel.01–04, List.01–02
 
-Most of them describe what the game does now, so their tests exist and get the new ids (step 1), or are added and pass at once (step 2). New are: the reasons and statuses without text, the schemas, the generator as a module, the Progress store, the panel and the UI as components, the Glue with its dependencies passed in, the open Puzzle's Board kept over a reload (the review's "UI state"), and the screenshots.
+Most of them describe what the game does now, so their tests exist and get the new ids (step 1), or are added and pass at once (step 2). New are: the reasons and statuses without text, the schemas, the generator as a module, the Progress store, the panel and the UI as components, the Glue with its dependencies passed in, every Puzzle in progress kept with its undo history (the review's "UI state"), and the screenshots.
 
 Left out:
 
-- Anything else new for the Player: the game plays and looks as it does now. Progress keeps its key and only gains two optional fields, so no Player loses it.
-- The Boards of other Puzzles, and the undo history, over a reload ([0014](../../decisions.md#0014)).
+- Anything else new for the Player: the game plays and looks as it does now, except that Reset and solving end the undo history ([0015](../../decisions.md#0015)). Progress keeps its key and only gains an optional field, so no Player loses it.
 - The same fonts for screenshots on every machine ([0013](../../decisions.md#0013) has the cost).
 
 ## Design
@@ -42,13 +41,13 @@ docs/spec/schemas/*.schema.json, docs/spec/screenshots/*.png
 Interfaces that change:
 
 - `puzzle/elements.js`: `ELEMENTS` has only `valence` per symbol; the name, colours and size move to `ui/elements.js`.
-- `puzzle/game.js`: `createGame(puzzle, { board, revealed } = {})` starts from a Board, or with no Bonds if it can't be on the Grid. `change(k, dir)` returns `{ changed: true }`, `{ changed: false }`, `{ changed: false, reason: "full", atom }` or `{ changed: false, reason: "crossing" }`, with no message. New: `board()` returns the Bonds as a Board, and `revealed` whether they show the solution. `statusText` moves to `ui/messages.js`.
+- `puzzle/game.js`: `createGame(puzzle, { bonds, revealed, undo } = {})` starts where the Puzzle was left, or with no Bonds and nothing to undo if a Board can't be on the Grid; `saved()` returns `{ bonds, revealed, undo }` while the Puzzle is in progress, and `null` otherwise. `reset()` and solving clear the history. `change(k, dir)` returns `{ changed: true }`, `{ changed: false }`, `{ changed: false, reason: "full", atom }` or `{ changed: false, reason: "crossing" }`, with no message. New: `board()` returns the Bonds as a Board. `statusText` moves to `ui/messages.js`.
 - `puzzle/generate.js`, new: `findLayout(bonds, { tries, maxRows, maxCols, seed })` returns `{ rows, cols, atoms, solution }` as in a Puzzle: `atoms` as `[el, r, c]` in reading order, `solution` a Board. It returns `null` if no try has exactly one solution, and throws `can't read <bond>`, text for the developer, not the Player. The search and the reordering move here from `scripts/generate.js`, which keeps reading the arguments and printing the result.
 - `data/progress.js`: `createProgressStore(storage)` returns `{ load(), save(progress) }`, in place of `loadProgress` and `saveProgress`; `markSolved` and `STORAGE_KEY` stay.
 - `ui/messages.js`, new: `statusText(status, puzzle)` and `reasonText(result, atoms)`.
 - `ui/panel.js`, new: `renderPanel(panel, view)` fills the panel, the rules included, which leave `index.html`; `formulaNodes` moves here from `puzzle-list.js`.
-- `ui/ui.js`, new: `createUi(doc, handlers, { confirm })` returns `{ open(game), render(view), say(result) }`. It owns the page: the Board, the panel, the list, the status line, the message, the buttons and Ctrl+Z; `say` words a `change` result with `reasonText`. `handlers` is `{ onChange(k, dir), onOpen(index), onUndo(), onReset(), onSolve() }`; `onSolve` comes only after the Player confirms. `view` is `{ puzzles, index, progress, status, done, canUndo, hasBonds }`.
-- `app.js`: `startApp({ puzzles, createGame, store, createUi })`, with no DOM. After every change, and on opening a Puzzle, it saves Progress with the open Puzzle's `board` and `revealed`; on start, it passes them to `createGame`. `main.js` reads `localStorage` in a `try`, as now, and passes `PUZZLES`, `createGame`, `createProgressStore(storage)` and `h => createUi(document, h)`.
+- `ui/ui.js`, new: `createUi(doc, handlers, { confirm })` returns `{ open(game), render(view), say(result) }`. It owns the page: the Board, the panel, the list, the status line, the message, the buttons and Ctrl+Z; `say` words a `change` result with `reasonText`. `handlers` is `{ onChange(k, dir), onOpen(index), onUndo(), onReset(), onSolve() }`; `onSolve`, and from step 9 `onReset`, come only after the Player confirms. `view` is `{ puzzles, index, progress, status, done, canUndo, hasBonds }`.
+- `app.js`: `startApp({ puzzles, createGame, store, createUi })`, with no DOM. After every change it saves Progress with the open Puzzle's `saved()` in `boards`, or without its entry when that is `null`; on opening a Puzzle it passes its entry to `createGame`. `main.js` reads `localStorage` in a `try`, as now, and passes `PUZZLES`, `createGame`, `createProgressStore(storage)` and `h => createUi(document, h)`.
 - `scripts/build.js` reads `src/ui/index.html` and `src/ui/style.css`; the entry stays `src/main.js`. `index.html` keeps `<link href="style.css">` and `<script src="main.js">` as the strings the build replaces, with a comment saying so.
 - `npm run test:ui` becomes `npm run test:e2e`; `ajv` is a new development dependency, used through `ajv/dist/2020`.
 
@@ -82,9 +81,9 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 
 ## Steps
 
-1. **Move into components.** Move the files as in Design, with `git mv`, and fix the imports, `scripts/build.js`, `scripts/generate.js`, the Vitest and Playwright configs and `package.json`. Move the tests the same way, and rename them by the table above. Update the README ("Where things are", the diagram, `test:e2e` under Development) and the paths named in decisions 0007 and 0008, and check that every path the spec and decisions name exists. No behavior or interface changes; the checks pass.
-2. **Tests for the rules without one.** Puzzle.02, Valence.02, Bond.10, Board.04, Messages.01.
-   - (a) Tests: a new game has no Bonds; an Atom with all its Bonds is complete, in `tests/unit/puzzle/`; Bond.10 also while the solution is shown, and with Reset; the names of the Board and its Atoms; the status line in green for revealed, in orange for pieces.
+1. **Move into components.** Move the files as in Design, with `git mv`, and fix the imports, `scripts/build.js`, `scripts/generate.js`, the Vitest and Playwright configs and `package.json`. Move the tests the same way, and rename them by the table above. Update the README ("Where things are", the diagram, `test:e2e` under Development) and the paths named in decisions 0007 and 0008, and check that every path the spec and decisions name exists. No behavior or interface changes; the checks pass. The tests of Bond.08–10 keep the old behavior, Undo after Reset and after solving, until step 9.
+2. **Tests for the rules without one.** Puzzle.02, Valence.02, Board.04, Messages.01.
+   - (a) Tests: a new game has no Bonds; an Atom with all its Bonds is complete, in `tests/unit/puzzle/`; the names of the Board and its Atoms; the status line in green for revealed, in orange for pieces.
    - (b) Nothing to implement: these rules describe the game as it is, so the tests pass at once.
 3. **Rules without text.** Bond.04, Bond.05, Check.01–04, Help.01, Messages.01, Messages.02.
    - (a) Tests: `change` gives `full` with the Atom, or `crossing`, with no message; `statusText` and `reasonText` in `tests/unit/ui/messages.test.js` give the texts of ui.md, with the Element's name from `ui/elements.js`. The statuses are kinds already: those tests only move and pass at once.
@@ -104,9 +103,9 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 8. **The UI as one component, and the Glue.** Progress.01, List.01–02, Input.03, Input.04.
    - (a) Tests in happy-dom: `createUi`, for the buttons and Ctrl+Z calling their handlers, Undo and Reset disabled as in Input.03, Show solution asking first (Input.04), and the list and score (List.01–02). In `tests/unit/app.test.js`, `startApp` with a fake store and UI: it opens the stored Puzzle, saves the open Puzzle, and marks a solved one (Progress.01).
    - (b) Implementation: `ui/ui.js`; `app.js` takes its dependencies and has no DOM; `main.js` makes them. The README's diagram follows.
-9. **Keep the open Puzzle's Board.** Puzzle.03, Progress.05.
-   - (a) Tests: `createGame` with a Board, and with `revealed`, starts from it with nothing to undo; with a Board that can't be on the Grid (the Puzzle.03 examples, crossing Bonds, too many Bonds on an Atom), with no Bonds. In `tests/unit/app.test.js`: the fake store gets `board` and `revealed` after a change, Show solution and opening a Puzzle, and a stored Board is passed to `createGame` on start. End-to-end: both Progress.05 examples, and the stored value of the Progress.01 example.
-   - (b) Implementation: `createGame`'s options and `revealed`, with the checks against the Grid; saving and restoring in `app.js`.
+9. **Keep every Puzzle in progress.** Puzzle.03, Bond.08–10, Progress.05, Input.05.
+   - (a) Tests: `createGame` with `bonds`, `revealed` and `undo` starts where it was left, and Undo goes back through the history; with a Board, or one in the history, that can't be on the Grid (the Puzzle.03 examples, crossing Bonds, too many Bonds on an Atom), with no Bonds and nothing to undo. Reset and solving leave nothing to undo, and `saved()` is `null` after them, and on a new game. Undo still works while the solution is shown. The old tests of Undo after Reset and after solving change to match. In `tests/unit/app.test.js`, with a fake store: a change saves the open Puzzle's entry in `boards`, solving or Reset removes it, and opening a Puzzle passes its entry to `createGame`. End-to-end: the three Progress.05 examples, a stored value that is a valid Progress, and that the stored value of the Progress.01 example has no `boards`. `createUi`: Reset asks first, and cancelling changes nothing (Input.05); the end-to-end tests that click Reset accept its dialog.
+   - (b) Implementation: `createGame`'s options, the checks against the Grid, `saved()`, and the history cleared on Reset and solving; saving and restoring in `app.js`; the confirm for Reset in `ui/ui.js`.
 10. **Screenshots.** Page.01, Layout.01, Board.01–03, Input.03, Panel.02–04, List.01.
    - (a) Tests in `tests/e2e/screenshots.spec.js`, one per screenshot in ui.md, with `snapshotPathTemplate` pointing at `docs/spec/screenshots/`; the phone one in the phone project. They fail because the screenshots don't exist yet. Board.03: with reduced motion, the solved Atoms don't animate; this already holds, so it passes at once.
    - (b) Implementation: make the screenshots with `npm run test:e2e -- --update-snapshots`, look at each one against ui.md, and commit them.

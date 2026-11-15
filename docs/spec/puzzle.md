@@ -8,7 +8,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 - Puzzles: there are 13, in the order of the table below. Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
-- Go on: a Puzzle can also start from a [Board](schemas.md#board), and whether it shows the solution, with nothing to undo. A Board that can't be on its Grid starts it with no Bonds: a Bond that isn't on a Dotted line, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
+- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether it shows the solution, and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds and nothing to undo: a Bond that isn't on a Dotted line, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
 
 | # | Molecule | Formula |
 |---|---|---|
@@ -56,10 +56,12 @@ Bonds are written between labelled Atoms: the label's letters are the Element, `
 Example (Puzzle.03):
 
 ```
-Given Puzzle 4, Hydrogen cyanide, and the Board [[0, 1, 1]]
-Then it starts with H─C·N, and nothing to undo
+Given Puzzle 4, Hydrogen cyanide, the Board [[0, 1, 1]] and the undo history [[]]
+Then it starts with H─C·N
+When the last change is undone
+Then it is H·C·N
 Given the Board [[0, 2, 1]] instead, which isn't on a Dotted line
-Then it starts with H·C·N
+Then it starts with H·C·N, and nothing to undo
 ```
 
 Example (Generate.01):
@@ -117,9 +119,9 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 - Full: stronger on a Dotted line where an Atom has no room makes no Bond; the reason is `full`, with that Atom (Bond.04)
 - No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing` (Bond.05)
 - Weaker: weaker on a Bond makes it single to none, double to single, triple to double; on a Dotted line it does nothing (Bond.06)
-- Undo restores the Bonds as they were before the last change, up to 300 changes back in this Puzzle; with nothing to undo it does nothing (Bond.08)
-- Reset removes every Bond, as one change that Undo brings back; with no Bonds it does nothing (Bond.09)
-- Done: while the Board is solved or shows the solution, changes don't change Bonds; Undo and Reset still work (Bond.10)
+- Undo restores the Bonds as they were before the last change, up to 300 changes back in this Puzzle, since it was last reset or solved; with nothing to undo it does nothing (Bond.08)
+- Reset removes every Bond and the undo history; with no Bonds it does nothing ([0015](../decisions.md#0015)) (Bond.09)
+- Done: while the Board is solved or shows the solution, changes don't change Bonds; Reset still works, and Undo while it shows the solution. Solving removes the undo history (Bond.10)
 - State: the Bonds are a [Board](schemas.md#board) (Bond.11)
 
 Example (Bond.01, Bond.02, Bond.03):
@@ -157,11 +159,19 @@ Then it is C═N, then C─N
 Example (Bond.08, Bond.09):
 
 ```
-Given Puzzle 2, Ammonia, with Bonds H 1,1 to N 2,1 and N 2,1 to H 3,1
-When it is reset
-Then there are no Bonds
+Given Puzzle 2, Ammonia, with Bonds H 1,1 to N 2,1 and then N 2,1 to H 3,1
 When the last change is undone
-Then both Bonds are back
+Then only H 1,1 to N 2,1 is left
+When it is reset
+Then there are no Bonds, and nothing to undo
+```
+
+Example (Bond.10):
+
+```
+Given Puzzle 1, Water, with H─O
+When O 1,2 to H 2,2 is bonded
+Then it is solved, and there is nothing to undo
 ```
 
 Example (Bond.11):

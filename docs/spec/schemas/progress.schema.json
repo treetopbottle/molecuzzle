@@ -17,13 +17,32 @@
       "type": "string",
       "description": "The id of the open Puzzle"
     },
-    "board": {
-      "$ref": "board.schema.json",
-      "description": "The Bonds of the open Puzzle"
-    },
-    "revealed": {
-      "type": "boolean",
-      "description": "Whether the board shows the solution"
+    "boards": {
+      "type": "object",
+      "description": "Per Puzzle in progress, by its id",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "bonds"
+        ],
+        "properties": {
+          "bonds": {
+            "$ref": "board.schema.json"
+          },
+          "revealed": {
+            "type": "boolean",
+            "description": "Whether the Bonds show the solution"
+          },
+          "undo": {
+            "type": "array",
+            "maxItems": 300,
+            "items": {
+              "$ref": "board.schema.json"
+            },
+            "description": "The Boards before each change, oldest first"
+          }
+        }
+      }
     }
   }
 }

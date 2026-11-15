@@ -21,7 +21,8 @@ What the Player does and what the rules are.
 How the code and its data are built.
 
 - [0005: Progress lives in the browser](#0005)
-- [0014: Only the open Puzzle's Board is kept](#0014)
+- [0014: Only the open Puzzle's Board is kept](#0014) (superseded by 0015)
+- [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 - [0006: ES modules, built into one HTML file](#0006)
 - [0011: Four components, wired in one place](#0011)
 - [0012: Schemas as JSON files, checked by the tests](#0012)
@@ -181,10 +182,21 @@ The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/s
 <a id="0014"></a>
 ## 0014: Only the open Puzzle's Board is kept
 
-Accepted (2026-11-15)
+Superseded by [0015](#0015)
 
 Progress keeps the Bonds of the open Puzzle, and whether they show the solution, after every change; not the Boards of other Puzzles, and not the undo history.
 
 - **Why:** a Player whose browser closes or crashes goes on where they were. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)).
 - **Cost:** opening another Puzzle drops the Board of the one left; after a reload there is nothing to undo.
 - **Alternatives:** a Board per Puzzle: coming back to a Puzzle keeps its Bonds, but more to store, and to clear for a Player who wants to start again. Keeping the undo history too: up to 300 Boards stored, rewritten on every change.
+
+<a id="0015"></a>
+## 0015: Every Puzzle in progress is kept, until it is solved or reset
+
+Accepted (2026-11-15)
+
+Progress keeps, for every Puzzle in progress, its Bonds, whether they show the solution, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone.
+
+- **Why:** a Player can leave any Puzzle, or lose the browser, and come back to it as they left it, Undo included. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)). Once a Puzzle is solved its Board tells nothing more, and Reset is how a Player starts again, so both end what is kept.
+- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 300 Boards per Puzzle in the browser, all rewritten on every change; a Puzzle left half done stays there until it is solved or reset.
+- **Alternatives:** only the open Puzzle's Board ([0014](#0014)): less to store, but leaving a Puzzle loses it, and Undo after a reload. Boards without the undo history: smaller, but nothing to undo after coming back. Reset that Undo brings back, as before: then nothing ever ends the history.
