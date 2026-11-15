@@ -10,7 +10,7 @@ What the game keeps, where and how, and who can read it ([0005](../decisions.md#
 - Who: only the Player's browser has it: the page sends nothing over the network. Pages from the same origin share it, so on GitHub Pages the build of `main` and every branch build read and write the same Progress (Progress.04)
 - In progress: a Puzzle with Bonds or something to undo, whose status isn't solved ([Check.04](puzzle.md#check)), is in progress. After every change, Undo, Reset and Show solution, it keeps its Bonds, whether the solution was shown ([Help.01](puzzle.md#help)), and its undo history, so after opening another Puzzle, a reload, a closed browser or a crash, the Player goes on where they were ([Puzzle.03](puzzle.md#puzzle)). Solving or resetting it ([Bond.09](puzzle.md#bond), [Bond.10](puzzle.md#bond)) removes what was kept, so it opens again with no Bonds ([0015](../decisions.md#0015)) (Progress.05)
 
-Example (Progress.01):
+Example (Progress.01), solved Puzzles and the open one are kept over a reload:
 
 ```
 Given a new browser
@@ -19,22 +19,23 @@ Then Puzzle 4 is open, with no Bonds, and Puzzle 1 is solved
 And the browser stores {"puzzles":{"water":"solved"},"current":"hydrogen-cyanide"}
 ```
 
-Example (Progress.03):
+Example (Progress.03), wrong data is left out, and the rest still loads:
 
 ```
 Given the browser stores {"puzzles":{"water":"solved","urea":"seen"},"current":7}
 When the game opens
-Then only Puzzle 1 is solved, and Puzzle 1 is open
+Then only Puzzle 1 is solved: "seen" isn't a state, so Urea's entry is left out
+And Puzzle 1 is open: 7 isn't a Puzzle's id, so current is left out
 ```
 
-Example (Progress.04):
+Example (Progress.04), nothing leaves the browser:
 
 ```
 Given the game is opened, a Puzzle solved and the page reloaded
 Then the only request the page made is for the page itself
 ```
 
-Example (Progress.05):
+Example (Progress.05), a Puzzle in progress, Undo included, is kept after the browser closes:
 
 ```
 Given Puzzle 4, with H─C·N, and then Puzzle 5 open
