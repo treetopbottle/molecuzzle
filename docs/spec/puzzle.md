@@ -119,7 +119,7 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 - Full: stronger on a Dotted line where an Atom has no room makes no Bond; the reason is `full`, with that Atom (Bond.04)
 - No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing` (Bond.05)
 - Weaker: weaker on a Bond makes it single to none, double to single, triple to double; on a Dotted line it does nothing (Bond.06)
-- Undo restores the Bonds as they were before the last change, up to 300 changes back in this Puzzle, since it was last reset or solved; with nothing to undo it does nothing (Bond.08)
+- Undo restores the Bonds as they were before the last change, up to 100 changes back in this Puzzle, since it was last reset or solved: with each change past 100, the oldest is forgotten. With nothing to undo it does nothing (Bond.08)
 - Reset removes every Bond and the undo history; with neither, it does nothing ([0015](../decisions.md#0015)) (Bond.09)
 - Done: while the Board is solved or shows the solution, changes don't change Bonds; Reset still works, and Undo while it shows the solution. Solving removes the undo history (Bond.10)
 - State: the Bonds are a [Board](schemas.md#board) (Bond.11)
@@ -154,6 +154,14 @@ Example (Bond.06):
 Given Puzzle 4, with C≡N
 When it is made weaker, twice
 Then it is C═N, then C─N
+```
+
+Example (Bond.08):
+
+```
+Given Puzzle 4, H·C·N
+When C·N is made stronger 101 times
+Then Undo goes back 100 times, to the Board after the first change, H·C─N, and then does nothing
 ```
 
 Example (Bond.08, Bond.09):

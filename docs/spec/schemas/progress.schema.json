@@ -37,7 +37,7 @@
           },
           "undo": {
             "type": "array",
-            "maxItems": 300,
+            "maxItems": 100,
             "items": {
               "$ref": "board.schema.json"
             },
