@@ -64,7 +64,7 @@ Commits reviewed: e98dfdf (decisions 0011–0013), 735d74c (spec split into puzz
 9. Fixed in f8d79b1: `say(result)`, worded by the UI.
 10. Fixed in f8d79b1: `findLayout` returns a Puzzle-shaped layout; the reordering moves with the search.
 11. Fixed in f8d79b1: the Generate.01 example prints the arrays.
-12. Open: asked the user what "UI state" means in their review.
+12. Fixed in 1c17cf4: the user wants the open Puzzle's Board kept; Puzzle.03, Progress.05, decision 0014 and step 9.
 13. Fixed in f8d79b1: split into step 7 (panel) and step 8 (UI and Glue).
 14. Fixed in f8d79b1: step 3 (b) names both changes.
 15. Fixed in f8d79b1: `Ajv2020` and loading all schemas in step 4; schemas.md gives the order of a Board.
@@ -76,5 +76,5 @@ Commits reviewed: e98dfdf (decisions 0011–0013), 735d74c (spec split into puzz
 21. Fixed in f8d79b1: step 1 checks every path the spec and decisions name.
 22. Fixed in f8d79b1: `renderPanel` makes the rules too; step 1's design notes the strings the build replaces.
 23. Fixed in f8d79b1: step 2 tests the colours of the status line.
-24. Open: asked the user whether this plan closes the backlog's review item.
+24. Kept: the user agreed that the item stays off the backlog.
 25. Fixed in f8d79b1: 0012 has schemas in `src/` as an alternative; 0011 says no text for the Player.
