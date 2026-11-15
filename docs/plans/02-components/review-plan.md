@@ -64,7 +64,7 @@ Commits reviewed: e98dfdf (decisions 0011–0013), 735d74c (spec split into puzz
 9. Fixed in f8d79b1: `say(result)`, worded by the UI.
 10. Fixed in f8d79b1: `findLayout` returns a Puzzle-shaped layout; the reordering moves with the search.
 11. Fixed in f8d79b1: the Generate.01 example prints the arrays.
-12. Fixed in 1c17cf4: the user wants the open Puzzle's Board kept; Puzzle.03, Progress.05, decision 0014 and step 9. Replaced in 978e173 by every Puzzle in progress (0015), now steps 9–11.
+12. Fixed in 1c17cf4: the user wants the open Puzzle's Board kept; Puzzle.03, Progress.05, decision 0014 and step 9. Replaced in 978e173 by every Puzzle in progress (0015), now steps 9–11; 0014 removed in b81f182.
 13. Fixed in f8d79b1: split into step 7 (panel) and step 8 (UI and Glue).
 14. Fixed in f8d79b1: step 3 (b) names both changes.
 15. Fixed in f8d79b1: `Ajv2020` and loading all schemas in step 4; schemas.md gives the order of a Board.

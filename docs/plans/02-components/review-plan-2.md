@@ -88,7 +88,7 @@ Commits reviewed: `5a77a88..978e173`. f8d79b1 has the fixes for the [first revie
 
 ## Outcome
 
-1. Fixed in 7c8cb3d: Help.01 says the solution was shown until the Board has no Bonds again, also after Undo; Puzzle.03, Progress.05 and the schema refer to that; a Progress.05 example and a step 9 test.
+1. Fixed in 7c8cb3d: Help.01 says the solution was shown until the Board has no Bonds again, also after Undo; Puzzle.03, Progress.05 and the schema refer to that; a step 9 test, and an end-to-end test in step 10. The example went in b81f182, for one example per rule.
 2. Fixed in 7c8cb3d: step 9 tests every part of Bond.10; the first review's Outcomes 4 and 12 point here.
 3. Fixed in 7c8cb3d: step 10 has `load` and `update` with `boards`, and their tests; the Design and 0012 say the page checks by hand.
 4. Fixed in 7c8cb3d: schemas.md says `boards` is left out when no Puzzle is in progress.
@@ -98,10 +98,10 @@ Commits reviewed: `5a77a88..978e173`. f8d79b1 has the fixes for the [first revie
 8. Fixed in 7c8cb3d: 0015 says the Progress of 0004 is the solved marks.
 9. Fixed in 7c8cb3d: split into step 9 (the game), step 10 (Data and Glue) and step 11 (Reset asks first).
 10. Fixed in 7c8cb3d: steps 4, 9 and 10 name the tests that pass at once.
-11. Fixed in 7c8cb3d: each save reads what is stored first (Progress.06, 0015); 0015's cost names older builds dropping `boards`.
-12. Fixed in 7c8cb3d: on a full storage, Progress is kept without `boards` (Progress.02); 0015's cost says so.
-13. Fixed in 7c8cb3d: Progress.03 keeps entries for Puzzles a page doesn't have, for other builds; Progress.01 says an unknown open Puzzle opens Puzzle 1. An entry that fails Puzzle.03 goes on the next save; kept, as it does no harm.
+11. Fixed in 7c8cb3d with Progress.06; in b81f182 the user chose a cost line in 0015 instead: the last tab to save wins.
+12. Fixed in 7c8cb3d in Progress.02; in b81f182 the user chose a cost line in 0015 instead: a full storage keeps nothing.
+13. Fixed in 7c8cb3d: Progress.01 says an unknown open Puzzle opens Puzzle 1. An entry that fails Puzzle.03 goes on the next save; kept, as it does no harm.
 14. Fixed in 7c8cb3d: an entry requires `revealed` and `undo`; "Every field of Progress"; Puzzle.03 names a pair twice, and the flag false.
-15. Fixed in 7c8cb3d: the alternatives are right and complete; 0014 and 0015 are under Game, in number order.
+15. Fixed in 7c8cb3d: the alternatives are right and complete; 0015 is under Game, in number order; 0014 was removed in b81f182, as it never left this branch.
 16. Fixed in 7c8cb3d: `confirm` has a default; step 3 calls `reasonText(result, game.atoms)`.
 17. Kept: no finding.
