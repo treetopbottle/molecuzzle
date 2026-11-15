@@ -47,7 +47,7 @@ And its one solution is
 
 ### Generate
 
-- Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols` on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution`; the same arguments print the same layout (Generate.01)
+- Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols` on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order; the same arguments print the same layout (Generate.01)
 - None: if it can't read a Bond it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
 
 Bonds are written between labelled Atoms: the label's letters are the Element, `-` `=` `#` a single, double and triple Bond.
@@ -56,7 +56,7 @@ Example (Generate.01):
 
 ```
 Given the Bonds "H1-O1 O1-H2", 2000 tries, at most 3 by 3, seed 1
-Then it prints rows 3, cols 1, the atoms H 0,0, O 1,0 and H 2,0, and the solution [0,1,1], [1,2,1]
+Then it prints rows: 3, cols: 1, atoms: [["H",0,0],["O",1,0],["H",2,0]], solution: [[0,1,1],[1,2,1]]
 ```
 
 Example (Generate.02):
@@ -107,10 +107,10 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 - Full: stronger on a Dotted line where an Atom has no room makes no Bond; the reason is `full`, with that Atom (Bond.04)
 - No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing` (Bond.05)
 - Weaker: weaker on a Bond makes it single to none, double to single, triple to double; on a Dotted line it does nothing (Bond.06)
-- State: the Bonds are a [Board](schemas.md#board) (Bond.07)
 - Undo restores the Bonds as they were before the last change, up to 300 changes back in this Puzzle; with nothing to undo it does nothing (Bond.08)
 - Reset removes every Bond, as one change that Undo brings back; with no Bonds it does nothing (Bond.09)
 - Done: while the Board is solved or shows the solution, changes don't change Bonds; Undo and Reset still work (Bond.10)
+- State: the Bonds are a [Board](schemas.md#board) (Bond.11)
 
 Example (Bond.01, Bond.02, Bond.03):
 
@@ -144,13 +144,6 @@ When it is made weaker, twice
 Then it is C═N, then C─N
 ```
 
-Example (Bond.07):
-
-```
-Given Puzzle 1, Water, with a Bond H 1,1 to O 1,2
-Then the Board is [[0, 1, 1]]
-```
-
 Example (Bond.08, Bond.09):
 
 ```
@@ -159,6 +152,13 @@ When it is reset
 Then there are no Bonds
 When the last change is undone
 Then both Bonds are back
+```
+
+Example (Bond.11):
+
+```
+Given Puzzle 1, Water, with a Bond H 1,1 to O 1,2
+Then the Board is [[0, 1, 1]]
 ```
 
 ### Valence
@@ -218,7 +218,7 @@ Then the status is solved
 
 ### Help
 
-- Show solution: the Board becomes the solution, and the status is `revealed` instead of solved: the Puzzle isn't solved ([0004](../decisions.md#0004)) (Help.01)
+- Show solution: the Board becomes the solution, and the status is `revealed` instead of solved: the Puzzle isn't solved ([0004](../decisions.md#0004)). On a Board that is already solved, the status stays solved (Help.01)
 - Retry: once the Board has no Bonds again, building the Molecule solves the Puzzle as usual (Help.02)
 
 Example (Help.01, Help.02):

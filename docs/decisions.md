@@ -149,7 +149,7 @@ The Pages workflow doesn't run the tests: every branch that builds is published.
 
 Accepted (2026-11-15)
 
-The code is four components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Data (`src/data/`: what is kept in the browser), UI (`src/ui/`: the page, what it shows and what the Player does) and the Glue (`src/app.js`, `src/main.js`). A component imports only from itself; the Glue imports from all of them, and hands each what it needs from the others as arguments. The rules produce no text: they give a status or a reason, and the UI words it. The spec has a file per component, except the Glue, which adds no behavior.
+The code is four components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Data (`src/data/`: what is kept in the browser), UI (`src/ui/`: the page, what it shows and what the Player does) and the Glue (`src/app.js`, `src/main.js`). A component imports only from itself; the Glue imports from all of them, and hands each what it needs from the others as arguments. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component, except the Glue, whose behavior is in the features it wires.
 
 - **Why:** each component can be read, specified and tested on its own, and replaced: the Glue gets the storage and the Puzzles passed in, so tests can pass their own.
 - **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know.
@@ -164,7 +164,7 @@ The schemas are JSON Schema files in `docs/spec/schemas/`, described in [schemas
 
 - **Why:** a schema that is checked stays true; a JSON file can be read by the tests, and by any tool in any language.
 - **Cost:** a development dependency; the schemas are outside the Markdown, so schemas.md links them instead of showing them.
-- **Alternatives:** schemas inline in schemas.md, as before: one place to read, but unchecked, or the tests have to parse Markdown. Checks written by hand in JavaScript: no dependency, but a second description of each format, which can drift from the schema.
+- **Alternatives:** schemas inline in schemas.md, as before: one place to read, but unchecked, or the tests have to parse Markdown. Checks written by hand in JavaScript: no dependency, but a second description of each format, which can drift from the schema. Schemas in `src/`, next to the code of their component: but the spec links them, and no code reads them.
 
 <a id="0013"></a>
 ## 0013: Screenshots in the spec, compared by the end-to-end tests

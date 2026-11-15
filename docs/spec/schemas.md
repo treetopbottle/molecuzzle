@@ -20,7 +20,9 @@ Example: Puzzle 1.
 
 ## Board
 
-[board.schema.json](schemas/board.schema.json): the Bonds of a Puzzle, as `[atom, atom, order]` ([Bond.07](puzzle.md#bond)). Atoms are indexes into the Puzzle's `atoms`. Also: each pair of Atoms is a Dotted line of the Grid, and appears once.
+[board.schema.json](schemas/board.schema.json): the Bonds of a Puzzle, as `[atom, atom, order]` ([Bond.11](puzzle.md#bond)). Atoms are indexes into the Puzzle's `atoms`, the lower first, and the Bonds are in order of their first Atom, then their second. Also: each pair of Atoms is a Dotted line of the Grid, and appears once.
+
+It is only the Bonds, the same for a Puzzle's solution as for a Board being played: the undo history and whether the solution is shown belong to the game in progress, which isn't kept or passed on.
 
 Example: Water with both Bonds, the solution above.
 

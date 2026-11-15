@@ -106,8 +106,8 @@ Then the message is "Hydrogen already has all its bonds."
 ### Panel
 
 - Puzzle: "Puzzle <n> of 13" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on Puzzle 13. Next to it, "Unsolved" or "✓ Solved" (Panel.01)
-- Mystery: until the Board is solved or shows the solution, the panel shows "Mystery molecule", "?" and "Bond every atom to find out what it is." (Panel.02)
-- Named: once it is, the panel shows the Molecule's name, its formula with subscripts, its fact, and "Next puzzle →", which opens the next Puzzle (not on Puzzle 13) (Panel.03)
+- Mystery: under the heading "Mystery molecule", until the Board is solved or shows the solution, the panel shows "?" and "Bond every atom to find out what it is." (Panel.02)
+- Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on Puzzle 13) (Panel.03)
 - Rules: the panel lists the rules of the game, as in the screenshots (Panel.04)
 
 Example (Panel.01, Panel.02, Panel.04), Puzzle 3, unsolved:
