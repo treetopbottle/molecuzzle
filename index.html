@@ -35,7 +35,6 @@ p { margin: 0; }
 .puzzle-nav button { padding: 4px 12px; }
 .puzzle-nav .badge { margin-left: auto; font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 2px 10px; }
 .puzzle-nav .badge.solved { color: var(--accent); border-color: rgba(60,224,180,.6); }
-.puzzle-nav .badge.revealed { color: var(--warn); border-color: rgba(255,179,71,.5); }
 .puzzle-list { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .puzzle-list button { min-width: 44px; padding: 6px 8px; font-size: 14px; }
 .puzzle-list button[aria-current] { border-color: var(--accent-2); box-shadow: 0 0 0 1px var(--accent-2); }
@@ -474,18 +473,16 @@ p { margin: 0; }
   }
 
   // src/puzzle-list.js
-  var STATE_TEXT = { solved: "solved", revealed: "solution seen" };
-  var MARK = { solved: "\u2713", revealed: "\u{1F441}" };
   function renderPuzzleList(list, puzzles, progress, current, onPick) {
     const doc = list.ownerDocument;
     list.replaceChildren(...puzzles.map((p, i) => {
-      const state = progress.puzzles[p.id];
+      const solved = progress.puzzles[p.id] === "solved";
       const li = doc.createElement("li");
       const button = doc.createElement("button");
       button.type = "button";
-      button.textContent = `${i + 1}${state ? ` ${MARK[state]}` : ""}`;
-      button.setAttribute("aria-label", `Puzzle ${i + 1}${state ? `: ${p.name}, ${STATE_TEXT[state]}` : ""}`);
-      if (state) button.title = p.name;
+      button.textContent = `${i + 1}${solved ? " \u2713" : ""}`;
+      button.setAttribute("aria-label", `Puzzle ${i + 1}${solved ? `: ${p.name}, solved` : ""}`);
+      if (solved) button.title = p.name;
       if (i === current) button.setAttribute("aria-current", "true");
       button.addEventListener("click", () => onPick(i));
       li.append(button);
@@ -510,7 +507,7 @@ p { margin: 0; }
       if (!data || typeof data !== "object") return empty;
       const puzzles = {};
       for (const [id, state] of Object.entries(data.puzzles ?? {}))
-        if (state === "solved" || state === "revealed") puzzles[id] = state;
+        if (state === "solved") puzzles[id] = state;
       return { puzzles, current: typeof data.current === "string" ? data.current : null };
     } catch {
       return empty;
@@ -522,13 +519,13 @@ p { margin: 0; }
     } catch {
     }
   }
-  function mark(progress, id, state) {
-    if (state === "revealed" && progress.puzzles[id] === "solved") return progress;
-    return { ...progress, puzzles: { ...progress.puzzles, [id]: state } };
+  function markSolved(progress, id) {
+    if (progress.puzzles[id] === "solved") return progress;
+    return { ...progress, puzzles: { ...progress.puzzles, [id]: "solved" } };
   }
 
   // src/app.js
-  var BADGES = { solved: "\u2713 Solved", revealed: "Solution seen" };
+  var BADGES = { solved: "\u2713 Solved" };
   function startApp(doc, { storage: storage2, puzzles = PUZZLES, confirm = (q) => doc.defaultView.confirm(q) } = {}) {
     const $ = (id) => doc.getElementById(id);
     let progress = loadProgress(storage2);
@@ -556,8 +553,8 @@ p { margin: 0; }
     }
     function update() {
       const puzzle = puzzles[index], status = game.status(), done = game.done();
-      if (done) {
-        const next = mark(progress, puzzle.id, status.kind);
+      if (status.kind === "solved") {
+        const next = markSolved(progress, puzzle.id);
         if (next !== progress) {
           progress = next;
           saveProgress(storage2, progress);
