@@ -56,7 +56,7 @@ Commits reviewed: e98dfdf (decisions 0011–0013), 735d74c (spec split into puzz
 1. Fixed in f8d79b1: Progress.03 leaves out a field or entry that doesn't fit.
 2. Fixed in f8d79b1: "Mystery molecule" is the heading, always shown; Panel.02 and Panel.03 say what is under it.
 3. Fixed in f8d79b1: Help.01 keeps an already solved Board solved.
-4. Fixed in f8d79b1: new step 2 adds tests for Puzzle.02, Valence.02, Bond.10 and Board.04.
+4. Fixed in f8d79b1: new step 2 adds tests for Puzzle.02, Valence.02, Bond.10 and Board.04. Bond.10 moved to step 9 in 7c8cb3d, after [round 2](review-plan-2.md).
 5. Fixed in f8d79b1: the table has the missing ids, and the board test's new ids are named.
 6. Fixed in f8d79b1: step 4 tests `saveProgress`.
 7. Fixed in f8d79b1: steps 3, 4, 5 and 9 say which tests pass at once.
@@ -64,7 +64,7 @@ Commits reviewed: e98dfdf (decisions 0011–0013), 735d74c (spec split into puzz
 9. Fixed in f8d79b1: `say(result)`, worded by the UI.
 10. Fixed in f8d79b1: `findLayout` returns a Puzzle-shaped layout; the reordering moves with the search.
 11. Fixed in f8d79b1: the Generate.01 example prints the arrays.
-12. Fixed in 1c17cf4: the user wants the open Puzzle's Board kept; Puzzle.03, Progress.05, decision 0014 and step 9.
+12. Fixed in 1c17cf4: the user wants the open Puzzle's Board kept; Puzzle.03, Progress.05, decision 0014 and step 9. Replaced in 978e173 by every Puzzle in progress (0015), now steps 9–11.
 13. Fixed in f8d79b1: split into step 7 (panel) and step 8 (UI and Glue).
 14. Fixed in f8d79b1: step 3 (b) names both changes.
 15. Fixed in f8d79b1: `Ajv2020` and loading all schemas in step 4; schemas.md gives the order of a Board.
