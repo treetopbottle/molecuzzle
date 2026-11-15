@@ -1,7 +1,4 @@
-// The list of puzzles: one button per puzzle, with its state.
-
-const STATE_TEXT = { solved: "solved", revealed: "solution seen" };
-const MARK = { solved: "✓", revealed: "👁" };
+// The list of puzzles: one button per puzzle, with ✓ if solved.
 
 /**
  * @param {HTMLOListElement} list
@@ -13,13 +10,13 @@ const MARK = { solved: "✓", revealed: "👁" };
 export function renderPuzzleList(list, puzzles, progress, current, onPick) {
   const doc = list.ownerDocument;
   list.replaceChildren(...puzzles.map((p, i) => {
-    const state = progress.puzzles[p.id];
+    const solved = progress.puzzles[p.id] === "solved";
     const li = doc.createElement("li");
     const button = doc.createElement("button");
     button.type = "button";
-    button.textContent = `${i + 1}${state ? ` ${MARK[state]}` : ""}`;
-    button.setAttribute("aria-label", `Puzzle ${i + 1}${state ? `: ${p.name}, ${STATE_TEXT[state]}` : ""}`);
-    if (state) button.title = p.name;
+    button.textContent = `${i + 1}${solved ? " ✓" : ""}`;
+    button.setAttribute("aria-label", `Puzzle ${i + 1}${solved ? `: ${p.name}, solved` : ""}`);
+    if (solved) button.title = p.name;
     if (i === current) button.setAttribute("aria-current", "true");
     button.addEventListener("click", () => onPick(i));
     li.append(button);

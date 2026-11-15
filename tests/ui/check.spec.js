@@ -57,7 +57,7 @@ test("Check.04 the last puzzle has no Next puzzle button", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
-test("Help.01 Show solution asks first, then shows the molecule as seen", async ({ page }) => {
+test("Help.01 Show solution asks first, then shows the molecule, still unsolved", async ({ page }) => {
   await openPuzzle(page, 9);
   page.once("dialog", dialog => dialog.dismiss());
   await page.getByRole("button", { name: "Show solution" }).click();
@@ -68,8 +68,18 @@ test("Help.01 Show solution asks first, then shows the molecule as seen", async 
   });
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(status(page)).toHaveText("Here is Urea. Reset and build it yourself to mark it solved.");
-  await expect(page.locator("#badge")).toHaveText("Solution seen");
-  await expect(page.getByRole("button", { name: "Puzzle 9: Urea, solution seen" })).toBeVisible();
+  await expect(page.locator("#badge")).toHaveText("Unsolved");
+  await expect(page.getByRole("button", { name: "Puzzle 9", exact: true })).toBeVisible();
+  await expect(page.locator("#score")).toHaveText("Solved 0 of 13");
+});
+
+test("Help.01 Show solution on a solved puzzle keeps it solved", async ({ page }) => {
+  await start(page, { puzzles: { urea: "solved" }, current: "urea" });
+  page.once("dialog", dialog => dialog.accept());
+  await page.getByRole("button", { name: "Show solution" }).click();
+  await expect(status(page)).toHaveText("Here is Urea. Reset and build it yourself to mark it solved.");
+  await expect(page.locator("#badge")).toHaveText("✓ Solved");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 13");
 });
 
 test("Help.02 after Reset, building it marks it solved", async ({ page }) => {

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { loadProgress, saveProgress, mark, STORAGE_KEY } from "../../src/progress.js";
+import { loadProgress, saveProgress, markSolved, STORAGE_KEY } from "../../src/progress.js";
 
 function memoryStorage(initial = {}) {
   const data = { ...initial };
@@ -10,29 +10,22 @@ describe("Progress", () => {
   test("Progress.01 saved in the format of the schema, and read back", () => {
     const storage = memoryStorage();
     let progress = loadProgress(storage);
-    progress = mark(progress, "water", "solved");
-    progress = mark(progress, "ammonia", "revealed");
+    progress = markSolved(progress, "water");
     saveProgress(storage, { ...progress, current: "formaldehyde" });
     expect(JSON.parse(storage.data[STORAGE_KEY])).toMatchInlineSnapshot(`
       {
         "current": "formaldehyde",
         "puzzles": {
-          "ammonia": "revealed",
           "water": "solved",
         },
       }
     `);
-    expect(loadProgress(storage)).toEqual({ puzzles: { water: "solved", ammonia: "revealed" }, current: "formaldehyde" });
-  });
-
-  test("Progress.01 seeing the solution of a solved puzzle keeps it solved", () => {
-    const progress = mark({ puzzles: { water: "solved" }, current: null }, "water", "revealed");
-    expect(progress.puzzles.water).toBe("solved");
+    expect(loadProgress(storage)).toEqual({ puzzles: { water: "solved" }, current: "formaldehyde" });
   });
 
   test("Progress.01 unreadable or unknown values count as empty", () => {
     expect(loadProgress(memoryStorage({ [STORAGE_KEY]: "{not json" }))).toEqual({ puzzles: {}, current: null });
-    expect(loadProgress(memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"water":"maybe"},"current":3}' })))
+    expect(loadProgress(memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"water":"maybe","ammonia":"revealed"},"current":3}' })))
       .toEqual({ puzzles: {}, current: null });
   });
 

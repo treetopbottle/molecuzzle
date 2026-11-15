@@ -7,8 +7,8 @@
 - Puzzles: there are 13, in the order of the table below. Each gives exactly the Atoms of its Molecule on a Grid, and has exactly one solution (Puzzle.01)
 - Start: a Puzzle opens with no Bonds and its Molecule hidden: the panel shows "Mystery molecule", "?" and "Bond every atom to find out what it is." (Puzzle.02)
 - Open: any Puzzle opens from the Puzzles list, or with ‹ and › next to "Puzzle <n> of 13"; ‹ is disabled on Puzzle 1 and › on Puzzle 13 (Puzzle.03)
-- List: per Puzzle a button with its number, ✓ if solved and 👁 if its solution was seen, named "Puzzle <n>: <name>, solved" or "…, solution seen" once it is either; the open Puzzle is marked. The header shows "Solved <k> of 13" (Puzzle.04)
-- Badge: next to the counter, "Unsolved", "✓ Solved" or "Solution seen" for the open Puzzle (Puzzle.05)
+- List: per Puzzle a button with its number, and ✓ if solved, named "Puzzle <n>: <name>, solved" once it is; the open Puzzle is marked. The header shows "Solved <k> of 13" (Puzzle.04)
+- Badge: next to the counter, "Unsolved" or "✓ Solved" for the open Puzzle (Puzzle.05)
 
 Example (Puzzle.02):
 
@@ -27,9 +27,9 @@ And the Board is
 Example (Puzzle.03, Puzzle.04, Puzzle.05):
 
 ```
-Given Puzzle 1 is solved and the solution of Puzzle 3 was seen
+Given Puzzle 1 is solved
 When the Player opens the game
-Then the list shows "1 ✓", "2", "3 👁", and the header "Solved 1 of 13"
+Then the list shows "1 ✓", "2", "3", and the header "Solved 1 of 13"
 When the Player picks 13
 Then Puzzle 13 opens, its badge says "Unsolved", and › is disabled
 ```
@@ -54,7 +54,7 @@ The Grids, solutions and facts are in `src/puzzles.js`.
 
 ### Help
 
-- Show solution asks "Show the solution?"; after OK the Board shows the solution, the status says "Here is <name>. Reset and build it yourself to mark it solved.", and the Puzzle is marked solution seen, unless it was solved (Help.01)
+- Show solution asks "Show the solution?"; after OK the Board shows the solution, the status says "Here is <name>. Reset and build it yourself to mark it solved.", and Progress doesn't change: an unsolved Puzzle stays unsolved, a solved one solved (Help.01)
 - Retry: once the Board has no Bonds again, building the Molecule solves the Puzzle as usual (Help.02)
 
 Example (Help.01, Help.02):
@@ -62,7 +62,7 @@ Example (Help.01, Help.02):
 ```
 Given Puzzle 9, unsolved
 When the Player clicks Show solution and confirms
-Then the status is "Here is Urea. Reset and build it yourself to mark it solved." and the badge "Solution seen"
+Then the status is "Here is Urea. Reset and build it yourself to mark it solved." and the badge "Unsolved"
 When the Player clicks Reset and builds Urea
 Then the status is "✓ Solved! It's Urea." and the badge "✓ Solved"
 ```
@@ -214,7 +214,7 @@ Then the status is "✓ Solved! It's Glycine.", the panel shows "Glycine", "C₂
 
 ### Progress
 
-- Saved: which Puzzles are solved or seen, and the open Puzzle, are kept in the browser in the format of [Progress](schemas.md#progress); a reload opens the last Puzzle, with no Bonds (Progress.01)
+- Saved: which Puzzles are solved, and the open Puzzle, are kept in the browser in the format of [Progress](schemas.md#progress); a reload opens the last Puzzle, with no Bonds (Progress.01)
 - No storage: if the browser can't store data, the game works and keeps nothing (Progress.02)
 
 Example (Progress.01):

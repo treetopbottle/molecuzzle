@@ -4,9 +4,9 @@ import { PUZZLES } from "./puzzles.js";
 import { createGame, statusText } from "./game.js";
 import { createBoard } from "./board.js";
 import { renderPuzzleList, formulaNodes } from "./puzzle-list.js";
-import { loadProgress, saveProgress, mark } from "./progress.js";
+import { loadProgress, saveProgress, markSolved } from "./progress.js";
 
-const BADGES = { solved: "✓ Solved", revealed: "Solution seen" };
+const BADGES = { solved: "✓ Solved" };
 
 /**
  * @param {Document} doc
@@ -43,8 +43,8 @@ export function startApp(doc, { storage, puzzles = PUZZLES, confirm = q => doc.d
 
   function update() {
     const puzzle = puzzles[index], status = game.status(), done = game.done();
-    if (done) {
-      const next = mark(progress, puzzle.id, status.kind);
+    if (status.kind === "solved") {
+      const next = markSolved(progress, puzzle.id);
       if (next !== progress) { progress = next; saveProgress(storage, progress); }
     }
     board.render();

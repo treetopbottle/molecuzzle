@@ -14,7 +14,7 @@ One short entry per decision. Don't renumber or rewrite: mark one `Superseded by
 - [0006: Known Molecules are written in a SMILES subset](#0006)
 - [0007: Other Known Molecules go to the Collection, not count as solved](#0007)
 - [0008: All Levels are open](#0008)
-- [0009: A seen solution doesn't count as solved](#0009)
+- [0009: Show solution doesn't solve a Puzzle](#0009)
 - [0010: Progress lives in the browser](#0010)
 - [0011: Layout by forces, from a depth-first circle](#0011)
 - [0012: How to test](#0012)
@@ -113,15 +113,15 @@ No Level is locked; the order only suggests a path.
 - **Alternatives:** unlock one by one: frustrating, and the Show solution button undercuts it anyway.
 
 <a id="0009"></a>
-## 0009: A seen solution doesn't count as solved
+## 0009: Show solution doesn't solve a Puzzle
 
-Accepted (2026-11-10)
+Accepted (2026-11-15)
 
-Show solution marks the Level "Solution seen"; it becomes solved only when the Player builds it from an empty Board.
+Show solution shows the answer on the Board and changes nothing in Progress: an unsolved Puzzle stays unsolved, until the Player clicks Reset and builds it.
 
-- **Why:** a stuck Player can learn from the answer while ✓ still means "built it myself".
-- **Cost:** an extra state to show and store.
-- **Alternatives:** no solution button: Players get stuck; counting it as solved: ✓ means nothing.
+- **Why:** a stuck Player can learn from the answer and still solve every Puzzle, while ✓ still means "built it myself".
+- **Cost:** Progress doesn't tell which Puzzles were solved only after seeing the solution.
+- **Alternatives:** a "Solution seen" mark: an extra state to show and store, and a mark that stays on Puzzles the Player solved afterwards. Counting it as solved: ✓ means nothing. No solution button: Players get stuck.
 
 <a id="0010"></a>
 ## 0010: Progress lives in the browser

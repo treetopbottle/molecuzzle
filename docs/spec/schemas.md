@@ -16,18 +16,18 @@ Stored in the browser's `localStorage` under the key `molecuzzle-v2` ([Progress.
     "puzzles": {
       "type": "object",
       "description": "Per Puzzle, by its id",
-      "additionalProperties": { "enum": ["solved", "revealed"] }
+      "additionalProperties": { "enum": ["solved"] }
     },
     "current": { "type": "string", "description": "The id of the open Puzzle" }
   }
 }
 ```
 
-Example: Puzzle 1 solved, the solution of Puzzle 2 seen, and Puzzle 3 open.
+Example: Puzzles 1 and 2 solved, and Puzzle 3 open.
 
 ```json
 {
-  "puzzles": { "water": "solved", "ammonia": "revealed" },
+  "puzzles": { "water": "solved", "ammonia": "solved" },
   "current": "formaldehyde"
 }
 ```

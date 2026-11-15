@@ -35,7 +35,7 @@ test("First day", async ({ page }) => {
   // Stuck, Noor looks at the solution, resets, and builds it alone.
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
-  await expect(page.locator("#badge")).toHaveText("Solution seen");
+  await expect(page.locator("#badge")).toHaveText("Unsolved");
   await page.getByRole("button", { name: "Reset" }).click();
   await build(page, PUZZLES[10]);
   await expect(page.locator("#badge")).toHaveText("✓ Solved");

@@ -9,7 +9,7 @@ export function loadProgress(storage) {
     if (!data || typeof data !== "object") return empty;
     const puzzles = {};
     for (const [id, state] of Object.entries(data.puzzles ?? {}))
-      if (state === "solved" || state === "revealed") puzzles[id] = state;
+      if (state === "solved") puzzles[id] = state;
     return { puzzles, current: typeof data.current === "string" ? data.current : null };
   } catch {
     return empty;
@@ -20,8 +20,8 @@ export function saveProgress(storage, progress) {
   try { storage?.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch { /* no storage: keep nothing */ }
 }
 
-/** Marks a puzzle solved, or revealed unless it was solved already. */
-export function mark(progress, id, state) {
-  if (state === "revealed" && progress.puzzles[id] === "solved") return progress;
-  return { ...progress, puzzles: { ...progress.puzzles, [id]: state } };
+/** Marks a puzzle solved; returns the same Progress if it already was. */
+export function markSolved(progress, id) {
+  if (progress.puzzles[id] === "solved") return progress;
+  return { ...progress, puzzles: { ...progress.puzzles, [id]: "solved" } };
 }

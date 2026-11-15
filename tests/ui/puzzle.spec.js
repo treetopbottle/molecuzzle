@@ -38,18 +38,18 @@ test("Puzzle.03 any puzzle opens from the list, or with previous and next", asyn
   await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 13");
 });
 
-test("Puzzle.04, Puzzle.05 the list and the badge show what is solved and seen", async ({ page }) => {
-  await start(page, { puzzles: { water: "solved", formaldehyde: "revealed" }, current: "formaldehyde" });
+test("Puzzle.04, Puzzle.05 the list and the badge show what is solved", async ({ page }) => {
+  await start(page, { puzzles: { water: "solved" }, current: "formaldehyde" });
   await expect(page.getByRole("list", { name: "Puzzles" })).toMatchAriaSnapshot(`
     - listitem:
       - 'button "Puzzle 1: Water, solved"'
     - listitem:
       - button "Puzzle 2"
     - listitem:
-      - 'button "Puzzle 3: Formaldehyde, solution seen"'
+      - button "Puzzle 3"
   `);
-  await expect(page.getByRole("button", { name: /^Puzzle 3:/ })).toHaveAttribute("aria-current", "true");
-  await expect(page.locator("#badge")).toHaveText("Solution seen");
+  await expect(page.getByRole("button", { name: "Puzzle 3", exact: true })).toHaveAttribute("aria-current", "true");
+  await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.locator("#score")).toHaveText("Solved 1 of 13");
   await openPuzzle(page, 1);
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
