@@ -33,7 +33,7 @@ How changes are checked and shared.
 - [0007: Vitest for rules and components, Playwright for the UI](#0007)
 - [0009: A GitHub Pages build per branch, from a gh-pages branch](#0009)
 - [0010: Failing checks block production, not branch builds](#0010)
-- [0013: Screenshots in the spec, compared by the end-to-end tests](#0013)
+- [0013: Screenshots in the spec, made in a container](#0013)
 
 <a id="0001"></a>
 ## 0001: A simplified valence model
@@ -168,15 +168,15 @@ The schemas are JSON Schema files in `docs/spec/schemas/`, described in [schemas
 - **Alternatives:** schemas inline in schemas.md, as before: one place to read, but unchecked, or the tests have to parse Markdown. Checks written by hand in JavaScript: no dependency, but a second description of each format, which can drift from the schema. Schemas in `src/`, next to the code of their component: but the spec links them, and no code reads them.
 
 <a id="0013"></a>
-## 0013: Screenshots in the spec, compared by the end-to-end tests
+## 0013: Screenshots in the spec, made in a container
 
 Accepted (2026-11-15)
 
-The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/spec/screenshots/`. Playwright compares the page with them (`toHaveScreenshot`), with a small tolerance. They are made, and after an intended change remade, with `npm run test:e2e -- --update-snapshots`, and looked at in the diff before a commit.
+The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/spec/screenshots/`. Playwright compares the page with them exactly (`toHaveScreenshot`, with no pixel allowed to differ). These tests run only in Playwright's image, `mcr.microsoft.com/playwright`, tagged with the version of `@playwright/test` and run as `linux/amd64`, with Podman or Docker: `npm run test:screenshots` checks them, and `npm run test:screenshots -- --update-snapshots` remakes them after an intended change, to be looked at in the diff before a commit.
 
-- **Why:** the spec shows the look, which words can't, and a change in the look fails a test until its screenshot is remade on purpose.
-- **Cost:** a screenshot depends on the browser and its fonts (the page uses `system-ui`), so another Chromium or OS can differ beyond the tolerance, and they have to be remade there. Images in git, a new copy with every change.
-- **Alternatives:** Playwright's Docker image, for the same browser and fonts everywhere: needs Docker for the tests. A font inlined in the page: the same text everywhere, but a bigger file. Only accessibility snapshots, as before: they don't show the look.
+- **Why:** the spec shows the look, which words can't. The image fixes the browser, the fonts and the rendering, so the same commit gives the same pixels on every machine and in CI, and a screenshot changes only with the page or with `@playwright/test`, in the same commit.
+- **Cost:** taking or checking screenshots needs Podman or Docker, and `npm run check` does both. Updating `@playwright/test` means remaking the screenshots. On an arm machine the image runs emulated, and slowly. Images in git, a new copy with every change.
+- **Alternatives:** a tolerance instead of a container: no Podman or Docker, but small changes go unseen, and other machines can still differ beyond it; one can be added later in the Playwright config if exact turns out too strict. The browser on each machine: no setup, but every system update can change the pixels. Only accessibility snapshots, as before: they don't show the look.
 
 <a id="0015"></a>
 ## 0015: Every Puzzle in progress is kept, until it is solved or reset

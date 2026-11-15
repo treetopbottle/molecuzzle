@@ -17,7 +17,6 @@ Most of them describe what the game does now, so their tests exist and get the n
 Left out:
 
 - Anything else new for the Player: the game plays and looks as it does now, except that Reset and solving end the undo history ([0015](../../decisions.md#0015)). Progress keeps its key and only gains an optional field, so no Player loses it.
-- The same fonts for screenshots on every machine ([0013](../../decisions.md#0013) has the cost).
 
 ## Design
 
@@ -50,6 +49,7 @@ Interfaces that change:
 - `app.js`: `startApp({ puzzles, createGame, store, createUi })`, with no DOM. From step 10, after every change, Undo, Reset and Show solution, it updates Progress with the open Puzzle's `saved()` in `boards`, or without its entry when that is `null`; on opening a Puzzle it passes its entry to `createGame`. `browser.js` reads `localStorage` in a `try`, as now, and passes `PUZZLES`, `createGame`, `createProgressStore(storage)` and `h => createUi(document, h)`.
 - `scripts/build.js` reads `src/ui/index.html` and `src/ui/style.css`; the entry becomes `src/browser.js`. `index.html` keeps `<link href="style.css">` and `<script src="browser.js">` as the strings the build replaces, with a comment saying so.
 - `npm run test:ui` becomes `npm run test:e2e`; `ajv` is a new development dependency, used through `ajv/dist/2020`.
+- `npm run test:screenshots`, new: `scripts/screenshots.sh` runs `playwright test --project screenshots` in `mcr.microsoft.com/playwright:v<version>-noble`, with the version read from `package.json`, as `--platform linux/amd64`, with the repo mounted, in Podman, or Docker if `CONTAINER=docker`. Arguments pass on, such as `--update-snapshots`. The Playwright config has a `screenshots` project, which only this script runs, with `snapshotPathTemplate` at `docs/spec/screenshots/` and exact comparison. `npm run check` runs it after `test:e2e`.
 
 Where the old rule ids went, for renaming tests:
 
@@ -113,6 +113,6 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
    - (a) Tests: `createUi`'s Reset calls `onReset` only after the Player confirms, and cancelling changes nothing; the Input.05 example end-to-end.
    - (b) Implementation: the confirm for Reset in `ui/ui.js`; the end-to-end tests that click Reset accept its dialog.
 12. **Screenshots.** Page.01, Layout.01, Board.01–03, Input.03, Panel.02–04, List.01.
-   - (a) Tests in `tests/e2e/screenshots.spec.js`, one per screenshot in ui.md, with `snapshotPathTemplate` pointing at `docs/spec/screenshots/`; the phone one in the phone project. They fail because the screenshots don't exist yet. Board.03: with reduced motion, the solved Atoms don't animate; this already holds, so it passes at once.
-   - (b) Implementation: make the screenshots with `npm run test:e2e -- --update-snapshots`, look at each one against ui.md, and commit them.
+   - (a) Tests in `tests/e2e/screenshots.spec.js`, one per screenshot in ui.md, in the `screenshots` project, at 1280×800 and, for the phone one, 390×844; and `scripts/screenshots.sh` with its npm script, to run them. They fail because the screenshots don't exist yet. Board.03: with reduced motion, the solved Atoms don't animate; this already holds, so it passes at once.
+   - (b) Implementation: make the screenshots with `npm run test:screenshots -- --update-snapshots`, look at each one against ui.md, and commit them; then `npm run test:screenshots` passes. Add the screenshots to `npm run check`, and Podman or Docker and the new commands to the README's Development.
 13. **Close the review.** Add an Outcome to [review.md](../01-initial-implementation/review.md): one line per comment, with the commits that dealt with it.
