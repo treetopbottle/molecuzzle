@@ -1,6 +1,6 @@
 # 02: Components
 
-Status: Draft
+Status: Active
 
 Deals with the [review of the initial implementation](../01-initial-implementation/review.md): more schemas, four clear components, and features split per component, with screenshots of the UI.
 
