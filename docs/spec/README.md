@@ -8,7 +8,7 @@ A general narrative is used to describe a typical usage flow, see [narratives.md
 
 ## Scope
 
-In scope: Puzzles on a Grid, where the Player fills in the Bonds so every Atom has exactly its valence ([0002](../decisions.md#0002)), with every hydrogen an Atom of its own ([0003](../decisions.md#0003)), and each Puzzle has exactly one solution ([0016](../decisions.md#0016)); seeing a solution; Progress kept in the browser ([0010](../decisions.md#0010)).
+In scope: Puzzles on a Grid, where the Player fills in the Bonds so every Atom has exactly its valence ([0001](../decisions.md#0001)), with every hydrogen an Atom of its own ([0002](../decisions.md#0002)), and each Puzzle has exactly one solution ([0008](../decisions.md#0008)); seeing a solution; Progress kept in the browser ([0005](../decisions.md#0005)).
 
 Left out: building freely without a Grid, recognising other Molecules (Isomers), charges and ions, Elements other than H, C, N and O, stereochemistry, 3D shapes, and saving Progress anywhere but the browser. Other puzzle modes are in `prototypes/`, outside this spec.
 

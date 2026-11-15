@@ -1,6 +1,6 @@
 # Builds the game on every push and, if the build succeeds, publishes it to
 # GitHub Pages: main at the root, other branches in branches/<name>/. Tests
-# don't run here: run `npm run check` before pushing.
+# don't run here: `npm run check` must pass before merging to main (decision 0010).
 # A deleted branch's build is removed. See "Branch builds" in README.md.
 name: Pages
 
