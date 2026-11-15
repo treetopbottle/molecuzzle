@@ -50,3 +50,31 @@ Commits reviewed: e98dfdf (decisions 0011–0013), 735d74c (spec split into puzz
 23. **note**: Messages.01 (`ui.md:110`): no test checks that `revealed` is green, and only the Check.03 test checks the `warn` class (`tests/ui/check.spec.js:22`). `page-solved.png` covers solved only.
 24. **note**: Commit 5f9a718 removes the backlog item "Review the bond grid game against the spec (review of the decisions and the code)", but the plan doesn't name it. The user's `01-initial-implementation/review.md` is an architecture review, not that review against the spec, and not in the format of `docs/workflow/review.md`. Check with the user that this plan closes it.
 25. **note**: Decisions 0011–0013 each keep the why, cost and alternatives. 0012's alternatives don't mention schemas in `src/puzzle/`, which is where the review put them ("Puzzle component … defines the puzzle schema"). 0011 says "the rules produce no text", but `findLayout` throws `can't read <bond>` (`README.md:45`). That is fine for a developer tool, but worth a word in 0011.
+
+## Outcome
+
+1. Fixed in f8d79b1: Progress.03 leaves out a field or entry that doesn't fit.
+2. Fixed in f8d79b1: "Mystery molecule" is the heading, always shown; Panel.02 and Panel.03 say what is under it.
+3. Fixed in f8d79b1: Help.01 keeps an already solved Board solved.
+4. Fixed in f8d79b1: new step 2 adds tests for Puzzle.02, Valence.02, Bond.10 and Board.04.
+5. Fixed in f8d79b1: the table has the missing ids, and the board test's new ids are named.
+6. Fixed in f8d79b1: step 4 tests `saveProgress`.
+7. Fixed in f8d79b1: steps 3, 4, 5 and 9 say which tests pass at once.
+8. Fixed in f8d79b1: `main.js` keeps reading `localStorage` in a `try`.
+9. Fixed in f8d79b1: `say(result)`, worded by the UI.
+10. Fixed in f8d79b1: `findLayout` returns a Puzzle-shaped layout; the reordering moves with the search.
+11. Fixed in f8d79b1: the Generate.01 example prints the arrays.
+12. Open: asked the user what "UI state" means in their review.
+13. Fixed in f8d79b1: split into step 7 (panel) and step 8 (UI and Glue).
+14. Fixed in f8d79b1: step 3 (b) names both changes.
+15. Fixed in f8d79b1: `Ajv2020` and loading all schemas in step 4; schemas.md gives the order of a Board.
+16. Kept: no finding.
+17. Fixed in f8d79b1: State is Bond.11.
+18. Fixed in f8d79b1: schemas.md says what a Board leaves out, and why.
+19. Fixed in f8d79b1: the spec README and 0011 say the Glue's behavior is in the features it wires; step 8 tests `startApp` with fakes.
+20. Fixed in f8d79b1: step 1 updates the paths in 0007 and 0008; the narrative's tags follow the new features.
+21. Fixed in f8d79b1: step 1 checks every path the spec and decisions name.
+22. Fixed in f8d79b1: `renderPanel` makes the rules too; step 1's design notes the strings the build replaces.
+23. Fixed in f8d79b1: step 2 tests the colours of the status line.
+24. Open: asked the user whether this plan closes the backlog's review item.
+25. Fixed in f8d79b1: 0012 has schemas in `src/` as an alternative; 0011 says no text for the Player.
