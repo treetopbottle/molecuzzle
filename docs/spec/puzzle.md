@@ -8,6 +8,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 - Puzzles: there are 13, in the order of the table below. Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
+- Go on: a Puzzle can also start from a [Board](schemas.md#board), and whether it shows the solution, with nothing to undo. A Board that can't be on its Grid starts it with no Bonds: a Bond that isn't on a Dotted line, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
 
 | # | Molecule | Formula |
 |---|---|---|
@@ -51,6 +52,15 @@ And its one solution is
 - None: if it can't read a Bond it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
 
 Bonds are written between labelled Atoms: the label's letters are the Element, `-` `=` `#` a single, double and triple Bond.
+
+Example (Puzzle.03):
+
+```
+Given Puzzle 4, Hydrogen cyanide, and the Board [[0, 1, 1]]
+Then it starts with H─C·N, and nothing to undo
+Given the Board [[0, 2, 1]] instead, which isn't on a Dotted line
+Then it starts with H·C·N
+```
 
 Example (Generate.01):
 

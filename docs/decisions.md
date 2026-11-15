@@ -21,6 +21,7 @@ What the Player does and what the rules are.
 How the code and its data are built.
 
 - [0005: Progress lives in the browser](#0005)
+- [0014: Only the open Puzzle's Board is kept](#0014)
 - [0006: ES modules, built into one HTML file](#0006)
 - [0011: Four components, wired in one place](#0011)
 - [0012: Schemas as JSON files, checked by the tests](#0012)
@@ -176,3 +177,14 @@ The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/s
 - **Why:** the spec shows the look, which words can't, and a change in the look fails a test until its screenshot is remade on purpose.
 - **Cost:** a screenshot depends on the browser and its fonts (the page uses `system-ui`), so another Chromium or OS can differ beyond the tolerance, and they have to be remade there. Images in git, a new copy with every change.
 - **Alternatives:** Playwright's Docker image, for the same browser and fonts everywhere: needs Docker for the tests. A font inlined in the page: the same text everywhere, but a bigger file. Only accessibility snapshots, as before: they don't show the look.
+
+<a id="0014"></a>
+## 0014: Only the open Puzzle's Board is kept
+
+Accepted (2026-11-15)
+
+Progress keeps the Bonds of the open Puzzle, and whether they show the solution, after every change; not the Boards of other Puzzles, and not the undo history.
+
+- **Why:** a Player whose browser closes or crashes goes on where they were. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)).
+- **Cost:** opening another Puzzle drops the Board of the one left; after a reload there is nothing to undo.
+- **Alternatives:** a Board per Puzzle: coming back to a Puzzle keeps its Bonds, but more to store, and to clear for a Player who wants to start again. Keeping the undo history too: up to 300 Boards stored, rewritten on every change.
