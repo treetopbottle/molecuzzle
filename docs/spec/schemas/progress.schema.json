@@ -23,7 +23,9 @@
       "additionalProperties": {
         "type": "object",
         "required": [
-          "bonds"
+          "bonds",
+          "revealed",
+          "undo"
         ],
         "properties": {
           "bonds": {
@@ -31,7 +33,7 @@
           },
           "revealed": {
             "type": "boolean",
-            "description": "Whether the Bonds show the solution"
+            "description": "Whether the solution was shown since the Board last had no Bonds"
           },
           "undo": {
             "type": "array",

@@ -8,7 +8,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 - Puzzles: there are 13, in the order of the table below. Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
-- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether it shows the solution, and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds and nothing to undo: a Bond that isn't on a Dotted line, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
+- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
 
 | # | Molecule | Formula |
 |---|---|---|
@@ -120,7 +120,7 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 - No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing` (Bond.05)
 - Weaker: weaker on a Bond makes it single to none, double to single, triple to double; on a Dotted line it does nothing (Bond.06)
 - Undo restores the Bonds as they were before the last change, up to 300 changes back in this Puzzle, since it was last reset or solved; with nothing to undo it does nothing (Bond.08)
-- Reset removes every Bond and the undo history; with no Bonds it does nothing ([0015](../decisions.md#0015)) (Bond.09)
+- Reset removes every Bond and the undo history; with neither, it does nothing ([0015](../decisions.md#0015)) (Bond.09)
 - Done: while the Board is solved or shows the solution, changes don't change Bonds; Reset still works, and Undo while it shows the solution. Solving removes the undo history (Bond.10)
 - State: the Bonds are a [Board](schemas.md#board) (Bond.11)
 
@@ -238,7 +238,7 @@ Then the status is solved
 
 ### Help
 
-- Show solution: the Board becomes the solution, and the status is `revealed` instead of solved: the Puzzle isn't solved ([0004](../decisions.md#0004)). On a Board that is already solved, the status stays solved (Help.01)
+- Show solution: the Board becomes the solution, and the solution was shown until the Board has no Bonds again, also when Undo goes back past it. While it was, a Board with every Atom complete in one piece has the status `revealed` instead of solved: the Puzzle isn't solved ([0004](../decisions.md#0004)). On a Board that is already solved, the status stays solved (Help.01)
 - Retry: once the Board has no Bonds again, building the Molecule solves the Puzzle as usual (Help.02)
 
 Example (Help.01, Help.02):

@@ -52,7 +52,7 @@ And the Dotted lines and Bonds are "H 1,1 to C 2,1: no bond", "C 2,1 to H 2,2: n
 
 - Click: clicking a Dotted line or Bond makes it stronger ([Bond.01–03](puzzle.md#bond)); right-clicking makes it weaker ([Bond.06](puzzle.md#bond)) (Input.01)
 - Keys: Tab reaches each Dotted line and Bond; Enter or Space acts as a click, Backspace, Delete or - as a right-click; Ctrl+Z or Cmd+Z as Undo (Input.02)
-- Actions: Undo ([Bond.08](puzzle.md#bond)), disabled with nothing to undo; Reset ([Bond.09](puzzle.md#bond)), disabled with no Bonds; and Show solution (Input.03)
+- Actions: Undo ([Bond.08](puzzle.md#bond)), disabled with nothing to undo; Reset ([Bond.09](puzzle.md#bond)), disabled with no Bonds and nothing to undo; and Show solution (Input.03)
 - Confirm: Show solution asks "Show the solution?", and only after OK shows it ([Help.01](puzzle.md#help)) (Input.04)
 - Confirm reset: Reset asks "Reset this puzzle? Its bonds and undo history are removed.", and only after OK resets it, since that can't be undone ([Bond.09](puzzle.md#bond)) (Input.05)
 

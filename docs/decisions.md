@@ -15,14 +15,14 @@ What the Player does and what the rules are.
 - [0003: All Puzzles are open](#0003)
 - [0004: Show solution doesn't solve a Puzzle](#0004)
 - [0008: Every Puzzle has exactly one solution](#0008)
+- [0014: Only the open Puzzle's Board is kept](#0014) (superseded by 0015)
+- [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 
 ### Technical
 
 How the code and its data are built.
 
 - [0005: Progress lives in the browser](#0005)
-- [0014: Only the open Puzzle's Board is kept](#0014) (superseded by 0015)
-- [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 - [0006: ES modules, built into one HTML file](#0006)
 - [0011: Four components, wired in one place](#0011)
 - [0012: Schemas as JSON files, checked by the tests](#0012)
@@ -165,7 +165,7 @@ Accepted (2026-11-15)
 The schemas are JSON Schema files in `docs/spec/schemas/`, described in [schemas.md](spec/schemas.md). The tests check the data against them with Ajv: every Puzzle, the Board of a game, and the stored Progress.
 
 - **Why:** a schema that is checked stays true; a JSON file can be read by the tests, and by any tool in any language.
-- **Cost:** a development dependency; the schemas are outside the Markdown, so schemas.md links them instead of showing them.
+- **Cost:** a development dependency; the schemas are outside the Markdown, so schemas.md links them instead of showing them. The page itself still checks what it loads by hand, as Ajv isn't part of it; the tests check that it agrees with the schema.
 - **Alternatives:** schemas inline in schemas.md, as before: one place to read, but unchecked, or the tests have to parse Markdown. Checks written by hand in JavaScript: no dependency, but a second description of each format, which can drift from the schema. Schemas in `src/`, next to the code of their component: but the spec links them, and no code reads them.
 
 <a id="0013"></a>
@@ -195,8 +195,8 @@ Progress keeps the Bonds of the open Puzzle, and whether they show the solution,
 
 Accepted (2026-11-15)
 
-Progress keeps, for every Puzzle in progress, its Bonds, whether they show the solution, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone.
+Progress keeps, for every Puzzle in progress, its Bonds, whether the solution was shown, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone. Show solution now writes to Progress, but never a solved mark: the Progress of [0004](#0004) is the solved marks. Each save reads what is stored first, and changes only what its page changed.
 
 - **Why:** a Player can leave any Puzzle, or lose the browser, and come back to it as they left it, Undo included. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)). Once a Puzzle is solved its Board tells nothing more, and Reset is how a Player starts again, so both end what is kept.
-- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 300 Boards per Puzzle in the browser, all rewritten on every change; a Puzzle left half done stays there until it is solved or reset.
-- **Alternatives:** only the open Puzzle's Board ([0014](#0014)): less to store, but leaving a Puzzle loses it, and Undo after a reload. Boards without the undo history: smaller, but nothing to undo after coming back. Reset that Undo brings back, as before: then nothing ever ends the history.
+- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 300 Boards per Puzzle in the browser, all read and rewritten on every change, and when the storage is full the Puzzles in progress aren't kept; a Puzzle left half done stays there until it is solved or reset. A build without this, such as `main` before it is merged, drops the Puzzles in progress on its next save, as the origin is shared ([0009](#0009)).
+- **Alternatives:** only the open Puzzle's Board ([0014](#0014)): less to store, but leaving a Puzzle loses it, and Undo after a reload. Boards without the undo history: smaller, but nothing to undo after coming back. Reset that Undo brings back, as before: then only solving ends the history. Reset that Undo brings back until the page closes, without keeping that: less final, but the Board after a reload isn't the one before it. Saving the page's whole Progress, as before: simpler, but two tabs undo each other's Progress on every change.
