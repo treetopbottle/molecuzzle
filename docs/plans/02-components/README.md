@@ -6,10 +6,10 @@ Deals with the [review of the initial implementation](../01-initial-implementati
 
 ## Scope
 
-Covers every rule of the spec, now split into [puzzle.md](../../spec/puzzle.md), [data.md](../../spec/data.md) and [ui.md](../../spec/ui.md), with the schemas in [schemas.md](../../spec/schemas.md):
+Covers every rule of the spec, now split into [puzzle.md](../../spec/puzzle.md), [storage.md](../../spec/storage.md) and [ui.md](../../spec/ui.md), with the schemas in [schemas.md](../../spec/schemas.md):
 
 - Puzzle: Puzzle.01–03, Generate.01–02, Grid.01–02, Bond.01–06, Bond.08–11, Valence.01–02, Check.01–04, Help.01–02
-- Data: Progress.01–05
+- Storage: Progress.01–05
 - UI: Page.01, Layout.01–02, Board.01–04, Input.01–05, Messages.01–02, Panel.01–04, List.01–02
 
 Most of them describe what the game does now, so their tests exist and get the new ids (step 1), or are added and pass at once (step 2). New are: the reasons and statuses without text, the schemas, the generator as a module, the Progress store, the panel and the UI as components, the Glue with its dependencies passed in, every Puzzle in progress kept with its undo history (the review's "UI state"), and the screenshots.
@@ -20,20 +20,20 @@ Left out:
 
 ## Design
 
-Four components: Puzzle, Data and UI each a folder, and the Glue, `app.js` and `browser.js`. Only the Glue imports from more than one ([0011](../../decisions.md#0011)). Schemas are JSON files the tests check against ([0012](../../decisions.md#0012)); screenshots are files the end-to-end tests compare against ([0013](../../decisions.md#0013)).
+Four components: Puzzle, Storage and UI each a folder, and the Glue, `app.js` and `browser.js`. Only the Glue imports from more than one ([0011](../../decisions.md#0011)). Schemas are JSON files the tests check against ([0012](../../decisions.md#0012)); screenshots are files the end-to-end tests compare against ([0013](../../decisions.md#0013)).
 
 ```
 src/
   puzzle/   elements.js grid.js game.js solver.js puzzles.js generate.js
-  data/     progress.js
+  storage/  progress.js
   ui/       index.html style.css elements.js messages.js board.js panel.js puzzle-list.js ui.js
   app.js      the Glue: wires the components
   browser.js  the Glue: the only file using the browser's globals; makes the dependencies, starts the app
 tests/
-  unit/puzzle/  unit/data/  unit/ui/   Vitest, the UI in happy-dom
-  unit/app.test.js                     the Glue, with fakes
-  e2e/                                 Playwright, was tests/ui/
-  helpers/                             draw.js, and schemas.js (Ajv)
+  unit/puzzle/  unit/storage/  unit/ui/   Vitest, the UI in happy-dom
+  unit/app.test.js                       the Glue, with fakes
+  e2e/                                   Playwright, was tests/ui/
+  helpers/                               draw.js, and schemas.js (Ajv)
 docs/spec/schemas/*.schema.json, docs/spec/screenshots/*.png
 ```
 
@@ -42,7 +42,7 @@ Interfaces that change:
 - `puzzle/elements.js`: `ELEMENTS` has only `valence` per symbol; the name, colours and size move to `ui/elements.js`.
 - `puzzle/game.js`: `createGame(puzzle, { bonds, revealed, undo } = {})` starts where the Puzzle was left, or with no Bonds and nothing to undo if a Board can't be on the Grid; `saved()` returns `{ bonds, revealed, undo }` while the Puzzle is in progress, and `null` otherwise. `reset()` and solving clear the history. `change(k, dir)` returns `{ changed: true }`, `{ changed: false }`, `{ changed: false, reason: "full", atom }` or `{ changed: false, reason: "crossing" }`, with no message. New: `board()` returns the Bonds as a Board. `statusText` moves to `ui/messages.js`.
 - `puzzle/generate.js`, new: `findLayout(bonds, { tries, maxRows, maxCols, seed })` returns `{ rows, cols, atoms, solution }` as in a Puzzle: `atoms` as `[el, r, c]` in reading order, `solution` a Board. It returns `null` if no try has exactly one solution, and throws `can't read <bond>`, text for the developer, not the Player. The search and the reordering move here from `scripts/generate.js`, which keeps reading the arguments and printing the result.
-- `data/progress.js`: `createProgressStore(storage)` returns `{ load(), update(change) }`, in place of `loadProgress` and `saveProgress`; `markSolved` and `STORAGE_KEY` stay. `update(change)` saves `change(progress)`. `load()` checks what it reads by hand, as `loadProgress` does now, `boards` included.
+- `storage/progress.js`: `createProgressStore(storage)` returns `{ load(), update(change) }`, in place of `loadProgress` and `saveProgress`; `markSolved` and `STORAGE_KEY` stay. `update(change)` saves `change(progress)`. `load()` checks what it reads by hand, as `loadProgress` does now, `boards` included.
 - `ui/messages.js`, new: `statusText(status, puzzle)` and `reasonText(result, atoms)`.
 - `ui/panel.js`, new: `renderPanel(panel, view)` fills the panel, the rules included, which leave `index.html`; `formulaNodes` moves here from `puzzle-list.js`.
 - `ui/ui.js`, new: `createUi(doc, handlers, { confirm = doc.defaultView.confirm })` returns `{ open(game), render(view), say(result) }`. It owns the page: the Board, the panel, the list, the status line, the message, the buttons and Ctrl+Z; `say` words a `change` result with `reasonText`. `handlers` is `{ onChange(k, dir), onOpen(index), onUndo(), onReset(), onSolve() }`; `onSolve`, and from step 11 `onReset`, come only after the Player confirms. `view` is `{ puzzles, index, progress, status, done, canUndo, hasBonds }`.
@@ -77,7 +77,7 @@ Where the old rule ids went, for renaming tests:
 | Progress.02 | Progress.02 |
 | Layout.01–02 | Layout.01–02 |
 
-A test takes the new ids of what it checks: a test of the rules (`tests/unit/puzzle/`) keeps the Puzzle id; a test of a component or of the page takes the UI or Data id. So `tests/unit/board.test.js` "Grid.01, Valence.01 names each Atom…" becomes Board.04, Board.02.
+A test takes the new ids of what it checks: a test of the rules (`tests/unit/puzzle/`) keeps the Puzzle id; a test of a component or of the page takes the UI or Storage id. So `tests/unit/board.test.js` "Grid.01, Valence.01 names each Atom…" becomes Board.04, Board.02.
 
 ## Steps
 
@@ -89,14 +89,14 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
    - (a) Tests: `change` gives `full` with the Atom, or `crossing`, with no message; `statusText` and `reasonText` in `tests/unit/ui/messages.test.js` give the texts of ui.md, with the Element's name from `ui/elements.js`. The statuses are kinds already: those tests only move and pass at once.
    - (b) Implementation: reasons in `game.js`; `ui/messages.js`, with `statusText` out of `game.js` and its test's import; `app.js` shows `reasonText(result, game.atoms)` in place of `result.message`; split `elements.js` into the Puzzle's valences and the UI's look.
 4. **Schemas.** Puzzle.01, Bond.11, Progress.03.
-   - (a) Tests: add `ajv` and `tests/helpers/schemas.js`, which loads all of `docs/spec/schemas/` into one `Ajv2020`, so `$ref`s resolve. `board()` is a valid Board, and after Show solution equals the Puzzle's `solution`. Every Puzzle is a valid Puzzle, `saveProgress` stores a valid Progress, and the second Progress.03 example of data.md holds: these three already hold, so they pass at once.
+   - (a) Tests: add `ajv` and `tests/helpers/schemas.js`, which loads all of `docs/spec/schemas/` into one `Ajv2020`, so `$ref`s resolve. `board()` is a valid Board, and after Show solution equals the Puzzle's `solution`. Every Puzzle is a valid Puzzle, `saveProgress` stores a valid Progress, and the second Progress.03 example of storage.md holds: these three already hold, so they pass at once.
    - (b) Implementation: `board()` in `game.js`.
 5. **The generator in the Puzzle component.** Generate.01, Generate.02.
    - (a) Tests in `tests/unit/puzzle/generate.test.js`: the examples of puzzle.md through `findLayout`; the same seed gives the same layout; `null` when none is found (water on a 1 by 1 Grid). One test runs the script for its "no unique layout found", which already holds and passes at once.
    - (b) Implementation: `puzzle/generate.js`; `scripts/generate.js` keeps only the arguments and the printing.
 6. **The Progress store.** Progress.01–04.
    - (a) Tests: `createProgressStore` loads, and `update` saves, as the old functions did; an end-to-end test that, over opening the game, solving a Puzzle and a reload, the only request is for the page (Progress.04 is already true, so that test passes at once).
-   - (b) Implementation: `createProgressStore` in `data/progress.js`, used by `app.js`.
+   - (b) Implementation: `createProgressStore` in `storage/progress.js`, used by `app.js`.
 7. **The panel as a component.** Panel.01–04.
    - (a) Tests in happy-dom: `renderPanel` on an empty panel, for Panel.01–04.
    - (b) Implementation: `ui/panel.js`, with the rules out of `index.html`; `app.js` calls it in place of its own DOM code for the panel.
@@ -108,7 +108,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
    - (b) Implementation: `createGame`'s options, the checks against the Grid, `saved()`, the history cleared on Reset and solving, and `UNDO_LIMIT` 100, in `game.js`.
 10. **Keep every Puzzle in progress.** Progress.03, Progress.05, Input.03.
    - (a) Tests: `load()` keeps valid `boards` entries and leaves out one that doesn't fit the schema (`undo` with 101 Boards, `revealed: "yes"`). In `tests/unit/app.test.js`, with a fake store: a change, Undo, Reset and Show solution update the open Puzzle's entry in `boards`, solving or Reset removes it, and opening a Puzzle passes its entry to `createGame`. `createUi`: Reset is enabled with no Bonds but something to undo (Input.03). End-to-end: the Progress.05 example, a shown solution that is still unsolved after a reload, and that what is stored is a valid Progress. Two of these already hold, so they pass at once: the stored value of the Progress.01 example has no `boards`, and a solved Puzzle opens again with no Bonds.
-   - (b) Implementation: `boards` in `load`, in `data/progress.js`; saving and restoring in `app.js`; Reset's enabled state in `ui/ui.js`.
+   - (b) Implementation: `boards` in `load`, in `storage/progress.js`; saving and restoring in `app.js`; Reset's enabled state in `ui/ui.js`.
 11. **Reset asks first.** Input.05.
    - (a) Tests: `createUi`'s Reset calls `onReset` only after the Player confirms, and cancelling changes nothing; the Input.05 example end-to-end.
    - (b) Implementation: the confirm for Reset in `ui/ui.js`; the end-to-end tests that click Reset accept its dialog.

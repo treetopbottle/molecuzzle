@@ -1,4 +1,4 @@
-# Data
+# Storage
 
 What the game keeps, where and how, and who can read it ([0005](../decisions.md#0005)).
 

@@ -32,7 +32,7 @@ Example: Water with both Bonds, the solution above.
 
 ## Progress
 
-[progress.schema.json](schemas/progress.schema.json): stored in the browser ([Progress.03](data.md#progress)). Every field of Progress is optional; an entry in `boards` has all three. `boards` has an entry only for a Puzzle in progress ([Progress.05](data.md#progress)), and is left out when there is none; each Board in it is one of that Puzzle's. A Puzzle's id is its `id` in `src/puzzle/puzzles.js`, e.g. `acetic-acid`.
+[progress.schema.json](schemas/progress.schema.json): stored in the browser ([Progress.03](storage.md#progress)). Every field of Progress is optional; an entry in `boards` has all three. `boards` has an entry only for a Puzzle in progress ([Progress.05](storage.md#progress)), and is left out when there is none; each Board in it is one of that Puzzle's. A Puzzle's id is its `id` in `src/puzzle/puzzles.js`, e.g. `acetic-acid`.
 
 Example: Puzzles 1 and 2 solved, and Puzzle 3 open, with C═O made in two clicks.
 

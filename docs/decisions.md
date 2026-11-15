@@ -150,7 +150,7 @@ The Pages workflow doesn't run the tests: every branch that builds is published.
 
 Accepted (2026-11-15)
 
-The code is four components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Data (`src/data/`: what is kept in the browser), UI (`src/ui/`: the page, what it shows and what the Player does) and the Glue (`src/app.js`, `src/browser.js`). A component imports only from itself; the Glue imports from all of them, and hands each what it needs from the others as arguments. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component, except the Glue, whose behavior is in the features it wires.
+The code is four components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser), UI (`src/ui/`: the page, what it shows and what the Player does) and the Glue (`src/app.js`, `src/browser.js`). A component imports only from itself; the Glue imports from all of them, and hands each what it needs from the others as arguments. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component, except the Glue, whose behavior is in the features it wires.
 
 - **Why:** each component can be read, specified and tested on its own, and replaced: the Glue gets the storage and the Puzzles passed in, so tests can pass their own.
 - **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know.
