@@ -15,6 +15,7 @@ What the Player does and what the rules are.
 - [0003: All Puzzles are open](#0003)
 - [0004: Show solution doesn't solve a Puzzle](#0004)
 - [0008: Every Puzzle has exactly one solution](#0008)
+- [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 
 ### Technical
 
@@ -22,6 +23,8 @@ How the code and its data are built.
 
 - [0005: Progress lives in the browser](#0005)
 - [0006: ES modules, built into one HTML file](#0006)
+- [0011: Four components, wired in one place](#0011)
+- [0012: Schemas as JSON files, checked by the tests](#0012)
 
 ### Testing and publishing
 
@@ -30,6 +33,7 @@ How changes are checked and shared.
 - [0007: Vitest for rules and components, Playwright for the UI](#0007)
 - [0009: A GitHub Pages build per branch, from a gh-pages branch](#0009)
 - [0010: Failing checks block production, not branch builds](#0010)
+- [0013: Screenshots in the spec, made in a container](#0013)
 
 <a id="0001"></a>
 ## 0001: A simplified valence model
@@ -140,3 +144,47 @@ The Pages workflow doesn't run the tests: every branch that builds is published.
 - **Why:** a branch build is continuous delivery: it is there to try a change, also one that doesn't pass its checks yet, while it is fixed. Production is what Players get, so only that has to pass every check.
 - **Cost:** a branch build can be broken. Nothing on GitHub enforces the checks yet: they are run by hand before merging, and a push straight to `main` is published without them.
 - **Alternatives:** run the tests in the Pages workflow and publish only passing builds: a change with a failing check can't be tried from a link. Run the checks on GitHub and require them for `main`: enforced, but with few or no pull requests not worth setting up yet.
+
+<a id="0011"></a>
+## 0011: Four components, wired in one place
+
+Accepted (2026-11-15)
+
+The code is four components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser), UI (`src/ui/`: the page, what it shows and what the Player does) and the Glue (`src/app.js`, `src/browser.js`). A component imports only from itself; the Glue imports from all of them, and hands each what it needs from the others as arguments. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component, except the Glue, whose behavior is in the features it wires.
+
+- **Why:** each component can be read, specified and tested on its own, and replaced: the Glue gets the storage and the Puzzles passed in, so tests can pass their own.
+- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know.
+- **Alternatives:** the flat `src/` as it was: fewer files, but the boundaries were only in comments, and `app.js` mixed wiring with the panel's DOM. A framework or a container for dependency injection: more than the page needs ([0006](#0006)).
+
+<a id="0012"></a>
+## 0012: Schemas as JSON files, checked by the tests
+
+Accepted (2026-11-15)
+
+The schemas are JSON Schema files in `docs/spec/schemas/`, described in [schemas.md](spec/schemas.md). The tests check the data against them with Ajv: every Puzzle, the Board of a game, and the stored Progress.
+
+- **Why:** a schema that is checked stays true; a JSON file can be read by the tests, and by any tool in any language.
+- **Cost:** a development dependency; the schemas are outside the Markdown, so schemas.md links them instead of showing them. The page itself still checks what it loads by hand, as Ajv isn't part of it; the tests check that it agrees with the schema.
+- **Alternatives:** schemas inline in schemas.md, as before: one place to read, but unchecked, or the tests have to parse Markdown. Checks written by hand in JavaScript: no dependency, but a second description of each format, which can drift from the schema. Schemas in `src/`, next to the code of their component: but the spec links them, and no code reads them.
+
+<a id="0013"></a>
+## 0013: Screenshots in the spec, made in a container
+
+Accepted (2026-11-15)
+
+The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/spec/screenshots/`. Playwright compares the page with them (`toHaveScreenshot`) with its default tolerance, set in the config: `threshold: 0.2` for how far a pixel's colour may drift, and `maxDiffPixels: 0`, so no pixel may differ beyond that. These tests run only in Playwright's image, `mcr.microsoft.com/playwright`, tagged with the version of `@playwright/test` and run as `linux/amd64`, with Podman or Docker: `npm run test:screenshots` checks them, and `npm run test:screenshots -- --update-snapshots` remakes them after an intended change, to be looked at in the diff before a commit.
+
+- **Why:** the spec shows the look, which words can't. The image fixes the browser, the fonts and the rendering, so the same commit gives the same pixels on every machine and in CI, and a screenshot changes only with the page or with `@playwright/test`, in the same commit.
+- **Cost:** taking or checking screenshots needs Podman or Docker, and `npm run check` does both. Updating `@playwright/test` means remaking the screenshots. On an arm machine the image runs emulated, and slowly. Images in git, a new copy with every change.
+- **Alternatives:** a tolerance instead of a container: no Podman or Docker, but a different font moves glyphs by whole pixels, which no colour threshold absorbs, and small changes go unseen. A wider tolerance than the default can still be set in the config, if this turns out too strict. The browser on each machine: no setup, but every system update can change the pixels. Only accessibility snapshots, as before: they don't show the look.
+
+<a id="0015"></a>
+## 0015: Every Puzzle in progress is kept, until it is solved or reset
+
+Accepted (2026-11-15)
+
+Progress keeps, for every Puzzle in progress, its Bonds, whether the solution was shown, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone. Show solution now writes to Progress, but never a solved mark: the Progress of [0004](#0004) is the solved marks.
+
+- **Why:** a Player can leave any Puzzle, or lose the browser, and come back to it as they left it, Undo included. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)). Once a Puzzle is solved its Board tells nothing more, and Reset is how a Player starts again, so both end what is kept.
+- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 100 Boards per Puzzle in the browser, all rewritten on every change, and a full storage keeps nothing; a Puzzle left half done stays there until it is solved or reset. With the game in two tabs, the last one to save wins. A build without this, such as `main` before it is merged, drops the Puzzles in progress on its next save, as the origin is shared ([0009](#0009)).
+- **Alternatives:** only the open Puzzle's Board: less to store, but leaving a Puzzle loses it, and Undo after a reload. Boards without the undo history: smaller, but nothing to undo after coming back. Reset that Undo brings back, as before: then only solving ends the history. Reset that Undo brings back until the page closes, without keeping that: less final, but the Board after a reload isn't the one before it. Saves that read what is stored first and change only what their page changed: two tabs keep each other's Progress, but more code for a rare case.

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "puzzle.schema.json",
+  "title": "Puzzle",
+  "type": "object",
+  "required": ["id", "name", "formula", "fact", "rows", "cols", "atoms", "solution"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "Unique, used in Progress" },
+    "name": { "type": "string", "minLength": 1, "description": "The Molecule's name" },
+    "formula": { "type": "string", "pattern": "^([A-Z][a-z]?[0-9]*)+$", "description": "Element symbols with counts, e.g. C2H5NO2" },
+    "fact": { "type": "string", "minLength": 1 },
+    "rows": { "type": "integer", "minimum": 1 },
+    "cols": { "type": "integer", "minimum": 1 },
+    "atoms": {
+      "type": "array",
+      "minItems": 1,
+      "description": "In reading order: by row, then by column, counted from 0",
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          { "enum": ["H", "C", "N", "O"], "description": "Element" },
+          { "type": "integer", "minimum": 0, "description": "Row" },
+          { "type": "integer", "minimum": 0, "description": "Column" }
+        ],
+        "items": false,
+        "minItems": 3
+      }
+    },
+    "solution": { "$ref": "board.schema.json" }
+  }
+}

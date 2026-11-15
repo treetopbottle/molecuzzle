@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "progress.schema.json",
+  "title": "Progress",
+  "type": "object",
+  "properties": {
+    "puzzles": {
+      "type": "object",
+      "description": "Per Puzzle, by its id",
+      "additionalProperties": {
+        "enum": [
+          "solved"
+        ]
+      }
+    },
+    "current": {
+      "type": "string",
+      "description": "The id of the open Puzzle"
+    },
+    "boards": {
+      "type": "object",
+      "description": "Per Puzzle in progress, by its id",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "bonds",
+          "revealed",
+          "undo"
+        ],
+        "properties": {
+          "bonds": {
+            "$ref": "board.schema.json"
+          },
+          "revealed": {
+            "type": "boolean",
+            "description": "Whether the solution was shown since the Board last had no Bonds"
+          },
+          "undo": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "board.schema.json"
+            },
+            "description": "The Boards before each change, oldest first"
+          }
+        }
+      }
+    }
+  }
+}
