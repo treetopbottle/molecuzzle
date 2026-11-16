@@ -37,3 +37,8 @@ What was checked:
 2. **note**: `scripts/screenshots.sh:18`. In two other setups the test passes `--user` even though it can't help. Neither is a regression for most users, but the comment at lines 16-17 implies every case is covered.
    - `CONTAINER=docker` with Podman's `docker` shim (podman-docker): `podman info` has no `.SecurityOptions` field, so the template fails and `grep` sees nothing. `--user` is then added, and under rootless Podman the repo can't be written: the same failure as finding 1 of the second review. The default `CONTAINER=podman` avoids this, so it is only a trap for someone who aliases Docker to Podman.
    - Rootful Docker with `userns-remap` (`name=userns` in `SecurityOptions`): the container's uids map to subordinate uids with or without `--user`, so the repo can't be written either way. This was already so before 6805805.
+
+## Outcome
+
+1. Fixed: `--user` only when `docker info` shows a plain rootful daemon; Docker Desktop is left out by its `OperatingSystem` (0c255c4).
+2. Fixed: rootless, `userns` and an unreadable `docker info` (Podman's docker shim, no daemon) get no `--user`, and the comment says which setups are which (0c255c4). Docker isn't installed here: the branch ran with a stub `docker` printing each setup's info, and gave `--user` only for the plain rootful one.
