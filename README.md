@@ -38,7 +38,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
   - `storage/`: what is kept in the browser: `progress.js`
   - `ui/`: the page: `index.html` with `style.css`, `ui.js` (owns the page), `board.js` (the Board in SVG), `panel.js` (the open Puzzle and the rules), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
   - the Glue: `app.js` wires the components, with no DOM; `browser.js`, the entry point and the only file using the browser's globals, makes the dependencies and starts it
-- `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `publish-pages.sh` publishes a build to GitHub Pages
+- `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `screenshots.sh` runs the screenshot tests in Playwright's image; `publish-pages.sh` publishes a build to GitHub Pages
 - `.github/workflows/pages.yml`: builds and publishes every branch
 - `tests/`: `unit/` (Vitest: `puzzle/`, `storage/` and `ui/`, the UI in happy-dom, and `app.test.js`, the Glue with fakes), `e2e/` (Playwright, on the built page), `helpers/`
 - `prototypes/`: try-outs of other puzzle modes, outside the spec
@@ -128,12 +128,13 @@ flowchart TD
 
 ## Development
 
-Commands are run in this folder, with Node.js 22.12 or newer (an even-numbered release):
+Commands are run in this folder, with Node.js 22.12 or newer (an even-numbered release), and Podman (or Docker) for the screenshots:
 
 - Install: `npm install`, and once `npx playwright install chromium`, or set `CHROMIUM_PATH` to a Chromium already installed (e.g. `/usr/bin/chromium`).
 - Build: `npm run build` writes `dist/index.html`, the whole game in one file; open it in a browser, no server needed.
-- Test: `npm test` (unit and component tests), `npm run test:e2e` (end-to-end tests; builds first).
-- Check: `npm run check` builds and runs all tests.
+- Test: `npm test` (unit and component tests), `npm run test:e2e` (end-to-end tests; builds first), `npm run test:screenshots` (compares the page with `docs/spec/screenshots/`, in Playwright's image; `CONTAINER=docker` to use Docker).
+- Screenshots: after an intended change to the look, `npm run test:screenshots -- --update-snapshots` makes them again; look at each in the diff before committing ([0013](docs/decisions.md#0013)).
+- Check: `npm run check` builds and runs all tests, the screenshots included.
 - New Puzzle: `node scripts/generate.js "<bonds>"` prints a layout with exactly one solution; see the comment at its top.
 
 ## Branch builds
