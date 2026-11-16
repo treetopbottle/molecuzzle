@@ -34,7 +34,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): the working agreement
 - `src/`: the code, as ES modules, in components ([0011](docs/decisions.md#0011)):
-  - `puzzle/`: the Puzzles and the rules: `game.js`, `grid.js`, `solver.js`, `puzzles.js`, `elements.js`
+  - `puzzle/`: the Puzzles and the rules: `game.js`, `grid.js`, `solver.js`, `generate.js` (finds Grid layouts), `puzzles.js`, `elements.js`
   - `storage/`: what is kept in the browser: `progress.js`
   - `ui/`: the page: `index.html` with `style.css`, `board.js` (the Board in SVG), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
   - `app.js` (wires the page) and `browser.js` (the entry point): the Glue
@@ -72,6 +72,7 @@ flowchart TD
     game["game.js<br/>Bond orders, undo, status, reasons"]
     grid["grid.js<br/>candidate Bonds, crossings, connected"]
     solver["solver.js<br/>finds solutions"]
+    gen["generate.js<br/>findLayout"]
     elements["elements.js<br/>ELEMENTS, valence"]
   end
 
@@ -108,12 +109,14 @@ flowchart TD
 
   progress -.-> local
 
+  generate --> gen
   generate --> grid
-  generate --> solver
+  gen --> grid
+  gen --> solver
   tests -. "check every Puzzle<br/>has one solution" .-> solver
 ```
 
-`solver.js` is not part of the game itself: `scripts/generate.js` uses it to find new layouts, and the tests use it to check the Puzzles in `puzzles.js`.
+`solver.js` and `generate.js` are not part of the game itself: `scripts/generate.js` uses `findLayout` to find new layouts, and the tests use the solver to check the Puzzles in `puzzles.js`.
 
 ## Development
 
