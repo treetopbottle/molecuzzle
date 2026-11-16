@@ -62,3 +62,10 @@ What was checked:
      - A stored solved Board, or one with no Bonds and nothing to undo, is removed. A solved Board is also marked solved by `update()`, as before this fix.
    - All of these fit `schemas.md:35`, the board schema's description ("by first Atom, then second") and `revealed`'s meaning, and none is an entry the game writes. So nothing is wrong.
    - But the JSDoc, the commit subject and Outcome line 2 describe only the rejected-entry case. Something like "the open Puzzle's entry is saved again as saved() gives it" would say what happens.
+
+## Outcome
+
+1. Kept: entries for ids that aren't a Puzzle's stay, as in `puzzles`. Pages from one origin share Progress (Progress.04), so a branch build with other Puzzles writes ids this build doesn't know; dropping them would lose that build's Progress. This line corrects Outcome 2 of the first review: only the entry of a Puzzle that opens is removed.
+2. Kept: the object with a `length` is made up, and `createGame` would reject such a Board on opening anyway.
+3. Kept: it passed in 900 repeats; to watch, as the finding says.
+4. Fixed: the comment on `open()` says it saves the entry again as `saved()` gives it (0fa6726).
