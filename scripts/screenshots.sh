@@ -15,7 +15,8 @@ node scripts/build.js
 # A plain rootful Docker daemon would write root-owned files into the repo, so
 # it runs as this user. Everywhere else the container's root already writes as
 # this user: Podman, rootless Docker, Docker Desktop. With userns-remap neither
-# works. If docker info can't be read (Podman's docker shim, no daemon), no --user.
+# works. If docker info can't be read (Podman's docker shim, no docker), no
+# --user; with no daemon, the run fails either way.
 user=""
 if [ "$engine" = docker ]; then
   info=$(docker info --format '{{.OperatingSystem}} {{.SecurityOptions}}' 2>/dev/null || true)
