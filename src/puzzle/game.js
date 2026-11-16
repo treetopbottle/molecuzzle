@@ -79,10 +79,16 @@ export function createGame(puzzle) {
     if (next.some((o, k) => o !== order[k])) commit(next);
   }
 
+  /**
+   * The Bonds as a Board: [atom, atom, order]. The candidate Bonds are
+   * already by first Atom, then second, since the Atoms are in reading order.
+   */
+  const board = () => bonds.flatMap((e, k) => (order[k] ? [[e.a, e.b, order[k]]] : []));
+
   return {
     puzzle, atoms, bonds,
     get order() { return [...order]; },
     get canUndo() { return history.length > 0; },
-    remaining, status, done, change, undo, reset, showSolution,
+    remaining, status, done, change, undo, reset, showSolution, board,
   };
 }
