@@ -38,3 +38,8 @@ What was checked:
    - So a `renderPanel` that set the badge from `done` would still pass every unit test.
    - The end-to-end tests do catch it: `tests/e2e/check.spec.js:84` expects "Unsolved" after Show solution, and `:94` expects "✓ Solved" on a solved Puzzle after Show solution. That is enough for this step.
    - If step 8 moves those cases into happy-dom tests of `createUi`, one view with `done: true` and nothing solved, expecting "Unsolved", would cover it at the unit level. Spec: "Unsolved" or "✓ Solved" at `ui.md:119`, Show solution keeping a Puzzle unsolved at `check.spec.js:73`.
+
+## Outcome
+
+1. Fixed in step 8: decision 0007 names the UI's components in `src/ui/` and the Glue as tested with Vitest (f7cf6b0). This line closes Outcome 7 of the first review.
+2. Fixed in step 8: a `createUi` test renders a shown solution, `done` with nothing solved, and expects "Unsolved" and "Solved 0 of 13" (9ad8d21).
