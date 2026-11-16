@@ -100,7 +100,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 7. **The panel as a component.** `[DONE]` ([review](review-step-7.md), [2](review-step-7-2.md)) Panel.01–04.
    - (a) Tests in happy-dom: `renderPanel` on an empty panel, for Panel.01–04.
    - (b) Implementation: `ui/panel.js`, with the rules out of `index.html`; `app.js` calls it in place of its own DOM code for the panel.
-8. **The UI as one component, and the Glue.** Progress.01, List.01–02, Input.03, Input.04.
+8. **The UI as one component, and the Glue.** `[DONE]` ([review](review-step-8.md), [2](review-step-8-2.md)) Progress.01, List.01–02, Input.03, Input.04.
    - (a) Tests in happy-dom: `createUi`, for the buttons and Ctrl+Z calling their handlers, Undo and Reset disabled as in Input.03 (Reset with no Bonds but something to undo comes in step 10), Show solution asking first (Input.04), `say` showing no message for a result with no reason (Messages.02), and the list and score (List.01–02). In `tests/unit/app.test.js`, `startApp` with a fake store and UI: it opens the stored Puzzle, saves the open Puzzle, and marks a solved one (Progress.01).
    - (b) Implementation: `ui/ui.js`; `app.js` takes its dependencies and has no DOM; `browser.js` makes them. The README's diagram follows.
 9. **A Puzzle goes on where it was left.** Puzzle.03, Bond.08–10, Help.01.
