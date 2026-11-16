@@ -36,8 +36,8 @@ Domain entities, capitalized, each with an example the spec can reuse:
 - `src/`: the code, as ES modules, in components ([0011](docs/decisions.md#0011)):
   - `puzzle/`: the Puzzles and the rules: `game.js`, `grid.js`, `solver.js`, `generate.js` (finds Grid layouts), `puzzles.js`, `elements.js`
   - `storage/`: what is kept in the browser: `progress.js`
-  - `ui/`: the page: `index.html` with `style.css`, `board.js` (the Board in SVG), `panel.js` (the open Puzzle and the rules), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
-  - `app.js` (wires the page) and `browser.js` (the entry point): the Glue
+  - `ui/`: the page: `index.html` with `style.css`, `ui.js` (owns the page), `board.js` (the Board in SVG), `panel.js` (the open Puzzle and the rules), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
+  - the Glue: `app.js` wires the components, with no DOM; `browser.js`, the entry point and the only file using the browser's globals, makes the dependencies and starts it
 - `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `publish-pages.sh` publishes a build to GitHub Pages
 - `.github/workflows/pages.yml`: builds and publishes every branch
 - `tests/`: `unit/` (Vitest: `puzzle/`, `storage/` and `ui/`, the UI in happy-dom), `e2e/` (Playwright, on the built page), `helpers/`
@@ -55,12 +55,13 @@ Solid arrows are imports, dotted arrows are calls at runtime (the page loading f
 flowchart TD
   subgraph glue["Glue"]
     browser["browser.js<br/>(entry point)"]
-    app["app.js<br/>wires the page"]
+    app["app.js<br/>wires the components, no DOM"]
   end
 
   subgraph ui["UI: ui/"]
     html["index.html"]
     css["style.css"]
+    uijs["ui.js<br/>createUi: owns the page"]
     board["board.js<br/>Board in SVG"]
     panel["panel.js<br/>open Puzzle, name, formula, rules"]
     list["puzzle-list.js<br/>puzzle buttons"]
@@ -88,22 +89,24 @@ flowchart TD
   html -.-> css
   html -.-> browser
   browser --> app
+  browser --> puzzles
+  browser --> game
+  browser --> progress
+  browser --> uijs
   browser -. "passes" .-> local
 
-  app --> puzzles
-  app --> game
-  app --> board
-  app --> panel
-  app --> list
-  app --> messages
   app --> progress
+  app -. "createGame, store, createUi<br/>passed in" .-> game
+  app -. "open, render, say" .-> uijs
+  uijs -. "onChange, onOpen, onUndo,<br/>onReset, onSolve" .-> app
 
+  uijs --> board
+  uijs --> panel
+  uijs --> list
+  uijs --> messages
   board --> looks
   messages --> looks
-  board -. "onChange(bond, ±1)" .-> app
   board -. "reads state of" .-> game
-  list -. "onPick(index)" .-> app
-  panel -. "clicks on data-open" .-> app
 
   game --> elements
   game --> grid
