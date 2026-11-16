@@ -19,22 +19,27 @@ const button = name => panel.querySelector(`button[aria-label="${name}"]`) ?? [.
 const shown = el => el && !el.hidden;
 const fact = () => [...panel.querySelectorAll("p")].find(p => p.textContent === "Glycine is the simplest amino acid.");
 
-test("Panel.01 the open Puzzle between ‹ and ›, and whether it is solved", () => {
+const nav = () => panel.querySelector("nav").textContent.replace(/\s+/g, " ").trim();
+
+test("Panel.01 the open Puzzle between ‹ and ›, ‹ disabled on Puzzle 1 and › on Puzzle 13", () => {
   renderPanel(panel, view(0));
-  expect(panel.querySelector("nav").textContent).toContain("Puzzle 1 of 13");
+  expect(nav()).toBe("‹ Puzzle 1 of 13 › Unsolved");
   expect(button("Previous puzzle").disabled).toBe(true);
   expect(button("Next puzzle").disabled).toBe(false);
   expect(button("Next puzzle").dataset.open).toBe("1");
-  expect(panel.querySelector("nav").textContent).toContain("Unsolved");
 
   const next = button("Next puzzle");
-  renderPanel(panel, view(12, { solved: ["p13"] }));
+  renderPanel(panel, view(12));
   expect(button("Next puzzle")).toBe(next); // rendered in place, so focus stays
-  expect(panel.querySelector("nav").textContent).toContain("Puzzle 13 of 13");
+  expect(nav()).toBe("‹ Puzzle 13 of 13 › Unsolved");
   expect(button("Previous puzzle").disabled).toBe(false);
   expect(button("Previous puzzle").dataset.open).toBe("11");
   expect(button("Next puzzle").disabled).toBe(true);
-  expect(panel.querySelector("nav").textContent).toContain("✓ Solved");
+});
+
+test("Panel.01 a solved Puzzle says so next to it", () => {
+  renderPanel(panel, view(10, { solved: ["glycine"], done: true }));
+  expect(nav()).toBe("‹ Puzzle 11 of 13 › ✓ Solved");
 });
 
 test("Panel.02 until it is solved, a mystery molecule", () => {
