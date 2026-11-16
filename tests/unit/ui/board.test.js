@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { createBoard } from "../../../src/ui/board.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { ELEMENTS as VALENCES } from "../../../src/puzzle/elements.js";
+import { ELEMENTS as LOOKS } from "../../../src/ui/elements.js";
 import { click } from "../../helpers/draw.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
@@ -16,6 +18,10 @@ const labels = selector => [...svg.querySelectorAll(selector)].map(e => e.getAtt
 const edge = name => [...svg.querySelectorAll(".edge")].find(e => e.getAttribute("aria-label").startsWith(name));
 
 describe("Board", () => {
+  test("Board.01, Board.04 every Element of the Puzzles has a look and a name", () => {
+    expect(Object.keys(LOOKS).sort()).toEqual(Object.keys(VALENCES).sort());
+  });
+
   test("Board.01, Board.04 names each Atom with what it needs, and each dotted line", () => {
     createBoard(svg, createGame(puzzle("formaldehyde")), { onChange() {} });
     expect(svg.getAttribute("aria-label")).toBe("Board, 3 by 2");

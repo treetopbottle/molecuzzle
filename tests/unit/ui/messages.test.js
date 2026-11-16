@@ -22,4 +22,6 @@ test("Messages.02 a Bond that isn't made says why, with the Element's name", () 
     "Carbon already has all its bonds.",
   ]);
   expect(reasonText({ changed: false, reason: "crossing" }, atoms)).toBe("Bonds can't cross.");
+  expect(reasonText({ changed: false }, atoms)).toBeNull();
+  expect(reasonText({ changed: true }, atoms)).toBeNull();
 });

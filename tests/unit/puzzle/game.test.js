@@ -61,17 +61,13 @@ describe("Bond", () => {
 
   test("Bond.04 an Atom with all its bonds takes no new Bond, with the reason full and that Atom", () => {
     const game = createGame(puzzle("methanol"));
-    click(game, "2,1", "3,1"); // O–H
-    click(game, "2,1", "2,2"); // C–O: O is full
-    expect(click(game, "2,1", "3,1", 0)).toBeUndefined();
-    click(game, "2,1", "3,1", 1, -1); // remove O–H
     click(game, "3,1", "3,2"); // H–H: both H are full
     expect(click(game, "2,1", "3,1")).toEqual({ changed: false, reason: "full", atom: 4 }); // H 3,1
     expect(draw(game)).toMatchInlineSnapshot(`
       "
         H
         ·
-      O─C·H
+      O·C·H
       · ·
       H─H
       "

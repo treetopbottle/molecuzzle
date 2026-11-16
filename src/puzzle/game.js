@@ -35,8 +35,9 @@ export function createGame(puzzle) {
   /**
    * Makes candidate Bond k one stronger (dir +1) or weaker (dir -1).
    * Stronger past a triple Bond, or past what either Atom has room for,
-   * removes it. When no Bond is made, the reason is "full", with the Atom
-   * that has no room, or "crossing".
+   * removes it. When a Bond can't be made, the reason is "full", with the
+   * Atom that has no room, or "crossing"; other changes that change nothing
+   * have no reason.
    */
   function change(k, dir) {
     if (done()) return { changed: false };
