@@ -4,7 +4,7 @@ Language-independent [JSON Schema](https://json-schema.org/)s (draft 2020-12), a
 
 ## Puzzle
 
-[puzzle.schema.json](schemas/puzzle.schema.json): one Puzzle, as in `src/puzzle/puzzles.js` ([Puzzle.01](puzzle.md#puzzle)). Its `solution` is a [Board](#board). Also: the `id`s are unique, every Atom is inside the Grid (row below `rows`, column below `cols`) at its own point, and the Atoms are those of the formula.
+[puzzle.schema.json](schemas/puzzle.schema.json): one Puzzle, as in `src/puzzle/puzzles.js` ([Puzzle.01](puzzle.md#puzzle)). Its `solution` is a [Board](#board). Also: the `id`s are unique, every Atom is inside the Grid (row below `rows`, column below `cols`) at its own point, the Atoms are in reading order, and they are those of the formula.
 
 Example: Puzzle 1.
 
