@@ -82,7 +82,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 ## Steps
 
 1. **Move into components.** `[DONE]` ([review](review-step-1.md), [2](review-step-1-2.md), [3](review-step-1-3.md)) Move the files as in Design with `git mv`, renaming `src/main.js` to `src/browser.js`, and fix the imports, `scripts/build.js`, `scripts/generate.js`, the Vitest and Playwright configs and `package.json`. Move the tests the same way, and rename them by the table above. Update the README ("Where things are", the diagram, `test:e2e` under Development) and the paths named in decisions 0007 and 0008, and check that every path the spec and decisions name exists. No behavior or interface changes; the checks pass. The tests of Bond.08–10 keep the old behavior, Undo after Reset and after solving, until step 9.
-2. **Tests for the rules without one.** Puzzle.02, Valence.02, Board.04, Messages.01.
+2. **Tests for the rules without one.** `[DONE]` ([review](review-step-2.md), [2](review-step-2-2.md)) Puzzle.02, Valence.02, Board.04, Messages.01.
    - (a) Tests: a new game has no Bonds; an Atom with all its Bonds is complete, in `tests/unit/puzzle/`; the Board.04 example, Formaldehyde with C═O (the names are tested in parts by the tests of step 1, not as the example); the status line in green for solved and revealed (orange for pieces is tested by `tests/e2e/check.spec.js`).
    - (b) Nothing to implement: these rules describe the game as it is, so the tests pass at once.
 3. **Rules without text.** Bond.04, Bond.05, Check.01–04, Help.01, Messages.01, Messages.02.
