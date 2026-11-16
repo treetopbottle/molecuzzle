@@ -11,7 +11,7 @@ test.describe("at 1280×800", () => {
     await expect(page).toHaveScreenshot("page-start.png", { fullPage: true });
   });
 
-  test("Page.01, Board.03, Panel.03 Puzzle 11 solved", async ({ page }) => {
+  test("Page.01 Puzzle 11 solved", async ({ page }) => {
     await start(page);
     await openPuzzle(page, 11);
     await build(page, PUZZLES[10]);

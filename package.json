@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node scripts/build.js",
     "test": "vitest run",
-    "test:e2e": "playwright test --project desktop --project phone",
+    "test:e2e": "playwright test",
     "test:screenshots": "scripts/screenshots.sh",
     "check": "npm run build && npm test && npm run test:e2e && npm run test:screenshots"
   },
