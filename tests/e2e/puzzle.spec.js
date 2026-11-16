@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, build, PUZZLES, storedProgress } from "./helpers.js";
+import { start, openPuzzle, build, PUZZLES, storedProgress, GAME_URL } from "./helpers.js";
 
 test("Board.04, Panel.01, Panel.02 a puzzle starts with no Bonds and its name hidden", async ({ page }) => {
   await start(page);
@@ -65,4 +65,15 @@ test("Progress.01, Progress.03 solved puzzles and the open puzzle are kept over 
   await expect(page.locator("#counter")).toHaveText("Puzzle 4 of 13");
   await expect(page.getByRole("button", { name: "Puzzle 1: Water, solved" })).toBeVisible();
   expect(await storedProgress(page)).toEqual({ puzzles: { water: "solved" }, current: "hydrogen-cyanide" });
+});
+
+test("Progress.04 the only request the page makes is for the page itself", async ({ page }) => {
+  const requests = [];
+  page.on("request", request => requests.push(request.url()));
+  await start(page);
+  await build(page, PUZZLES[0]);
+  await expect(page.getByRole("status")).toHaveText("✓ Solved! It's Water.");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Puzzle 1: Water, solved" })).toBeVisible();
+  expect(requests).toEqual([GAME_URL, GAME_URL]);
 });
