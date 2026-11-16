@@ -21,3 +21,10 @@ What was checked:
 2. **note:** `tests/unit/puzzle/game.test.js:181-187`. The Valence.02 test defines "complete" inside the test as `game.remaining(i) === 0` (line 183). `game.js` has no "complete" of its own, so the test can only fail if `remaining()` is wrong. Valence.01 already covers that: its `"H1 C2 H1 O0"` after C═O is the same fact. The test is not vacuous, but it adds little. The one place the Puzzle uses "complete" is `status()`, where a complete Atom is not counted as open (`src/puzzle/game.js:19`). Asserting `game.status()` is `{ kind: "open", open: 3 }` after C═O would tie the rule to code that uses it.
 3. **note:** `tests/unit/puzzle/game.test.js:10-20`. Puzzle.02 is a rule about every Puzzle ("a Puzzle starts with no Bonds"), but the test checks only the Puzzle 3 example. That matches the spec's example. A cheap extra line would cover the whole rule: `expect(PUZZLES.filter(p => createGame(p).order.some(Boolean))).toEqual([])`.
 4. **note:** `tests/e2e/check.spec.js:54`. `isGreen` only asks whether the green channel is the largest. The default status text, `--text` #e6ebf5 (230, 235, 245), misses counting as green only because its blue is 10 higher than its green. The test is correct today, since the `.some(isGreen)` check at line 62 does fail if the status line is always green. But a small change to `--text` could make that check fail, or the "every" checks pass, for the wrong reason.
+
+## Outcome
+
+1. Fixed: the pieces test checks that the status line's text and border are orange by their hue, as the green test does, and no longer checks the class (c802971).
+2. Fixed: the Valence.02 test also checks that the status counts the complete O as not open (c802971).
+3. Fixed: Puzzle.02 checks that every Puzzle starts with no Bonds (c802971).
+4. Fixed: green and orange are hue ranges, in `tests/e2e/helpers.js`, and a (nearly) grey colour is neither (c802971).
