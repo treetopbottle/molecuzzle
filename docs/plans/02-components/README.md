@@ -77,13 +77,13 @@ Where the old rule ids went, for renaming tests:
 | Progress.02 | Progress.02 |
 | Layout.01–02 | Layout.01–02 |
 
-A test takes the new ids of what it checks: a test of the rules (`tests/unit/puzzle/`) keeps the Puzzle id; a test of a component or of the page takes the UI or Storage id. So `tests/unit/board.test.js` "Grid.01, Valence.01 names each Atom…" becomes Board.04, Board.02.
+A test takes the new ids of what it checks: a test of the rules (`tests/unit/puzzle/`) keeps the Puzzle id; a test of a component or of the page takes the UI or Storage id. A test takes the ids of the rules it is about, not of every value it reads on the way, and lists them in the order of the spec. So `tests/unit/board.test.js` "Grid.01, Valence.01 names each Atom…" becomes Board.01, Board.04.
 
 ## Steps
 
 1. **Move into components.** Move the files as in Design with `git mv`, renaming `src/main.js` to `src/browser.js`, and fix the imports, `scripts/build.js`, `scripts/generate.js`, the Vitest and Playwright configs and `package.json`. Move the tests the same way, and rename them by the table above. Update the README ("Where things are", the diagram, `test:e2e` under Development) and the paths named in decisions 0007 and 0008, and check that every path the spec and decisions name exists. No behavior or interface changes; the checks pass. The tests of Bond.08–10 keep the old behavior, Undo after Reset and after solving, until step 9.
 2. **Tests for the rules without one.** Puzzle.02, Valence.02, Board.04, Messages.01.
-   - (a) Tests: a new game has no Bonds; an Atom with all its Bonds is complete, in `tests/unit/puzzle/`; the names of the Board and its Atoms; the status line in green for revealed, in orange for pieces.
+   - (a) Tests: a new game has no Bonds; an Atom with all its Bonds is complete, in `tests/unit/puzzle/`; the names of the Board and its Atoms; the status line in green for solved and revealed (orange for pieces is tested by `tests/e2e/check.spec.js`).
    - (b) Nothing to implement: these rules describe the game as it is, so the tests pass at once.
 3. **Rules without text.** Bond.04, Bond.05, Check.01–04, Help.01, Messages.01, Messages.02.
    - (a) Tests: `change` gives `full` with the Atom, or `crossing`, with no message; `statusText` and `reasonText` in `tests/unit/ui/messages.test.js` give the texts of ui.md, with the Element's name from `ui/elements.js`. The statuses are kinds already: those tests only move and pass at once.
