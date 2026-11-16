@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { start, openPuzzle, build, PUZZLES, storedProgress } from "./helpers.js";
 
-test("Panel.02, Board.04 a puzzle starts with no Bonds and its name hidden", async ({ page }) => {
+test("Panel.01, Panel.02, Board.04 a puzzle starts with no Bonds and its name hidden", async ({ page }) => {
   await start(page);
   await openPuzzle(page, 3);
   await expect(page.getByRole("complementary")).toMatchAriaSnapshot(`

@@ -63,7 +63,7 @@ test("Input.02, Input.03 Undo and Ctrl+Z go back one change", async ({ page }) =
   await expect(undo).toBeDisabled();
 });
 
-test("Input.03 Reset removes every Bond, and Undo brings them back", async ({ page }) => {
+test("Input.02, Input.03 Reset removes every Bond, and Undo brings them back", async ({ page }) => {
   const reset = page.getByRole("button", { name: "Reset" });
   await openPuzzle(page, 2);
   await expect(reset).toBeDisabled();

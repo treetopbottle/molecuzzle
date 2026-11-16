@@ -22,7 +22,7 @@ test("Messages.01 every Atom complete, but in two pieces", async ({ page }) => {
   await expect(status(page)).toHaveClass("warn");
 });
 
-test("Board.03, Messages.01, Panel.03, List.02, Progress.01 building the molecule solves the puzzle and names it", async ({ page }) => {
+test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building the molecule solves the puzzle and names it", async ({ page }) => {
   await openPuzzle(page, 11);
   await build(page, PUZZLES[10]);
   await expect(status(page)).toHaveText("✓ Solved! It's Glycine.");
@@ -57,7 +57,7 @@ test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
-test("Input.04, Messages.01, Panel.01, List.02 Show solution asks first, then shows the molecule, still unsolved", async ({ page }) => {
+test("Input.04, Messages.01, Panel.01, List.01, List.02 Show solution asks first, then shows the molecule, still unsolved", async ({ page }) => {
   await openPuzzle(page, 9);
   page.once("dialog", dialog => dialog.dismiss());
   await page.getByRole("button", { name: "Show solution" }).click();

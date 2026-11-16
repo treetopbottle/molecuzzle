@@ -15,7 +15,7 @@ const labels = selector => [...svg.querySelectorAll(selector)].map(e => e.getAtt
 const edge = name => [...svg.querySelectorAll(".edge")].find(e => e.getAttribute("aria-label").startsWith(name));
 
 describe("Board", () => {
-  test("Board.04, Board.02 names each Atom with what it needs, and each dotted line", () => {
+  test("Board.01, Board.04 names each Atom with what it needs, and each dotted line", () => {
     createBoard(svg, createGame(puzzle("formaldehyde")), { onChange() {} });
     expect(svg.getAttribute("aria-label")).toBe("Board, 3 by 2");
     expect(labels(".atom")).toMatchInlineSnapshot(`
@@ -49,7 +49,7 @@ describe("Board", () => {
     expect(bond.getAttribute("role")).toBe("button");
   });
 
-  test("Board.01, Board.02 render shows Bonds, what Atoms still need, and complete Atoms", () => {
+  test("Board.01, Board.02, Board.04 render shows Bonds, what Atoms still need, and complete Atoms", () => {
     const game = createGame(puzzle("formaldehyde"));
     const board = createBoard(svg, game, { onChange() {} });
     game.change(2, 1);
