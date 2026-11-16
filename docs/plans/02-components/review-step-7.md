@@ -42,3 +42,13 @@ What was checked:
 5. **note**: `src/ui/panel.js:20-31` keeps the global ids (`prev`, `next`, `counter`, `badge`, `title`, `formula`, `fact`, `nextPuzzle`) inside the component. The end-to-end tests use `#counter` and `#badge`, so keeping them avoids changing those tests. That is fine with one panel per page.
 6. **note**: the subscripts are checked twice: through renderPanel (`panel.test.js:54`) and through the moved `formulaNodes` test (`:62-66`). That's harmless. `formulaNodes` is now used only inside `panel.js` and by that test; the Design says it moves here, so the export is within the plan.
 7. **note**: `docs/decisions.md:109` (0007) names `src/ui/board.js` and `src/ui/puzzle-list.js` as the components tested in happy-dom. `src/ui/panel.js` is now one too, and step 8 adds `ui.js`. They read as examples, so this is optional, but it could be updated when step 8 lands.
+
+## Outcome
+
+1. Fixed: Puzzle 13 renders unsolved, as in the example, "✓ Solved" has a test of its own with Puzzle 11, and the nav's text is checked in order, "‹ Puzzle 1 of 13 › Unsolved" (7575109).
+2. Kept: step 8's createUi takes over the listener; the list keeps its onPick, called with createUi's onOpen.
+3. Kept: the list's focus is outside this plan.
+4. Kept: the name follows the spec's Panel section; step 12's screenshots lock down the layout.
+5. Kept: one panel per page, and the end-to-end tests use the ids.
+6. Kept: harmless, as the finding says.
+7. Fixed in step 8: decision 0007 names the UI's components tested in happy-dom.
