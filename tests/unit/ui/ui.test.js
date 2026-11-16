@@ -79,11 +79,14 @@ test("Messages.02 say words why a Bond isn't made, and says nothing without a re
   expect(message().textContent).toBe("Hydrogen already has all its bonds.");
 });
 
-test("Panel.01 ‹, › and Next puzzle → open their Puzzle", () => {
-  show(1);
+test("Panel.01, Panel.03 ‹, › and Next puzzle → open their Puzzle", () => {
+  const { ui, game } = show(1);
   button("Previous puzzle").click();
   button("Next puzzle").click();
-  expect(handlers.onOpen.mock.calls).toEqual([[0], [2]]);
+  game.showSolution();
+  ui.render(view(1, game));
+  button("Next puzzle →").click();
+  expect(handlers.onOpen.mock.calls).toEqual([[0], [2], [2]]);
 });
 
 test("Panel.01, List.02 a shown solution leaves the Puzzle unsolved", () => {

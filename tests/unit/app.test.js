@@ -50,7 +50,7 @@ test("Progress.01 a solved Puzzle is marked solved, and the UI shows it", () => 
 });
 
 test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, and the UI shows the result", () => {
-  const { ui } = start({ puzzles: {}, current: "ammonia" });
+  const { store, ui } = start({ puzzles: {}, current: "ammonia" });
   ui.handlers.onChange(0, 1);
   expect(ui.said.at(-1)).toEqual({ changed: true });
   expect(ui.view()).toMatchObject({ status: { kind: "open", open: 3 }, canUndo: true, hasBonds: true });
@@ -58,6 +58,7 @@ test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, 
   expect(ui.view()).toMatchObject({ status: { kind: "empty" }, canUndo: false, hasBonds: false });
   ui.handlers.onSolve();
   expect(ui.view()).toMatchObject({ status: { kind: "revealed" }, done: true });
+  expect(store.saved.puzzles).toEqual({});
   ui.handlers.onReset();
   expect(ui.view()).toMatchObject({ status: { kind: "empty" }, hasBonds: false });
 });
