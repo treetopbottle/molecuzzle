@@ -56,3 +56,10 @@ What was checked:
    - Podman machine on macOS (a VM with SELinux, the repo shared from the host): Podman should skip the relabel where the shared filesystem doesn't support labels, but this wasn't checked.
 
    On SELinux hosts, `:Z` gives the whole repo, including `node_modules/` and `.git/`, a label private to this one container. A new container gets a new label, so every run relabels every file again. Meanwhile, any other container that mounts the repo, such as a dev container or a second run in parallel, loses access to it. `:z` (a shared label, set once) is the usual choice for a source tree. Either option fixes what finding 5 of the first review reported.
+
+## Outcome
+
+1. Fixed: `--user` only when `docker info` doesn't report rootless; rootless Docker maps the container's root to the user, as rootless Podman does (6805805). Docker isn't installed here, so this was checked by reading.
+2. Fixed: the variable is `MOLECUZZLE_SCREENSHOTS`, only "1" turns it on, and the comment says a run elsewhere can still set it on purpose (6805805).
+3. Fixed: the Design says the script builds `dist/` on the host and sets `MOLECUZZLE_SCREENSHOTS=1`, which defines the project and skips the build (213b277).
+4. Fixed: the mount has `:z`, the shared label (6805805).
