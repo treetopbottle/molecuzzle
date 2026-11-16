@@ -34,3 +34,11 @@ What was checked:
 3. **note**, `src/puzzle/game.js:44`: a restored history longer than 100 is cut to the last 100 (`before.slice(-UNDO_LIMIT)`), not rejected. This applies Bond.08 ("with each change past 100, the oldest is forgotten") and keeps the newest Boards, which are the right ones because `undo` pops from the end. It isn't tested. In practice it can't happen: from step 10, `load()` leaves out an entry with more than 100 Boards (`maxItems`).
 4. **note**, `src/puzzle/game.js:40-47`: a solved Board passed in with a history starts solved with its history, so Undo works on a solved Board. Bond.10 allows Undo only while the solution is shown, and says solving removes the history. Puzzle.03 doesn't list a solved Board among the Boards that can't be on the Grid, so the code does what the spec says. `saved()` never produces such data (it returns null when solved, Progress.05), so this only matters for hand-made or stale data. Either accept it, or have createGame drop the history of a solved Board.
 5. **note**, plan order, no file: `main` is the published build, and from 2143e3d its Reset can't be undone (Undo is disabled after it) but doesn't ask first; Input.05 comes in step 11. Decision 0015 says "Reset can't be undone, so it asks first". Until step 10, there is also no Progress that would make the lost Undo worth it. This is the order the plan chose, not a fault in this step, but until step 11 the live game has an irreversible Reset with no confirm.
+
+## Outcome
+
+1. Fixed: the four bad-Board cases pass the example's history `[[]]`, so each checks that a bad Board also drops a good history (bfd794e).
+2. Fixed: a test starts with no Bonds and `revealed: true`, Undoes and builds the Molecule, and it is solved (bfd794e).
+3. Kept: `load()` leaves out an entry with more than 100 Boards from step 10, so the cut is only a guard.
+4. Fixed: a solved Board as it was left starts with nothing to undo, as Bond.10 says solving removes the history, with a test (bfd794e).
+5. Kept: nothing is pushed to `main` while the plan runs, and step 11 adds the confirm for Reset.
