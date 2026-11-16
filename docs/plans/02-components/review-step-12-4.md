@@ -26,3 +26,7 @@ What was checked:
    - This comes from reading the Docker CLI source (`cli/command/system/info.go`), not from a run: Docker isn't installed here.
    - It changes nothing in practice. With no daemon, `exec docker run` fails anyway with Docker's own error and a non-zero status, so `npm run check` fails as it should. Only the comment and Outcome 2 say more than the code does.
    - Possible fix: limit the comment's "can't be read" case to Podman's docker shim and to a missing `docker`, or say that `--user` doesn't matter when there is no daemon.
+
+## Outcome
+
+1. Fixed: the comment names Podman's docker shim and a missing `docker` as the cases with no `--user`, and says that with no daemon the run fails either way (0c6bb21). This line corrects "no daemon" in Outcome 2 of the third review. Only a comment changed.
