@@ -4,17 +4,49 @@
 import { ELEMENTS, MAX_ORDER } from "./elements.js";
 import { candidateBonds, crosses, connected } from "./grid.js";
 
-export const UNDO_LIMIT = 300;
+export const UNDO_LIMIT = 100;
 
-export function createGame(puzzle) {
+/**
+ * A Puzzle being played. It starts with no Bonds, or where it was left:
+ * { bonds, revealed, undo } as saved() gave them. If that Board, or one in
+ * its history, can't be on the Grid, it starts with no Bonds, nothing to
+ * undo and the solution not shown.
+ */
+export function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
   const atoms = puzzle.atoms.map(([el, r, c]) => ({ el, r, c }));
   const bonds = candidateBonds(atoms);
-  let order = bonds.map(() => 0);
+  const empty = () => bonds.map(() => 0);
+
+  const bondCount = (i, o) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? o[k] : 0), 0);
+
+  /** A Board as Bond orders per candidate Bond, or null if it can't be on the Grid. */
+  function orders(board) {
+    if (!Array.isArray(board)) return null;
+    const o = empty();
+    for (const bond of board) {
+      const [a, b, n] = Array.isArray(bond) ? bond : [];
+      const k = bonds.findIndex(e => e.a === a && e.b === b);
+      if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
+      o[k] = n;
+    }
+    if (atoms.some((atom, i) => bondCount(i, o) > ELEMENTS[atom.el].valence)) return null;
+    if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
+    return o;
+  }
+
+  let order = empty();
   let history = [];
   let revealed = false; // the solution was shown, and the Board wasn't emptied since
+  if (left !== undefined) {
+    const now = orders(left), before = Array.isArray(past) ? past.map(orders) : [null];
+    if (now && !before.includes(null)) {
+      order = now;
+      history = before.slice(-UNDO_LIMIT);
+      revealed = shown === true && order.some(Boolean);
+    }
+  }
 
-  const bondCount = i => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? order[k] : 0), 0);
-  const remaining = i => ELEMENTS[atoms[i].el].valence - bondCount(i);
+  const remaining = i => ELEMENTS[atoms[i].el].valence - bondCount(i, order);
 
   function status() {
     const open = atoms.filter((_, i) => remaining(i) > 0).length;
@@ -54,6 +86,7 @@ export function createGame(puzzle) {
     const copy = [...order];
     copy[k] = next;
     commit(copy);
+    if (status().kind === "solved") history = [];
     return { changed: true };
   }
 
@@ -64,9 +97,12 @@ export function createGame(puzzle) {
     return true;
   }
 
+  /** Removes every Bond and the undo history; with neither, does nothing. */
   function reset() {
-    if (!order.some(Boolean)) return false;
-    commit(bonds.map(() => 0));
+    if (!order.some(Boolean) && !history.length) return false;
+    order = empty();
+    history = [];
+    revealed = false;
     return true;
   }
 
@@ -83,12 +119,23 @@ export function createGame(puzzle) {
    * The Bonds as a Board: [atom, atom, order]. The candidate Bonds are
    * already by first Atom, then second, since the Atoms are in reading order.
    */
-  const board = () => bonds.flatMap((e, k) => (order[k] ? [[e.a, e.b, order[k]]] : []));
+  const toBoard = o => bonds.flatMap((e, k) => (o[k] ? [[e.a, e.b, o[k]]] : []));
+  const board = () => toBoard(order);
+
+  /**
+   * Where the Puzzle was left, for createGame: { bonds, revealed, undo }, the
+   * undo history oldest first. Null unless it is in progress: with Bonds or
+   * something to undo, and not solved.
+   */
+  function saved() {
+    if ((!order.some(Boolean) && !history.length) || status().kind === "solved") return null;
+    return { bonds: board(), revealed, undo: history.map(toBoard) };
+  }
 
   return {
     puzzle, atoms, bonds,
     get order() { return [...order]; },
     get canUndo() { return history.length > 0; },
-    remaining, status, done, change, undo, reset, showSolution, board,
+    remaining, status, done, change, undo, reset, showSolution, board, saved,
   };
 }
