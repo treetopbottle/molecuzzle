@@ -44,3 +44,11 @@ What was checked:
 5. **note**: `scripts/screenshots.sh:9-10`.
    - With `CONTAINER=docker` on Linux (rootful Docker), the container runs as root. Files it creates on the mounted repo are owned by root: `test-results/` on every run, a new `dist/`, and new PNGs from `--update-snapshots`. A later host run may then be unable to clean or rewrite them. Passing `--user "$(id -u):$(id -g)"` (with a writable `HOME`) for Docker avoids this. Rootless Podman, as on this host, maps the files to the user. Docker wasn't run.
    - On SELinux hosts (Fedora and its relatives), Podman needs `:Z` on the `-v` mount, or the container can't read `/work`.
+
+## Outcome
+
+1. Fixed: `scripts/screenshots.sh` builds `dist/` on the host and the container skips `globalSetup`, so the container needs no native binary from `node_modules` and decision 0013's emulated arm machine holds; the screenshots still match (b078266).
+2. Fixed: the `screenshots` project exists only with `SCREENSHOTS=1`, which the script sets in the container; on the host `npx playwright test --project screenshots` is refused, and `test:e2e` is plain `playwright test` again (b078266).
+3. Fixed: the plan says the image takes the version of the installed `@playwright/test` (062bd19).
+4. Fixed: "Page.01 Puzzle 11 solved" (b078266).
+5. Fixed: with `CONTAINER=docker` the container runs as the user, with `HOME=/tmp`, and the mount has `:Z`; Docker wasn't run here (b078266).
