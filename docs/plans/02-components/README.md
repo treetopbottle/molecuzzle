@@ -88,7 +88,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 3. **Rules without text.** `[DONE]` ([review](review-step-3.md), [2](review-step-3-2.md)) Bond.04, Bond.05, Check.01–04, Help.01, Messages.01, Messages.02.
    - (a) Tests: `change` gives `full` with the Atom, or `crossing`, with no message; `statusText` and `reasonText` in `tests/unit/ui/messages.test.js` give the texts of ui.md, with the Element's name from `ui/elements.js`. The statuses are kinds already: those tests only move and pass at once.
    - (b) Implementation: reasons in `game.js`; `ui/messages.js`, with `statusText` out of `game.js` and its test's import; `app.js` shows `reasonText(result, game.atoms)` in place of `result.message`; split `elements.js` into the Puzzle's valences and the UI's look.
-4. **Schemas.** Puzzle.01, Bond.11, Progress.03.
+4. **Schemas.** `[DONE]` ([review](review-step-4.md), [2](review-step-4-2.md)) Puzzle.01, Bond.11, Progress.03.
    - (a) Tests: add `ajv` and `tests/helpers/schemas.js`, which loads all of `docs/spec/schemas/` into one `Ajv2020`, so `$ref`s resolve. `board()` is a valid Board, and after Show solution equals the Puzzle's `solution`. Every Puzzle is a valid Puzzle, `saveProgress` stores a valid Progress, and the second Progress.03 example of storage.md holds: these three already hold, so they pass at once.
    - (b) Implementation: `board()` in `game.js`.
 5. **The generator in the Puzzle component.** Generate.01, Generate.02.
