@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { expect, test, vi } from "vitest";
-import { renderPuzzleList, formulaNodes } from "../../../src/ui/puzzle-list.js";
+import { renderPuzzleList } from "../../../src/ui/puzzle-list.js";
 
 const puzzles = [{ id: "water", name: "Water" }, { id: "ammonia", name: "Ammonia" }, { id: "urea", name: "Urea" }];
 
@@ -19,10 +19,4 @@ test("List.01 one button per puzzle, with its state, the open one marked", () =>
     `);
   buttons[1].click();
   expect(onPick).toHaveBeenCalledWith(1);
-});
-
-test("Panel.03 formulas show their numbers as subscripts", () => {
-  const p = document.createElement("p");
-  p.append(...formulaNodes(document, "C2H5NO2"));
-  expect(p.innerHTML).toBe("C<sub>2</sub>H<sub>5</sub>NO<sub>2</sub>");
 });

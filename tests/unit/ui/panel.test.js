@@ -1,0 +1,77 @@
+// @vitest-environment happy-dom
+import { beforeEach, expect, test } from "vitest";
+import { renderPanel, formulaNodes } from "../../../src/ui/panel.js";
+
+const puzzles = Array.from({ length: 13 }, (_, i) => ({ id: `p${i + 1}`, name: `Molecule ${i + 1}`, formula: "H2O", fact: `Fact ${i + 1}.` }));
+puzzles[10] = { id: "glycine", name: "Glycine", formula: "C2H5NO2", fact: "Glycine is the simplest amino acid." };
+
+let panel;
+beforeEach(() => {
+  document.body.innerHTML = '<div id="panel"></div>';
+  panel = document.getElementById("panel");
+});
+
+const view = (index, { solved = [], done = false } = {}) => ({
+  puzzles, index, done,
+  progress: { puzzles: Object.fromEntries(solved.map(id => [id, "solved"])), current: puzzles[index].id },
+});
+const button = name => panel.querySelector(`button[aria-label="${name}"]`) ?? [...panel.querySelectorAll("button")].find(b => b.textContent === name);
+const shown = el => el && !el.hidden;
+const fact = () => [...panel.querySelectorAll("p")].find(p => p.textContent === "Glycine is the simplest amino acid.");
+
+test("Panel.01 the open Puzzle between ‹ and ›, and whether it is solved", () => {
+  renderPanel(panel, view(0));
+  expect(panel.querySelector("nav").textContent).toContain("Puzzle 1 of 13");
+  expect(button("Previous puzzle").disabled).toBe(true);
+  expect(button("Next puzzle").disabled).toBe(false);
+  expect(button("Next puzzle").dataset.open).toBe("1");
+  expect(panel.querySelector("nav").textContent).toContain("Unsolved");
+
+  const next = button("Next puzzle");
+  renderPanel(panel, view(12, { solved: ["p13"] }));
+  expect(button("Next puzzle")).toBe(next); // rendered in place, so focus stays
+  expect(panel.querySelector("nav").textContent).toContain("Puzzle 13 of 13");
+  expect(button("Previous puzzle").disabled).toBe(false);
+  expect(button("Previous puzzle").dataset.open).toBe("11");
+  expect(button("Next puzzle").disabled).toBe(true);
+  expect(panel.querySelector("nav").textContent).toContain("✓ Solved");
+});
+
+test("Panel.02 until it is solved, a mystery molecule", () => {
+  renderPanel(panel, view(10));
+  expect(panel.textContent).toContain("Mystery molecule");
+  expect(panel.querySelector("h1").textContent).toBe("?");
+  expect(panel.textContent).toContain("Bond every atom to find out what it is.");
+  expect(shown(fact())).toBeFalsy();
+  expect(shown(button("Next puzzle →"))).toBeFalsy();
+});
+
+test("Panel.03 once it is, its name, its formula with subscripts, its fact and Next puzzle", () => {
+  renderPanel(panel, view(10, { solved: ["glycine"], done: true }));
+  expect(panel.querySelector("h1").textContent).toBe("Glycine");
+  expect(panel.textContent).not.toContain("Bond every atom to find out what it is.");
+  expect(panel.innerHTML).toContain("C<sub>2</sub>H<sub>5</sub>NO<sub>2</sub>");
+  expect(shown(fact())).toBe(true);
+  expect(shown(button("Next puzzle →"))).toBe(true);
+  expect(button("Next puzzle →").dataset.open).toBe("11");
+
+  renderPanel(panel, view(12, { done: true }));
+  expect(shown(button("Next puzzle →"))).toBeFalsy();
+});
+
+test("Panel.03 formulas show their numbers as subscripts", () => {
+  const p = document.createElement("p");
+  p.append(...formulaNodes(document, "C2H5NO2"));
+  expect(p.innerHTML).toBe("C<sub>2</sub>H<sub>5</sub>NO<sub>2</sub>");
+});
+
+test("Panel.04 the rules of the game", () => {
+  renderPanel(panel, view(0));
+  expect([...panel.querySelectorAll("ol li")].map(li => li.textContent)).toEqual([
+    "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
+    "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
+    "Bonds can't cross.",
+    "Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.",
+    "All atoms join into one molecule. There is exactly one solution.",
+  ]);
+});
