@@ -91,7 +91,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 4. **Schemas.** `[DONE]` ([review](review-step-4.md), [2](review-step-4-2.md)) Puzzle.01, Bond.11, Progress.03.
    - (a) Tests: add `ajv` and `tests/helpers/schemas.js`, which loads all of `docs/spec/schemas/` into one `Ajv2020`, so `$ref`s resolve. `board()` is a valid Board, and after Show solution equals the Puzzle's `solution`. Every Puzzle is a valid Puzzle, `saveProgress` stores a valid Progress, and the second Progress.03 example of storage.md holds: these three already hold, so they pass at once.
    - (b) Implementation: `board()` in `game.js`.
-5. **The generator in the Puzzle component.** Generate.01, Generate.02.
+5. **The generator in the Puzzle component.** `[DONE]` ([review](review-step-5.md), [2](review-step-5-2.md)) Generate.01, Generate.02.
    - (a) Tests in `tests/unit/puzzle/generate.test.js`: the examples of puzzle.md through `findLayout`; the same seed gives the same layout; `null` when none is found (water on a 1 by 1 Grid). Tests of the script, in their own file `tests/unit/puzzle/generate-script.test.js` so the missing module doesn't stop them, run it for the examples and its "no unique layout found", which already holds and passes at once.
    - (b) Implementation: `puzzle/generate.js`; `scripts/generate.js` keeps only the arguments and the printing.
 6. **The Progress store.** Progress.01–04.
