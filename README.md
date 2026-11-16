@@ -108,6 +108,7 @@ flowchart TD
   board --> looks
   messages --> looks
   board -. "reads state of" .-> game
+  uijs -. "reads atoms of" .-> game
 
   game --> elements
   game --> grid

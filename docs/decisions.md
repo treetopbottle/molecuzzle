@@ -102,7 +102,7 @@ The code is plain JavaScript in ES modules in `src/`; `npm run build` bundles th
 - **Alternatives:** loading `src/` as modules in the browser: needs a server, since browsers don't load modules from `file://`. A framework: more than the page needs.
 
 <a id="0007"></a>
-## 0007: Vitest for rules and components, Playwright for the UI
+## 0007: Vitest for the components, Playwright for the built page
 
 Accepted (2026-11-11)
 
