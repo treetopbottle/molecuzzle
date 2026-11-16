@@ -39,3 +39,15 @@ What was checked:
    - It leaves out Storage, whose tests (`tests/unit/storage/`) also run in Vitest.
    - Suggested wording: "Puzzle, Storage, the UI (in happy-dom) and the Glue (`src/app.js`, with fakes) are tested with Vitest".
 9. **note**, `README.md:43`: the `tests/` entry lists `unit/` as "`puzzle/`, `storage/` and `ui/`". It doesn't mention `unit/app.test.js`, the Glue tested with fakes, which the plan's Design lists.
+
+## Outcome
+
+1. Fixed: the edge to `game.js` says `createGame`, and a dotted edge shows the store's `load` and `update` (e96e80b).
+2. Fixed: the test renders a shown solution and clicks "Next puzzle →", and its name adds Panel.03 (1ccfd8e).
+3. Kept: the wrapper doesn't depend on how `confirm` is called, and it is what `app.js` had before.
+4. Fixed: the Glue test checks that Show solution leaves Progress with nothing solved (1ccfd8e).
+5. Kept: the end-to-end Messages.02 tests check what shows, as the finding says.
+6. Fixed: `ui.js` uses the page window's timers (17ab93f).
+7. Fixed: `startApp` returns nothing (17ab93f).
+8. Fixed: 0007 says "Puzzle, Storage, the UI (in happy-dom) and the Glue" (e96e80b).
+9. Fixed: the README's `tests/` entry names `app.test.js` (e96e80b).
