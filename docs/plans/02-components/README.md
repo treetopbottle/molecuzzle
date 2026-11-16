@@ -109,7 +109,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 10. **Keep every Puzzle in progress.** `[DONE]` ([review](review-step-10.md), [2](review-step-10-2.md)) Progress.03, Progress.05, Input.03.
    - (a) Tests: `load()` keeps valid `boards` entries and leaves out one that doesn't fit the schema (`undo` with 101 Boards, `revealed: "yes"`). In `tests/unit/app.test.js`, with a fake store: a change, Undo, Reset and Show solution update the open Puzzle's entry in `boards`, solving or Reset removes it, and opening a Puzzle passes its entry to `createGame`. `createUi`: Reset is enabled with no Bonds but something to undo (Input.03). End-to-end: the Progress.05 example, a shown solution that is still unsolved after a reload, and that what is stored is a valid Progress. Two of these already hold, so they pass at once: the stored value of the Progress.01 example has no `boards`, and a solved Puzzle opens again with no Bonds.
    - (b) Implementation: `boards` in `load`, in `storage/progress.js`; saving and restoring in `app.js`; Reset's enabled state in `ui/ui.js`.
-11. **Reset asks first.** Input.05.
+11. **Reset asks first.** `[DONE]` ([review](review-step-11.md)) Input.05.
    - (a) Tests: `createUi`'s Reset calls `onReset` only after the Player confirms, and cancelling changes nothing; the Input.05 example end-to-end.
    - (b) Implementation: the confirm for Reset in `ui/ui.js`; the end-to-end tests that click Reset accept its dialog.
 12. **Screenshots.** Page.01, Layout.01, Board.01–03, Input.03, Panel.02–04, List.01.
