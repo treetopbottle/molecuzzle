@@ -40,7 +40,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
   - the Glue: `app.js` wires the components, with no DOM; `browser.js`, the entry point and the only file using the browser's globals, makes the dependencies and starts it
 - `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `publish-pages.sh` publishes a build to GitHub Pages
 - `.github/workflows/pages.yml`: builds and publishes every branch
-- `tests/`: `unit/` (Vitest: `puzzle/`, `storage/` and `ui/`, the UI in happy-dom), `e2e/` (Playwright, on the built page), `helpers/`
+- `tests/`: `unit/` (Vitest: `puzzle/`, `storage/` and `ui/`, the UI in happy-dom, and `app.test.js`, the Glue with fakes), `e2e/` (Playwright, on the built page), `helpers/`
 - `prototypes/`: try-outs of other puzzle modes, outside the spec
 - [docs/spec/](docs/spec/README.md): the specification for the software, with its schemas
 - [docs/decisions.md](docs/decisions.md): any decisions made about the project
@@ -96,7 +96,8 @@ flowchart TD
   browser -. "passes" .-> local
 
   app --> progress
-  app -. "createGame, store, createUi<br/>passed in" .-> game
+  app -. "createGame, passed in" .-> game
+  app -. "store: load, update" .-> progress
   app -. "open, render, say" .-> uijs
   uijs -. "onChange, onOpen, onUndo,<br/>onReset, onSolve" .-> app
 

@@ -106,7 +106,7 @@ The code is plain JavaScript in ES modules in `src/`; `npm run build` bundles th
 
 Accepted (2026-11-11)
 
-Rules, the UI's components (`src/ui/`, in happy-dom) and the Glue (`src/app.js`, with fakes) are tested with Vitest; the built page with Playwright in Chromium, at 1280×800 and, for layout, 390×844. Expected results are inline snapshots: the Board drawn as text (`tests/helpers/draw.js`) and accessibility snapshots of the page. A test's name starts with the rule ids it covers.
+Puzzle, Storage, the UI (in happy-dom) and the Glue (`src/app.js`, with fakes) are tested with Vitest; the built page with Playwright in Chromium, at 1280×800 and, for layout, 390×844. Expected results are inline snapshots: the Board drawn as text (`tests/helpers/draw.js`) and accessibility snapshots of the page. A test's name starts with the rule ids it covers.
 
 - **Why:** inline snapshots read like the spec's examples; testing the page through roles and names also keeps the Board usable with a screen reader and keys.
 - **Cost:** two test runners; Playwright needs a Chromium download or `CHROMIUM_PATH`.
