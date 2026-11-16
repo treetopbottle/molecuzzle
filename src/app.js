@@ -39,7 +39,7 @@ export function startApp({ puzzles, createGame, store, createUi }) {
     update();
   }
 
-  /** Opens a Puzzle where it was left; an entry createGame couldn't use is replaced. */
+  /** Opens a Puzzle where it was left, and saves its entry again as saved() gives it, so one createGame couldn't use is removed. */
   function open(i) {
     index = i;
     game = createGame(puzzles[i], progress.boards?.[puzzles[i].id]);
