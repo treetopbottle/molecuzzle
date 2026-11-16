@@ -26,3 +26,11 @@ What was checked:
    - The step names Progress.01 and Progress.03. An end-to-end test of the example, `start(page, { puzzles: { water: "solved", urea: "seen" }, current: 7 })`, would cover both.
 4. **note**: tests/unit/storage/progress.test.js:30–34. The new test "Progress.01 a Puzzle marked solved stays solved" only uses `markSolved`, which already existed, so it passes at once at 78b63d4. Neither the plan's step 6(a) nor the message of 78b63d4 says so: the message says only Progress.04 passes at once.
 5. **note**: tests/e2e/puzzle.spec.js:70–79. `page.on("request")` covers what the page loads over HTTP(S) and file://. It doesn't see WebSockets (Playwright's separate `websocket` event), WebRTC, or a request sent after the last assertion, for example on a timer. That is enough for the page as it is now, since the build inlines everything. If the page ever gains a worker or a socket, the test will need more than this event.
+
+## Outcome
+
+1. Fixed: the Design says `update(change)` returns the Progress, and that the store keeps it, so without storage the Progress of the visit holds (f75de7c).
+2. Fixed: the Progress.02 test checks that, with storage that throws, two updates in a row build on each other and return the Progress (0786db0).
+3. Fixed: an end-to-end test of the Progress.03 example: only Water solved, and Puzzle 1 open since 7 isn't a Puzzle's id (0786db0).
+4. Kept: the test of `markSolved` covers a part of Progress.01 that had none, and passing at once is right for behaviour that already holds; this review records it.
+5. Kept: the page has no worker or socket; the test would need more if it got one.
