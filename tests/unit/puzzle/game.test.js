@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { createGame, UNDO_LIMIT } from "../../../src/puzzle/game.js";
+import { createGame } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw, click, build, bondIndex } from "../../helpers/draw.js";
 import { schemaErrors } from "../../helpers/schemas.js";
@@ -18,6 +18,42 @@ describe("Puzzle", () => {
       "
     `);
     expect(PUZZLES.filter(p => createGame(p).order.some(Boolean))).toEqual([]);
+  });
+
+  test("Puzzle.03 a Puzzle starts where it was left, and Undo goes back through its history", () => {
+    const game = createGame(puzzle("hydrogen-cyanide"), { bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
+    expect(draw(game)).toMatchInlineSnapshot(`
+      "
+      H─C·N
+      "
+    `);
+    expect(game.undo()).toBe(true);
+    expect(draw(game)).toMatchInlineSnapshot(`
+      "
+      H·C·N
+      "
+    `);
+    expect(game.undo()).toBe(false);
+  });
+
+  test("Puzzle.03 it starts with the solution shown, if it was", () => {
+    const urea = puzzle("urea");
+    expect(createGame(urea, { bonds: urea.solution, revealed: true, undo: [[]] }).status()).toEqual({ kind: "revealed" });
+  });
+
+  test.each([
+    ["a Bond that isn't on a Dotted line", "hydrogen-cyanide", [[0, 2, 1]], []],
+    ["a pair of Atoms bonded twice", "hydrogen-cyanide", [[0, 1, 1], [0, 1, 1]], []],
+    ["Bonds that cross", "glycine", [[0, 7, 1], [4, 5, 1]], []],
+    ["an Atom with more Bonds than its valence", "water", [[0, 1, 2]], []],
+    ["such a Board in the undo history", "hydrogen-cyanide", [[0, 1, 1]], [[], [[0, 2, 1]]]],
+  ])("Puzzle.03 with %s, it starts with no Bonds, nothing to undo and the solution not shown", (_, id, bonds, undo) => {
+    const p = puzzle(id);
+    const game = createGame(p, { bonds, revealed: true, undo });
+    expect(game.order.some(Boolean)).toBe(false);
+    expect(game.canUndo).toBe(false);
+    build(game);
+    expect(game.status()).toEqual({ kind: "solved" });
   });
 });
 
@@ -130,39 +166,72 @@ describe("Bond", () => {
     expect(game.undo()).toBe(false);
   });
 
-  test(`Bond.08 undo goes back at most ${UNDO_LIMIT} changes`, () => {
+  test("Bond.08 undo goes back 100 changes, to the Board after the first, and then does nothing", () => {
     const game = createGame(puzzle("hydrogen-cyanide"));
-    for (let n = 0; n < UNDO_LIMIT + 10; n++) click(game, "1,2", "1,3");
+    click(game, "1,2", "1,3", 101);
     let undone = 0;
     while (game.undo()) undone++;
-    expect(undone).toBe(UNDO_LIMIT);
+    expect(undone).toBe(100);
+    expect(draw(game)).toMatchInlineSnapshot(`
+      "
+      H·C─N
+      "
+    `);
   });
 
-  test("Bond.09 reset removes every Bond, and undo brings them back", () => {
+  test("Bond.08, Bond.09 reset removes every Bond and the undo history", () => {
     const game = createGame(puzzle("ammonia"));
     expect(game.reset()).toBe(false);
     click(game, "1,1", "2,1");
     click(game, "2,1", "3,1");
-    game.reset();
-    expect(game.order.some(Boolean)).toBe(false);
     game.undo();
     expect(draw(game)).toMatchInlineSnapshot(`
       "
       H
       │
       N·H
-      │
+      ·
       H
       "
     `);
+    expect(game.reset()).toBe(true);
+    expect(game.order.some(Boolean)).toBe(false);
+    expect(game.canUndo).toBe(false);
+    expect(game.undo()).toBe(false);
   });
 
-  test("Bond.10 a solved Board can't be changed until undo or reset", () => {
+  test("Bond.09 reset works with no Bonds but something to undo", () => {
+    const game = createGame(puzzle("ammonia"));
+    click(game, "1,1", "2,1");
+    click(game, "1,1", "2,1", 1, -1);
+    expect(game.canUndo).toBe(true);
+    expect(game.reset()).toBe(true);
+    expect(game.canUndo).toBe(false);
+    expect(game.reset()).toBe(false);
+  });
+
+  test("Bond.10 solving removes the undo history; a solved Board can't be changed, but Reset works", () => {
     const game = createGame(puzzle("water"));
-    build(game);
+    click(game, "1,1", "1,2");
+    click(game, "1,2", "2,2");
+    expect(game.status()).toEqual({ kind: "solved" });
+    expect(game.canUndo).toBe(false);
+    expect(game.undo()).toBe(false);
     expect(click(game, "1,1", "1,2")).toEqual({ changed: false });
-    game.undo();
-    expect(click(game, "1,1", "1,2")).toEqual({ changed: true });
+    expect(game.reset()).toBe(true);
+    expect(game.status()).toEqual({ kind: "empty" });
+  });
+
+  test("Bond.10 while the solution is shown, changes don't change Bonds, and Undo and Reset work", () => {
+    const game = createGame(puzzle("water"));
+    click(game, "1,1", "1,2");
+    game.showSolution();
+    expect(click(game, "1,1", "1,2", 1, -1)).toEqual({ changed: false });
+    expect(game.undo()).toBe(true);
+    expect(game.board()).toEqual([[0, 1, 1]]);
+    game.showSolution();
+    expect(game.reset()).toBe(true);
+    expect(game.status()).toEqual({ kind: "empty" });
   });
 
   test("Bond.11 the Bonds are a Board", () => {
@@ -236,6 +305,36 @@ describe("Check", () => {
     const game = createGame(puzzle("glycine"));
     build(game);
     expect(game.status()).toEqual({ kind: "solved" });
+  });
+});
+
+describe("Saved", () => {
+  test("Puzzle.03 saved() is the Board, whether the solution was shown, and the undo history", () => {
+    const game = createGame(puzzle("hydrogen-cyanide"));
+    expect(game.saved()).toBeNull();
+    click(game, "1,1", "1,2");
+    click(game, "1,2", "1,3");
+    expect(game.saved()).toEqual({ bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [[], [[0, 1, 1]]] });
+    const again = createGame(puzzle("hydrogen-cyanide"), game.saved());
+    expect(again.saved()).toEqual(game.saved());
+  });
+
+  test("Bond.09, Bond.10 saved() is null after Reset and after solving", () => {
+    const game = createGame(puzzle("water"));
+    click(game, "1,1", "1,2");
+    game.reset();
+    expect(game.saved()).toBeNull();
+    build(game);
+    expect(game.saved()).toBeNull();
+  });
+
+  test("Help.01 saved() keeps that the solution was shown, also after Undo", () => {
+    const game = createGame(puzzle("urea"));
+    click(game, "1,1", "1,2");
+    game.showSolution();
+    expect(game.saved()).toMatchObject({ bonds: puzzle("urea").solution, revealed: true });
+    game.undo();
+    expect(game.saved()).toEqual({ bonds: [[0, 1, 1]], revealed: true, undo: [[]] });
   });
 });
 

@@ -63,8 +63,8 @@ test("Input.02, Input.03 Undo and Ctrl+Z go back one change", async ({ page }) =
   await expect(undo).toBeDisabled();
 });
 
-test("Input.02, Input.03 Reset removes every Bond, and Undo brings them back", async ({ page }) => {
-  const reset = page.getByRole("button", { name: "Reset" });
+test("Input.02, Input.03 Reset removes every Bond and the undo history", async ({ page }) => {
+  const reset = page.getByRole("button", { name: "Reset" }), undo = page.getByRole("button", { name: "Undo" });
   await openPuzzle(page, 2);
   await expect(reset).toBeDisabled();
   await clickBond(page, "1,1", "2,1");
@@ -72,9 +72,10 @@ test("Input.02, Input.03 Reset removes every Bond, and Undo brings them back", a
   await reset.click();
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
   await expect(reset).toBeDisabled();
+  await expect(undo).toBeDisabled();
   await page.keyboard.press("ControlOrMeta+z");
-  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to N 2,1: single bond");
-  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("N 2,1 to H 3,1: single bond");
+  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to N 2,1: no bond");
+  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("N 2,1 to H 3,1: no bond");
 });
 
 test("Board.02 Atoms show what they still need, and glow when complete", async ({ page }) => {
