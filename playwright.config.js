@@ -4,11 +4,11 @@ import { defineConfig } from "@playwright/test";
 // browser at CHROMIUM_PATH, e.g. CHROMIUM_PATH=/usr/bin/chromium.
 const launchOptions = process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {};
 
-// scripts/screenshots.sh sets SCREENSHOTS=1 in Playwright's image (decision
-// 0013): only there is the screenshots project defined, so no other run can
-// compare or remake the screenshots with another browser. It builds the page
-// on the host first.
-const screenshots = Boolean(process.env.SCREENSHOTS);
+// scripts/screenshots.sh sets MOLECUZZLE_SCREENSHOTS=1 in Playwright's image
+// (decision 0013), and builds the page on the host first. Only then is the
+// screenshots project defined, so a run elsewhere doesn't compare or remake the
+// screenshots with another browser unless it sets this on purpose.
+const screenshots = process.env.MOLECUZZLE_SCREENSHOTS === "1";
 
 export default defineConfig({
   testDir: "tests/e2e",
