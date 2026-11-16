@@ -94,7 +94,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 5. **The generator in the Puzzle component.** `[DONE]` ([review](review-step-5.md), [2](review-step-5-2.md)) Generate.01, Generate.02.
    - (a) Tests in `tests/unit/puzzle/generate.test.js`: the examples of puzzle.md through `findLayout`; the same seed gives the same layout; `null` when none is found (water on a 1 by 1 Grid). Tests of the script, in their own file `tests/unit/puzzle/generate-script.test.js` so the missing module doesn't stop them, run it for the examples and its "no unique layout found", which already holds and passes at once.
    - (b) Implementation: `puzzle/generate.js`; `scripts/generate.js` keeps only the arguments and the printing.
-6. **The Progress store.** Progress.01–04.
+6. **The Progress store.** `[DONE]` ([review](review-step-6.md), [2](review-step-6-2.md)) Progress.01–04.
    - (a) Tests: `createProgressStore` loads, and `update` saves, as the old functions did; an end-to-end test that, over opening the game, solving a Puzzle and a reload, the only request is for the page (Progress.04 is already true, so that test passes at once).
    - (b) Implementation: `createProgressStore` in `storage/progress.js`, used by `app.js`.
 7. **The panel as a component.** Panel.01–04.
