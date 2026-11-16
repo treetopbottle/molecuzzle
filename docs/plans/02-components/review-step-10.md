@@ -38,3 +38,11 @@ What was checked:
 3. **note** `src/storage/progress.js:24`: `puzzles` is not checked to be an object, unlike the new `boards` check. Stored `{"puzzles": ["solved"]}` loads as `puzzles: {"0": "solved"}`, where Progress.03 says a field that doesn't fit is left out. The result is still a valid Progress. The behavior is older than this step, but the new `isObject` helper next to it would fix it.
 4. **note** `tests/e2e/progress.spec.js:17-20`: the Progress.05 example says "Then it is H─C·N, and Undo makes it H·C·N". The test checks only the H–C Bond (1,1 to 1,2), before and after Undo. It never checks that C–N (1,2 to 1,3) has no Bond. The stored value checked earlier makes a wrong restore unlikely, but the example's Board is not checked in full.
 5. **note** `tests/unit/ui/ui.test.js:51`: the older test "Input.03 Undo is disabled with nothing to undo, Reset with no Bonds" now names only half of the rule. Reset is disabled with no Bonds *and* nothing to undo, which is what the test actually sets up.
+
+## Outcome
+
+1. Fixed: a test per untested part of the check, each also showing that the data doesn't fit the schema: a Bond of two or four numbers, a negative or fractional Atom, a Bond that isn't a list, a bad undo Board, an undo that isn't a list, and an entry of null or a list, with the solved marks still loading (0a80baf).
+2. Fixed: opening a Puzzle saves its entry from `saved()`, so an entry createGame couldn't use is removed, with a test (4924a5a, 0a80baf).
+3. Fixed: `puzzles` that isn't an object is left out, with a test (4924a5a, 0a80baf).
+4. Fixed: the end-to-end test checks C–N too, before and after Undo (0a80baf).
+5. Fixed: the test's name says "Reset with no Bonds and nothing to undo" (0a80baf).
