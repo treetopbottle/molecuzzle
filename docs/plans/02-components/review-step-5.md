@@ -24,3 +24,10 @@ What was checked:
    - The split is sound. The test runs the script as a subprocess, so it tests a different unit (the script, not the module). Keeping it out of the file that imports the missing module is the only way it can "pass at once" at the tests commit, as the plan says. Inside `generate.test.js`, the import error would fail the whole suite. The deviation is fine, but the plan doesn't record it.
    - Separately, `generate-script.test.js:6` runs the relative path `"scripts/generate.js"`. It works only when the working directory is the repo root, as it is under `npm test`. Resolving it from `import.meta.url` would remove that dependence.
 4. **note**: The defaults (20000 tries, 5 by 6, seed 1) are now written twice, at `src/puzzle/generate.js:15` and `scripts/generate.js:12`. The script always passes all four values, so the module's defaults are never used by it, and the two copies can drift apart. `findLayout` also keeps the old string-to-number conversions (`+tries`, `+maxRows`, `+maxCols`, `Number(seed)`), which do nothing now that it gets numbers. These were left in on purpose to keep behaviour unchanged and are harmless.
+
+## Outcome
+
+1. Fixed: `generate-script.test.js` runs the script for the Generate.01 example's printed lines and the Generate.02 example's "can't read O1~H2" (3d817cf).
+2. Fixed: the script prints only the message of a "can't read" error and rethrows any other, with its stack (3d817cf).
+3. Fixed: the plan's step 5(a) says the script tests are in their own file, and why (a37f13c); the test finds the script from `import.meta.url` (3d817cf).
+4. Fixed: the script passes only the arguments given, so findLayout's defaults are the only ones, and findLayout drops the string-to-number conversions; the script's output is the same as before for the inputs compared in this review (3d817cf).
