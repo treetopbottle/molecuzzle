@@ -48,7 +48,7 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
     line.textContent = statusText(status, puzzles[index]);
     line.className = STATUS_CLASS[status.kind] ?? "";
     $("btnUndo").disabled = !view.canUndo;
-    $("btnReset").disabled = !view.hasBonds;
+    $("btnReset").disabled = !view.hasBonds && !view.canUndo;
     const solved = puzzles.filter(p => progress.puzzles[p.id] === "solved").length;
     $("score").textContent = `Solved ${solved} of ${puzzles.length}`;
     renderPuzzleList($("puzzles"), puzzles, progress, index, handlers.onOpen);

@@ -1,7 +1,20 @@
 // Progress, kept in the browser. Works without storage: then nothing is kept.
 export const STORAGE_KEY = "molecuzzle-v2";
 
-/** What is stored, checked by hand: a field that doesn't fit is left out. */
+const UNDO_MAX = 100;
+const isObject = x => typeof x === "object" && x !== null && !Array.isArray(x);
+const isIndex = x => Number.isInteger(x) && x >= 0;
+const isBoard = b => Array.isArray(b) &&
+  b.every(bond => Array.isArray(bond) && bond.length === 3 && isIndex(bond[0]) && isIndex(bond[1]) && [1, 2, 3].includes(bond[2]));
+/** An entry of boards, as the schema says: all three fields, of the right kinds. */
+const isEntry = e => isObject(e) && isBoard(e.bonds) && typeof e.revealed === "boolean" &&
+  Array.isArray(e.undo) && e.undo.length <= UNDO_MAX && e.undo.every(isBoard);
+
+/**
+ * What is stored, checked by hand as progress.schema.json says: a field, or a
+ * Puzzle's entry, that doesn't fit is left out, and so are boards with no
+ * entry left.
+ */
 function read(storage) {
   const empty = { puzzles: {}, current: null };
   try {
@@ -10,7 +23,10 @@ function read(storage) {
     const puzzles = {};
     for (const [id, state] of Object.entries(data.puzzles ?? {}))
       if (state === "solved") puzzles[id] = state;
-    return { puzzles, current: typeof data.current === "string" ? data.current : null };
+    const progress = { puzzles, current: typeof data.current === "string" ? data.current : null };
+    const boards = Object.fromEntries(Object.entries(isObject(data.boards) ? data.boards : {}).filter(([, e]) => isEntry(e)));
+    if (Object.keys(boards).length) progress.boards = boards;
+    return progress;
   } catch {
     return empty;
   }

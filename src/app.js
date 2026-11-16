@@ -16,17 +16,29 @@ export function startApp({ puzzles, createGame, store, createUi }) {
     onChange(k, dir) {
       const result = game.change(k, dir);
       ui.say(result);
-      if (result.changed) update();
+      if (result.changed) keep();
     },
     onOpen: open,
-    onUndo() { if (game.undo()) update(); },
-    onReset() { if (game.reset()) update(); },
-    onSolve() { game.showSolution(); update(); },
+    onUndo() { if (game.undo()) keep(); },
+    onReset() { if (game.reset()) keep(); },
+    onSolve() { game.showSolution(); keep(); },
   });
+
+  /** Keeps the open Puzzle's saved(), or its entry removed when it isn't in progress, and shows it. */
+  function keep() {
+    const id = puzzles[index].id, saved = game.saved();
+    progress = store.update(p => {
+      const { boards = {}, ...rest } = p;
+      const { [id]: _, ...others } = boards;
+      const next = saved ? { ...others, [id]: saved } : others;
+      return Object.keys(next).length ? { ...rest, boards: next } : rest;
+    });
+    update();
+  }
 
   function open(i) {
     index = i;
-    game = createGame(puzzles[i]);
+    game = createGame(puzzles[i], progress.boards?.[puzzles[i].id]);
     progress = store.update(p => ({ ...p, current: puzzles[i].id }));
     ui.open(game);
     update();
