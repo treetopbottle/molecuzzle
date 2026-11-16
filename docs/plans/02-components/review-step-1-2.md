@@ -32,3 +32,11 @@ What was checked:
 5. **note**: `docs/plans/02-components/README.md:107`. Step 9(a) begins "Tests in `tests/unit/puzzle/`:" but now also names `tests/e2e/bonding.spec.js`. The brackets make the meaning clear, so this is only wording. Step 11(b) ("the end-to-end tests that click Reset accept its dialog") also covers this test (`bonding.spec.js:72`), so nothing is missed in later steps.
 
 No must fix findings.
+
+## Outcome
+
+1. Fixed: step 2(a) tests green for solved and revealed, and points to the existing test of orange (2301165). Outcome 6 of the first review stays as written; this line supersedes it.
+2. Fixed: Board.04, Panel.01, Panel.02 (8160450).
+3. Fixed: the plan's renaming rule says a test takes the ids of the rules it is about, not of every value it reads, in the spec's order (2301165). The names listed here read values on the way, so they stay.
+4. Fixed: the example says Board.01, Board.04 (2301165).
+5. Kept: the brackets make it clear, as the finding says.
