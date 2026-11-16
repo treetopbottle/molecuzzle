@@ -36,3 +36,12 @@ What was checked:
    - **Citation:** `storage.md` is cited only to 735d74c, which created `data.md`. The rename to `storage.md` is 7a4979e.
 5. **note** `docs/plans/01-initial-implementation/review.md:13-19`: the review-fix commits are cited unevenly. For screenshots, b078266 is cited but the later `screenshots.sh` fixes 6805805 and 0c255c4 are not. Other fixes that are also left out: `boards`: 0a80baf and 4924a5a; the undo history: bfd794e and 6008bbe; the UI and the Glue: 1ccfd8e and 17ab93f; the Progress store: 0786db0. Either cite them, or say that only the main commits of each step are listed.
 6. **note** `docs/plans/01-initial-implementation/review.md:16`: "the UI state is every Puzzle in progress" states the plan's reading of the comment (`docs/plans/02-components/README.md:15`) as a fact. The open Puzzle is also UI state, and was already kept as `current` before plan 02. Naming it, or writing "taken to be", would let the comment's author check the reading.
+
+## Outcome
+
+1. Fixed: "compared pixel for pixel with Playwright's default tolerance", citing e5a3b50 (6518025).
+2. Fixed: the Puzzle line says `findLayout` finds the layout and the rest is written by hand, and that its schema is in the spec as part of Puzzle.01, citing 735d74c (6518025).
+3. Fixed: the schemas line says a Board is only the Bonds and where the rest of its state is kept, citing 978e173 (6518025).
+4. Fixed: `storage.md`'s what, where, how and who, the one page standing in for pages, and 7a4979e for `storage.md` (6518025).
+5. Fixed: the Outcome says it lists each step's tests and implementation, with the review fixes in the plan's review files (6518025).
+6. Fixed: the UI state is "taken to be" the open Puzzle, kept already, and every Puzzle in progress (6518025).
