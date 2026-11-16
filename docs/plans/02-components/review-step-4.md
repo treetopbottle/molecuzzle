@@ -28,3 +28,8 @@ What was checked:
    - If a Puzzle's Atoms weren't in reading order, `board()` could give a pair with the higher index first, or Bonds out of order, and no test would catch it. The Board schema can't express "lower first" or the order. The per-Puzzle Bond.11 test only compares `board()` with the hand-written `solution`, which nothing checks against the ordering rule either.
    - Fix: in Puzzle.01's per-Puzzle tests, check that `atoms` are in reading order. Or check the Bond.11 output directly against the rule: in each Bond the first Atom is lower, and the Bonds are sorted by first Atom, then second. Consider adding reading order to what schemas.md lists for a Puzzle.
 2. **note:** `tests/unit/puzzle/game.test.js:169`. The Bond.11 tests are in their own `describe("Bond.11")`. Every other rule's tests are grouped by section (`describe("Bond")` at line 24, `describe("Valence")`, `describe("Check")`, `describe("Help")`), and Bond.01 to Bond.10 are inside `describe("Bond")`. These tests belong there too.
+
+## Outcome
+
+1. Fixed: Puzzle.01 checks that each Puzzle's Atoms are in reading order, and the per-Puzzle Bond.11 test checks `board()` against the ordering rule (efe7b99); schemas.md lists reading order among what a Puzzle meets beyond its schema (e34acbc).
+2. Fixed: the Bond.11 tests are in `describe("Bond")` (efe7b99).
