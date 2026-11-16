@@ -164,9 +164,7 @@ describe("Bond", () => {
     game.undo();
     expect(click(game, "1,1", "1,2")).toEqual({ changed: true });
   });
-});
 
-describe("Bond.11", () => {
   test("Bond.11 the Bonds are a Board", () => {
     const game = createGame(puzzle("water"));
     expect(game.board()).toEqual([]);
@@ -178,8 +176,11 @@ describe("Bond.11", () => {
   test.each(PUZZLES)("Bond.11 after Show solution, the Board of $name is its solution", p => {
     const game = createGame(p);
     game.showSolution();
-    expect(schemaErrors("board.schema.json", game.board())).toEqual([]);
-    expect(game.board()).toEqual(p.solution);
+    const board = game.board();
+    expect(schemaErrors("board.schema.json", board)).toEqual([]);
+    expect(board.every(([a, b]) => a < b)).toBe(true);
+    expect(board.every(([a, b], i) => i === 0 || a > board[i - 1][0] || (a === board[i - 1][0] && b > board[i - 1][1]))).toBe(true);
+    expect(board).toEqual(p.solution);
   });
 });
 

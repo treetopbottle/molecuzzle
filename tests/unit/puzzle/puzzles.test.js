@@ -38,10 +38,11 @@ describe("Puzzle.01 the puzzles", () => {
       expect(schemaErrors("puzzle.schema.json", p)).toEqual([]);
     });
 
-    test("gives exactly the Atoms of its formula, each on its own grid point", () => {
+    test("gives exactly the Atoms of its formula, each on its own grid point, in reading order", () => {
       expect(count(atoms.map(a => a.el))).toEqual(formulaCount(p.formula));
       expect(atoms.every(a => a.el in ELEMENTS && a.r >= 0 && a.r < p.rows && a.c >= 0 && a.c < p.cols)).toBe(true);
       expect(new Set(atoms.map(a => `${a.r},${a.c}`)).size).toBe(atoms.length);
+      expect(atoms.every((a, i) => i === 0 || a.r > atoms[i - 1].r || (a.r === atoms[i - 1].r && a.c > atoms[i - 1].c))).toBe(true);
     });
 
     test("has exactly one solution, the one it shows", () => {
