@@ -13,7 +13,7 @@ import { solve } from "./solver.js";
  * solution. The same arguments give the same layout.
  */
 export function findLayout(text, { tries = 20000, maxRows = 5, maxCols = 6, seed = 1 } = {}) {
-  let s = Number(seed) >>> 0 || 1;
+  let s = seed >>> 0 || 1;
   const random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
   const pick = list => list[Math.floor(random() * list.length)];
 
@@ -59,7 +59,7 @@ export function findLayout(text, { tries = 20000, maxRows = 5, maxCols = 6, seed
     const rs = [...pos.values()].map(p => p[0]), cs = [...pos.values()].map(p => p[1]);
     const r0 = Math.min(...rs), c0 = Math.min(...cs);
     const rows = Math.max(...rs) - r0 + 1, cols = Math.max(...cs) - c0 + 1;
-    if (rows > +maxRows || cols > +maxCols) return null;
+    if (rows > maxRows || cols > maxCols) return null;
     const atoms = labels.map((l, i) => ({ el: element(l), r: pos.get(i)[0] - r0, c: pos.get(i)[1] - c0 }));
     return { atoms, rows, cols };
   }
@@ -79,7 +79,7 @@ export function findLayout(text, { tries = 20000, maxRows = 5, maxCols = 6, seed
   }
 
   let best = null;
-  for (let t = 0; t < +tries; t++) {
+  for (let t = 0; t < tries; t++) {
     const p = layout();
     if (!p) continue;
     const ok = check(p);

@@ -9,13 +9,16 @@
 import { findLayout } from "../src/puzzle/generate.js";
 import { candidateBonds } from "../src/puzzle/grid.js";
 
-const [spec, tries = "20000", maxRows = "5", maxCols = "6", seed = "1"] = process.argv.slice(2);
+// Arguments left out are findLayout's defaults.
+const [spec, ...numbers] = process.argv.slice(2);
+const [tries, maxRows, maxCols, seed] = numbers.map(Number);
 if (!spec) { console.error("usage: node scripts/generate.js \"<bonds>\" [tries] [maxRows] [maxCols] [seed]"); process.exit(1); }
 
 let layout;
 try {
-  layout = findLayout(spec, { tries: +tries, maxRows: +maxRows, maxCols: +maxCols, seed: +seed });
+  layout = findLayout(spec, { tries, maxRows, maxCols, seed });
 } catch (e) {
+  if (!e.message.startsWith("can't read ")) throw e;
   console.error(e.message);
   process.exit(1);
 }
