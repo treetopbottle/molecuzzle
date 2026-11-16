@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, clickBond, build, status, PUZZLES } from "./helpers.js";
+import { start, openPuzzle, clickBond, build, status, colors, isGreen, isOrange, PUZZLES } from "./helpers.js";
 
 test.beforeEach(async ({ page }) => {
   await start(page);
@@ -12,14 +12,14 @@ test("Messages.01 the status line says what is left to do", async ({ page }) => 
   await expect(status(page)).toHaveText("3 atoms still need bonds.");
 });
 
-test("Messages.01 every Atom complete, but in two pieces", async ({ page }) => {
+test("Messages.01 every Atom complete, but in two pieces, in orange", async ({ page }) => {
   await openPuzzle(page, 5); // Methanol: . H . / O C H / H H .
   await clickBond(page, "3,1", "3,2"); // H–H
   await clickBond(page, "2,1", "2,2", { times: 2 }); // O=C
   await clickBond(page, "1,2", "2,2"); // C–H
   await clickBond(page, "2,2", "2,3"); // C–H
   await expect(status(page)).toHaveText("Every atom has its bonds, but they form more than one molecule. Everything must join up.");
-  await expect(status(page)).toHaveClass("warn");
+  expect((await colors(status(page))).every(isOrange)).toBe(true);
 });
 
 test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building the molecule solves the puzzle and names it", async ({ page }) => {
@@ -50,16 +50,9 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
   await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 13");
 });
 
-// Green: its green channel is the largest.
-const isGreen = ([r, g, b]) => g > r && g > b;
-const colors = async locator => {
-  const css = await locator.evaluate(e => [getComputedStyle(e).color, getComputedStyle(e).borderTopColor]);
-  return css.map(c => c.match(/\d+/g).slice(0, 3).map(Number));
-};
-
 test("Messages.01 the status line is green when solved and when revealed", async ({ page }) => {
   await openPuzzle(page, 1);
-  expect((await colors(status(page))).some(isGreen)).toBe(false);
+  expect((await colors(status(page))).some(c => isGreen(c) || isOrange(c))).toBe(false);
   await build(page, PUZZLES[0]);
   await expect(status(page)).toHaveText("✓ Solved! It's Water.");
   expect((await colors(status(page))).every(isGreen)).toBe(true);

@@ -17,6 +17,7 @@ describe("Puzzle", () => {
       O
       "
     `);
+    expect(PUZZLES.filter(p => createGame(p).order.some(Boolean))).toEqual([]);
   });
 });
 
@@ -184,6 +185,7 @@ describe("Valence", () => {
     expect(complete()).toEqual([]);
     click(game, "2,1", "3,1", 2);
     expect(complete()).toEqual(["O 3,1"]);
+    expect(game.status()).toEqual({ kind: "open", open: 3 });
   });
 });
 
