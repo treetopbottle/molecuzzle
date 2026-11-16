@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import { createGame, UNDO_LIMIT } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw, click, build, bondIndex } from "../../helpers/draw.js";
+import { schemaErrors } from "../../helpers/schemas.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 
@@ -162,6 +163,23 @@ describe("Bond", () => {
     expect(click(game, "1,1", "1,2")).toEqual({ changed: false });
     game.undo();
     expect(click(game, "1,1", "1,2")).toEqual({ changed: true });
+  });
+});
+
+describe("Bond.11", () => {
+  test("Bond.11 the Bonds are a Board", () => {
+    const game = createGame(puzzle("water"));
+    expect(game.board()).toEqual([]);
+    click(game, "1,1", "1,2");
+    expect(game.board()).toEqual([[0, 1, 1]]);
+    expect(schemaErrors("board.schema.json", game.board())).toEqual([]);
+  });
+
+  test.each(PUZZLES)("Bond.11 after Show solution, the Board of $name is its solution", p => {
+    const game = createGame(p);
+    game.showSolution();
+    expect(schemaErrors("board.schema.json", game.board())).toEqual([]);
+    expect(game.board()).toEqual(p.solution);
   });
 });
 

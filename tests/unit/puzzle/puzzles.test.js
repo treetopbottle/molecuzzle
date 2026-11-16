@@ -4,6 +4,7 @@ import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { solve } from "../../../src/puzzle/solver.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { draw } from "../../helpers/draw.js";
+import { schemaErrors } from "../../helpers/schemas.js";
 
 const count = list => list.reduce((m, x) => ({ ...m, [x]: (m[x] ?? 0) + 1 }), {});
 const formulaCount = f => Object.fromEntries([...f.matchAll(/([A-Z][a-z]?)(\d*)/g)].map(([, el, n]) => [el, Number(n || 1)]));
@@ -32,6 +33,10 @@ describe("Puzzle.01 the puzzles", () => {
 
   describe.each(PUZZLES)("$name", p => {
     const atoms = p.atoms.map(([el, r, c]) => ({ el, r, c }));
+
+    test("is a Puzzle, as its schema says", () => {
+      expect(schemaErrors("puzzle.schema.json", p)).toEqual([]);
+    });
 
     test("gives exactly the Atoms of its formula, each on its own grid point", () => {
       expect(count(atoms.map(a => a.el))).toEqual(formulaCount(p.formula));

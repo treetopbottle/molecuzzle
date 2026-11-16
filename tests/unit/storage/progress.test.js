@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { loadProgress, saveProgress, markSolved, STORAGE_KEY } from "../../../src/storage/progress.js";
+import { schemaErrors } from "../../helpers/schemas.js";
 
 function memoryStorage(initial = {}) {
   const data = { ...initial };
@@ -20,7 +21,13 @@ describe("Progress", () => {
         },
       }
     `);
+    expect(schemaErrors("progress.schema.json", JSON.parse(storage.data[STORAGE_KEY]))).toEqual([]);
     expect(loadProgress(storage)).toEqual({ puzzles: { water: "solved" }, current: "formaldehyde" });
+  });
+
+  test("Progress.03 wrong data is left out, and the rest still loads", () => {
+    const storage = memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"water":"solved","urea":"seen"},"current":7}' });
+    expect(loadProgress(storage)).toEqual({ puzzles: { water: "solved" }, current: null });
   });
 
   test("Progress.03 unreadable or unknown values count as empty", () => {
