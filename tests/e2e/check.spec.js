@@ -99,6 +99,7 @@ test("Messages.01, Panel.01 after Reset, building it marks it solved", async ({ 
   await openPuzzle(page, 9);
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
+  page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Reset" }).click();
   await build(page, PUZZLES[8]);
   await expect(status(page)).toHaveText("✓ Solved! It's Urea.");

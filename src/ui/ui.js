@@ -12,7 +12,7 @@ const STATUS_CLASS = { solved: "good", revealed: "good", pieces: "warn" };
  * @param {Document} doc
  * @param {{ onChange(k: number, dir: number): void, onOpen(index: number): void,
  *   onUndo(): void, onReset(): void, onSolve(): void }} handlers
- *   onSolve comes only after the Player confirms.
+ *   onSolve and onReset come only after the Player confirms.
  * @param {{ confirm?: (question: string) => boolean }} [options]
  */
 export function createUi(doc, handlers, { confirm = question => doc.defaultView.confirm(question) } = {}) {
@@ -24,7 +24,9 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
     if (button && !button.disabled) handlers.onOpen(Number(button.dataset.open));
   });
   $("btnUndo").addEventListener("click", () => handlers.onUndo());
-  $("btnReset").addEventListener("click", () => handlers.onReset());
+  $("btnReset").addEventListener("click", () => {
+    if (confirm("Reset this puzzle? Its bonds and undo history are removed.")) handlers.onReset();
+  });
   $("btnSolve").addEventListener("click", () => { if (confirm("Show the solution?")) handlers.onSolve(); });
   doc.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); handlers.onUndo(); }

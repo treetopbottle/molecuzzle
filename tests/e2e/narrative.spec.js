@@ -36,6 +36,7 @@ test("First day", async ({ page }) => {
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(page.locator("#badge")).toHaveText("Unsolved");
+  page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Reset" }).click();
   await build(page, PUZZLES[10]);
   await expect(page.locator("#badge")).toHaveText("✓ Solved");

@@ -69,6 +69,7 @@ test("Input.02, Input.03 Reset removes every Bond and the undo history", async (
   await expect(reset).toBeDisabled();
   await clickBond(page, "1,1", "2,1");
   await clickBond(page, "2,1", "3,1");
+  page.once("dialog", dialog => dialog.accept());
   await reset.click();
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
   await expect(reset).toBeDisabled();
