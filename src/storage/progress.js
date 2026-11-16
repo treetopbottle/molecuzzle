@@ -21,7 +21,7 @@ function read(storage) {
     const data = JSON.parse(storage?.getItem(STORAGE_KEY) ?? "null");
     if (!data || typeof data !== "object") return empty;
     const puzzles = {};
-    for (const [id, state] of Object.entries(data.puzzles ?? {}))
+    for (const [id, state] of Object.entries(isObject(data.puzzles) ? data.puzzles : {}))
       if (state === "solved") puzzles[id] = state;
     const progress = { puzzles, current: typeof data.current === "string" ? data.current : null };
     const boards = Object.fromEntries(Object.entries(isObject(data.boards) ? data.boards : {}).filter(([, e]) => isEntry(e)));

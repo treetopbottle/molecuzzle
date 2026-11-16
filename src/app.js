@@ -24,22 +24,26 @@ export function startApp({ puzzles, createGame, store, createUi }) {
     onSolve() { game.showSolution(); keep(); },
   });
 
-  /** Keeps the open Puzzle's saved(), or its entry removed when it isn't in progress, and shows it. */
-  function keep() {
+  /** Progress with the open Puzzle's saved() in boards, or without its entry when it isn't in progress. */
+  function withEntry(p) {
     const id = puzzles[index].id, saved = game.saved();
-    progress = store.update(p => {
-      const { boards = {}, ...rest } = p;
-      const { [id]: _, ...others } = boards;
-      const next = saved ? { ...others, [id]: saved } : others;
-      return Object.keys(next).length ? { ...rest, boards: next } : rest;
-    });
+    const { boards = {}, ...rest } = p;
+    const { [id]: _, ...others } = boards;
+    const next = saved ? { ...others, [id]: saved } : others;
+    return Object.keys(next).length ? { ...rest, boards: next } : rest;
+  }
+
+  /** Keeps the open Puzzle as it is now, and shows it. */
+  function keep() {
+    progress = store.update(withEntry);
     update();
   }
 
+  /** Opens a Puzzle where it was left; an entry createGame couldn't use is replaced. */
   function open(i) {
     index = i;
     game = createGame(puzzles[i], progress.boards?.[puzzles[i].id]);
-    progress = store.update(p => ({ ...p, current: puzzles[i].id }));
+    progress = store.update(p => withEntry({ ...p, current: puzzles[i].id }));
     ui.open(game);
     update();
   }
