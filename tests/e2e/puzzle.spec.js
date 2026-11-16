@@ -67,6 +67,14 @@ test("Progress.01, Progress.03 solved puzzles and the open puzzle are kept over 
   expect(await storedProgress(page)).toEqual({ puzzles: { water: "solved" }, current: "hydrogen-cyanide" });
 });
 
+test("Progress.01, Progress.03 wrong data is left out, and Puzzle 1 opens when the open one is unknown", async ({ page }) => {
+  await start(page, { puzzles: { water: "solved", urea: "seen" }, current: 7 });
+  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 13");
+  await expect(page.getByRole("button", { name: "Puzzle 1: Water, solved" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Puzzle 9", exact: true })).toBeVisible();
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 13");
+});
+
 test("Progress.04 the only request the page makes is for the page itself", async ({ page }) => {
   const requests = [];
   page.on("request", request => requests.push(request.url()));

@@ -48,7 +48,8 @@ describe("Progress", () => {
     const broken = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); } };
     const store = createProgressStore(broken);
     expect(store.load()).toEqual({ puzzles: {}, current: null });
-    expect(() => store.update(progress => ({ ...progress, current: "water" }))).not.toThrow();
+    expect(store.update(progress => ({ ...progress, current: "water" }))).toEqual({ puzzles: {}, current: "water" });
+    expect(store.update(progress => markSolved(progress, "water"))).toEqual({ puzzles: { water: "solved" }, current: "water" });
     expect(load(undefined)).toEqual({ puzzles: {}, current: null });
     expect(() => createProgressStore(undefined).update(progress => progress)).not.toThrow();
   });
