@@ -41,3 +41,10 @@ What was checked:
 4. **note**: `src/puzzle/game.js:38-39`. The JSDoc says "When no Bond is made, the reason is "full", with the Atom that has no room, or "crossing"."
    - That reads as if every unmade change has one of those reasons. `change` also returns `{ changed: false }` with no reason: while done, weaker on a Dotted line, and when strengthening wraps nothing.
    - Suggested wording: "When a Bond can't be made, the reason is …".
+
+## Outcome
+
+1. Fixed: the Bond.04 test is the example, Methanol with only H 3,1 to H 3,2 (a6654c7).
+2. Fixed: a test checks that `ui/elements.js` has a look for every Element of `puzzle/elements.js`, and no more (a6654c7).
+3. Fixed: the Messages.02 test checks that a result with no reason gives no text (a6654c7).
+4. Fixed: the comment says "When a Bond can't be made", and that other changes that change nothing have no reason (a6654c7).
