@@ -52,6 +52,28 @@ describe("Progress", () => {
     expect(schemaErrors("progress.schema.json", load(storage))).toEqual([]);
   });
 
+  test.each([
+    ["a Bond of two numbers", { bonds: [[0, 1]], revealed: false, undo: [] }],
+    ["a Bond of four numbers", { bonds: [[0, 1, 1, 1]], revealed: false, undo: [] }],
+    ["a negative Atom", { bonds: [[-1, 1, 1]], revealed: false, undo: [] }],
+    ["an Atom that isn't a whole number", { bonds: [[0.5, 1, 1]], revealed: false, undo: [] }],
+    ["a Bond that isn't a list", { bonds: [5], revealed: false, undo: [] }],
+    ["an undo Board that doesn't fit", { bonds: [], revealed: false, undo: [[[0, 1, 4]]] }],
+    ["an undo that isn't a list", { bonds: [], revealed: false, undo: "x" }],
+    ["an entry of null", null],
+    ["an entry that is a list", []],
+  ])("Progress.03 an entry with %s is left out, and the rest still loads", (_, entry) => {
+    const stored = { puzzles: { water: "solved" }, current: "water", boards: { ammonia: entry } };
+    expect(schemaErrors("progress.schema.json", stored)).not.toEqual([]);
+    expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify(stored) }))).toEqual({ puzzles: { water: "solved" }, current: "water" });
+  });
+
+  test("Progress.03 puzzles that isn't an object is left out", () => {
+    const stored = { puzzles: ["solved"], current: "water" };
+    expect(schemaErrors("progress.schema.json", stored)).not.toEqual([]);
+    expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify(stored) }))).toEqual({ puzzles: {}, current: "water" });
+  });
+
   test("Progress.03 boards that don't fit, or have no entry left, are left out", () => {
     for (const boards of ["none", [], { water: { bonds: "x", revealed: false, undo: [] } }])
       expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify({ puzzles: {}, current: "water", boards }) })))

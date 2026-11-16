@@ -90,6 +90,11 @@ describe("Progress.05", () => {
     expect(store.saved).toEqual({ puzzles: { water: "solved" }, current: "water" });
   });
 
+  test("Progress.05 an entry whose Board can't be on the Grid is removed when its Puzzle opens", () => {
+    const { store } = start({ puzzles: {}, current: "hydrogen-cyanide", boards: { "hydrogen-cyanide": { bonds: [[0, 2, 1]], revealed: false, undo: [] } } });
+    expect(store.saved).toEqual({ puzzles: {}, current: "hydrogen-cyanide" });
+  });
+
   test("Progress.05 opening a Puzzle goes on where it was left, and another Puzzle's Board stays kept", () => {
     const kept = { bonds: [[0, 1, 1]], revealed: false, undo: [[]] };
     const { store, ui } = start({ puzzles: {}, current: "methanol", boards: { "hydrogen-cyanide": kept } });

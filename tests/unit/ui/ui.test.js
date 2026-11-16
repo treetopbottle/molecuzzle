@@ -48,7 +48,7 @@ test("Input.01, Input.02 the Board, the buttons and Ctrl+Z call their handlers",
   expect(handlers.onReset).toHaveBeenCalledTimes(1);
 });
 
-test("Input.03 Undo is disabled with nothing to undo, Reset with no Bonds", () => {
+test("Input.03 Undo is disabled with nothing to undo, Reset with no Bonds and nothing to undo", () => {
   const { ui, game } = show(1);
   expect(button("Undo").disabled).toBe(true);
   expect(button("Reset").disabled).toBe(true);
