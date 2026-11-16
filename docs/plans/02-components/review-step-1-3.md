@@ -36,3 +36,9 @@ What was checked:
    Step 1 says to rename "by the table above", and the second review traced `puzzle.spec.js:4`'s old order back to line 59. Step 1 is done, so nothing is wrong now. But the table and the rule disagree, and anyone copying from the table copies the wrong order. The table could follow the spec's order, or the rule could say that the table gives ids, not their order.
 
 No must fix findings.
+
+## Outcome
+
+1. Fixed: the rule names the order, Puzzle ids, then UI ids in the order of ui.md, then Storage ids, which is how the tests are named (4c10949).
+2. Fixed: step 2(a) tests the Board.04 example, Formaldehyde with C═O, which no test has as a whole; it says the names are tested in parts already (4c10949). Nitrogen's name isn't in the example, so it stays out.
+3. Fixed: the rule says the table gives the ids, not their order (4c10949).
