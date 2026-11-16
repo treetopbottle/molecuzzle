@@ -10,7 +10,8 @@ export const UNDO_LIMIT = 100;
  * A Puzzle being played. It starts with no Bonds, or where it was left:
  * { bonds, revealed, undo } as saved() gave them. If that Board, or one in
  * its history, can't be on the Grid, it starts with no Bonds, nothing to
- * undo and the solution not shown.
+ * undo and the solution not shown. A solved Board starts with nothing to
+ * undo, since solving ends the undo history.
  */
 export function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
   const atoms = puzzle.atoms.map(([el, r, c]) => ({ el, r, c }));
@@ -56,7 +57,7 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
     return { kind: revealed ? "revealed" : "solved" };
   }
   const done = () => ["solved", "revealed"].includes(status().kind);
-  if (status().kind === "solved") history = []; // a solved Board, as it was left, has nothing to undo
+  if (status().kind === "solved") history = []; // Undo goes back only to the last solve (Bond.08, Bond.10)
 
   function commit(next) {
     history.push(order);

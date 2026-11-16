@@ -36,9 +36,12 @@ describe("Puzzle", () => {
     expect(game.undo()).toBe(false);
   });
 
-  test("Puzzle.03 it starts with the solution shown, if it was", () => {
+  test("Puzzle.03, Bond.10 it starts with the solution shown, if it was, and Undo still works", () => {
     const urea = puzzle("urea");
-    expect(createGame(urea, { bonds: urea.solution, revealed: true, undo: [[]] }).status()).toEqual({ kind: "revealed" });
+    const game = createGame(urea, { bonds: urea.solution, revealed: true, undo: [[]] });
+    expect(game.status()).toEqual({ kind: "revealed" });
+    expect(game.undo()).toBe(true);
+    expect(game.board()).toEqual([]);
   });
 
   test("Help.01 with no Bonds, the solution doesn't count as shown, also after Undo", () => {
@@ -48,7 +51,7 @@ describe("Puzzle", () => {
     expect(game.status()).toEqual({ kind: "solved" });
   });
 
-  test("Bond.10 a solved Board starts with nothing to undo", () => {
+  test("Bond.08, Bond.10 a solved Board starts with nothing to undo", () => {
     const water = puzzle("water");
     const game = createGame(water, { bonds: water.solution, revealed: false, undo: [[]] });
     expect(game.status()).toEqual({ kind: "solved" });
