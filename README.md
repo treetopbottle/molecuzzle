@@ -36,7 +36,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
 - `src/`: the code, as ES modules, in components ([0011](docs/decisions.md#0011)):
   - `puzzle/`: the Puzzles and the rules: `game.js`, `grid.js`, `solver.js`, `puzzles.js`, `elements.js`
   - `storage/`: what is kept in the browser: `progress.js`
-  - `ui/`: the page: `index.html` with `style.css`, `board.js` (the Board in SVG), `puzzle-list.js`
+  - `ui/`: the page: `index.html` with `style.css`, `board.js` (the Board in SVG), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
   - `app.js` (wires the page) and `browser.js` (the entry point): the Glue
 - `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `publish-pages.sh` publishes a build to GitHub Pages
 - `.github/workflows/pages.yml`: builds and publishes every branch
@@ -63,11 +63,13 @@ flowchart TD
     css["style.css"]
     board["board.js<br/>Board in SVG"]
     list["puzzle-list.js<br/>puzzle buttons, formulas"]
+    messages["messages.js<br/>status and reason texts"]
+    looks["elements.js<br/>names, colours"]
   end
 
   subgraph puzzle["Puzzle: puzzle/ (no DOM)"]
     puzzles["puzzles.js<br/>PUZZLES"]
-    game["game.js<br/>Bond orders, undo, status"]
+    game["game.js<br/>Bond orders, undo, status, reasons"]
     grid["grid.js<br/>candidate Bonds, crossings, connected"]
     solver["solver.js<br/>finds solutions"]
     elements["elements.js<br/>ELEMENTS, valence"]
@@ -90,9 +92,11 @@ flowchart TD
   app --> game
   app --> board
   app --> list
+  app --> messages
   app --> progress
 
-  board --> elements
+  board --> looks
+  messages --> looks
   board -. "onChange(bond, ±1)" .-> app
   board -. "reads state of" .-> game
   list -. "onPick(index)" .-> app

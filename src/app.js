@@ -1,8 +1,9 @@
 // Wires the page together: the open puzzle, its Board, the panel, the
 // puzzle list and Progress.
 import { PUZZLES } from "./puzzle/puzzles.js";
-import { createGame, statusText } from "./puzzle/game.js";
+import { createGame } from "./puzzle/game.js";
 import { createBoard } from "./ui/board.js";
+import { statusText, reasonText } from "./ui/messages.js";
 import { renderPuzzleList, formulaNodes } from "./ui/puzzle-list.js";
 import { loadProgress, saveProgress, markSolved } from "./storage/progress.js";
 
@@ -37,7 +38,8 @@ export function startApp(doc, { storage, puzzles = PUZZLES, confirm = q => doc.d
 
   function onChange(k, dir) {
     const result = game.change(k, dir);
-    if (result.message) toast(result.message);
+    const reason = reasonText(result, game.atoms);
+    if (reason) toast(reason);
     if (result.changed) update();
   }
 
