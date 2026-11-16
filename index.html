@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Molecuzzle</title>
+<!-- scripts/build.js replaces this link and the script below with style.css and the bundle of src/browser.js -->
 <style>
 :root {
   --bg: #0e1320; --panel: #161d2e; --panel-2: #1d2639; --line: #2a3550;
@@ -26,6 +27,7 @@ svg { max-width: 100%; height: auto; display: block; touch-action: manipulation;
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
 h1 { margin: 0; font-size: 24px; }
 p { margin: 0; }
+.info { display: contents; }
 .eyebrow { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
 .legend { color: var(--muted); font-size: 14px; }
 .rules { margin: 0; padding-left: 20px; font-size: 14px; }
@@ -78,26 +80,7 @@ p { margin: 0; }
     <div id="status" role="status"></div>
   </section>
   <aside class="panel">
-    <nav class="puzzle-nav" aria-label="Puzzle">
-      <button id="prev" aria-label="Previous puzzle">‹</button>
-      <span id="counter"></span>
-      <button id="next" aria-label="Next puzzle">›</button>
-      <span id="badge" class="badge"></span>
-    </nav>
-    <div>
-      <div class="eyebrow">Mystery molecule</div>
-      <h1 id="title">?</h1>
-      <div id="formula" class="legend"></div>
-    </div>
-    <p id="fact" class="legend" hidden></p>
-    <button id="nextPuzzle" class="primary" hidden>Next puzzle →</button>
-    <ol class="rules">
-      <li>Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.</li>
-      <li>Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.</li>
-      <li>Bonds can't cross.</li>
-      <li>Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.</li>
-      <li>All atoms join into one molecule. There is exactly one solution.</li>
-    </ol>
+    <div id="info" class="info"></div>
     <div class="actions">
       <button id="btnUndo">Undo</button>
       <button id="btnReset">Reset</button>
@@ -112,7 +95,109 @@ p { margin: 0; }
 <div id="toast" role="alert"></div>
 <script>
 (() => {
-  // src/puzzles.js
+  // src/storage/progress.js
+  var STORAGE_KEY = "molecuzzle-v2";
+  var UNDO_MAX = 100;
+  var isObject = (x) => typeof x === "object" && x !== null && !Array.isArray(x);
+  var isIndex = (x) => Number.isInteger(x) && x >= 0;
+  var isBoard = (b) => Array.isArray(b) && b.every((bond) => Array.isArray(bond) && bond.length === 3 && isIndex(bond[0]) && isIndex(bond[1]) && [1, 2, 3].includes(bond[2]));
+  var isEntry = (e) => isObject(e) && isBoard(e.bonds) && typeof e.revealed === "boolean" && Array.isArray(e.undo) && e.undo.length <= UNDO_MAX && e.undo.every(isBoard);
+  function read(storage2) {
+    const empty = { puzzles: {}, current: null };
+    try {
+      const data = JSON.parse(storage2?.getItem(STORAGE_KEY) ?? "null");
+      if (!data || typeof data !== "object") return empty;
+      const puzzles = {};
+      for (const [id, state] of Object.entries(isObject(data.puzzles) ? data.puzzles : {}))
+        if (state === "solved") puzzles[id] = state;
+      const progress = { puzzles, current: typeof data.current === "string" ? data.current : null };
+      const boards = Object.fromEntries(Object.entries(isObject(data.boards) ? data.boards : {}).filter(([, e]) => isEntry(e)));
+      if (Object.keys(boards).length) progress.boards = boards;
+      return progress;
+    } catch {
+      return empty;
+    }
+  }
+  function createProgressStore(storage2) {
+    let progress;
+    function load() {
+      progress = read(storage2);
+      return progress;
+    }
+    function update(change) {
+      progress = change(progress ?? load());
+      try {
+        storage2?.setItem(STORAGE_KEY, JSON.stringify(progress));
+      } catch {
+      }
+      return progress;
+    }
+    return { load, update };
+  }
+  function markSolved(progress, id) {
+    if (progress.puzzles[id] === "solved") return progress;
+    return { ...progress, puzzles: { ...progress.puzzles, [id]: "solved" } };
+  }
+
+  // src/app.js
+  function startApp({ puzzles, createGame: createGame2, store, createUi: createUi2 }) {
+    let progress = store.load();
+    let index = Math.max(0, puzzles.findIndex((p) => p.id === progress.current));
+    let game;
+    const ui = createUi2({
+      onChange(k, dir) {
+        const result = game.change(k, dir);
+        ui.say(result);
+        if (result.changed) keep();
+      },
+      onOpen: open,
+      onUndo() {
+        if (game.undo()) keep();
+      },
+      onReset() {
+        if (game.reset()) keep();
+      },
+      onSolve() {
+        game.showSolution();
+        keep();
+      }
+    });
+    function withEntry(p) {
+      const id = puzzles[index].id, saved = game.saved();
+      const { boards = {}, ...rest } = p;
+      const { [id]: _, ...others } = boards;
+      const next = saved ? { ...others, [id]: saved } : others;
+      return Object.keys(next).length ? { ...rest, boards: next } : rest;
+    }
+    function keep() {
+      progress = store.update(withEntry);
+      update();
+    }
+    function open(i) {
+      index = i;
+      game = createGame2(puzzles[i], progress.boards?.[puzzles[i].id]);
+      progress = store.update((p) => withEntry({ ...p, current: puzzles[i].id }));
+      ui.open(game);
+      update();
+    }
+    function update() {
+      const puzzle = puzzles[index], status = game.status();
+      if (status.kind === "solved" && progress.puzzles[puzzle.id] !== "solved")
+        progress = store.update((p) => markSolved(p, puzzle.id));
+      ui.render({
+        puzzles,
+        index,
+        progress,
+        status,
+        done: game.done(),
+        canUndo: game.canUndo,
+        hasBonds: game.order.some(Boolean)
+      });
+    }
+    open(index);
+  }
+
+  // src/puzzle/puzzles.js
   var PUZZLES = [
     {
       id: "water",
@@ -246,16 +331,16 @@ p { margin: 0; }
     }
   ];
 
-  // src/elements.js
+  // src/puzzle/elements.js
   var ELEMENTS = {
-    H: { name: "Hydrogen", valence: 1, color: "#eef2f7", stroke: "#9aa6b8", text: "#2a2f38", r: 17 },
-    C: { name: "Carbon", valence: 4, color: "#454b55", stroke: "#1e2228", text: "#ffffff", r: 22 },
-    N: { name: "Nitrogen", valence: 3, color: "#3d6ef5", stroke: "#1f3f9e", text: "#ffffff", r: 22 },
-    O: { name: "Oxygen", valence: 2, color: "#e5443f", stroke: "#8f201d", text: "#ffffff", r: 22 }
+    H: { valence: 1 },
+    C: { valence: 4 },
+    N: { valence: 3 },
+    O: { valence: 2 }
   };
   var MAX_ORDER = 3;
 
-  // src/grid.js
+  // src/puzzle/grid.js
   function candidateBonds(atoms) {
     const bonds = [];
     atoms.forEach((a, i) => {
@@ -292,16 +377,38 @@ p { margin: 0; }
     return seen.size === atomCount;
   }
 
-  // src/game.js
-  var UNDO_LIMIT = 300;
-  function createGame(puzzle) {
+  // src/puzzle/game.js
+  var UNDO_LIMIT = 100;
+  function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
     const atoms = puzzle.atoms.map(([el2, r, c]) => ({ el: el2, r, c }));
     const bonds = candidateBonds(atoms);
-    let order = bonds.map(() => 0);
+    const empty = () => bonds.map(() => 0);
+    const bondCount = (i, o) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? o[k] : 0), 0);
+    function orders(board2) {
+      if (!Array.isArray(board2)) return null;
+      const o = empty();
+      for (const bond of board2) {
+        const [a, b, n] = Array.isArray(bond) ? bond : [];
+        const k = bonds.findIndex((e) => e.a === a && e.b === b);
+        if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
+        o[k] = n;
+      }
+      if (atoms.some((atom, i) => bondCount(i, o) > ELEMENTS[atom.el].valence)) return null;
+      if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
+      return o;
+    }
+    let order = empty();
     let history = [];
     let revealed = false;
-    const bondCount = (i) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? order[k] : 0), 0);
-    const remaining = (i) => ELEMENTS[atoms[i].el].valence - bondCount(i);
+    if (left !== void 0) {
+      const now = orders(left), before = Array.isArray(past) ? past.map(orders) : [null];
+      if (now && !before.includes(null)) {
+        order = now;
+        history = before.slice(-UNDO_LIMIT);
+        revealed = shown === true && order.some(Boolean);
+      }
+    }
+    const remaining = (i) => ELEMENTS[atoms[i].el].valence - bondCount(i, order);
     function status() {
       const open = atoms.filter((_, i) => remaining(i) > 0).length;
       if (!order.some(Boolean)) return { kind: "empty" };
@@ -310,6 +417,7 @@ p { margin: 0; }
       return { kind: revealed ? "revealed" : "solved" };
     }
     const done = () => ["solved", "revealed"].includes(status().kind);
+    if (status().kind === "solved") history = [];
     function commit(next) {
       history.push(order);
       if (history.length > UNDO_LIMIT) history.shift();
@@ -322,15 +430,16 @@ p { margin: 0; }
       let next = cur + dir;
       if (dir > 0 && cur === 0) {
         const full = [e.a, e.b].find((i) => remaining(i) === 0);
-        if (full !== void 0) return { changed: false, message: `${ELEMENTS[atoms[full].el].name} already has all its bonds.` };
+        if (full !== void 0) return { changed: false, reason: "full", atom: full };
       }
       if (dir > 0 && (next > MAX_ORDER || next - cur > Math.min(remaining(e.a), remaining(e.b)))) next = 0;
       if (next < 0 || next === cur) return { changed: false };
       if (cur === 0 && bonds.some((f, j) => order[j] && crosses(atoms, e, f)))
-        return { changed: false, message: "Bonds can't cross." };
+        return { changed: false, reason: "crossing" };
       const copy = [...order];
       copy[k] = next;
       commit(copy);
+      if (status().kind === "solved") history = [];
       return { changed: true };
     }
     function undo() {
@@ -340,8 +449,10 @@ p { margin: 0; }
       return true;
     }
     function reset() {
-      if (!order.some(Boolean)) return false;
-      commit(bonds.map(() => 0));
+      if (!order.some(Boolean) && !history.length) return false;
+      order = empty();
+      history = [];
+      revealed = false;
       return true;
     }
     function showSolution() {
@@ -351,6 +462,12 @@ p { margin: 0; }
       });
       if (!done()) revealed = true;
       if (next.some((o, k) => o !== order[k])) commit(next);
+    }
+    const toBoard = (o) => bonds.flatMap((e, k) => o[k] ? [[e.a, e.b, o[k]]] : []);
+    const board = () => toBoard(order);
+    function saved() {
+      if (!order.some(Boolean) && !history.length || status().kind === "solved") return null;
+      return { bonds: board(), revealed, undo: history.map(toBoard) };
     }
     return {
       puzzle,
@@ -368,25 +485,21 @@ p { margin: 0; }
       change,
       undo,
       reset,
-      showSolution
+      showSolution,
+      board,
+      saved
     };
   }
-  function statusText(status, puzzle) {
-    switch (status.kind) {
-      case "empty":
-        return "Click a dotted line between two atoms to bond them.";
-      case "open":
-        return `${status.open} atom${status.open > 1 ? "s" : ""} still need${status.open > 1 ? "" : "s"} bonds.`;
-      case "pieces":
-        return "Every atom has its bonds, but they form more than one molecule. Everything must join up.";
-      case "solved":
-        return `\u2713 Solved! It's ${puzzle.name}.`;
-      case "revealed":
-        return `Here is ${puzzle.name}. Reset and build it yourself to mark it solved.`;
-    }
-  }
 
-  // src/board.js
+  // src/ui/elements.js
+  var ELEMENTS2 = {
+    H: { name: "Hydrogen", color: "#eef2f7", stroke: "#9aa6b8", text: "#2a2f38", r: 17 },
+    C: { name: "Carbon", color: "#454b55", stroke: "#1e2228", text: "#ffffff", r: 22 },
+    N: { name: "Nitrogen", color: "#3d6ef5", stroke: "#1f3f9e", text: "#ffffff", r: 22 },
+    O: { name: "Oxygen", color: "#e5443f", stroke: "#8f201d", text: "#ffffff", r: 22 }
+  };
+
+  // src/ui/board.js
   var SVGNS = "http://www.w3.org/2000/svg";
   var CELL = 84;
   var PAD = 46;
@@ -436,7 +549,7 @@ p { margin: 0; }
       return { g, lines };
     });
     const atomEls = atoms.map((a) => {
-      const E = ELEMENTS[a.el], [x, y] = xy(a);
+      const E = ELEMENTS2[a.el], [x, y] = xy(a);
       const g = el("g", { class: "atom", role: "img", transform: `translate(${x},${y})` }, atomsLayer);
       el("circle", { class: "body", r: E.r, fill: E.color, stroke: E.stroke }, g);
       el("circle", { class: "shine", r: E.r * 0.42, cx: -E.r * 0.32, cy: -E.r * 0.36 }, g);
@@ -464,7 +577,7 @@ p { margin: 0; }
         const left = game.remaining(i), { g, count } = atomEls[i];
         g.classList.toggle("ok", left === 0);
         count.textContent = left;
-        g.setAttribute("aria-label", `${ELEMENTS[a.el].name} ${place(a)}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
+        g.setAttribute("aria-label", `${ELEMENTS2[a.el].name} ${place(a)}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
       });
       svg.classList.toggle("solved", game.status().kind === "solved");
     }
@@ -472,7 +585,70 @@ p { margin: 0; }
     return { render };
   }
 
-  // src/puzzle-list.js
+  // src/ui/panel.js
+  var RULES = [
+    "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
+    "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
+    "Bonds can't cross.",
+    "Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.",
+    "All atoms join into one molecule. There is exactly one solution."
+  ];
+  var BADGES = { solved: "\u2713 Solved" };
+  function build(panel) {
+    const doc = panel.ownerDocument;
+    panel.innerHTML = `
+    <nav class="puzzle-nav" aria-label="Puzzle">
+      <button id="prev" aria-label="Previous puzzle">\u2039</button>
+      <span id="counter"></span>
+      <button id="next" aria-label="Next puzzle">\u203A</button>
+      <span id="badge" class="badge"></span>
+    </nav>
+    <div>
+      <div class="eyebrow">Mystery molecule</div>
+      <h1 id="title"></h1>
+      <div id="formula" class="legend"></div>
+    </div>
+    <p id="fact" class="legend" hidden></p>
+    <button id="nextPuzzle" class="primary" hidden>Next puzzle \u2192</button>
+    <ol class="rules"></ol>`;
+    panel.querySelector(".rules").append(...RULES.map((rule) => {
+      const li = doc.createElement("li");
+      li.textContent = rule;
+      return li;
+    }));
+  }
+  function renderPanel(panel, { puzzles, index, progress, done }) {
+    if (!panel.querySelector("nav")) build(panel);
+    const $ = (id) => panel.querySelector(`#${id}`);
+    const puzzle = puzzles[index], last = index === puzzles.length - 1;
+    const opens = (button, i, can) => {
+      button.disabled = !can;
+      button.dataset.open = String(i);
+    };
+    $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
+    opens($("prev"), index - 1, index > 0);
+    opens($("next"), index + 1, !last);
+    const state = progress.puzzles[puzzle.id];
+    $("badge").textContent = BADGES[state] ?? "Unsolved";
+    $("badge").className = `badge ${state ?? ""}`;
+    $("title").textContent = done ? puzzle.name : "?";
+    if (done) $("formula").replaceChildren(...formulaNodes(panel.ownerDocument, puzzle.formula));
+    else $("formula").textContent = "Bond every atom to find out what it is.";
+    $("fact").textContent = puzzle.fact;
+    $("fact").hidden = !done;
+    opens($("nextPuzzle"), index + 1, !last);
+    $("nextPuzzle").hidden = !done || last;
+  }
+  function formulaNodes(doc, formula) {
+    return formula.split(/(\d+)/).filter(Boolean).map((part) => {
+      if (!/^\d+$/.test(part)) return doc.createTextNode(part);
+      const sub = doc.createElement("sub");
+      sub.textContent = part;
+      return sub;
+    });
+  }
+
+  // src/ui/puzzle-list.js
   function renderPuzzleList(list, puzzles, progress, current, onPick) {
     const doc = list.ownerDocument;
     list.replaceChildren(...puzzles.map((p, i) => {
@@ -489,128 +665,91 @@ p { margin: 0; }
       return li;
     }));
   }
-  function formulaNodes(doc, formula) {
-    return formula.split(/(\d+)/).filter(Boolean).map((part) => {
-      if (!/^\d+$/.test(part)) return doc.createTextNode(part);
-      const sub = doc.createElement("sub");
-      sub.textContent = part;
-      return sub;
-    });
-  }
 
-  // src/progress.js
-  var STORAGE_KEY = "molecuzzle-v2";
-  function loadProgress(storage2) {
-    const empty = { puzzles: {}, current: null };
-    try {
-      const data = JSON.parse(storage2?.getItem(STORAGE_KEY) ?? "null");
-      if (!data || typeof data !== "object") return empty;
-      const puzzles = {};
-      for (const [id, state] of Object.entries(data.puzzles ?? {}))
-        if (state === "solved") puzzles[id] = state;
-      return { puzzles, current: typeof data.current === "string" ? data.current : null };
-    } catch {
-      return empty;
+  // src/ui/messages.js
+  function statusText(status, puzzle) {
+    switch (status.kind) {
+      case "empty":
+        return "Click a dotted line between two atoms to bond them.";
+      case "open":
+        return `${status.open} atom${status.open > 1 ? "s" : ""} still need${status.open > 1 ? "" : "s"} bonds.`;
+      case "pieces":
+        return "Every atom has its bonds, but they form more than one molecule. Everything must join up.";
+      case "solved":
+        return `\u2713 Solved! It's ${puzzle.name}.`;
+      case "revealed":
+        return `Here is ${puzzle.name}. Reset and build it yourself to mark it solved.`;
     }
   }
-  function saveProgress(storage2, progress) {
-    try {
-      storage2?.setItem(STORAGE_KEY, JSON.stringify(progress));
-    } catch {
+  function reasonText(result, atoms) {
+    switch (result.reason) {
+      case "full":
+        return `${ELEMENTS2[atoms[result.atom].el].name} already has all its bonds.`;
+      case "crossing":
+        return "Bonds can't cross.";
+      default:
+        return null;
     }
   }
-  function markSolved(progress, id) {
-    if (progress.puzzles[id] === "solved") return progress;
-    return { ...progress, puzzles: { ...progress.puzzles, [id]: "solved" } };
-  }
 
-  // src/app.js
-  var BADGES = { solved: "\u2713 Solved" };
-  function startApp(doc, { storage: storage2, puzzles = PUZZLES, confirm = (q) => doc.defaultView.confirm(q) } = {}) {
+  // src/ui/ui.js
+  var STATUS_CLASS = { solved: "good", revealed: "good", pieces: "warn" };
+  function createUi(doc, handlers, { confirm = (question) => doc.defaultView.confirm(question) } = {}) {
     const $ = (id) => doc.getElementById(id);
-    let progress = loadProgress(storage2);
-    let index = Math.max(0, puzzles.findIndex((p) => p.id === progress.current));
     let game, board, toastTimer;
-    function toast(text) {
-      const t = $("toast");
-      t.textContent = text;
-      t.className = "show";
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.className = "", 1800);
-    }
-    function open(i) {
-      index = i;
-      game = createGame(puzzles[i]);
-      board = createBoard($("board"), game, { onChange });
-      progress = { ...progress, current: puzzles[i].id };
-      saveProgress(storage2, progress);
-      update();
-    }
-    function onChange(k, dir) {
-      const result = game.change(k, dir);
-      if (result.message) toast(result.message);
-      if (result.changed) update();
-    }
-    function update() {
-      const puzzle = puzzles[index], status = game.status(), done = game.done();
-      if (status.kind === "solved") {
-        const next = markSolved(progress, puzzle.id);
-        if (next !== progress) {
-          progress = next;
-          saveProgress(storage2, progress);
-        }
-      }
-      board.render();
-      $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
-      $("prev").disabled = index === 0;
-      $("next").disabled = index === puzzles.length - 1;
-      const state = progress.puzzles[puzzle.id];
-      $("badge").textContent = BADGES[state] ?? "Unsolved";
-      $("badge").className = `badge ${state ?? ""}`;
-      $("title").textContent = done ? puzzle.name : "?";
-      if (done) $("formula").replaceChildren(...formulaNodes(doc, puzzle.formula));
-      else $("formula").textContent = "Bond every atom to find out what it is.";
-      $("fact").textContent = puzzle.fact;
-      $("fact").hidden = !done;
-      $("nextPuzzle").hidden = !done || index === puzzles.length - 1;
-      const line = $("status");
-      line.textContent = statusText(status, puzzle);
-      line.className = { solved: "good", revealed: "good", pieces: "warn" }[status.kind] ?? "";
-      $("btnUndo").disabled = !game.canUndo;
-      $("btnReset").disabled = !game.order.some(Boolean);
-      const solvedCount = puzzles.filter((p) => progress.puzzles[p.id] === "solved").length;
-      $("score").textContent = `Solved ${solvedCount} of ${puzzles.length}`;
-      renderPuzzleList($("puzzles"), puzzles, progress, index, open);
-    }
-    $("prev").addEventListener("click", () => index > 0 && open(index - 1));
-    $("next").addEventListener("click", () => index < puzzles.length - 1 && open(index + 1));
-    $("nextPuzzle").addEventListener("click", () => index < puzzles.length - 1 && open(index + 1));
-    $("btnUndo").addEventListener("click", () => game.undo() && update());
-    $("btnReset").addEventListener("click", () => game.reset() && update());
+    $("info").addEventListener("click", (e) => {
+      const button = e.target.closest("button[data-open]");
+      if (button && !button.disabled) handlers.onOpen(Number(button.dataset.open));
+    });
+    $("btnUndo").addEventListener("click", () => handlers.onUndo());
+    $("btnReset").addEventListener("click", () => {
+      if (confirm("Reset this puzzle? Its bonds and undo history are removed.")) handlers.onReset();
+    });
     $("btnSolve").addEventListener("click", () => {
-      if (!confirm("Show the solution?")) return;
-      game.showSolution();
-      update();
+      if (confirm("Show the solution?")) handlers.onSolve();
     });
     doc.addEventListener("keydown", (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
         e.preventDefault();
-        if (game.undo()) update();
+        handlers.onUndo();
       }
     });
-    open(index);
-    return { get game() {
-      return game;
-    }, open };
+    function open(next) {
+      game = next;
+      board = createBoard($("board"), game, { onChange: handlers.onChange });
+    }
+    function render(view) {
+      const { puzzles, index, progress, status } = view;
+      board.render();
+      renderPanel($("info"), view);
+      const line = $("status");
+      line.textContent = statusText(status, puzzles[index]);
+      line.className = STATUS_CLASS[status.kind] ?? "";
+      $("btnUndo").disabled = !view.canUndo;
+      $("btnReset").disabled = !view.hasBonds && !view.canUndo;
+      const solved = puzzles.filter((p) => progress.puzzles[p.id] === "solved").length;
+      $("score").textContent = `Solved ${solved} of ${puzzles.length}`;
+      renderPuzzleList($("puzzles"), puzzles, progress, index, handlers.onOpen);
+    }
+    function say(result) {
+      const text = reasonText(result, game.atoms);
+      if (!text) return;
+      const toast = $("toast");
+      toast.textContent = text;
+      toast.className = "show";
+      doc.defaultView.clearTimeout(toastTimer);
+      toastTimer = doc.defaultView.setTimeout(() => toast.className = "", 1800);
+    }
+    return { open, render, say };
   }
 
-  // src/main.js
+  // src/browser.js
   var storage;
   try {
     storage = window.localStorage;
   } catch {
   }
-  startApp(document, { storage });
+  startApp({ puzzles: PUZZLES, createGame, store: createProgressStore(storage), createUi: (handlers) => createUi(document, handlers) });
 })();
 </script>
 </body>
