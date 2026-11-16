@@ -97,7 +97,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 6. **The Progress store.** `[DONE]` ([review](review-step-6.md), [2](review-step-6-2.md)) Progress.01–04.
    - (a) Tests: `createProgressStore` loads, and `update` saves, as the old functions did; an end-to-end test that, over opening the game, solving a Puzzle and a reload, the only request is for the page (Progress.04 is already true, so that test passes at once).
    - (b) Implementation: `createProgressStore` in `storage/progress.js`, used by `app.js`.
-7. **The panel as a component.** Panel.01–04.
+7. **The panel as a component.** `[DONE]` ([review](review-step-7.md), [2](review-step-7-2.md)) Panel.01–04.
    - (a) Tests in happy-dom: `renderPanel` on an empty panel, for Panel.01–04.
    - (b) Implementation: `ui/panel.js`, with the rules out of `index.html`; `app.js` calls it in place of its own DOM code for the panel.
 8. **The UI as one component, and the Glue.** Progress.01, List.01–02, Input.03, Input.04.
