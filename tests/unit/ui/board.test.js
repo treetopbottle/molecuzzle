@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { createBoard } from "../../../src/ui/board.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { click } from "../../helpers/draw.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 let svg;
@@ -34,6 +35,25 @@ describe("Board", () => {
       ]
     `);
     expect(svg.querySelectorAll(".edge .maybe")).toHaveLength(3);
+  });
+
+  test("Board.04 names the Board, its Atoms, and its Dotted lines and Bonds", () => {
+    const game = createGame(puzzle("formaldehyde"));
+    const board = createBoard(svg, game, { onChange() {} });
+    click(game, "2,1", "3,1", 2);
+    board.render();
+    expect(svg.getAttribute("aria-label")).toBe("Board, 3 by 2");
+    expect(labels(".atom")).toEqual([
+      "Hydrogen 1,1: needs 1 more bond",
+      "Carbon 2,1: needs 2 more bonds",
+      "Hydrogen 2,2: needs 1 more bond",
+      "Oxygen 3,1: complete",
+    ]);
+    expect(labels(".edge")).toEqual([
+      "H 1,1 to C 2,1: no bond",
+      "C 2,1 to H 2,2: no bond",
+      "C 2,1 to O 3,1: double bond",
+    ]);
   });
 
   test("Input.01, Input.02 clicks, right-clicks and keys on a Bond go to onChange", () => {

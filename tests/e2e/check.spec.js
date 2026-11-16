@@ -50,6 +50,26 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
   await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 13");
 });
 
+// Green: its green channel is the largest.
+const isGreen = ([r, g, b]) => g > r && g > b;
+const colors = async locator => {
+  const css = await locator.evaluate(e => [getComputedStyle(e).color, getComputedStyle(e).borderTopColor]);
+  return css.map(c => c.match(/\d+/g).slice(0, 3).map(Number));
+};
+
+test("Messages.01 the status line is green when solved and when revealed", async ({ page }) => {
+  await openPuzzle(page, 1);
+  expect((await colors(status(page))).some(isGreen)).toBe(false);
+  await build(page, PUZZLES[0]);
+  await expect(status(page)).toHaveText("✓ Solved! It's Water.");
+  expect((await colors(status(page))).every(isGreen)).toBe(true);
+  await openPuzzle(page, 2);
+  page.once("dialog", dialog => dialog.accept());
+  await page.getByRole("button", { name: "Show solution" }).click();
+  await expect(status(page)).toHaveText("Here is Ammonia. Reset and build it yourself to mark it solved.");
+  expect((await colors(status(page))).every(isGreen)).toBe(true);
+});
+
 test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
   await openPuzzle(page, 13);
   await build(page, PUZZLES[12]);

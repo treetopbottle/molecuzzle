@@ -6,6 +6,20 @@ import { draw, click, build, bondIndex } from "../../helpers/draw.js";
 const puzzle = id => PUZZLES.find(p => p.id === id);
 const status = game => statusText(game.status(), game.puzzle);
 
+describe("Puzzle", () => {
+  test("Puzzle.02 a Puzzle starts with no Bonds", () => {
+    expect(draw(createGame(puzzle("formaldehyde")))).toMatchInlineSnapshot(`
+      "
+      H
+      ·
+      C·H
+      ·
+      O
+      "
+    `);
+  });
+});
+
 describe("Bond", () => {
   test("Bond.01, Bond.02 clicking a dotted line bonds, again makes it stronger", () => {
     const game = createGame(puzzle("hydrogen-cyanide"));
@@ -162,6 +176,14 @@ describe("Valence", () => {
     expect(needs()).toBe("H1 C4 H1 O2");
     click(game, "2,1", "3,1", 2);
     expect(needs()).toBe("H1 C2 H1 O0");
+  });
+
+  test("Valence.02 an Atom that needs no more Bonds is complete", () => {
+    const game = createGame(puzzle("formaldehyde"));
+    const complete = () => game.atoms.filter((_, i) => game.remaining(i) === 0).map(a => `${a.el} ${a.r + 1},${a.c + 1}`);
+    expect(complete()).toEqual([]);
+    click(game, "2,1", "3,1", 2);
+    expect(complete()).toEqual(["O 3,1"]);
   });
 });
 
