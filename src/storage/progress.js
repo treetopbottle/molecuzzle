@@ -1,8 +1,8 @@
 // Progress, kept in the browser. Works without storage: then nothing is kept.
 export const STORAGE_KEY = "molecuzzle-v2";
 
-/** @param {Storage | undefined} storage */
-export function loadProgress(storage) {
+/** What is stored, checked by hand: a field that doesn't fit is left out. */
+function read(storage) {
   const empty = { puzzles: {}, current: null };
   try {
     const data = JSON.parse(storage?.getItem(STORAGE_KEY) ?? "null");
@@ -16,8 +16,23 @@ export function loadProgress(storage) {
   }
 }
 
-export function saveProgress(storage, progress) {
-  try { storage?.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch { /* no storage: keep nothing */ }
+/**
+ * The Progress in this storage (localStorage, or undefined for none).
+ * load() reads it; update(change) saves change(progress) and returns it.
+ * @param {Storage | undefined} storage
+ */
+export function createProgressStore(storage) {
+  let progress;
+  function load() {
+    progress = read(storage);
+    return progress;
+  }
+  function update(change) {
+    progress = change(progress ?? load());
+    try { storage?.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch { /* no storage: keep nothing */ }
+    return progress;
+  }
+  return { load, update };
 }
 
 /** Marks a puzzle solved; returns the same Progress if it already was. */

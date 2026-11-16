@@ -77,7 +77,7 @@ flowchart TD
   end
 
   subgraph storage["Storage: storage/"]
-    progress["progress.js<br/>load, save, mark"]
+    progress["progress.js<br/>store: load, update; markSolved"]
   end
 
   local[("localStorage")]

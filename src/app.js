@@ -5,7 +5,7 @@ import { createGame } from "./puzzle/game.js";
 import { createBoard } from "./ui/board.js";
 import { statusText, reasonText } from "./ui/messages.js";
 import { renderPuzzleList, formulaNodes } from "./ui/puzzle-list.js";
-import { loadProgress, saveProgress, markSolved } from "./storage/progress.js";
+import { createProgressStore, markSolved } from "./storage/progress.js";
 
 const BADGES = { solved: "✓ Solved" };
 
@@ -15,7 +15,8 @@ const BADGES = { solved: "✓ Solved" };
  */
 export function startApp(doc, { storage, puzzles = PUZZLES, confirm = q => doc.defaultView.confirm(q) } = {}) {
   const $ = id => doc.getElementById(id);
-  let progress = loadProgress(storage);
+  const store = createProgressStore(storage);
+  let progress = store.load();
   let index = Math.max(0, puzzles.findIndex(p => p.id === progress.current));
   let game, board, toastTimer;
 
@@ -31,8 +32,7 @@ export function startApp(doc, { storage, puzzles = PUZZLES, confirm = q => doc.d
     index = i;
     game = createGame(puzzles[i]);
     board = createBoard($("board"), game, { onChange });
-    progress = { ...progress, current: puzzles[i].id };
-    saveProgress(storage, progress);
+    progress = store.update(p => ({ ...p, current: puzzles[i].id }));
     update();
   }
 
@@ -46,8 +46,7 @@ export function startApp(doc, { storage, puzzles = PUZZLES, confirm = q => doc.d
   function update() {
     const puzzle = puzzles[index], status = game.status(), done = game.done();
     if (status.kind === "solved") {
-      const next = markSolved(progress, puzzle.id);
-      if (next !== progress) { progress = next; saveProgress(storage, progress); }
+      if (progress.puzzles[puzzle.id] !== "solved") progress = store.update(p => markSolved(p, puzzle.id));
     }
     board.render();
 
