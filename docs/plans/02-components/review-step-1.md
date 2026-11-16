@@ -33,3 +33,12 @@ What was checked:
 6. **note**: this is about the plan, not this commit. Step 2 says it adds the test for Messages.01 "in orange for pieces". After the renames, `tests/e2e/check.spec.js:15` ("Messages.01 every Atom complete, but in two pieces") already checks this with `toHaveClass("warn")` at line 22, and `#status.warn` is the orange style (`src/ui/style.css:36`). Only "green for revealed" is still untested.
 
 No must fix or should fix findings.
+
+## Outcome
+
+1. Fixed: the test is named Input.02, Input.03 (200611a), and step 9 names it among the tests of Undo after Reset that change (bccd9ac).
+2. Fixed: Board.01, Board.04 (200611a).
+3. Fixed: the names add Board.04, List.01 and Panel.01 (200611a). Progress.01 stays on the Glycine test: the score and the badge show that the Puzzle was marked solved.
+4. Kept: the comment is for whoever edits `src/ui/index.html`; in the built page it does no harm.
+5. Kept: step 12 makes the screenshots.
+6. Kept: step 2 adds only the test for green; orange for pieces is already tested.
