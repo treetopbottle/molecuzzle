@@ -12,11 +12,17 @@ cd "$(dirname "$0")/.."
 engine=${CONTAINER:-podman}
 version=$(node -p 'require("@playwright/test/package.json").version')
 node scripts/build.js
+# A plain rootful Docker daemon would write root-owned files into the repo, so
+# it runs as this user. Everywhere else the container's root already writes as
+# this user: Podman, rootless Docker, Docker Desktop. With userns-remap neither
+# works. If docker info can't be read (Podman's docker shim, no daemon), no --user.
 user=""
-# Rootful Docker would write root-owned files into the repo; rootless Docker,
-# like rootless Podman, maps the container's root to this user already.
-if [ "$engine" = docker ] && ! docker info --format '{{.SecurityOptions}}' | grep -q rootless; then
-  user="--user $(id -u):$(id -g)"
+if [ "$engine" = docker ]; then
+  info=$(docker info --format '{{.OperatingSystem}} {{.SecurityOptions}}' 2>/dev/null || true)
+  case "$info" in
+    "" | *"Docker Desktop"* | *rootless* | *userns*) ;;
+    *) user="--user $(id -u):$(id -g)" ;;
+  esac
 fi
 # shellcheck disable=SC2086 # $user is empty or two words on purpose
 exec "$engine" run --rm --platform linux/amd64 --ipc=host $user \
