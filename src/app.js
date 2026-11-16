@@ -4,10 +4,9 @@ import { PUZZLES } from "./puzzle/puzzles.js";
 import { createGame } from "./puzzle/game.js";
 import { createBoard } from "./ui/board.js";
 import { statusText, reasonText } from "./ui/messages.js";
-import { renderPuzzleList, formulaNodes } from "./ui/puzzle-list.js";
+import { renderPuzzleList } from "./ui/puzzle-list.js";
+import { renderPanel } from "./ui/panel.js";
 import { createProgressStore, markSolved } from "./storage/progress.js";
-
-const BADGES = { solved: "✓ Solved" };
 
 /**
  * @param {Document} doc
@@ -50,18 +49,7 @@ export function startApp(doc, { storage, puzzles = PUZZLES, confirm = q => doc.d
     }
     board.render();
 
-    $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
-    $("prev").disabled = index === 0;
-    $("next").disabled = index === puzzles.length - 1;
-    const state = progress.puzzles[puzzle.id];
-    $("badge").textContent = BADGES[state] ?? "Unsolved";
-    $("badge").className = `badge ${state ?? ""}`;
-    $("title").textContent = done ? puzzle.name : "?";
-    if (done) $("formula").replaceChildren(...formulaNodes(doc, puzzle.formula));
-    else $("formula").textContent = "Bond every atom to find out what it is.";
-    $("fact").textContent = puzzle.fact;
-    $("fact").hidden = !done;
-    $("nextPuzzle").hidden = !done || index === puzzles.length - 1;
+    renderPanel($("info"), { puzzles, index, progress, done });
 
     const line = $("status");
     line.textContent = statusText(status, puzzle);
@@ -74,9 +62,10 @@ export function startApp(doc, { storage, puzzles = PUZZLES, confirm = q => doc.d
     renderPuzzleList($("puzzles"), puzzles, progress, index, open);
   }
 
-  $("prev").addEventListener("click", () => index > 0 && open(index - 1));
-  $("next").addEventListener("click", () => index < puzzles.length - 1 && open(index + 1));
-  $("nextPuzzle").addEventListener("click", () => index < puzzles.length - 1 && open(index + 1));
+  $("info").addEventListener("click", e => {
+    const button = e.target.closest("button[data-open]");
+    if (button && !button.disabled) open(Number(button.dataset.open));
+  });
   $("btnUndo").addEventListener("click", () => game.undo() && update());
   $("btnReset").addEventListener("click", () => game.reset() && update());
   $("btnSolve").addEventListener("click", () => {

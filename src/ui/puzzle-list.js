@@ -23,13 +23,3 @@ export function renderPuzzleList(list, puzzles, progress, current, onPick) {
     return li;
   }));
 }
-
-/** Formula with its numbers as subscripts, as DOM nodes. */
-export function formulaNodes(doc, formula) {
-  return formula.split(/(\d+)/).filter(Boolean).map(part => {
-    if (!/^\d+$/.test(part)) return doc.createTextNode(part);
-    const sub = doc.createElement("sub");
-    sub.textContent = part;
-    return sub;
-  });
-}

@@ -18,26 +18,7 @@
     <div id="status" role="status"></div>
   </section>
   <aside class="panel">
-    <nav class="puzzle-nav" aria-label="Puzzle">
-      <button id="prev" aria-label="Previous puzzle">‹</button>
-      <span id="counter"></span>
-      <button id="next" aria-label="Next puzzle">›</button>
-      <span id="badge" class="badge"></span>
-    </nav>
-    <div>
-      <div class="eyebrow">Mystery molecule</div>
-      <h1 id="title">?</h1>
-      <div id="formula" class="legend"></div>
-    </div>
-    <p id="fact" class="legend" hidden></p>
-    <button id="nextPuzzle" class="primary" hidden>Next puzzle →</button>
-    <ol class="rules">
-      <li>Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.</li>
-      <li>Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.</li>
-      <li>Bonds can't cross.</li>
-      <li>Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.</li>
-      <li>All atoms join into one molecule. There is exactly one solution.</li>
-    </ol>
+    <div id="info" class="info"></div>
     <div class="actions">
       <button id="btnUndo">Undo</button>
       <button id="btnReset">Reset</button>

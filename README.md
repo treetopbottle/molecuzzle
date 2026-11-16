@@ -36,7 +36,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
 - `src/`: the code, as ES modules, in components ([0011](docs/decisions.md#0011)):
   - `puzzle/`: the Puzzles and the rules: `game.js`, `grid.js`, `solver.js`, `generate.js` (finds Grid layouts), `puzzles.js`, `elements.js`
   - `storage/`: what is kept in the browser: `progress.js`
-  - `ui/`: the page: `index.html` with `style.css`, `board.js` (the Board in SVG), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
+  - `ui/`: the page: `index.html` with `style.css`, `board.js` (the Board in SVG), `panel.js` (the open Puzzle and the rules), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
   - `app.js` (wires the page) and `browser.js` (the entry point): the Glue
 - `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `publish-pages.sh` publishes a build to GitHub Pages
 - `.github/workflows/pages.yml`: builds and publishes every branch
@@ -62,7 +62,8 @@ flowchart TD
     html["index.html"]
     css["style.css"]
     board["board.js<br/>Board in SVG"]
-    list["puzzle-list.js<br/>puzzle buttons, formulas"]
+    panel["panel.js<br/>open Puzzle, name, formula, rules"]
+    list["puzzle-list.js<br/>puzzle buttons"]
     messages["messages.js<br/>status and reason texts"]
     looks["elements.js<br/>names, colours"]
   end
@@ -92,6 +93,7 @@ flowchart TD
   app --> puzzles
   app --> game
   app --> board
+  app --> panel
   app --> list
   app --> messages
   app --> progress
@@ -101,6 +103,7 @@ flowchart TD
   board -. "onChange(bond, ±1)" .-> app
   board -. "reads state of" .-> game
   list -. "onPick(index)" .-> app
+  panel -. "clicks on data-open" .-> app
 
   game --> elements
   game --> grid
