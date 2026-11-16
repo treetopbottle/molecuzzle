@@ -1,10 +1,9 @@
 import { describe, expect, test } from "vitest";
-import { createGame, statusText, UNDO_LIMIT } from "../../../src/puzzle/game.js";
+import { createGame, UNDO_LIMIT } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw, click, build, bondIndex } from "../../helpers/draw.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
-const status = game => statusText(game.status(), game.puzzle);
 
 describe("Puzzle", () => {
   test("Puzzle.02 a Puzzle starts with no Bonds", () => {
@@ -60,14 +59,14 @@ describe("Bond", () => {
     `);
   });
 
-  test("Bond.04 an Atom with all its bonds takes no new Bond, and says so", () => {
+  test("Bond.04 an Atom with all its bonds takes no new Bond, with the reason full and that Atom", () => {
     const game = createGame(puzzle("methanol"));
     click(game, "2,1", "3,1"); // O–H
     click(game, "2,1", "2,2"); // C–O: O is full
     expect(click(game, "2,1", "3,1", 0)).toBeUndefined();
     click(game, "2,1", "3,1", 1, -1); // remove O–H
     click(game, "3,1", "3,2"); // H–H: both H are full
-    expect(click(game, "2,1", "3,1")).toEqual({ changed: false, message: "Hydrogen already has all its bonds." });
+    expect(click(game, "2,1", "3,1")).toEqual({ changed: false, reason: "full", atom: 4 }); // H 3,1
     expect(draw(game)).toMatchInlineSnapshot(`
       "
         H
@@ -79,10 +78,10 @@ describe("Bond", () => {
     `);
   });
 
-  test("Bond.05 a dotted line that crosses a Bond can't be bonded", () => {
+  test("Bond.05 a dotted line that crosses a Bond can't be bonded, with the reason crossing", () => {
     const game = createGame(puzzle("glycine"));
     click(game, "2,1", "2,3"); // H–C across the middle
-    expect(click(game, "1,2", "4,2")).toEqual({ changed: false, message: "Bonds can't cross." });
+    expect(click(game, "1,2", "4,2")).toEqual({ changed: false, reason: "crossing" });
     expect(draw(game)).toMatchInlineSnapshot(`
       "
         O·C·O·H
@@ -191,14 +190,13 @@ describe("Valence", () => {
 
 describe("Check", () => {
   test("Check.01 no Bonds", () => {
-    expect(status(createGame(puzzle("water")))).toBe("Click a dotted line between two atoms to bond them.");
+    expect(createGame(puzzle("ammonia")).status()).toEqual({ kind: "empty" });
   });
 
   test("Check.02 Atoms that still need Bonds", () => {
     const game = createGame(puzzle("ammonia"));
     click(game, "1,1", "2,1");
-    expect(status(game)).toBe("3 atoms still need bonds.");
-    expect(statusText({ kind: "open", open: 1 })).toBe("1 atom still needs bonds.");
+    expect(game.status()).toEqual({ kind: "open", open: 3 });
   });
 
   test("Check.03 every Atom complete, but in more than one piece", () => {
@@ -216,14 +214,13 @@ describe("Check", () => {
       H─H
       "
     `);
-    expect(status(game)).toBe("Every atom has its bonds, but they form more than one molecule. Everything must join up.");
+    expect(game.status()).toEqual({ kind: "pieces" });
   });
 
   test("Check.04 the target is built", () => {
     const game = createGame(puzzle("glycine"));
     build(game);
     expect(game.status()).toEqual({ kind: "solved" });
-    expect(status(game)).toBe("✓ Solved! It's Glycine.");
   });
 });
 
@@ -232,7 +229,7 @@ describe("Help", () => {
     const game = createGame(puzzle("urea"));
     click(game, "1,1", "1,2");
     game.showSolution();
-    expect(status(game)).toBe("Here is Urea. Reset and build it yourself to mark it solved.");
+    expect(game.status()).toEqual({ kind: "revealed" });
     expect(draw(game)).toMatchInlineSnapshot(`
       "
       H─N─H
@@ -252,7 +249,7 @@ describe("Help", () => {
       H·N·H
       "
     `);
-    expect(status(game)).toBe("7 atoms still need bonds.");
+    expect(game.status()).toEqual({ kind: "open", open: 7 });
   });
 
   test("Help.02 once the Board has no Bonds again, building it counts as solved", () => {
