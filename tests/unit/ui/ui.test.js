@@ -59,6 +59,14 @@ test("Input.03 Undo is disabled with nothing to undo, Reset with no Bonds", () =
   expect(button("Reset").disabled).toBe(false);
 });
 
+test("Input.03 Reset is enabled with no Bonds but something to undo", () => {
+  const { ui, game } = show(1);
+  game.change(0, 1);
+  game.change(0, -1);
+  ui.render(view(1, game));
+  expect(button("Reset").disabled).toBe(false);
+});
+
 test("Input.04 Show solution asks first, and only after OK calls onSolve", () => {
   const answers = [false, true], confirm = vi.fn(() => answers.shift());
   show(8, { confirm });

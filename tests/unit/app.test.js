@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 import { startApp } from "../../src/app.js";
 import { createGame } from "../../src/puzzle/game.js";
 import { PUZZLES } from "../../src/puzzle/puzzles.js";
@@ -10,9 +10,10 @@ function start(stored = { puzzles: {}, current: null }) {
     load: () => store.saved,
     update(change) { store.saved = change(store.saved); return store.saved; },
   };
-  const ui = { opened: [], views: [], said: [] };
+  const ui = { opened: [], views: [], said: [], created: [] };
   startApp({
-    puzzles: PUZZLES, createGame, store,
+    puzzles: PUZZLES, store,
+    createGame(puzzle, saved) { ui.created.push([puzzle.id, saved]); return createGame(puzzle, saved); },
     createUi(handlers) {
       ui.handlers = handlers;
       return { open: game => ui.opened.push(game), render: view => ui.views.push(view), say: result => ui.said.push(result) };
@@ -61,4 +62,44 @@ test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, 
   expect(store.saved.puzzles).toEqual({});
   ui.handlers.onReset();
   expect(ui.view()).toMatchObject({ status: { kind: "empty" }, hasBonds: false });
+});
+
+describe("Progress.05", () => {
+  const entry = id => store => store.saved.boards?.[id];
+
+  test("Progress.05 a change, Undo and Show solution keep the open Puzzle's Board, its undo history and whether the solution was shown", () => {
+    const { store, ui } = start({ puzzles: {}, current: "ammonia" });
+    const ammonia = entry("ammonia");
+    ui.handlers.onChange(0, 1);
+    expect(ammonia(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
+    ui.handlers.onChange(1, 1);
+    ui.handlers.onUndo();
+    expect(ammonia(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
+    ui.handlers.onSolve();
+    expect(ammonia(store)).toEqual({ bonds: PUZZLES[1].solution, revealed: true, undo: [[], [[0, 1, 1]]] });
+  });
+
+  test("Progress.05 Reset and solving remove what was kept, and no boards are left", () => {
+    const { store, ui } = start({ puzzles: {}, current: "water" });
+    ui.handlers.onChange(0, 1);
+    expect(entry("water")(store)).toBeDefined();
+    ui.handlers.onReset();
+    expect(store.saved).toEqual({ puzzles: {}, current: "water" });
+    ui.handlers.onChange(0, 1);
+    ui.handlers.onChange(1, 1);
+    expect(store.saved).toEqual({ puzzles: { water: "solved" }, current: "water" });
+  });
+
+  test("Progress.05 opening a Puzzle goes on where it was left, and another Puzzle's Board stays kept", () => {
+    const kept = { bonds: [[0, 1, 1]], revealed: false, undo: [[]] };
+    const { store, ui } = start({ puzzles: {}, current: "methanol", boards: { "hydrogen-cyanide": kept } });
+    expect(ui.created).toEqual([["methanol", undefined]]);
+    ui.handlers.onOpen(3);
+    expect(ui.created.at(-1)).toEqual(["hydrogen-cyanide", kept]);
+    expect(ui.game().board()).toEqual([[0, 1, 1]]);
+    expect(ui.view().canUndo).toBe(true);
+    ui.handlers.onOpen(0);
+    ui.handlers.onChange(0, 1);
+    expect(store.saved.boards).toEqual({ "hydrogen-cyanide": kept, water: { bonds: [[0, 1, 1]], revealed: false, undo: [[]] } });
+  });
 });

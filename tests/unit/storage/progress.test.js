@@ -38,6 +38,26 @@ describe("Progress", () => {
     expect(load(storage)).toEqual({ puzzles: { water: "solved" }, current: null });
   });
 
+  test("Progress.03, Progress.05 load keeps the Boards of Puzzles in progress, and leaves out an entry that doesn't fit", () => {
+    const kept = { bonds: [[0, 1, 1]], revealed: false, undo: [[]] };
+    const boards = {
+      "hydrogen-cyanide": kept,
+      water: { bonds: [], revealed: false, undo: Array.from({ length: 101 }, () => []) },
+      urea: { bonds: [[0, 1, 1]], revealed: "yes", undo: [] },
+      methanol: { bonds: [[0, 1, 4]], revealed: false, undo: [] },
+      glycine: { bonds: [[0, 1, 1]], revealed: false },
+    };
+    const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify({ puzzles: {}, current: "methanol", boards }) });
+    expect(load(storage)).toEqual({ puzzles: {}, current: "methanol", boards: { "hydrogen-cyanide": kept } });
+    expect(schemaErrors("progress.schema.json", load(storage))).toEqual([]);
+  });
+
+  test("Progress.03 boards that don't fit, or have no entry left, are left out", () => {
+    for (const boards of ["none", [], { water: { bonds: "x", revealed: false, undo: [] } }])
+      expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify({ puzzles: {}, current: "water", boards }) })))
+        .toEqual({ puzzles: {}, current: "water" });
+  });
+
   test("Progress.03 unreadable or unknown values count as empty", () => {
     expect(load(memoryStorage({ [STORAGE_KEY]: "{not json" }))).toEqual({ puzzles: {}, current: null });
     expect(load(memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"water":"maybe","ammonia":"revealed"},"current":3}' })))
