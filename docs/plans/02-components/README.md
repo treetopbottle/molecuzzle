@@ -112,7 +112,7 @@ A test takes the new ids of what it checks: a test of the rules (`tests/unit/puz
 11. **Reset asks first.** `[DONE]` ([review](review-step-11.md)) Input.05.
    - (a) Tests: `createUi`'s Reset calls `onReset` only after the Player confirms, and cancelling changes nothing; the Input.05 example end-to-end.
    - (b) Implementation: the confirm for Reset in `ui/ui.js`; the end-to-end tests that click Reset accept its dialog.
-12. **Screenshots.** Page.01, Layout.01, Board.01–03, Input.03, Panel.02–04, List.01.
+12. **Screenshots.** `[DONE]` ([review](review-step-12.md), [2](review-step-12-2.md), [3](review-step-12-3.md), [4](review-step-12-4.md)) Page.01, Layout.01, Board.01–03, Input.03, Panel.02–04, List.01.
    - (a) Tests in `tests/e2e/screenshots.spec.js`, one per screenshot in ui.md, in the `screenshots` project, at 1280×800 and, for the phone one, 390×844; and `scripts/screenshots.sh` with its npm script, to run them. They fail because the screenshots don't exist yet. Board.03: with reduced motion, the solved Atoms don't animate; this already holds, so it passes at once.
    - (b) Implementation: make the screenshots with `npm run test:screenshots -- --update-snapshots`, look at each one against ui.md, and commit them; then `npm run test:screenshots` passes. Add the screenshots to `npm run check`, and Podman or Docker and the new commands to the README's Development.
 13. **Close the review.** Add an Outcome to [review.md](../01-initial-implementation/review.md): one line per comment, with the commits that dealt with it.
