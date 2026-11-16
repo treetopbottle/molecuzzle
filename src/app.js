@@ -43,5 +43,4 @@ export function startApp({ puzzles, createGame, store, createUi }) {
   }
 
   open(index);
-  return { get game() { return game; }, open };
 }

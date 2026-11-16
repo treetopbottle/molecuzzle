@@ -61,8 +61,8 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
     const toast = $("toast");
     toast.textContent = text;
     toast.className = "show";
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => (toast.className = ""), 1800);
+    doc.defaultView.clearTimeout(toastTimer);
+    toastTimer = doc.defaultView.setTimeout(() => (toast.className = ""), 1800);
   }
 
   return { open, render, say };
