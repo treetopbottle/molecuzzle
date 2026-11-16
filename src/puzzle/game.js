@@ -56,6 +56,7 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
     return { kind: revealed ? "revealed" : "solved" };
   }
   const done = () => ["solved", "revealed"].includes(status().kind);
+  if (status().kind === "solved") history = []; // a solved Board, as it was left, has nothing to undo
 
   function commit(next) {
     history.push(order);

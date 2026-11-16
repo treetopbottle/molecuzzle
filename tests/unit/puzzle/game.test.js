@@ -41,11 +41,25 @@ describe("Puzzle", () => {
     expect(createGame(urea, { bonds: urea.solution, revealed: true, undo: [[]] }).status()).toEqual({ kind: "revealed" });
   });
 
+  test("Help.01 with no Bonds, the solution doesn't count as shown, also after Undo", () => {
+    const game = createGame(puzzle("water"), { bonds: [], revealed: true, undo: [[[0, 1, 1]]] });
+    game.undo();
+    click(game, "1,2", "2,2");
+    expect(game.status()).toEqual({ kind: "solved" });
+  });
+
+  test("Bond.10 a solved Board starts with nothing to undo", () => {
+    const water = puzzle("water");
+    const game = createGame(water, { bonds: water.solution, revealed: false, undo: [[]] });
+    expect(game.status()).toEqual({ kind: "solved" });
+    expect(game.canUndo).toBe(false);
+  });
+
   test.each([
-    ["a Bond that isn't on a Dotted line", "hydrogen-cyanide", [[0, 2, 1]], []],
-    ["a pair of Atoms bonded twice", "hydrogen-cyanide", [[0, 1, 1], [0, 1, 1]], []],
-    ["Bonds that cross", "glycine", [[0, 7, 1], [4, 5, 1]], []],
-    ["an Atom with more Bonds than its valence", "water", [[0, 1, 2]], []],
+    ["a Bond that isn't on a Dotted line", "hydrogen-cyanide", [[0, 2, 1]], [[]]],
+    ["a pair of Atoms bonded twice", "hydrogen-cyanide", [[0, 1, 1], [0, 1, 1]], [[]]],
+    ["Bonds that cross", "glycine", [[0, 7, 1], [4, 5, 1]], [[]]],
+    ["an Atom with more Bonds than its valence", "water", [[0, 1, 2]], [[]]],
     ["such a Board in the undo history", "hydrogen-cyanide", [[0, 1, 1]], [[], [[0, 2, 1]]]],
   ])("Puzzle.03 with %s, it starts with no Bonds, nothing to undo and the solution not shown", (_, id, bonds, undo) => {
     const p = puzzle(id);
