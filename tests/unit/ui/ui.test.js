@@ -77,6 +77,18 @@ test("Input.04 Show solution asks first, and only after OK calls onSolve", () =>
   expect(confirm.mock.calls).toEqual([["Show the solution?"], ["Show the solution?"]]);
 });
 
+test("Input.05 Reset asks first, and only after OK calls onReset", () => {
+  const answers = [false, true], confirm = vi.fn(() => answers.shift());
+  const { ui, game } = show(1, { confirm });
+  game.change(0, 1);
+  ui.render(view(1, game));
+  button("Reset").click();
+  expect(handlers.onReset).not.toHaveBeenCalled();
+  button("Reset").click();
+  expect(handlers.onReset).toHaveBeenCalledTimes(1);
+  expect(confirm.mock.calls).toEqual(Array(2).fill(["Reset this puzzle? Its bonds and undo history are removed."]));
+});
+
 test("Messages.02 say words why a Bond isn't made, and says nothing without a reason", () => {
   const { ui } = show(4); // Methanol
   const message = () => document.querySelector('[role="alert"]');
