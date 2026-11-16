@@ -30,7 +30,7 @@ How the code and its data are built.
 
 How changes are checked and shared.
 
-- [0007: Vitest for rules and components, Playwright for the UI](#0007)
+- [0007: Vitest for the components, Playwright for the built page](#0007)
 - [0009: A GitHub Pages build per branch, from a gh-pages branch](#0009)
 - [0010: Failing checks block production, not branch builds](#0010)
 - [0013: Screenshots in the spec, made in a container](#0013)
