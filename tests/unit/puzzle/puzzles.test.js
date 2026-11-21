@@ -4,45 +4,38 @@ import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { solve } from "../../../src/puzzle/solver.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { draw } from "../../helpers/draw.js";
+import { difficulty } from "../../../src/puzzle/difficulty.js";
 import { schemaErrors } from "../../helpers/schemas.js";
 
 const count = list => list.reduce((m, x) => ({ ...m, [x]: (m[x] ?? 0) + 1 }), {});
 const formulaCount = f => Object.fromEntries([...f.matchAll(/([A-Z][a-z]?)(\d*)/g)].map(([, el, n]) => [el, Number(n || 1)]));
 
 describe("Puzzle.01 the puzzles", () => {
-  test("are these, in this order", () => {
-    expect(PUZZLES.map(p => `${p.name} ${p.formula}`)).toMatchInlineSnapshot(`
-      [
-        "Water H2O",
-        "Ammonia NH3",
-        "Formaldehyde CH2O",
-        "Hydrogen cyanide HCN",
-        "Methanol CH4O",
-        "Ethylene C2H4",
-        "Acrylonitrile C3H3N",
-        "Acetic acid C2H4O2",
-        "Urea CH4N2O",
-        "Ethanol C2H6O",
-        "Glycine C2H5NO2",
-        "Acetone C3H6O",
-        "Alanine C3H7NO2",
-        "Carbon disulfide CS2",
-        "Chloroform CHCl3",
-        "Methanethiol CH4S",
-        "Phosgene CCl2O",
-        "Vinyl chloride C2H3Cl",
-        "Tetrafluoroethylene C2F4",
-        "Iodoethane C2H5I",
-        "Halothane C2HBrClF3",
-        "Lactic acid C3H6O3",
-        "Ethyl acetate C4H8O2",
-        "Glycerol C3H8O3",
-        "Serine C3H7NO3",
-        "Cysteine C3H7NO2S",
-        "Threonine C4H9NO3",
-        "Valine C5H11NO2",
-      ]
-    `);
+  test("Puzzle.05 are these, with their difficulty, in order of difficulty", () => {
+    expect(PUZZLES.map(p => `${p.name} ${p.formula} ${difficulty(p)}`)).toEqual([
+      "Water H2O 2",
+      "Hydrogen cyanide HCN 2",
+      "Formaldehyde CH2O 3",
+      "Methanol CH4O 8",
+      "Acetic acid C2H4O2 10",
+      "Ethylene C2H4 11",
+      "Acrylonitrile C3H3N 12",
+      "Urea CH4N2O 13",
+      "Halothane C2HBrClF3 13",
+      "Acetone C3H6O 15",
+      "Ethanol C2H6O 17",
+      "Glycine C2H5NO2 18",
+      "Lactic acid C3H6O3 26",
+      "Ethyl acetate C4H8O2 28",
+      "Alanine C3H7NO2 30",
+      "Glycerol C3H8O3 31",
+      "Serine C3H7NO3 31",
+      "Cysteine C3H7NO2S 31",
+      "Threonine C4H9NO3 37",
+      "Valine C5H11NO2 45",
+    ]);
+    const scores = PUZZLES.map(difficulty);
+    expect(scores).toEqual([...scores].sort((a, b) => a - b));
     expect(new Set(PUZZLES.map(p => p.id)).size).toBe(PUZZLES.length);
   });
 
@@ -74,17 +67,9 @@ describe("Puzzle.01 the puzzles", () => {
     });
   });
 
-  const emptyDottedLines = p => createGame(p).bonds.length - p.solution.length;
-
   test("Puzzle.04 Valine, with 19 Atoms, has a Grid of 6 rows and 5 columns", () => {
     const valine = PUZZLES[19];
     expect([valine.name, valine.atoms.length, valine.rows, valine.cols]).toEqual(["Valine", 19, 6, 5]);
-  });
-
-  test("Puzzle.05 Puzzles 22 to 28 each leave at least 5 Dotted lines with no Bond in their solution", () => {
-    const lactic = PUZZLES[21];
-    expect([lactic.name, emptyDottedLines(lactic)]).toEqual(["Lactic acid", 5]);
-    for (const p of PUZZLES.slice(21, 28)) expect(emptyDottedLines(p), p.name).toBeGreaterThanOrEqual(5);
   });
 
   test("Acrylonitrile, solved", () => {
