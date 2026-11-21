@@ -1,6 +1,6 @@
 # 04: The halogens and sulfur
 
-Status: Draft
+Status: Active
 
 F, Cl, Br and I with 1 Bond and S with 2 become Elements, and eight Puzzles with them go at the end of the list: Carbon disulfide, Chloroform, Methanethiol, Phosgene, Vinyl chloride, Tetrafluoroethylene, Iodoethane and Halothane. They play like H and O, so they add variety, not harder logic.
 

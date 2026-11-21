@@ -8,7 +8,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 |---|---|
 | [02: Components](02-components/README.md) | Done (2026-11-21) |
 | [03: Solved Puzzles keep their solution](03-keep-solved/README.md) | Done (2026-11-21) |
-| [04: The halogens and sulfur](04-halogens-and-sulfur/README.md) | Draft |
+| [04: The halogens and sulfur](04-halogens-and-sulfur/README.md) | Active |
 
 ## Backlog
 
