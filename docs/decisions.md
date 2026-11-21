@@ -2,7 +2,7 @@
 
 Any decision made about the project.
 
-One short entry per decision. Don't renumber or rewrite: mark one `Superseded by NNNN` instead. An open question is `Undecided`. Make sure to add each entry to the index, under its category. Entries stay in number order below the index.
+One short entry per decision. Don't renumber or rewrite: mark one `Superseded by NNNN` instead, or `Partly superseded by NNNN` when a later one changes only part of it. A correction that keeps the choice, such as a path or a name, is made in place. An open question is `Undecided`. Make sure to add each entry to the index, under its category. Entries stay in number order below the index. There is no 0014: it was dropped before it was merged.
 
 ## Index
 
@@ -25,6 +25,7 @@ How the code and its data are built.
 - [0006: ES modules, built into one HTML file](#0006)
 - [0011: Three components, wired in one place](#0011)
 - [0012: Schemas as JSON files, checked by the tests](#0012)
+- [0016: Progress keeps its key while it only gains fields](#0016)
 
 ### Testing and publishing
 
@@ -71,7 +72,7 @@ No Puzzle is locked; the order, easiest first, only suggests a path.
 <a id="0004"></a>
 ## 0004: Show solution doesn't solve a Puzzle
 
-Accepted (2026-11-15)
+Accepted (2026-11-15). Partly superseded by [0015](#0015): Show solution writes the Board to Progress, but never a solved mark.
 
 Show solution shows the answer on the Board and changes nothing in Progress: an unsolved Puzzle stays unsolved, until the Player clicks Reset and builds it.
 
@@ -139,7 +140,7 @@ GitHub Actions builds every push, and `scripts/publish-pages.sh` commits the bui
 
 Accepted (2026-11-15)
 
-The Pages workflow doesn't run the tests: every branch that builds is published. Failing checks, such as a failing test, a lint error or a known vulnerability, block merging to `main`, and so the build at the root of the site, which is production. `npm run check` must pass before a merge to `main`.
+The Pages workflow doesn't run the tests: every branch that builds is published. Failing checks, those of `npm run check` and any added to it later, block merging to `main`, and so the build at the root of the site, which is production. `npm run check` must pass before a merge to `main`.
 
 - **Why:** a branch build is continuous delivery: it is there to try a change, also one that doesn't pass its checks yet, while it is fixed. Production is what Players get, so only that has to pass every check.
 - **Cost:** a branch build can be broken. Nothing on GitHub enforces the checks yet: they are run by hand before merging, and a push straight to `main` is published without them.
@@ -153,7 +154,7 @@ Accepted (2026-11-15)
 The code is three components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser) and UI (`src/ui/`: the page, what it shows and what the Player does). A component imports only from itself. `src/browser.js` and `src/app.js` are not a component: they import the components and wire them together, handing each what it needs from the others as arguments, and add nothing of their own, so they have no spec: what they do is in the features they wire. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component.
 
 - **Why:** each component can be read, specified and tested on its own, and replaced: `app.js` gets the storage and the Puzzles passed in, so tests can pass their own.
-- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know.
+- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know. What two components both need is written in each: the Element symbols in the Puzzle's and the UI's `elements.js`, and the undo limit in `game.js`, `progress.js` and the Progress schema.
 - **Alternatives:** the flat `src/` as it was: fewer files, but the boundaries were only in comments, and `app.js` mixed wiring with the panel's DOM. A framework or a container for dependency injection: more than the page needs ([0006](#0006)). The wiring as a fourth component: but it adds nothing and has no spec.
 
 <a id="0012"></a>
@@ -172,10 +173,10 @@ The schemas are JSON Schema files in `docs/spec/schemas/`, described in [schemas
 
 Accepted (2026-11-15)
 
-The [UI spec](spec/ui.md) shows the page and its parts as screenshots in `docs/spec/screenshots/`. Playwright compares the page with them (`toHaveScreenshot`) with its default tolerance, set in the config: `threshold: 0.2` for how far a pixel's colour may drift, and `maxDiffPixels: 0`, so no pixel may differ beyond that. These tests run only in Playwright's image, `mcr.microsoft.com/playwright`, tagged with the version of `@playwright/test` and run as `linux/amd64`, with Podman or Docker: `npm run test:screenshots` checks them, and `npm run test:screenshots -- --update-snapshots` remakes them after an intended change, to be looked at in the diff before a commit.
+The [UI spec](spec/ui.md) shows the page and its parts as screenshots. Playwright compares the page with them at its default tolerance, and only inside Playwright's own image, of the same version as `@playwright/test`, in Podman or Docker; the README has the commands.
 
-- **Why:** the spec shows the look, which words can't. The image fixes the browser, the fonts and the rendering, so the same commit gives the same pixels on every machine and in CI, and a screenshot changes only with the page or with `@playwright/test`, in the same commit.
-- **Cost:** taking or checking screenshots needs Podman or Docker, and `npm run check` does both. Updating `@playwright/test` means remaking the screenshots. On an arm machine the image runs emulated, and slowly. Images in git, a new copy with every change.
+- **Why:** the spec shows the look, which words can't. The image fixes the browser, the fonts and the rendering, so the same commit gives the same pixels on every machine, and a screenshot changes only with the page or with `@playwright/test`, in the same commit.
+- **Cost:** taking or checking screenshots needs Podman or Docker, and so does `npm run check`, which checks them. Updating `@playwright/test` means remaking the screenshots. On an arm machine the image runs emulated, and slowly. Images in git, a new copy with every change.
 - **Alternatives:** a tolerance instead of a container: no Podman or Docker, but a different font moves glyphs by whole pixels, which no colour threshold absorbs, and small changes go unseen. A wider tolerance than the default can still be set in the config, if this turns out too strict. The browser on each machine: no setup, but every system update can change the pixels. Only accessibility snapshots, as before: they don't show the look.
 
 <a id="0015"></a>
@@ -186,5 +187,16 @@ Accepted (2026-11-15)
 Progress keeps, for every Puzzle in progress, its Bonds, whether the solution was shown, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone. Show solution now writes to Progress, but never a solved mark: the Progress of [0004](#0004) is the solved marks.
 
 - **Why:** a Player can leave any Puzzle, or lose the browser, and come back to it as they left it, Undo included. Keeping whether the solution is shown stops a reload from counting a shown solution as solved ([0004](#0004)). Once a Puzzle is solved its Board tells nothing more, and Reset is how a Player starts again, so both end what is kept.
-- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 100 Boards per Puzzle in the browser, all rewritten on every change, and a full storage keeps nothing; a Puzzle left half done stays there until it is solved or reset. With the game in two tabs, the last one to save wins. A build without this, such as `main` before it is merged, drops the Puzzles in progress on its next save, as the origin is shared ([0009](#0009)).
+- **Cost:** Reset can't be undone, so it asks first; after solving there is nothing to undo. Up to 101 Boards per Puzzle in the browser, all rewritten on every change, and a full storage keeps no newer change; a Puzzle left half done stays there until it is solved or reset. With the game in two tabs, the last one to save wins. An older build without this, such as an old branch build, drops the Puzzles in progress on its next save, as the origin is shared ([0009](#0009)).
 - **Alternatives:** only the open Puzzle's Board: less to store, but leaving a Puzzle loses it, and Undo after a reload. Boards without the undo history: smaller, but nothing to undo after coming back. Reset that Undo brings back, as before: then only solving ends the history. Reset that Undo brings back until the page closes, without keeping that: less final, but the Board after a reload isn't the one before it. Saves that read what is stored first and change only what their page changed: two tabs keep each other's Progress, but more code for a rare case.
+
+<a id="0016"></a>
+## 0016: Progress keeps its key while it only gains fields
+
+Accepted (2026-11-21)
+
+Progress stays under the key `molecuzzle-v2` when a change only adds an optional field to it, as `boards` did ([0015](#0015)). Only a field that changes its meaning or format gets a new key.
+
+- **Why:** an older Progress is still a valid Progress, so no Player loses their solved Puzzles, and there is no migration code.
+- **Cost:** an older build on the same origin ([0009](#0009)) loads the Progress and drops the fields it doesn't know on its next save. The key says nothing about which fields there are.
+- **Alternatives:** a new key for every change: older builds keep their own Progress, but every Player starts over, unless the new build reads the old key. A version field inside Progress, with a migration for each version: exact, but code for every change, more than an optional field needs.

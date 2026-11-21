@@ -6,9 +6,11 @@ Each diagram shows the files of one component; an arrow is an import. Arrows are
 
 ## Glue
 
-`index.html` is the page and loads `style.css` and `browser.js`; nothing imports them.
+`browser.js` is the only file using the browser's globals: it makes the dependencies and starts `app.js`, which wires the components together.
 
 ## UI
+
+`index.html` is the page and loads `style.css` and the Glue's `browser.js`; nothing imports them.
 
 `ui.js` owns all the interface components on the webpage and when the Player does something it calls the handlers provided by `app.js`.
 
