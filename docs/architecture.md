@@ -35,11 +35,12 @@ flowchart TD
 
 The Puzzles and the rules. `game.js` keeps the Bonds of a Board and gives its status and the reasons.
 
-`solver.js`, `generate.js` and `difficulty.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts and `difficulty.js` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.js`.
+`solver.js`, `generate.js`, `difficulty.js` and `removed.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts and `difficulty.js` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.js`, and `removed.js`, the Puzzles taken out of the game, to keep them out.
 
 ```mermaid
 flowchart TD
   puzzles["<code>puzzles.js</code><br/>the Puzzles"]
+  removed["<code>removed.js</code><br/>the Puzzles taken out"]
   game["<code>game.js</code><br/>a Puzzle being played"]
   solver["<code>solver.js</code><br/>finds the solutions"]
   gen["<code>generate.js</code><br/>finds layouts for new Puzzles"]
