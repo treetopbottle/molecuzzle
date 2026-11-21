@@ -27,7 +27,7 @@ try {
 if (!layout) { console.error("no unique layout found"); process.exit(2); }
 
 const { rows, cols, atoms, solution } = layout;
-const { dotted, empty } = dottedLines(layout);
+const { dotted, loops } = dottedLines(layout);
 // Each Atom by its label as in a formula, CH₂, and every point as wide as the
 // longest label, as in the spec's drawings: a shorter one, or · for no Atom,
 // is padded.
@@ -36,6 +36,6 @@ const width = Math.max(...atoms.map(([el, , , h]) => label(el, h).length));
 const grid = Array.from({ length: rows }, () => Array(cols).fill("·"));
 for (const [el, r, c, h] of atoms) grid[r][c] = label(el, h);
 console.log(grid.map(row => ("  // " + row.map(p => p.padEnd(width)).join(" ")).trimEnd()).join("\n"));
-console.log(`  rows: ${rows}, cols: ${cols}, // difficulty ${difficulty(layout)}: ${dotted} Dotted lines, ${empty} empty`);
+console.log(`  rows: ${rows}, cols: ${cols}, // difficulty ${difficulty(layout)}: ${dotted} Dotted lines, ${loops} loops`);
 console.log(`  atoms: [${atoms.map(a => JSON.stringify(a)).join(",")}],`);
 console.log(`  solution: [${solution.map(x => `[${x}]`).join(",")}],`);
