@@ -45,21 +45,18 @@ Domain entities, capitalized, each with an example the spec can reuse:
 
 ### How `src/` fits together
 
-The three components ([decision 0011](docs/decisions.md#0011)). An arrow is an import: the components don't import each other; `browser.js` and `app.js` import them, to wire them together, and add nothing of their own. The files of each component are in [docs/architecture.md](docs/architecture.md).
+The three components ([decision 0011](docs/decisions.md#0011)) and the Glue, `browser.js` and `app.js`, which wires them together and is not a component: it adds nothing of its own. An arrow is an import: the components don't import each other, only the Glue imports them. The files of each component are in [docs/architecture.md](docs/architecture.md).
 
 ```mermaid
 flowchart TD
-  browser["src/browser.js<br/>the entry point"]
-  app["src/app.js<br/>wires the components"]
-  ui["src/ui/<br/>UI: the page"]
-  puzzle["src/puzzle/<br/>Puzzle: the Puzzles and the rules"]
-  storage["src/storage/<br/>Storage: the Progress"]
+  glue["Glue<br/>src/app.js, src/browser.js<br/>wires the components"]
+  ui["UI<br/>src/ui/<br/>the page"]
+  puzzle["Puzzle<br/>src/puzzle/<br/>the Puzzles and the rules"]
+  storage["Storage<br/>src/storage/<br/>the Progress"]
 
-  browser --> app
-  browser --> ui
-  browser --> puzzle
-  browser --> storage
-  app --> storage
+  glue --> ui
+  glue --> puzzle
+  glue --> storage
 ```
 
 ## Development
