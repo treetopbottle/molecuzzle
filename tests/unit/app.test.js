@@ -34,10 +34,10 @@ test("Progress.01 it opens the stored Puzzle, or Puzzle 1 if that is missing or 
 test("Progress.01 the open Puzzle is saved", () => {
   const { store, ui } = start();
   expect(store.saved.current).toBe("water");
-  ui.handlers.onOpen(3);
+  ui.handlers.onOpen(1);
   expect(store.saved).toEqual({ puzzles: {}, current: "hydrogen-cyanide" });
   expect(ui.game().puzzle.id).toBe("hydrogen-cyanide");
-  expect(ui.view()).toMatchObject({ index: 3, progress: store.saved });
+  expect(ui.view()).toMatchObject({ index: 1, progress: store.saved });
 });
 
 test("Progress.01 a solved Puzzle is marked solved, and the UI shows it", () => {
@@ -114,7 +114,7 @@ describe("Progress.05, Progress.06", () => {
     const kept = { bonds: [[0, 1, 1]], revealed: false, undo: [[]] };
     const { store, ui } = start({ puzzles: {}, current: "methanol", boards: { "hydrogen-cyanide": kept } });
     expect(ui.created).toEqual([["methanol", undefined]]);
-    ui.handlers.onOpen(3);
+    ui.handlers.onOpen(1);
     expect(ui.created.at(-1)).toEqual(["hydrogen-cyanide", kept]);
     expect(ui.game().board()).toEqual([[0, 1, 1]]);
     expect(ui.view().canUndo).toBe(true);
