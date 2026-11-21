@@ -19,6 +19,8 @@ Contains features, slices or small tasks to work on, in order of importance.
 - Deploy the puzzle that is build from the `main` branch to a production environment, GitHub Pages is only for testing.
 - A hex grid, with Atoms in the cell centres, or diagonals on the square grid: up to 6 (or 8) neighbours instead of 4, so Atoms with 5 or 6 Bonds fit, such as P in PCl₅ and S in SF₆. Diagonals cross in every square; the hex grid doesn't, but every Puzzle's layout has to be generated again.
 - A more complicated valence model: formal charges, and Elements with more than one valence (S 2, 4 or 6; P 3 or 5), for Molecules such as carbon monoxide (⁻C≡O⁺), nitro groups and nitric acid. Each Atom still shows the one number of Bonds it needs (N⁺ needs 4, O⁻ needs 1), so Puzzles stay logic with one solution; letting the Player choose an Atom's valence would leave few Grids with exactly one solution. Goes against [decision 0001](../decisions.md#0001).
+- Show each Puzzle's difficulty to the Player, e.g. in the panel or the list ([decision 0021](../decisions.md#0021)); left out of plan 06.
+- A Puzzle with Iodine, which has none since Iodoethane was removed ([decision 0022](../decisions.md#0022)): a layout unlike the others, with difficulty enough to earn its place.
 - Moving between Dotted lines with the arrow keys, instead of only Tab.
 - Clicking the open Puzzle in the Puzzles list opens it again, which stops the pulse of a Puzzle just solved; it could do nothing (review of step 2 of plan 03).
 - The buttons of the Puzzles list keep one width: a solved one, "11 ✓", is wider, so the buttons after it in its row are out of line with the rows above and below (review of step 4 of plan 04).
