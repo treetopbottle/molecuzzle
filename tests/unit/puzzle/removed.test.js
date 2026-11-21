@@ -1,16 +1,15 @@
 import { describe, expect, test } from "vitest";
 import { REMOVED } from "../../../src/puzzle/removed.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
-import { solve } from "../../../src/puzzle/solver.js";
-import { createGame } from "../../../src/puzzle/game.js";
-import { schemaErrors } from "../../helpers/schemas.js";
 
 /** The Atoms of a formula, as counts per Element, so the order it is written in doesn't matter. */
 const atomsOf = formula => JSON.stringify(Object.fromEntries(
   [...formula.matchAll(/([A-Z][a-z]?)(\d*)/g)].map(([, el, n]) => [el, Number(n || 1)]).sort(([a], [b]) => a.localeCompare(b))));
 
+// The removed Puzzles are kept as they were, some with their hydrogens as
+// Atoms on the Grid, so only their ids and formulas are checked (decision 0023).
 describe("Puzzle.06 the removed Puzzles", () => {
-  test("are the eight of the spec's table", () => {
+  test("are the 24 of the spec's table", () => {
     expect(REMOVED.map(p => `${p.name} ${p.formula}`)).toEqual([
       "Ammonia NH3",
       "Carbon disulfide CS2",
@@ -20,18 +19,24 @@ describe("Puzzle.06 the removed Puzzles", () => {
       "Vinyl chloride C2H3Cl",
       "Tetrafluoroethylene C2F4",
       "Iodoethane C2H5I",
+      "Water H2O",
+      "Hydrogen cyanide HCN",
+      "Formaldehyde CH2O",
+      "Methanol CH4O",
+      "Ethylene C2H4",
+      "Acrylonitrile C3H3N",
+      "Urea CH4N2O",
+      "Acetone C3H6O",
+      "Ethanol C2H6O",
+      "Halothane C2HBrClF3",
+      "Lactic acid C3H6O3",
+      "Ethyl acetate C4H8O2",
+      "Alanine C3H7NO2",
+      "Cysteine C3H7NO2S",
+      "Threonine C4H9NO3",
+      "Valine C5H11NO2",
     ]);
-  });
-
-  test.each(REMOVED)("$name is kept as a Puzzle, with the Atoms of its formula and exactly one solution, its own", p => {
-    expect(schemaErrors("puzzle.schema.json", p)).toEqual([]);
-    const counts = p.atoms.reduce((m, [el]) => ({ ...m, [el]: (m[el] ?? 0) + 1 }), {});
-    expect(atomsOf(Object.entries(counts).map(([el, n]) => el + n).join(""))).toBe(atomsOf(p.formula));
-    const solutions = solve(p.atoms.map(([el, r, c]) => ({ el, r, c })), 2);
-    expect(solutions).toHaveLength(1);
-    const game = createGame(p);
-    game.showSolution();
-    expect(game.order).toEqual(solutions[0]);
+    expect(new Set(REMOVED.map(p => p.id)).size).toBe(24);
   });
 
   test("no Puzzle has the id of a removed one, or a formula with the same Atoms: no Puzzle is ammonia, or NH3", () => {
