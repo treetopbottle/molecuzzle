@@ -63,3 +63,17 @@ Commit reviewed: c4afef4 (the plan, its spec changes in `docs/spec/puzzle.md` an
 8. **note**: `docs/plans/05-larger-puzzles/README.md:44`. Step 1's Puzzle.04 test passes at once, and the plan says so. Expect the step review's "the new tests fail" check to flag it. Generate.01 is a rule about the script, but the step 1 test calls only `findLayout` and doesn't run the script. That is adequate, since the script passes `undefined` for left-out sizes, but a test of the script with no sizes given would match the rule.
 
 9. **note**: `docs/plans/05-larger-puzzles/README.md:48`. "The Board fits a phone" (Puzzle.04, Layout.01) gets only a look by hand at Valine on 390×844. No screenshot or e2e check shows a 6×5 Board on a phone. A small layout check for Puzzle 28 at 390×844 would keep it checked: no sideways scroll, and the status line on screen.
+
+## Outcome
+
+1. Fixed in ae11259: a new rule, Puzzle.05, with an example, in Scope and step 2.
+2. Fixed in ae11259: the Design asks that no new layout is an earlier one with only the symbols changed, Cysteine's not Serine's. (Seed 4 gives Cysteine a different 4×4 layout with 7 empty Dotted lines.)
+3. Fixed in ae11259: step 2 names Page.01, Panel.01, Panel.03, List.01 and List.02, and Scope says why.
+4. Fixed in ae11259: the table's order wins, as judged when it was written.
+5. Fixed in ae11259: the plan says why the threshold is 5.
+6. Fixed in ae11259: 0019 says a 6-row Board fits at 1280×800 too, if only just.
+7. Fixed in ae11259: 0019 says Valine has layouts only on the full 6 by 5.
+8. Fixed in ae11259: step 1 tests the script with no size given; the Puzzle.04 test passing at once is expected, as the plan says.
+9. Fixed in ae11259: an end-to-end layout test of Puzzle 28 on a phone, with Layout.01 in Scope.
+
+Only the plan, the spec and a decision changed; the step reviews check the rest.

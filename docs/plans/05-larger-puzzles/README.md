@@ -1,6 +1,6 @@
 # 05: Larger and harder Puzzles
 
-Status: Draft
+Status: Active
 
 Seven larger Puzzles at the end of the list: Lactic acid, Ethyl acetate, Glycerol, Serine, Cysteine, Threonine and Valine, from 12 to 19 Atoms. Each leaves at least 5 Dotted lines empty in its solution, more than any Puzzle before but Alanine (6), so there are more wrong Bonds to rule out. The threshold of 5 is chosen so Lactic acid, the smallest, can open the batch; the others leave 5 to 9. They stay on Grids that fit a phone.
 
