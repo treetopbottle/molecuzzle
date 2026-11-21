@@ -26,3 +26,18 @@ Commit reviewed: 81c411b (the plan, its spec changes, and decisions 0021 and 002
 8. **note**: at `docs/spec/puzzle.md:43`, "Water again, with one more H" isn't Water's layout. Ammonia's real reason is the one given for Carbon disulfide and Chloroform: no empty Dotted line, nothing to rule out.
 9. **note**: Puzzle.06's formula check (`docs/spec/puzzle.md:14`) compares strings, so it holds only while formulas are written in Hill order, as all 28 are now. `formulaCount` from `puzzles.test.js` would compare the Atoms themselves.
 10. **note**: the plan names the Puzzle.05 example twice, in step 1(a) in `difficulty.test.js` (`README.md:34`) and in step 2(a) "on Puzzle 12" in `puzzles.test.js` (`README.md:37`). It is unclear whether both are wanted or which test carries the rule id.
+
+## Outcome
+
+1. Fixed in 102bb7b: step 2(a) names `game.test.js` and its Bond.08, Bond.09, Check.01 and Check.02 tests.
+2. Fixed in 102bb7b: step 2(a) says the old Puzzle.05 test goes, replaced by the table and the order.
+3. Fixed in 102bb7b: the README's example is Puzzle 12, Glycine, and Scope says so.
+4. Fixed in 102bb7b: step 2(b) adds `removed.js` to `docs/architecture.md`.
+5. Fixed in 102bb7b: step 2(a) updates the comments in `ui.test.js`.
+6. Fixed in 102bb7b: a new Puzzle goes after those of the same difficulty, in Puzzle.01, 0021 and the plan.
+7. Fixed in 102bb7b: 0022 cites Progress.01, Progress.03 and List.02, and List.02 says k counts only the Puzzles in the game.
+8. Fixed in 102bb7b: Ammonia's reason is that nothing is left to rule out.
+9. Fixed in 102bb7b: the test compares a formula's Atoms, not its text.
+10. Fixed in 102bb7b: the Puzzle.05 example is step 1's test; step 2 checks the table and the order.
+
+Only the plan, the spec and the decisions changed.
