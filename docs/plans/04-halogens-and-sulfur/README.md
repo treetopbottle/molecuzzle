@@ -42,7 +42,7 @@ Interfaces that change:
 3. **The generator knows the Elements.** `[DONE]` ([review](review-step-3.md)) Generate.02.
    - (a) Tests: the new Generate.02 example in `tests/unit/puzzle/generate.test.js`, and through the script in `tests/unit/puzzle/generate-script.test.js`.
    - (b) Implementation: the check in `findLayout`, and the arrow in `docs/architecture.md`.
-4. **The new Puzzles.** Puzzle.01, Board.01, Page.01, Panel.01, Panel.03, List.01, List.02.
+4. **The new Puzzles.** `[DONE]` ([review](review-step-4.md)) Puzzle.01, Board.01, Page.01, Panel.01, Panel.03, List.01, List.02.
    - (a) Tests, in two commits. First the count, 21 where the tests say 13 (all fail as there are only 13 Puzzles):
      - `tests/unit/ui/ui.test.js` (`tests/unit/ui/panel.test.js` keeps its 13 fake Puzzles: it counts those, not the real ones);
      - `tests/e2e/check.spec.js`, `puzzle.spec.js`, `narrative.spec.js` and `progress.spec.js`, with the Panel.01 example on Puzzle 21;
