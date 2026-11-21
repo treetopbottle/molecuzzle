@@ -8,12 +8,12 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 |---|---|
 | [02: Components](02-components/README.md) | Done (2026-11-21) |
 | [03: Solved Puzzles keep their solution](03-keep-solved/README.md) | Active |
+| [04: The halogens and sulfur](04-halogens-and-sulfur/README.md) | Draft |
 
 ## Backlog
 
 Contains features, slices or small tasks to work on, in order of importance.
 
-- The halogens (F, Cl, Br, I; 1 Bond) and S (2 Bonds) as Elements, for more real Molecules: chloroform, vinyl chloride, thiols, CS₂. They play like H and O, so they add variety, not harder logic. `scripts/generate.js` should then also stop with "can't read" for an Element it doesn't know, which now ends in a TypeError (review of step 5 of plan 02).
 - More Puzzles, larger and harder; `scripts/generate.js` finds the layouts.
 - Deploy the puzzle that is build from the `main` branch to a production environment, GitHub Pages is only for testing.
 - A hex grid, with Atoms in the cell centres, or diagonals on the square grid: up to 6 (or 8) neighbours instead of 4, so Atoms with 5 or 6 Bonds fit, such as P in PCl₅ and S in SF₆. Diagonals cross in every square; the hex grid doesn't, but every Puzzle's layout has to be generated again.

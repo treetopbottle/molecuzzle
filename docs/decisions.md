@@ -17,6 +17,7 @@ What the Player does and what the rules are.
 - [0008: Every Puzzle has exactly one solution](#0008)
 - [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 - [0017: A solved Puzzle keeps its Board, until it is reset](#0017)
+- [0018: New Puzzles go at the end](#0018)
 
 ### Technical
 
@@ -212,3 +213,14 @@ Solving a Puzzle keeps its Board in Progress, with nothing to undo, so it opens 
 - **Why:** going back to a solved Puzzle shows the Molecule the Player built, and its name and fact, as a collection; Reset, which asks first, is how a Player plays it again. A solved Board is the solution ([0008](#0008)), so it can't be wrong. The key stays ([0016](#0016)): `boards` holds more Puzzles, but its entries keep their format, and an older build opens a solved entry as solved.
 - **Cost:** one more entry in Progress per solved Puzzle, a few Bonds each. Puzzles solved before this have no Board kept, so they open with no Bonds until they are solved again. Playing a solved Puzzle again takes a Reset. An older build on the same origin ([0009](#0009)) removes a solved Board the next time it opens that Puzzle.
 - **Alternatives:** open every Puzzle marked solved with its `solution`, with nothing kept: also works for Puzzles solved before, but then a Reset needs a mark of its own in Progress, or the solution is back the next time it opens. Open solved Puzzles with no Bonds, as before: nothing to see of what was solved.
+
+<a id="0018"></a>
+## 0018: New Puzzles go at the end
+
+Accepted (2026-11-21)
+
+New Puzzles are added after the last one, easiest first among themselves, instead of between the Puzzles by how hard they are. A Puzzle keeps its number once it is published.
+
+- **Why:** a Player who has solved the first Puzzles finds the new ones after them, not scattered among solved ones; the numbers in the spec, the tests and the Players' heads stay the same. Progress is by id ([0016](#0016)), so it would survive either way.
+- **Cost:** the whole list is no longer easiest first ([0003](#0003)): a batch of easy Puzzles can follow hard ones, as the Puzzles with new Elements follow Alanine.
+- **Alternatives:** keep the whole list easiest first, renumbering the Puzzles after each insert: the best path for a new Player, but every number in the spec and the tests moves, and a returning Player has to look for what is new. Groups or chapters of Puzzles: a clear path per group, but a new part of the UI.

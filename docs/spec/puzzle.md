@@ -6,7 +6,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 ### Puzzle
 
-- Puzzles: there are 13, in the order of the table below. Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
+- Puzzles: there are 21, in the order of the table below; new Puzzles go at the end ([decision 0018](../decisions.md#0018)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
 
@@ -25,6 +25,14 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 | 11 | Glycine | C₂H₅NO₂ |
 | 12 | Acetone | C₃H₆O |
 | 13 | Alanine | C₃H₇NO₂ |
+| 14 | Carbon disulfide | CS₂ |
+| 15 | Chloroform | CHCl₃ |
+| 16 | Methanethiol | CH₄S |
+| 17 | Phosgene | CCl₂O |
+| 18 | Vinyl chloride | C₂H₃Cl |
+| 19 | Tetrafluoroethylene | C₂F₄ |
+| 20 | Iodoethane | C₂H₅I |
+| 21 | Halothane | C₂HBrClF₃ |
 
 The Grids, solutions and facts are in `src/puzzle/puzzles.js`.
 
@@ -49,7 +57,7 @@ And its one solution is
 ### Generate
 
 - Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols` on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order; the same arguments print the same layout (Generate.01)
-- None: if it can't read a Bond it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
+- None: if it can't read a Bond, or a Bond has an Atom whose Element isn't in the [table of valences](#board), it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
 
 Bonds are written between labelled Atoms: the label's letters are the Element, `-` `=` `#` a single, double and triple Bond.
 
@@ -78,12 +86,21 @@ Given the Bonds "H1-O1 O1~H2"
 Then it stops with "can't read O1~H2"
 ```
 
+Example (Generate.02), an Element the game doesn't have:
+
+```
+Given the Bonds "H1-Xx1"
+Then it stops with "can't read H1-Xx1"
+```
+
 ## Board
 
 | Element | Valence (Bonds) |
 |---|---|
 | H | 1 |
+| F, Cl, Br, I | 1 |
 | O | 2 |
+| S | 2 |
 | N | 3 |
 | C | 4 |
 
@@ -191,7 +208,7 @@ Then the Board is [[0, 1, 1]]
 
 ### Valence
 
-- Needs: each Atom needs its valence minus its bond count (Valence.01)
+- Needs: each Atom needs its Element's valence, in the table above, minus its bond count (Valence.01)
 - Complete: an Atom that needs none is complete (Valence.02)
 
 Example:

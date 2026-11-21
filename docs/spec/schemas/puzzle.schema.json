@@ -19,7 +19,7 @@
       "items": {
         "type": "array",
         "prefixItems": [
-          { "enum": ["H", "C", "N", "O"], "description": "Element" },
+          { "enum": ["H", "C", "N", "O", "S", "F", "Cl", "Br", "I"], "description": "Element" },
           { "type": "integer", "minimum": 0, "description": "Row" },
           { "type": "integer", "minimum": 0, "description": "Column" }
         ],

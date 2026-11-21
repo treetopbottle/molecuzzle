@@ -8,7 +8,7 @@ The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a
 
 ### Page
 
-- Parts: a header with "Molecuzzle" and "Solved <k> of 13"; the Board, with the status line below it; and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
+- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it; and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
 
 Example (Page.01), Puzzle 1 at the start, and Puzzle 11 solved:
 
@@ -29,14 +29,18 @@ Example (Layout.01), on a phone:
 
 ### Board
 
-- Drawing: each Atom is a ball with its Element's symbol: H white, O red, N blue, C dark grey. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
+- Drawing: each Atom is a ball with its Element's symbol: H white, O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red and I violet. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
 - Needs: each Atom that needs Bonds ([Valence.01](puzzle.md#valence)) shows an orange badge with how many; a complete Atom ([Valence.02](puzzle.md#valence)) glows and has no badge (Board.02)
 - Solved: when the Player solves the Puzzle ([Check.04](puzzle.md#check)), the Atoms pulse, unless the browser asks for reduced motion; a Puzzle that opens solved ([Progress.06](storage.md#progress)) doesn't pulse (Board.03)
-- Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>: needs <n> more bond(s)" or "<Element> <place>: complete", with the Element's name (Hydrogen, Oxygen, Nitrogen, Carbon); each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
+- Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>: needs <n> more bond(s)" or "<Element> <place>: complete", with the Element's name (Hydrogen, Oxygen, Nitrogen, Carbon, Sulfur, Fluorine, Chlorine, Bromine, Iodine); each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
 
 Example (Board.01, Board.02), Puzzle 3, Formaldehyde, with C═O:
 
 ![The Board of Formaldehyde with a double Bond from C to O](screenshots/board.png)
+
+Example (Board.01, Board.02), Puzzle 21, Halothane, with no Bonds:
+
+![The Board of Halothane, with its F, Cl, Br, C and H Atoms](screenshots/board-halothane.png)
 
 Example (Board.04):
 
@@ -116,9 +120,9 @@ Then the message is "Hydrogen already has all its bonds."
 
 ### Panel
 
-- Puzzle: "Puzzle <n> of 13" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on Puzzle 13. Next to it, "Unsolved" or "✓ Solved" (Panel.01)
+- Puzzle: "Puzzle <n> of <N>" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on the last. Next to it, "Unsolved" or "✓ Solved" (Panel.01)
 - Mystery: under the heading "Mystery molecule", until the Board is solved or shows the solution, the panel shows "?" and "Bond every atom to find out what it is." (Panel.02)
-- Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on Puzzle 13) (Panel.03)
+- Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on the last) (Panel.03)
 - Rules: the panel lists the rules of the game, as in the screenshots (Panel.04)
 
 Example (Panel.01, Panel.02, Panel.04), Puzzle 3, unsolved:
@@ -134,14 +138,14 @@ Example (Panel.01):
 ```
 Given Puzzle 1 is open
 Then ‹ is disabled
-When the Player clicks › and then opens Puzzle 13
-Then "Puzzle 13 of 13" and "Unsolved" show, and › is disabled
+When the Player clicks › and then opens Puzzle 21
+Then "Puzzle 21 of 21" and "Unsolved" show, and › is disabled
 ```
 
 ### List
 
 - Buttons: per Puzzle a button with its number, and ✓ if solved ([Progress.01](storage.md#progress)), named "Puzzle <n>", or "Puzzle <n>: <name>, solved" once it is; the open Puzzle is marked, and clicking a button opens its Puzzle (List.01)
-- Score: the header shows "Solved <k> of 13" (List.02)
+- Score: the header shows "Solved <k> of <N>" (List.02)
 
 Example (List.01), Puzzle 1 solved and Puzzle 3 open:
 
@@ -152,7 +156,7 @@ Example (List.01, List.02):
 ```
 Given Puzzle 1 is solved
 When the Player opens the game
-Then the list has "Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 13"
+Then the list has "Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 21"
 When the Player clicks "Puzzle 13"
 Then Puzzle 13 opens
 ```
