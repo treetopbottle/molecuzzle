@@ -2,19 +2,19 @@
 
 The functional specification of Molecuzzle from a user perspective, using examples for further clarification. Roles and domain entities can be found in the [README](../../README.md); the reasons are in the [decisions](../decisions.md).
 
-The features are in one file per component ([0011](../decisions.md#0011)):
+The features are in one file per component ([decision 0011](../decisions.md#0011)):
 
 - [puzzle.md](puzzle.md): the Puzzles and the rules of the game
 - [storage.md](storage.md): what is kept in the browser, where, how and who can read it
 - [ui.md](ui.md): what the Player sees and does, with screenshots
 
-The Glue wires them into the game; what it does is in the features it wires, such as [Progress.01](storage.md#progress), so it has no features of its own. Each feature lists its rules. A rule has an id, `<Feature>.<NN>`, unique over all files, and an example. Each rule is tested by a unit, component or end-to-end test whose name starts with its id.
+`src/app.js` wires them into the game; what it does is in the features it wires, such as [Progress.01](storage.md#progress), so it has no features of its own. Each feature lists its rules. A rule has an id, `<Feature>.<NN>`, unique over all files, and an example. Each rule is tested by a unit, component or end-to-end test whose name starts with its id.
 
 A general narrative is used to describe a typical usage flow, see [narratives.md](./narratives.md).
 
 ## Scope
 
-In scope: Puzzles on a Grid, where the Player fills in the Bonds so every Atom has exactly its valence ([0001](../decisions.md#0001)), with every hydrogen an Atom of its own ([0002](../decisions.md#0002)), and each Puzzle has exactly one solution ([0008](../decisions.md#0008)); seeing a solution; Progress kept in the browser ([0005](../decisions.md#0005)).
+In scope: Puzzles on a Grid, where the Player fills in the Bonds so every Atom has exactly its valence ([decision 0001](../decisions.md#0001)), with every hydrogen an Atom of its own ([decision 0002](../decisions.md#0002)), and each Puzzle has exactly one solution ([decision 0008](../decisions.md#0008)); seeing a solution; Progress kept in the browser ([decision 0005](../decisions.md#0005)).
 
 Left out: building freely without a Grid, recognising other Molecules (Isomers), charges and ions, Elements other than H, C, N and O, stereochemistry, 3D shapes, and saving Progress anywhere but the browser. Other puzzle modes are in `prototypes/`, outside this spec.
 

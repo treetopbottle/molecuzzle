@@ -1,6 +1,6 @@
 # Schemas
 
-Language-independent [JSON Schema](https://json-schema.org/)s (draft 2020-12), as files in [schemas/](schemas/); the tests check the data against them ([0012](../decisions.md#0012)). What a schema can't say is written next to it.
+Language-independent [JSON Schema](https://json-schema.org/)s (draft 2020-12), as files in [schemas/](schemas/); the tests check the data against them ([decision 0012](../decisions.md#0012)). What a schema can't say is written next to it.
 
 ## Puzzle
 

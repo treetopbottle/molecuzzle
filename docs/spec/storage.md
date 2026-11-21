@@ -1,6 +1,6 @@
 # Storage
 
-What the game keeps, where and how, and who can read it ([0005](../decisions.md#0005)).
+What the game keeps, where and how, and who can read it ([decision 0005](../decisions.md#0005)).
 
 ### Progress
 
@@ -8,7 +8,7 @@ What the game keeps, where and how, and who can read it ([0005](../decisions.md#
 - No storage: if the browser can't store data, the game works and keeps nothing (Progress.02)
 - How: in the browser's `localStorage`, under the key `molecuzzle-v2`, as a [Progress](schemas.md#progress); a missing or unreadable value counts as empty, and a field, or a Puzzle's entry, that doesn't fit the schema is left out (Progress.03)
 - Who: only the Player's browser has it: the page sends nothing over the network. Pages from the same origin share it, so on GitHub Pages the build of `main` and every branch build read and write the same Progress (Progress.04)
-- In progress: a Puzzle with Bonds or something to undo, whose status isn't solved ([Check.04](puzzle.md#check)), is in progress. After every change, Undo, Reset and Show solution, it keeps its Bonds, whether the solution was shown ([Help.01](puzzle.md#help)), and its undo history, so after opening another Puzzle, a reload, a closed browser or a crash, the Player goes on where they were ([Puzzle.03](puzzle.md#puzzle)). Solving or resetting it ([Bond.09](puzzle.md#bond), [Bond.10](puzzle.md#bond)) removes what was kept, so it opens again with no Bonds ([0015](../decisions.md#0015)) (Progress.05)
+- In progress: a Puzzle with Bonds or something to undo, whose status isn't solved ([Check.04](puzzle.md#check)), is in progress. After every change, Undo, Reset and Show solution, it keeps its Bonds, whether the solution was shown ([Help.01](puzzle.md#help)), and its undo history, so after opening another Puzzle, a reload, a closed browser or a crash, the Player goes on where they were ([Puzzle.03](puzzle.md#puzzle)). Solving or resetting it ([Bond.09](puzzle.md#bond), [Bond.10](puzzle.md#bond)) removes what was kept, so it opens again with no Bonds ([decision 0015](../decisions.md#0015)) (Progress.05)
 
 Example (Progress.01), solved Puzzles and the open one are kept over a reload:
 

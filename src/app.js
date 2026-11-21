@@ -1,4 +1,4 @@
-// The Glue: wires the Puzzles, the open game, Progress and the UI. No DOM:
+// Wires the Puzzles, the open game, Progress and the UI. No DOM:
 // browser.js makes the dependencies and passes them in.
 import { markSolved } from "./storage/progress.js";
 

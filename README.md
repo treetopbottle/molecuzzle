@@ -33,51 +33,44 @@ Domain entities, capitalized, each with an example the spec can reuse:
 ## Where things are
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): the working agreement
-- `src/`: the code, as ES modules, in components ([0011](docs/decisions.md#0011)):
-  - `puzzle/`: the Puzzles and the rules: `game.js`, `grid.js`, `solver.js`, `generate.js` (finds Grid layouts), `puzzles.js`, `elements.js`
-  - `storage/`: what is kept in the browser: `progress.js`
-  - `ui/`: the page: `index.html` with `style.css`, `ui.js` (owns the page), `board.js` (the Board in SVG), `panel.js` (the open Puzzle and the rules), `puzzle-list.js`, `messages.js` (the texts), `elements.js` (how Elements look)
-  - the Glue: `app.js` wires the components, with no DOM; `browser.js`, the entry point and the only file using the browser's globals, makes the dependencies and starts it
-- `scripts/`: `build.js` makes `dist/index.html`; `generate.js` finds Grid layouts for new Puzzles; `screenshots.sh` runs the screenshot tests in Playwright's image; `publish-pages.sh` publishes a build to GitHub Pages
-- `.github/workflows/pages.yml`: builds and publishes every branch
-- `tests/`: `unit/` (Vitest: `puzzle/`, `storage/` and `ui/`, the UI in happy-dom, and `app.test.js`, the Glue with fakes), `e2e/` (Playwright, on the built page), `helpers/`
+- `src/`: the code, as ES modules: the components `puzzle/`, `storage/` and `ui/`, wired together by `browser.js` and `app.js`; see below
+- `scripts/`: the build, publishing to GitHub Pages, the screenshot tests and finding layouts for new Puzzles
+- `tests/`: `unit/`, `e2e/`, `helpers/`
 - `prototypes/`: try-outs of other puzzle modes, outside the spec
 - [docs/spec/](docs/spec/README.md): the specification for the software, with its schemas
-- [docs/architecture.md](docs/architecture.md): how the files in `src/` fit together, a diagram per component
+- [docs/architecture.md](docs/architecture.md): how the files in `src/` fit together, per component
 - [docs/decisions.md](docs/decisions.md): any decisions made about the project
 - [docs/plans/](docs/plans/README.md): the backlog, including specific plans for implementing features/slices
 - [docs/workflow/](docs/workflow/): documentation of the development process
 
 ### How `src/` fits together
 
-The four components ([0011](docs/decisions.md#0011)); each is drawn file by file in [docs/architecture.md](docs/architecture.md). Solid arrows are imports, dotted arrows are calls at runtime.
+The three components ([decision 0011](docs/decisions.md#0011)). An arrow is an import: the components don't import each other; `browser.js` and `app.js` import them, to wire them together, and add nothing of their own. The files of each component are in [docs/architecture.md](docs/architecture.md).
 
 ```mermaid
 flowchart TD
-  glue["Glue<br/>browser.js, app.js"]
-  ui["UI: ui/<br/>the page"]
-  puzzle["Puzzle: puzzle/<br/>the Puzzles and the rules, no DOM"]
-  storage["Storage: storage/<br/>the Progress"]
-  local[("localStorage")]
-  generate["scripts/generate.js"]
+  browser["src/browser.js<br/>the entry point"]
+  app["src/app.js<br/>wires the components"]
+  ui["src/ui/<br/>UI: the page"]
+  puzzle["src/puzzle/<br/>Puzzle: the Puzzles and the rules"]
+  storage["src/storage/<br/>Storage: the Progress"]
 
-  glue --> ui
-  glue --> puzzle
-  glue --> storage
-  ui -. "loads browser.js,<br/>callbacks" .-> glue
-  ui -. "reads the game" .-> puzzle
-  storage -.-> local
-  generate --> puzzle
+  browser --> app
+  browser --> ui
+  browser --> puzzle
+  browser --> storage
+  app --> storage
 ```
 
 ## Development
 
 Commands are run in this folder, with Node.js 22.12 or newer (an even-numbered release), and Podman (or Docker) for the screenshots:
 
-- Install: `npm install`, and once `npx playwright install chromium`, or set `CHROMIUM_PATH` to a Chromium already installed (e.g. `/usr/bin/chromium`).
+- Install: `npm install`
 - Build: `npm run build` writes `dist/index.html`, the whole game in one file; open it in a browser, no server needed.
+- `npx playwright install chromium`, or set `CHROMIUM_PATH` to a Chromium already installed (e.g. `/usr/bin/chromium`).
 - Test: `npm test` (unit and component tests), `npm run test:e2e` (end-to-end tests; builds first), `npm run test:screenshots` (compares the page with `docs/spec/screenshots/`, in Playwright's image; `CONTAINER=docker` to use Docker).
-- Screenshots: after an intended change to the look, `npm run test:screenshots -- --update-snapshots` makes them again; look at each in the diff before committing ([0013](docs/decisions.md#0013)).
+- Screenshots: after an intended change to the look, `npm run test:screenshots -- --update-snapshots` makes them again; look at each in the diff before committing ([decision 0013](docs/decisions.md#0013)).
 - Check: `npm run check` builds and runs all tests, the screenshots included.
 - New Puzzle: `node scripts/generate.js "<bonds>"` prints a layout with exactly one solution; see the comment at its top.
 

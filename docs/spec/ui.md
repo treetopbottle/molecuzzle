@@ -2,7 +2,7 @@
 
 What the Player sees and does, on the one page of the game. It shows the [Puzzle](puzzle.md)s and their rules, and what [Storage](storage.md) keeps in the browser.
 
-The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a test compares the page with each of them, pixel for pixel with Playwright's default tolerance, in a container that is the same on every machine ([0013](../decisions.md#0013)). Names in quotes are what a screen reader says.
+The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a test compares the page with each of them, pixel for pixel with Playwright's default tolerance, in a container that is the same on every machine ([decision 0013](../decisions.md#0013)). Names in quotes are what a screen reader says.
 
 ## Page
 
