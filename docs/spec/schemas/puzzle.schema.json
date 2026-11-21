@@ -19,12 +19,13 @@
       "items": {
         "type": "array",
         "prefixItems": [
-          { "enum": ["H", "C", "N", "O", "S", "F", "Cl", "Br", "I"], "description": "Element" },
+          { "enum": ["C", "N", "O", "S", "F", "Cl", "Br", "I"], "description": "Element" },
           { "type": "integer", "minimum": 0, "description": "Row" },
-          { "type": "integer", "minimum": 0, "description": "Column" }
+          { "type": "integer", "minimum": 0, "description": "Column" },
+          { "type": "integer", "minimum": 0, "maximum": 3, "description": "Hydrogens bonded to it from the start" }
         ],
         "items": false,
-        "minItems": 3
+        "minItems": 4
       }
     },
     "solution": { "$ref": "board.schema.json" }

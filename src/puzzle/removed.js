@@ -1,7 +1,9 @@
 // Puzzles taken out of the game, kept for reference: no Puzzle may have the
 // id or the formula of one of them (Puzzle.06, decision 0022). Nothing in
 // the game imports this; the tests do. In the order of the spec's table of
-// removed Puzzles.
+// removed Puzzles, each as it was: those removed when the hydrogens moved
+// onto their Atoms have them as Atoms on the Grid, and no longer follow the
+// rules (decision 0023).
 export const REMOVED = [
   {
     id: "ammonia", name: "Ammonia", formula: "NH3",
@@ -58,5 +60,117 @@ export const REMOVED = [
     rows: 3, cols: 4,
     atoms: [["H",0,1],["I",0,2],["H",1,0],["C",1,1],["C",1,2],["H",1,3],["H",2,1],["H",2,2]],
     solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,6,1],[4,5,1],[4,7,1]],
+  },
+  {
+    id: "water", name: "Water", formula: "H2O",
+    fact: "About 60% of your body is water. Its bent shape makes it polar, so it dissolves many substances.",
+    rows: 2, cols: 2,
+    atoms: [["H",0,0],["O",0,1],["H",1,1]],
+    solution: [[0,1,1],[1,2,1]],
+  },
+  {
+    id: "hydrogen-cyanide", name: "Hydrogen cyanide", formula: "HCN",
+    fact: "Hydrogen cyanide is very poisonous, and has been found in space, including in the tails of comets.",
+    rows: 1, cols: 3,
+    atoms: [["H",0,0],["C",0,1],["N",0,2]],
+    solution: [[0,1,1],[1,2,3]],
+  },
+  {
+    id: "formaldehyde", name: "Formaldehyde", formula: "CH2O",
+    fact: "Dissolved in water as formalin, formaldehyde has long been used to preserve biological specimens.",
+    rows: 3, cols: 2,
+    atoms: [["H",0,0],["C",1,0],["H",1,1],["O",2,0]],
+    solution: [[0,1,1],[1,2,1],[1,3,2]],
+  },
+  {
+    id: "methanol", name: "Methanol", formula: "CH4O",
+    fact: "Methanol is also called wood alcohol, because it was once made by heating wood. It is poisonous to drink.",
+    rows: 3, cols: 3,
+    atoms: [["H",0,1],["O",1,0],["C",1,1],["H",1,2],["H",2,0],["H",2,1]],
+    solution: [[0,2,1],[1,2,1],[1,4,1],[2,3,1],[2,5,1]],
+  },
+  {
+    id: "ethylene", name: "Ethylene", formula: "C2H4",
+    fact: "Ethylene is a plant hormone: ripe bananas give it off, which makes fruit nearby ripen faster.",
+    rows: 3, cols: 2,
+    atoms: [["H",0,0],["H",0,1],["C",1,0],["C",1,1],["H",2,0],["H",2,1]],
+    solution: [[0,2,1],[1,3,1],[2,3,2],[2,4,1],[3,5,1]],
+  },
+  {
+    id: "acrylonitrile", name: "Acrylonitrile", formula: "C3H3N",
+    fact: "Acrylonitrile is the building block of acrylic fibres, used in sweaters and blankets.",
+    rows: 4, cols: 2,
+    atoms: [["N",0,1],["H",1,0],["C",1,1],["C",2,0],["C",2,1],["H",3,0],["H",3,1]],
+    solution: [[0,2,3],[1,3,1],[2,4,1],[3,4,2],[3,5,1],[4,6,1]],
+  },
+  {
+    id: "urea", name: "Urea", formula: "CH4N2O",
+    fact: "In 1828 Friedrich Wöhler made urea from non-living materials, the first time a compound from living things was made in a lab.",
+    rows: 3, cols: 4,
+    atoms: [["H",0,0],["N",0,1],["H",0,2],["C",1,1],["O",1,3],["H",2,0],["N",2,1],["H",2,2]],
+    solution: [[0,1,1],[1,2,1],[1,3,1],[3,4,2],[3,6,1],[5,6,1],[6,7,1]],
+  },
+  {
+    id: "acetone", name: "Acetone", formula: "C3H6O",
+    fact: "Acetone is the solvent in many nail polish removers. Your body makes a little of it when it burns fat.",
+    rows: 5, cols: 4,
+    atoms: [["H",0,2],["H",1,1],["C",1,2],["H",1,3],["O",2,0],["C",2,2],["H",3,1],["C",3,2],["H",3,3],["H",4,2]],
+    solution: [[0,2,1],[1,2,1],[2,3,1],[2,5,1],[4,5,2],[5,7,1],[6,7,1],[7,8,1],[7,9,1]],
+  },
+  {
+    id: "ethanol", name: "Ethanol", formula: "C2H6O",
+    fact: "Ethanol is the alcohol in drinks, made by yeast from sugar. It is also mixed into petrol as a fuel.",
+    rows: 3, cols: 4,
+    atoms: [["H",0,1],["H",0,2],["H",1,0],["C",1,1],["C",1,2],["H",1,3],["H",2,1],["O",2,2],["H",2,3]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,6,1],[4,5,1],[4,7,1],[7,8,1]],
+  },
+  {
+    id: "halothane", name: "Halothane", formula: "C2HBrClF3",
+    fact: "Halothane, with three different halogens, was a widely used anaesthetic from the 1950s.",
+    rows: 3, cols: 4,
+    atoms: [["F",0,1],["Cl",0,2],["F",1,0],["C",1,1],["C",1,2],["H",1,3],["F",2,1],["Br",2,2]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,6,1],[4,5,1],[4,7,1]],
+  },
+  {
+    id: "lactic-acid", name: "Lactic acid", formula: "C3H6O3",
+    fact: "Lactic acid gives yoghurt and sourdough their sour taste, and is made in your muscles during hard exercise.",
+    rows: 6, cols: 4,
+    atoms: [["O",0,0],["H",0,1],["O",0,2],["C",1,0],["C",1,2],["H",1,3],["O",3,0],["H",3,1],["C",3,2],["H",3,3],["H",5,0],["H",5,2]],
+    solution: [[0,3,2],[1,2,1],[2,4,1],[3,4,1],[3,6,1],[4,5,1],[4,8,1],[6,10,1],[7,8,1],[8,9,1],[8,11,1]],
+  },
+  {
+    id: "ethyl-acetate", name: "Ethyl acetate", formula: "C4H8O2",
+    fact: "Ethyl acetate is the solvent in many nail polish removers, and part of the sweet smell of pears and wine.",
+    rows: 6, cols: 4,
+    atoms: [["H",0,1],["H",0,2],["H",1,0],["C",1,1],["C",1,2],["H",1,3],["H",2,1],["O",2,2],["O",3,0],["C",3,2],["H",4,1],["C",4,2],["H",4,3],["H",5,2]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,6,1],[4,5,1],[4,7,1],[7,9,1],[8,9,2],[9,11,1],[10,11,1],[11,12,1],[11,13,1]],
+  },
+  {
+    id: "alanine", name: "Alanine", formula: "C3H7NO2",
+    fact: "Alanine is one of the 20 amino acids that make up proteins. Silk is rich in it.",
+    rows: 4, cols: 4,
+    atoms: [["H",0,0],["N",0,1],["H",0,2],["O",0,3],["H",1,0],["C",1,1],["C",1,3],["H",2,0],["C",2,1],["H",2,2],["O",2,3],["H",3,1],["H",3,3]],
+    solution: [[0,1,1],[1,2,1],[1,5,1],[3,6,2],[4,5,1],[5,6,1],[5,8,1],[6,10,1],[7,8,1],[8,9,1],[8,11,1],[10,12,1]],
+  },
+  {
+    id: "cysteine", name: "Cysteine", formula: "C3H7NO2S",
+    fact: "Cysteine has a sulfur atom: bridges between the sulfur atoms of two cysteines hold the shape of hair and nails.",
+    rows: 5, cols: 4,
+    atoms: [["H",0,2],["H",0,3],["H",1,0],["C",1,2],["S",1,3],["H",2,0],["N",2,1],["C",2,2],["H",2,3],["H",3,1],["H",3,3],["O",4,0],["C",4,2],["O",4,3]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,7,1],[5,6,1],[6,7,1],[6,9,1],[7,8,1],[7,12,1],[10,13,1],[11,12,2],[12,13,1]],
+  },
+  {
+    id: "threonine", name: "Threonine", formula: "C4H9NO3",
+    fact: "Threonine was the last of the 20 amino acids that make up proteins to be discovered, in 1935.",
+    rows: 6, cols: 5,
+    atoms: [["H",0,3],["H",1,0],["C",1,3],["H",1,4],["H",2,1],["H",2,2],["N",3,1],["C",3,2],["C",3,3],["H",3,4],["H",4,0],["H",4,1],["O",4,3],["H",4,4],["O",5,0],["C",5,2],["O",5,3]],
+    solution: [[0,2,1],[1,2,1],[2,3,1],[2,8,1],[4,6,1],[5,7,1],[6,7,1],[6,11,1],[7,8,1],[7,15,1],[8,9,1],[8,12,1],[10,14,1],[12,13,1],[14,15,1],[15,16,2]],
+  },
+  {
+    id: "valine", name: "Valine", formula: "C5H11NO2",
+    fact: "In sickle cell disease, one amino acid in haemoglobin is replaced by valine, which makes red blood cells stiff and curved.",
+    rows: 6, cols: 5,
+    atoms: [["H",0,1],["H",0,4],["H",1,0],["C",1,1],["H",1,2],["H",1,3],["O",1,4],["H",2,0],["C",2,1],["C",2,3],["C",2,4],["H",3,0],["C",3,1],["H",3,2],["O",3,4],["H",4,1],["H",4,2],["N",4,3],["H",5,3]],
+    solution: [[0,3,1],[1,6,1],[2,3,1],[3,4,1],[3,8,1],[5,9,1],[6,10,1],[7,8,1],[8,9,1],[8,12,1],[9,10,1],[9,17,1],[10,14,2],[11,12,1],[12,13,1],[12,15,1],[16,17,1],[17,18,1]],
   },
 ];
