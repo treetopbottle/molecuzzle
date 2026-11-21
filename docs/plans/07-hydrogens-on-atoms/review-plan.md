@@ -54,3 +54,19 @@ Commits reviewed: 65502cb (the plan, its spec changes, decisions 0023 and 0024, 
     - `docs/spec/ui.md:43` links `board-glucose.png`, which doesn't exist until step 7.
 12. **note**: `docs/decisions.md:285`: "the prototype … tried both" (hydrogens drawn, and CH₃ written on the ball). The prototype as committed only draws the hydrogens, so the CH₃ label version can't be seen.
 13. **note**: the plan didn't come from the backlog (`docs/workflow/write-a-plan.md` step 1). It came straight from the user's request after the prototype, which is fine, and it replaces the Iodine backlog item properly.
+
+## Outcome
+
+1. Fixed in e49d056: Morpholine (C₄H₉NO) takes Dioxane's place, with the same Dotted lines, loops and difficulty, so the order stays; the plan says why.
+2. Fixed in e49d056: room and Puzzle.03 say valence minus hydrogens minus bond count.
+3. Fixed in e49d056: 0024 says only rings of 3 can't fit; rings of 4, 5 and 6 can.
+4. Fixed in e49d056: 0023 counts the 110 Atoms with one Bond (105 H and Halothane's three halogens), says how nearest was measured, and gives 12 of 20 for the obvious moves, by the script used then.
+5. Fixed in e49d056: Scope lists Puzzle.03 and Progress.03, step 4 names Puzzle.08, and step 7 names `difficulty.test.js` and `progress.test.js`.
+6. Fixed in e49d056: the plan records the Bonds tried for the candidates whose reason depends on their layout, and the table says "in the layout tried".
+7. Fixed in e49d056: 0022 is partly superseded by 0024, and 0024's cost says S and the halogens have no Puzzle for now.
+8. Fixed in e49d056: a second Grid.02 example, in Glycine, of lines that meet at an Atom and don't cross.
+9. Fixed in e49d056: Board.01 says the hydrogens don't glow or pulse with their Atom.
+10. Fixed in e49d056: `actions.png` stays; step 7 says its review checks the examples one by one.
+11. Fixed in e49d056: the README's Molecule is Acetic acid, and the backlog item uses the new labels. The link to `board-glucose.png` is kept: step 7 makes it, as the spec comes first.
+12. Fixed in e49d056: 0023 says the prototype first wrote CH₃ on the ball.
+13. Kept: no finding.
