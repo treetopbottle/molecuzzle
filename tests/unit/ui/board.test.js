@@ -5,7 +5,7 @@ import { createGame } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { ELEMENTS as VALENCES } from "../../../src/puzzle/elements.js";
 import { ELEMENTS as LOOKS } from "../../../src/ui/elements.js";
-import { click } from "../../helpers/draw.js";
+import { click, build } from "../../helpers/draw.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 let svg;
@@ -88,12 +88,34 @@ describe("Board", () => {
     expect(svg.querySelectorAll(".atom .badge text")[1].textContent).toBe("2");
   });
 
-  test("Board.03 a solved Board is marked solved, so its Atoms pulse", () => {
+  const classes = () => ["solved", "pulse"].filter(c => svg.classList.contains(c));
+
+  test("Board.03 solving the Board marks it solved, and its Atoms pulse, also after another render", () => {
     const game = createGame(puzzle("water"));
     const board = createBoard(svg, game, { onChange() {} });
     game.change(0, 1);
+    board.render();
+    expect(classes()).toEqual([]);
     game.change(1, 1);
     board.render();
-    expect(svg.classList.contains("solved")).toBe(true);
+    expect(classes()).toEqual(["solved", "pulse"]);
+    board.render();
+    expect(classes()).toEqual(["solved", "pulse"]);
+  });
+
+  test("Board.03 a Board created solved doesn't pulse, also on an svg that just pulsed; after Reset, neither", () => {
+    const first = createGame(puzzle("water"));
+    const board = createBoard(svg, first, { onChange() {} });
+    build(first);
+    board.render();
+    expect(classes()).toEqual(["solved", "pulse"]);
+    const solved = createGame(puzzle("hydrogen-cyanide"), { bonds: puzzle("hydrogen-cyanide").solution, revealed: false, undo: [] });
+    const again = createBoard(svg, solved, { onChange() {} });
+    expect(classes()).toEqual(["solved"]);
+    again.render();
+    expect(classes()).toEqual(["solved"]);
+    solved.reset();
+    again.render();
+    expect(classes()).toEqual([]);
   });
 });

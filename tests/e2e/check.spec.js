@@ -105,3 +105,15 @@ test("Messages.01, Panel.01 after Reset, building it marks it solved", async ({ 
   await expect(status(page)).toHaveText("✓ Solved! It's Urea.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
 });
+
+test("Board.03 a solved Puzzle that opens again doesn't pulse, also right after solving another", async ({ page }) => {
+  await openPuzzle(page, 4);
+  await build(page, PUZZLES[3]);
+  await openPuzzle(page, 1);
+  await build(page, PUZZLES[0]);
+  await expect(page.locator("#board")).toHaveClass(/\bpulse\b/);
+  await openPuzzle(page, 4);
+  await expect(status(page)).toHaveText("✓ Solved! It's Hydrogen cyanide.");
+  await expect(page.locator("#board")).toHaveClass(/\bsolved\b/);
+  await expect(page.locator("#board")).not.toHaveClass(/\bpulse\b/);
+});

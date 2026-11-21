@@ -54,7 +54,7 @@ test.describe("at 1280×800", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await start(page);
     await build(page, PUZZLES[0]);
-    await expect(page.locator("#board")).toHaveClass(/\bsolved\b/);
+    await expect(page.locator("#board")).toHaveClass(/\bpulse\b/);
     const animations = () => page.locator("#board .atom .body").evaluateAll(els => els.map(e => getComputedStyle(e).animationName));
     expect(await animations()).toEqual(["none", "none", "none"]);
     await page.emulateMedia({ reducedMotion: "no-preference" });
