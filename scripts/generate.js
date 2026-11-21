@@ -1,11 +1,12 @@
 // Searches for a grid layout of a Molecule that makes a puzzle with exactly
 // one solution, and prints it as an entry for src/puzzle/puzzles.js.
 //
-//   node scripts/generate.js "O1=C1 C1-O2 O2-H1 ..." [tries] [maxRows] [maxCols] [seed]
+//   node scripts/generate.js "CH3-C C=O C-OH" [tries] [maxRows] [maxCols] [seed]
 //
-// Bonds are written between labelled Atoms: the label's letters are the
-// Element, `-` `=` `#` the Bond order. The search is findLayout in
-// src/puzzle/generate.js.
+// Bonds are written between labelled Atoms: a label is the Element and then
+// its hydrogens, as in a formula, with `:` and a name to tell Atoms with the
+// same label apart (CH2:a, CH2:b); `-` `=` `#` are the Bond order. The search
+// is findLayout in src/puzzle/generate.js.
 import { findLayout } from "../src/puzzle/generate.js";
 import { difficulty, dottedLines } from "../src/puzzle/difficulty.js";
 
@@ -27,11 +28,13 @@ if (!layout) { console.error("no unique layout found"); process.exit(2); }
 
 const { rows, cols, atoms, solution } = layout;
 const { dotted, empty } = dottedLines(layout);
-// With a two-letter symbol, every point is two characters wide, as in the
-// spec's drawings: a one-letter symbol, or · for no Atom, is padded.
-const width = Math.max(...atoms.map(([el]) => el.length));
+// Each Atom by its label as in a formula, CH₂, and every point as wide as the
+// longest label, as in the spec's drawings: a shorter one, or · for no Atom,
+// is padded.
+const label = (el, h) => el + (h ? "H" + (h > 1 ? "₀₁₂₃₄₅₆₇₈₉"[h] : "") : "");
+const width = Math.max(...atoms.map(([el, , , h]) => label(el, h).length));
 const grid = Array.from({ length: rows }, () => Array(cols).fill("·"));
-for (const [el, r, c] of atoms) grid[r][c] = el;
+for (const [el, r, c, h] of atoms) grid[r][c] = label(el, h);
 console.log(grid.map(row => ("  // " + row.map(p => p.padEnd(width)).join(" ")).trimEnd()).join("\n"));
 console.log(`  rows: ${rows}, cols: ${cols}, // difficulty ${difficulty(layout)}: ${dotted} Dotted lines, ${empty} empty`);
 console.log(`  atoms: [${atoms.map(a => JSON.stringify(a)).join(",")}],`);
