@@ -66,3 +66,13 @@ Commits reviewed: 8a5942c and ab99173 (tests, 2(a)) and 9fa5edf (implementation 
    - The test is more robust, because `openPuzzle` clicks the list, which scrolls the page.
    - Its name says "fit the screen", which matches what it checks.
 5. **note**: `docs/spec/screenshots/page-start.png`. At 1280×800 the page is now 854 px tall (it was 813), so the last row of the list sits below the fold on desktop. No rule forbids vertical scrolling. This is only to make the trade-off deliberate.
+
+## Outcome
+
+1. Fixed in 645ad7f: the mouse leaves the list before both panel screenshots; `panel-mystery.png` was made again from scratch, since the hover is within the tolerance and `--update-snapshots` kept the old one. `panel-solved.png` came out the same.
+2. Fixed in 1c2290e: Cysteine is seed 2's 5×4 layout. A check of every turn and flip finds no new layout equal to an earlier one.
+3. Fixed in the commit after 645ad7f: the plan's Design records each Molecule's Bonds and arguments; with them, the script gives the committed layouts.
+4. Kept: the test checks what its name says, and is more robust, as the finding says.
+5. Kept: the page scrolls on a computer too; no rule forbids it, and the Board and its status line stay in view.
+
+A Puzzle's layout and a screenshot test changed. The tests pass; the second review is the decisions review that finishes the plan, which reads this too.
