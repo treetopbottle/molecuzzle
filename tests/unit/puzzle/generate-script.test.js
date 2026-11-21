@@ -35,6 +35,14 @@ test("the script draws the layout, every point two characters wide with a two-le
   ]);
 });
 
+test("Generate.01 with no size given, the script looks for a Grid of at most 6 by 5", () => {
+  const { stdout, status } = run("H1-C1 C1-C2 C2-C3 C3-C4 C4-H2 C1-H3 C1-H4 C2-H5 C2-H6 C3-H7 C3-H8 C4-H9 C4-H10");
+  expect(status).toBe(0);
+  const [, rows, cols] = stdout.match(/rows: (\d+), cols: (\d+)/).map(Number);
+  expect(rows).toBeLessThanOrEqual(6);
+  expect(cols).toBeLessThanOrEqual(5);
+});
+
 test("Generate.02 the script stops at a Bond it can't read", () => {
   const { stderr, status } = run("H1-O1 O1~H2");
   expect(stderr.trim()).toBe("can't read O1~H2");

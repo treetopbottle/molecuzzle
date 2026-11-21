@@ -53,6 +53,11 @@ describe("Puzzle.01 the puzzles", () => {
       expect(atoms.every((a, i) => i === 0 || a.r > atoms[i - 1].r || (a.r === atoms[i - 1].r && a.c > atoms[i - 1].c))).toBe(true);
     });
 
+    test("Puzzle.04 has a Grid of at most 6 rows and 5 columns", () => {
+      expect(p.rows).toBeLessThanOrEqual(6);
+      expect(p.cols).toBeLessThanOrEqual(5);
+    });
+
     test("has exactly one solution, the one it shows", () => {
       const solutions = solve(atoms, 2);
       expect(solutions).toHaveLength(1);
