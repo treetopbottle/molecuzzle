@@ -15,7 +15,7 @@ test("Progress.05 a Puzzle in progress, Undo included, is kept after the browser
 
   const again = await context.newPage();
   await start(again);
-  await openPuzzle(again, 4);
+  await openPuzzle(again, 2);
   await expect(bond(again, "1,1", "1,2")).toHaveAccessibleName("H 1,1 to C 1,2: single bond");
   await expect(bond(again, "1,2", "1,3")).toHaveAccessibleName("C 1,2 to N 1,3: no bond");
   await again.getByRole("button", { name: "Undo" }).click();
