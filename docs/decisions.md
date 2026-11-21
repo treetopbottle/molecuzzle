@@ -63,7 +63,7 @@ Every H is an Atom on the Grid that the Player bonds, instead of hydrogens being
 <a id="0003"></a>
 ## 0003: All Puzzles are open
 
-Accepted (2026-11-10)
+Accepted (2026-11-10). Partly superseded by [0018](#0018): the order is easiest first within each batch of Puzzles.
 
 No Puzzle is locked; the order, easiest first, only suggests a path.
 
@@ -221,6 +221,6 @@ Accepted (2026-11-21)
 
 New Puzzles are added after the last one, easiest first among themselves, instead of between the Puzzles by how hard they are. A Puzzle keeps its number once it is published.
 
-- **Why:** a Player who has solved the first Puzzles finds the new ones after them, not scattered among solved ones; the numbers in the spec, the tests and the Players' heads stay the same. Progress is by id ([0016](#0016)), so it would survive either way.
+- **Why:** a Player who has solved the first Puzzles finds the new ones after them, not scattered among solved ones; the numbers in the spec, the tests and the Players' heads stay the same. Progress is by the Puzzles' ids ([schemas](spec/schemas.md#progress)), so it would survive either way.
 - **Cost:** the whole list is no longer easiest first ([0003](#0003)): a batch of easy Puzzles can follow hard ones, as the Puzzles with new Elements follow Alanine.
 - **Alternatives:** keep the whole list easiest first, renumbering the Puzzles after each insert: the best path for a new Player, but every number in the spec and the tests moves, and a returning Player has to look for what is new. Groups or chapters of Puzzles: a clear path per group, but a new part of the UI.

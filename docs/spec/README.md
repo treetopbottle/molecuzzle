@@ -22,7 +22,7 @@ Left out: building freely without a Grid, recognising other Molecules (Isomers),
 
 The examples fit inline, or are screenshots. The formats of a Puzzle, a Board and the stored Progress are in [schemas.md](schemas.md).
 
-Boards in examples are drawn as text, as the unit tests do: Atoms by Element at the Grid points, `·` a Dotted line, `─ │` single, `═ ║` double, and `≡ ⦀` triple Bonds. Places are written "row,column", counted from 1. Glycine, with no Bonds and solved:
+Boards in examples are drawn as text, as the unit tests do: Atoms by Element at the Grid points, `·` a Dotted line, `─ │` single, `═ ║` double, and `≡ ⦀` triple Bonds. Places are written "row,column", counted from 1. In a Board with a two-letter symbol, such as Cl, every Grid point is two characters wide, so its columns are three characters apart. Glycine, with no Bonds and solved:
 
 ```
   O·C·O·H            O═C─O─H
@@ -32,4 +32,14 @@ H···C···H          H───C───H
   · · ·              · │ ·
   · · ·              · │ ·
   H·N·H              H─N─H
+```
+
+Phosgene, solved:
+
+```
+   Cl
+   │
+Cl─C
+   ║
+   O
 ```
