@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { start, clickBond, bond } from "./helpers.js";
+import { start, clickBond, bond, openPuzzle } from "./helpers.js";
 
 test("Layout.01 wide screens have the Board left of the panel, narrow ones above it", async ({ page }) => {
   await start(page);
@@ -16,4 +16,15 @@ test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page, is
   await start(page);
   await clickBond(page, "1,1", "1,2", { tap: true });
   await expect(bond(page, "1,1", "1,2")).toHaveAccessibleName("H 1,1 to O 1,2: single bond");
+});
+
+test("Layout.01, Puzzle.04 on a phone, the largest Grid, Valine's, fits: no sideways scroll, and the Board and its status line fit the screen", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "phone only");
+  await start(page);
+  await openPuzzle(page, 28);
+  const { width, height } = page.viewportSize();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  const stage = await page.locator(".stage").boundingBox();
+  const status = await page.getByRole("status").boundingBox();
+  expect(status.y + status.height - stage.y).toBeLessThanOrEqual(height);
 });

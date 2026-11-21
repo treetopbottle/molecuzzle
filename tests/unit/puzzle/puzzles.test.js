@@ -34,6 +34,13 @@ describe("Puzzle.01 the puzzles", () => {
         "Tetrafluoroethylene C2F4",
         "Iodoethane C2H5I",
         "Halothane C2HBrClF3",
+        "Lactic acid C3H6O3",
+        "Ethyl acetate C4H8O2",
+        "Glycerol C3H8O3",
+        "Serine C3H7NO3",
+        "Cysteine C3H7NO2S",
+        "Threonine C4H9NO3",
+        "Valine C5H11NO2",
       ]
     `);
     expect(new Set(PUZZLES.map(p => p.id)).size).toBe(PUZZLES.length);
@@ -65,6 +72,19 @@ describe("Puzzle.01 the puzzles", () => {
       game.showSolution();
       expect(game.order).toEqual(solutions[0]);
     });
+  });
+
+  const emptyDottedLines = p => createGame(p).bonds.length - p.solution.length;
+
+  test("Puzzle.04 Valine, with 19 Atoms, has a Grid of 6 rows and 5 columns", () => {
+    const valine = PUZZLES[27];
+    expect([valine.name, valine.atoms.length, valine.rows, valine.cols]).toEqual(["Valine", 19, 6, 5]);
+  });
+
+  test("Puzzle.05 Puzzles 22 to 28 each leave at least 5 Dotted lines with no Bond in their solution", () => {
+    const lactic = PUZZLES[21];
+    expect([lactic.name, emptyDottedLines(lactic)]).toEqual(["Lactic acid", 5]);
+    for (const p of PUZZLES.slice(21, 28)) expect(emptyDottedLines(p), p.name).toBeGreaterThanOrEqual(5);
   });
 
   test("Acrylonitrile, solved", () => {
