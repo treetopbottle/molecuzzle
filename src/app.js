@@ -24,7 +24,7 @@ export function startApp({ puzzles, createGame, store, createUi }) {
     onSolve() { game.showSolution(); keep(); },
   });
 
-  /** Progress with the open Puzzle's saved() in boards, or without its entry when it isn't in progress. */
+  /** Progress with the open Puzzle's saved() in boards, or without its entry when that is null. */
   function withEntry(p) {
     const id = puzzles[index].id, saved = game.saved();
     const { boards = {}, ...rest } = p;

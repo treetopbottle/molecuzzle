@@ -126,11 +126,11 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
 
   /**
    * Where the Puzzle was left, for createGame: { bonds, revealed, undo }, the
-   * undo history oldest first. Null unless it is in progress: with Bonds or
-   * something to undo, and not solved.
+   * undo history oldest first, also when it is solved. Null with no Bonds and
+   * nothing to undo.
    */
   function saved() {
-    if ((!order.some(Boolean) && !history.length) || status().kind === "solved") return null;
+    if (!order.some(Boolean) && !history.length) return null;
     return { bonds: board(), revealed, undo: history.map(toBoard) };
   }
 
