@@ -6,7 +6,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 
 | Plan | Status |
 |---|---|
-| [02: Components](02-components/README.md) | Active |
+| [02: Components](02-components/README.md) | Done (2026-11-21) |
 
 ## Backlog
 

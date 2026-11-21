@@ -1,6 +1,6 @@
 # 02: Components
 
-Status: Active
+Status: Done (2026-11-21), with a [review of the decisions](review-decisions.md)
 
 Deals with the [review of the initial implementation](../01-initial-implementation/review.md): more schemas, four clear components, and features split per component, with screenshots of the UI.
 
