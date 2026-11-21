@@ -11,11 +11,12 @@ import { ELEMENTS } from "./elements.js";
  * a Bond that doesn't read so, or names an Element the game doesn't have,
  * throws "can't read <bond>".
  * Returns the best of `tries` random layouts of at most maxRows by maxCols
+ * (6 by 5 if left out, as every Puzzle's Grid)
  * whose only solution is this Molecule, as { rows, cols, atoms, solution }
  * of a Puzzle, the Atoms in reading order; or null if no try has exactly one
  * solution. The same arguments give the same layout.
  */
-export function findLayout(text, { tries = 20000, maxRows = 5, maxCols = 6, seed = 1 } = {}) {
+export function findLayout(text, { tries = 20000, maxRows = 6, maxCols = 5, seed = 1 } = {}) {
   let s = seed >>> 0 || 1;
   const random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
   const pick = list => list[Math.floor(random() * list.length)];

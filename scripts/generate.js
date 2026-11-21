@@ -9,7 +9,8 @@
 import { findLayout } from "../src/puzzle/generate.js";
 import { candidateBonds } from "../src/puzzle/grid.js";
 
-// Arguments left out are findLayout's defaults.
+// Arguments left out are findLayout's defaults: 20000 tries, a Grid of at
+// most 6 rows by 5 columns, as every Puzzle's (decision 0019), and seed 1.
 const [spec, ...numbers] = process.argv.slice(2);
 const [tries, maxRows, maxCols, seed] = numbers.map(Number);
 if (!spec) { console.error("usage: node scripts/generate.js \"<bonds>\" [tries] [maxRows] [maxCols] [seed]"); process.exit(1); }
