@@ -62,9 +62,9 @@ p { margin: 0; }
 .atom .badge circle { fill: var(--warn); stroke: #3a2600; }
 .atom .badge text { font-size: 11px; font-weight: 700; fill: #3a2600; }
 .atom.ok .badge { display: none; }
-.solved .atom .body { animation: pulse .55s ease-in-out 3; transform-box: fill-box; transform-origin: center; }
+.pulse .atom .body { animation: pulse .55s ease-in-out 3; transform-box: fill-box; transform-origin: center; }
 @keyframes pulse { 50% { transform: scale(1.2); } }
-@media (prefers-reduced-motion: reduce) { .solved .atom .body { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .pulse .atom .body { animation: none; } }
 
 @media (max-width: 820px) { main { grid-template-columns: 1fr; } }
 </style>
@@ -328,6 +328,159 @@ p { margin: 0; }
       cols: 4,
       atoms: [["H", 0, 0], ["N", 0, 1], ["H", 0, 2], ["O", 0, 3], ["H", 1, 0], ["C", 1, 1], ["C", 1, 3], ["H", 2, 0], ["C", 2, 1], ["H", 2, 2], ["O", 2, 3], ["H", 3, 1], ["H", 3, 3]],
       solution: [[0, 1, 1], [1, 2, 1], [1, 5, 1], [3, 6, 2], [4, 5, 1], [5, 6, 1], [5, 8, 1], [6, 10, 1], [7, 8, 1], [8, 9, 1], [8, 11, 1], [10, 12, 1]]
+    },
+    // New Puzzles go at the end, easiest first among themselves (decision 0018):
+    // the halogens and sulfur.
+    {
+      id: "carbon-disulfide",
+      name: "Carbon disulfide",
+      formula: "CS2",
+      fact: "Carbon disulfide turns the cellulose of wood into viscose, which is spun into rayon and cast into cellophane.",
+      rows: 3,
+      cols: 1,
+      atoms: [["S", 0, 0], ["C", 1, 0], ["S", 2, 0]],
+      solution: [[0, 1, 2], [1, 2, 2]]
+    },
+    {
+      id: "chloroform",
+      name: "Chloroform",
+      formula: "CHCl3",
+      fact: "Chloroform was one of the first anaesthetics, from 1847, until safer ones replaced it.",
+      rows: 3,
+      cols: 3,
+      atoms: [["Cl", 0, 1], ["H", 1, 0], ["C", 1, 1], ["Cl", 1, 2], ["Cl", 2, 1]],
+      solution: [[0, 2, 1], [1, 2, 1], [2, 3, 1], [2, 4, 1]]
+    },
+    {
+      id: "methanethiol",
+      name: "Methanethiol",
+      formula: "CH4S",
+      fact: "Methanethiol smells of rotten cabbage, and is one of the gases behind bad breath.",
+      rows: 3,
+      cols: 3,
+      atoms: [["H", 0, 0], ["H", 0, 1], ["S", 1, 0], ["C", 1, 1], ["H", 1, 2], ["H", 2, 1]],
+      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 1], [3, 4, 1], [3, 5, 1]]
+    },
+    {
+      id: "phosgene",
+      name: "Phosgene",
+      formula: "CCl2O",
+      fact: "Phosgene was a poison gas in the First World War; today it is made on a large scale to make plastics such as polycarbonate.",
+      rows: 3,
+      cols: 2,
+      atoms: [["Cl", 0, 1], ["Cl", 1, 0], ["C", 1, 1], ["O", 2, 1]],
+      solution: [[0, 2, 1], [1, 2, 1], [2, 3, 2]]
+    },
+    {
+      id: "vinyl-chloride",
+      name: "Vinyl chloride",
+      formula: "C2H3Cl",
+      fact: "Vinyl chloride is the building block of PVC, used for pipes, window frames and cables.",
+      rows: 3,
+      cols: 2,
+      atoms: [["Cl", 0, 0], ["H", 0, 1], ["C", 1, 0], ["C", 1, 1], ["H", 2, 0], ["H", 2, 1]],
+      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 2], [2, 4, 1], [3, 5, 1]]
+    },
+    {
+      id: "tetrafluoroethylene",
+      name: "Tetrafluoroethylene",
+      formula: "C2F4",
+      fact: "Tetrafluoroethylene is the building block of PTFE, better known as Teflon, the coating of non-stick pans.",
+      rows: 3,
+      cols: 2,
+      atoms: [["F", 0, 0], ["F", 0, 1], ["C", 1, 0], ["C", 1, 1], ["F", 2, 0], ["F", 2, 1]],
+      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 2], [2, 4, 1], [3, 5, 1]]
+    },
+    {
+      id: "iodoethane",
+      name: "Iodoethane",
+      formula: "C2H5I",
+      fact: "Iodoethane slowly turns brown in the light, as it breaks down and frees iodine.",
+      rows: 3,
+      cols: 4,
+      atoms: [["H", 0, 1], ["I", 0, 2], ["H", 1, 0], ["C", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 1], ["H", 2, 2]],
+      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 7, 1]]
+    },
+    {
+      id: "halothane",
+      name: "Halothane",
+      formula: "C2HBrClF3",
+      fact: "Halothane, with three different halogens, was a widely used anaesthetic from the 1950s.",
+      rows: 3,
+      cols: 4,
+      atoms: [["F", 0, 1], ["Cl", 0, 2], ["F", 1, 0], ["C", 1, 1], ["C", 1, 2], ["H", 1, 3], ["F", 2, 1], ["Br", 2, 2]],
+      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 7, 1]]
+    },
+    // Larger and harder: each leaves at least 5 Dotted lines empty (Puzzle.05).
+    {
+      id: "lactic-acid",
+      name: "Lactic acid",
+      formula: "C3H6O3",
+      fact: "Lactic acid gives yoghurt and sourdough their sour taste, and is made in your muscles during hard exercise.",
+      rows: 6,
+      cols: 4,
+      atoms: [["O", 0, 0], ["H", 0, 1], ["O", 0, 2], ["C", 1, 0], ["C", 1, 2], ["H", 1, 3], ["O", 3, 0], ["H", 3, 1], ["C", 3, 2], ["H", 3, 3], ["H", 5, 0], ["H", 5, 2]],
+      solution: [[0, 3, 2], [1, 2, 1], [2, 4, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 8, 1], [6, 10, 1], [7, 8, 1], [8, 9, 1], [8, 11, 1]]
+    },
+    {
+      id: "ethyl-acetate",
+      name: "Ethyl acetate",
+      formula: "C4H8O2",
+      fact: "Ethyl acetate is the solvent in many nail polish removers, and part of the sweet smell of pears and wine.",
+      rows: 6,
+      cols: 4,
+      atoms: [["H", 0, 1], ["H", 0, 2], ["H", 1, 0], ["C", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 1], ["O", 2, 2], ["O", 3, 0], ["C", 3, 2], ["H", 4, 1], ["C", 4, 2], ["H", 4, 3], ["H", 5, 2]],
+      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 7, 1], [7, 9, 1], [8, 9, 2], [9, 11, 1], [10, 11, 1], [11, 12, 1], [11, 13, 1]]
+    },
+    {
+      id: "glycerol",
+      name: "Glycerol",
+      formula: "C3H8O3",
+      fact: "Glycerol is the backbone of fats and oils; it keeps soaps, creams and toothpaste moist.",
+      rows: 5,
+      cols: 4,
+      atoms: [["H", 0, 2], ["H", 1, 0], ["O", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 0], ["O", 2, 1], ["C", 2, 2], ["H", 2, 3], ["H", 3, 0], ["O", 3, 1], ["C", 3, 2], ["H", 3, 3], ["H", 4, 2]],
+      solution: [[0, 3, 1], [1, 2, 1], [2, 3, 1], [3, 4, 1], [3, 7, 1], [5, 6, 1], [6, 7, 1], [7, 8, 1], [7, 11, 1], [9, 10, 1], [10, 11, 1], [11, 12, 1], [11, 13, 1]]
+    },
+    {
+      id: "serine",
+      name: "Serine",
+      formula: "C3H7NO3",
+      fact: "Serine is the amino acid at the heart of many enzymes that cut up proteins, such as trypsin in your gut.",
+      rows: 5,
+      cols: 4,
+      atoms: [["H", 0, 1], ["N", 0, 2], ["H", 0, 3], ["O", 1, 1], ["O", 2, 0], ["C", 2, 1], ["C", 2, 2], ["H", 2, 3], ["H", 3, 0], ["H", 3, 1], ["C", 3, 2], ["O", 3, 3], ["H", 4, 2], ["H", 4, 3]],
+      solution: [[0, 1, 1], [1, 2, 1], [1, 6, 1], [3, 5, 2], [4, 5, 1], [4, 8, 1], [5, 6, 1], [6, 7, 1], [6, 10, 1], [9, 10, 1], [10, 11, 1], [10, 12, 1], [11, 13, 1]]
+    },
+    {
+      id: "cysteine",
+      name: "Cysteine",
+      formula: "C3H7NO2S",
+      fact: "Cysteine has a sulfur atom: bridges between the sulfur atoms of two cysteines hold the shape of hair and nails.",
+      rows: 5,
+      cols: 4,
+      atoms: [["H", 0, 2], ["H", 0, 3], ["H", 1, 0], ["C", 1, 2], ["S", 1, 3], ["H", 2, 0], ["N", 2, 1], ["C", 2, 2], ["H", 2, 3], ["H", 3, 1], ["H", 3, 3], ["O", 4, 0], ["C", 4, 2], ["O", 4, 3]],
+      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 7, 1], [5, 6, 1], [6, 7, 1], [6, 9, 1], [7, 8, 1], [7, 12, 1], [10, 13, 1], [11, 12, 2], [12, 13, 1]]
+    },
+    {
+      id: "threonine",
+      name: "Threonine",
+      formula: "C4H9NO3",
+      fact: "Threonine was the last of the 20 amino acids that make up proteins to be discovered, in 1935.",
+      rows: 6,
+      cols: 5,
+      atoms: [["H", 0, 3], ["H", 1, 0], ["C", 1, 3], ["H", 1, 4], ["H", 2, 1], ["H", 2, 2], ["N", 3, 1], ["C", 3, 2], ["C", 3, 3], ["H", 3, 4], ["H", 4, 0], ["H", 4, 1], ["O", 4, 3], ["H", 4, 4], ["O", 5, 0], ["C", 5, 2], ["O", 5, 3]],
+      solution: [[0, 2, 1], [1, 2, 1], [2, 3, 1], [2, 8, 1], [4, 6, 1], [5, 7, 1], [6, 7, 1], [6, 11, 1], [7, 8, 1], [7, 15, 1], [8, 9, 1], [8, 12, 1], [10, 14, 1], [12, 13, 1], [14, 15, 1], [15, 16, 2]]
+    },
+    {
+      id: "valine",
+      name: "Valine",
+      formula: "C5H11NO2",
+      fact: "In sickle cell disease, one amino acid in haemoglobin is replaced by valine, which makes red blood cells stiff and curved.",
+      rows: 6,
+      cols: 5,
+      atoms: [["H", 0, 1], ["H", 0, 4], ["H", 1, 0], ["C", 1, 1], ["H", 1, 2], ["H", 1, 3], ["O", 1, 4], ["H", 2, 0], ["C", 2, 1], ["C", 2, 3], ["C", 2, 4], ["H", 3, 0], ["C", 3, 1], ["H", 3, 2], ["O", 3, 4], ["H", 4, 1], ["H", 4, 2], ["N", 4, 3], ["H", 5, 3]],
+      solution: [[0, 3, 1], [1, 6, 1], [2, 3, 1], [3, 4, 1], [3, 8, 1], [5, 9, 1], [6, 10, 1], [7, 8, 1], [8, 9, 1], [8, 12, 1], [9, 10, 1], [9, 17, 1], [10, 14, 2], [11, 12, 1], [12, 13, 1], [12, 15, 1], [16, 17, 1], [17, 18, 1]]
     }
   ];
 
@@ -336,7 +489,12 @@ p { margin: 0; }
     H: { valence: 1 },
     C: { valence: 4 },
     N: { valence: 3 },
-    O: { valence: 2 }
+    O: { valence: 2 },
+    S: { valence: 2 },
+    F: { valence: 1 },
+    Cl: { valence: 1 },
+    Br: { valence: 1 },
+    I: { valence: 1 }
   };
   var MAX_ORDER = 3;
 
@@ -466,7 +624,7 @@ p { margin: 0; }
     const toBoard = (o) => bonds.flatMap((e, k) => o[k] ? [[e.a, e.b, o[k]]] : []);
     const board = () => toBoard(order);
     function saved() {
-      if (!order.some(Boolean) && !history.length || status().kind === "solved") return null;
+      if (!order.some(Boolean) && !history.length) return null;
       return { bonds: board(), revealed, undo: history.map(toBoard) };
     }
     return {
@@ -496,7 +654,12 @@ p { margin: 0; }
     H: { name: "Hydrogen", color: "#eef2f7", stroke: "#9aa6b8", text: "#2a2f38", r: 17 },
     C: { name: "Carbon", color: "#454b55", stroke: "#1e2228", text: "#ffffff", r: 22 },
     N: { name: "Nitrogen", color: "#3d6ef5", stroke: "#1f3f9e", text: "#ffffff", r: 22 },
-    O: { name: "Oxygen", color: "#e5443f", stroke: "#8f201d", text: "#ffffff", r: 22 }
+    O: { name: "Oxygen", color: "#e5443f", stroke: "#8f201d", text: "#ffffff", r: 22 },
+    S: { name: "Sulfur", color: "#ede04a", stroke: "#958a12", text: "#2a2f38", r: 22 },
+    F: { name: "Fluorine", color: "#a8e07a", stroke: "#5c8f33", text: "#1d2a12", r: 22 },
+    Cl: { name: "Chlorine", color: "#3cb44b", stroke: "#1e6b27", text: "#0f2412", r: 22 },
+    Br: { name: "Bromine", color: "#9e2a2b", stroke: "#561516", text: "#ffffff", r: 22 },
+    I: { name: "Iodine", color: "#7d3fa8", stroke: "#45205f", text: "#ffffff", r: 22 }
   };
 
   // src/ui/board.js
@@ -518,7 +681,8 @@ p { margin: 0; }
     const { puzzle, atoms, bonds } = game;
     const xy = (a) => [PAD + a.c * CELL, PAD + a.r * CELL];
     svg.replaceChildren();
-    svg.classList.remove("solved");
+    svg.classList.remove("solved", "pulse");
+    let wasSolved = game.status().kind === "solved";
     const width = PAD * 2 + (puzzle.cols - 1) * CELL, height = PAD * 2 + (puzzle.rows - 1) * CELL;
     svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
     svg.setAttribute("width", width * SCALE);
@@ -579,7 +743,11 @@ p { margin: 0; }
         count.textContent = left;
         g.setAttribute("aria-label", `${ELEMENTS2[a.el].name} ${place(a)}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
       });
-      svg.classList.toggle("solved", game.status().kind === "solved");
+      const solved = game.status().kind === "solved";
+      svg.classList.toggle("solved", solved);
+      if (!solved) svg.classList.remove("pulse");
+      else if (!wasSolved) svg.classList.add("pulse");
+      wasSolved = solved;
     }
     render();
     return { render };
@@ -590,7 +758,7 @@ p { margin: 0; }
     "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
     "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
     "Bonds can't cross.",
-    "Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.",
+    "Each atom needs exactly its number of bonds (orange badge): H, F, Cl, Br and I 1; O and S 2; N 3; C 4.",
     "All atoms join into one molecule. There is exactly one solution."
   ];
   var BADGES = { solved: "\u2713 Solved" };
