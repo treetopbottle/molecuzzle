@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 import { REMOVED } from "../../../src/puzzle/removed.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { solve } from "../../../src/puzzle/solver.js";
+import { createGame } from "../../../src/puzzle/game.js";
 import { schemaErrors } from "../../helpers/schemas.js";
 
 /** The Atoms of a formula, as counts per Element, so the order it is written in doesn't matter. */
@@ -22,9 +23,15 @@ describe("Puzzle.06 the removed Puzzles", () => {
     ]);
   });
 
-  test.each(REMOVED)("$name is kept as a Puzzle, with exactly one solution", p => {
+  test.each(REMOVED)("$name is kept as a Puzzle, with the Atoms of its formula and exactly one solution, its own", p => {
     expect(schemaErrors("puzzle.schema.json", p)).toEqual([]);
-    expect(solve(p.atoms.map(([el, r, c]) => ({ el, r, c })), 2)).toHaveLength(1);
+    const counts = p.atoms.reduce((m, [el]) => ({ ...m, [el]: (m[el] ?? 0) + 1 }), {});
+    expect(atomsOf(Object.entries(counts).map(([el, n]) => el + n).join(""))).toBe(atomsOf(p.formula));
+    const solutions = solve(p.atoms.map(([el, r, c]) => ({ el, r, c })), 2);
+    expect(solutions).toHaveLength(1);
+    const game = createGame(p);
+    game.showSolution();
+    expect(game.order).toEqual(solutions[0]);
   });
 
   test("no Puzzle has the id of a removed one, or a formula with the same Atoms: no Puzzle is ammonia, or NH3", () => {

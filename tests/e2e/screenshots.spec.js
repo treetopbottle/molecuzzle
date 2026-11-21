@@ -11,7 +11,7 @@ test.describe("at 1280×800", () => {
     await expect(page).toHaveScreenshot("page-start.png", { fullPage: true });
   });
 
-  test("Page.01 Puzzle 11 solved", async ({ page }) => {
+  test("Page.01 Puzzle 12 solved", async ({ page }) => {
     await start(page);
     await openPuzzle(page, 12);
     await build(page, PUZZLES[11]);
@@ -45,7 +45,7 @@ test.describe("at 1280×800", () => {
     await expect(page.locator(".panel")).toHaveScreenshot("panel-mystery.png");
   });
 
-  test("Panel.01, Panel.03 the panel of Puzzle 11, solved", async ({ page }) => {
+  test("Panel.01, Panel.03 the panel of Puzzle 12, solved", async ({ page }) => {
     await start(page);
     await openPuzzle(page, 12);
     await build(page, PUZZLES[11]);
