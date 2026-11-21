@@ -7,7 +7,7 @@ const RULES = [
   "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
   "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
   "Bonds can't cross.",
-  "Each atom needs exactly its number of bonds (orange badge): H 1, O 2, N 3, C 4.",
+  "Each atom needs exactly its number of bonds (orange badge): H, F, Cl, Br and I 1; O and S 2; N 3; C 4.",
   "All atoms join into one molecule. There is exactly one solution.",
 ];
 
