@@ -62,3 +62,10 @@ Commits reviewed: d87b6bd (step 1(a), tests) and 273a692 (step 1(b), implementat
 3. **note**: `src/ui/panel.js:10`, the text from `docs/spec/ui.md:126`. In the screenshots' sans-serif font, "Cl" reads like "CI", and "and I 1;" reads like "l 1". This is how the spec writes the rule, so it is not a defect of the step. A different order or separator, e.g. "1: H, F, Cl, Br, I", would read better if this ever bothers anyone.
 
 4. **note**: `tests/helpers/colors.js:20-23`. `inHue` is now exported and wraps past 360 (for O and Br at hue 345–15). The Design names `rgb`, `lightness`, `hue`, `isGreen` and `isOrange`, not this. It is a test helper only, and `isGreen` and `isOrange` behave as before. `tests/e2e/helpers.js:63` doesn't re-export `hue`, which the Design's "re-exports them" implies, but no e2e test uses it.
+
+## Outcome
+
+1. Fixed in 678d0d1: Sulfur is `#ede04a` (hue 55, lightness 0.61), and its test asks for hue 52–65 and lightness from 0.5. F's margin is kept: it is a light, slightly yellow green, as the finding says.
+2. Fixed in this commit: step 4(b) also checks that "Cl" and "Br" fit; the badge and glow are checked there, as planned.
+3. Kept: the text is the spec's; to change if it bothers anyone, as the finding says.
+4. Kept: a test helper, and `isGreen` and `isOrange` behave as before.
