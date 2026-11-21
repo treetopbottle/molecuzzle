@@ -26,9 +26,12 @@ if (!layout) { console.error("no unique layout found"); process.exit(2); }
 
 const { rows, cols, atoms, solution } = layout;
 const unused = candidateBonds(atoms.map(([el, r, c]) => ({ el, r, c }))).length - solution.length;
+// With a two-letter symbol, every point is two characters wide, as in the
+// spec's drawings: a one-letter symbol, or · for no Atom, is padded.
+const width = Math.max(...atoms.map(([el]) => el.length));
 const grid = Array.from({ length: rows }, () => Array(cols).fill("·"));
 for (const [el, r, c] of atoms) grid[r][c] = el;
-console.log(grid.map(row => "  // " + row.join(" ")).join("\n"));
+console.log(grid.map(row => ("  // " + row.map(p => p.padEnd(width)).join(" ")).trimEnd()).join("\n"));
 console.log(`  rows: ${rows}, cols: ${cols}, // ${unused} unused candidate bonds`);
 console.log(`  atoms: [${atoms.map(a => JSON.stringify(a)).join(",")}],`);
 console.log(`  solution: [${solution.map(x => `[${x}]`).join(",")}],`);

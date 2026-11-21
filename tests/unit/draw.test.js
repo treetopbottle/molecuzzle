@@ -1,0 +1,49 @@
+// The Boards drawn as text, as the spec's README draws them.
+import { expect, test } from "vitest";
+import { createGame } from "../../src/puzzle/game.js";
+import { PUZZLES } from "../../src/puzzle/puzzles.js";
+import { draw } from "../helpers/draw.js";
+
+const solved = puzzle => {
+  const game = createGame(puzzle);
+  game.showSolution();
+  return game;
+};
+
+test("a Board with only one-letter symbols: Glycine, with no Bonds and solved", () => {
+  const glycine = PUZZLES.find(p => p.id === "glycine");
+  expect(draw(createGame(glycine))).toBe(`
+  O·C·O·H
+  · · · ·
+H···C···H
+  · · ·
+  · · ·
+  · · ·
+  H·N·H
+`);
+  expect(draw(solved(glycine))).toBe(`
+  O═C─O─H
+  · │ · ·
+H───C───H
+  · │ ·
+  · │ ·
+  · │ ·
+  H─N─H
+`);
+});
+
+test("a Board with a two-letter symbol: Chloroform, solved", () => {
+  const chloroform = {
+    id: "chloroform", name: "Chloroform", formula: "CHCl3", fact: "",
+    rows: 3, cols: 3,
+    atoms: [["Cl", 0, 1], ["H", 1, 0], ["C", 1, 1], ["Cl", 1, 2], ["Cl", 2, 1]],
+    solution: [[0, 2, 1], [1, 2, 1], [2, 3, 1], [2, 4, 1]],
+  };
+  expect(draw(solved(chloroform))).toBe(`
+   Cl
+   │
+H──C──Cl
+   │
+   Cl
+`);
+});

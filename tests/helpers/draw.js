@@ -3,17 +3,21 @@
 //   H─O     Atoms by Element; a space where there's none
 //     │     Bonds: ─ │ single, ═ ║ double, ≡ ⦀ triple
 //   H·N     · a dotted line (no Bond yet)
+//
+// With a two-letter symbol on the Board, every Grid point is two characters
+// wide, a one-letter symbol in its first, and the columns are three apart.
 export function draw(game) {
   const { puzzle, atoms, bonds } = game, order = game.order;
-  const W = puzzle.cols * 2 - 1, H = puzzle.rows * 2 - 1;
+  const width = atoms.some(a => a.el.length > 1) ? 2 : 1, step = width + 1;
+  const W = (puzzle.cols - 1) * step + width, H = puzzle.rows * 2 - 1;
   const grid = Array.from({ length: H }, () => Array(W).fill(" "));
   bonds.forEach((e, k) => {
     const A = atoms[e.a], B = atoms[e.b], o = order[k];
     const ch = e.horizontal ? " ─═≡"[o] : " │║⦀"[o];
-    if (e.horizontal) for (let x = A.c * 2 + 1; x < B.c * 2; x++) grid[A.r * 2][x] = o ? ch : "·";
-    else for (let y = A.r * 2 + 1; y < B.r * 2; y++) grid[y][A.c * 2] = o ? ch : "·";
+    if (e.horizontal) for (let x = A.c * step + A.el.length; x < B.c * step; x++) grid[A.r * 2][x] = o ? ch : "·";
+    else for (let y = A.r * 2 + 1; y < B.r * 2; y++) grid[y][A.c * step] = o ? ch : "·";
   });
-  atoms.forEach(a => (grid[a.r * 2][a.c * 2] = a.el));
+  atoms.forEach(a => [...a.el].forEach((ch, i) => (grid[a.r * 2][a.c * step + i] = ch)));
   return "\n" + grid.map(row => row.join("").trimEnd()).join("\n") + "\n";
 }
 

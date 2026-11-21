@@ -14,6 +14,17 @@ test("Generate.01 the script prints the layout of water", () => {
   expect(stdout).toContain("solution: [[0,1,1],[1,2,1]],");
 });
 
+test("the script draws the layout, every point two characters wide with a two-letter symbol", () => {
+  const { stdout, status } = run("C1-H1 C1-H2 C1-H3 C1-Cl1", "200", "3", "3", "1");
+  expect(status).toBe(0);
+  expect(stdout).toContain('atoms: [["H",0,1],["H",1,0],["C",1,1],["H",1,2],["Cl",2,1]],');
+  expect(stdout.split("\n").slice(0, 3)).toEqual([
+    "  // ·  H  ·",
+    "  // H  C  H",
+    "  // ·  Cl ·",
+  ]);
+});
+
 test("Generate.02 the script stops at a Bond it can't read", () => {
   const { stderr, status } = run("H1-O1 O1~H2");
   expect(stderr.trim()).toBe("can't read O1~H2");
