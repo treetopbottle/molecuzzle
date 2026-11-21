@@ -12,7 +12,7 @@ test("Generate.01 the script prints the layout of Acetonitrile, its Atoms with t
   expect(stdout).toContain("rows: 3, cols: 1,");
   expect(stdout).toContain('atoms: [["C",0,0,3],["C",1,0,0],["N",2,0,0]],');
   expect(stdout).toContain("solution: [[0,1,1],[1,2,3]],");
-  expect(stdout).toContain("rows: 3, cols: 1, // difficulty 2: 2 Dotted lines, 0 empty");
+  expect(stdout).toContain("rows: 3, cols: 1, // difficulty 2: 2 Dotted lines, 0 loops");
 });
 
 test("the script draws the layout with the Atoms' labels, every point as wide as the longest", () => {
