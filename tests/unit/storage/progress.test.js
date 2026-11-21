@@ -27,6 +27,18 @@ describe("Progress", () => {
     expect(load(storage)).toEqual({ puzzles: { water: "solved" }, current: "formaldehyde" });
   });
 
+  test("Progress.03 kept under the key molecuzzle-v3", () => {
+    const storage = memoryStorage();
+    createProgressStore(storage).update(progress => markSolved(progress, "acetonitrile"));
+    expect(STORAGE_KEY).toBe("molecuzzle-v3");
+    expect(Object.keys(storage.data)).toEqual(["molecuzzle-v3"]);
+  });
+
+  test("Progress.03 what is stored under molecuzzle-v2, for the Puzzles with their hydrogens on the Grid, isn't read", () => {
+    const storage = memoryStorage({ "molecuzzle-v2": '{"puzzles":{"water":"solved"},"current":"glycine","boards":{"glycine":{"bonds":[[0,1,1]],"revealed":false,"undo":[[]]}}}' });
+    expect(load(storage)).toEqual({ puzzles: {}, current: null });
+  });
+
   test("Progress.01 a Puzzle marked solved stays solved", () => {
     const progress = markSolved({ puzzles: {}, current: "water" }, "water");
     expect(progress).toEqual({ puzzles: { water: "solved" }, current: "water" });
