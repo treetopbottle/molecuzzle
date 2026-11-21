@@ -63,3 +63,21 @@ The index lists every entry, 0001–0013 and 0015, once each, under a fitting ca
 - 0008: `puzzles.test.js` checks one solution, the one shown.
 - 0009: `scripts/publish-pages.sh`.
 - 0012: Ajv checks Puzzles, `game.board()` and stored Progress; the hand check in `progress.js` is tested against the schema.
+
+## Outcome
+
+1. Fixed in 29f5478: an older build, such as an old branch build.
+2. Fixed in 29f5478: "and in CI" is gone.
+3. Fixed in 29f5478: the failing checks are those of `npm run check`, and any added to it later.
+4. Fixed in 29f5478: decision 0016.
+5. Fixed in 29f5478: the README calls it the browser for the end-to-end tests.
+6. Fixed in 29f5478: 0013 keeps the choice and leaves the settings and commands to the config and the README.
+7. Fixed in 29f5478: `npm run check` needs Podman or Docker too, as it checks the screenshots.
+8. Fixed in 29f5478: decisions can be partly superseded, and 0004 is, by 0015.
+9. Fixed in 29f5478: the rule allows a correction that keeps the choice in place, as for 0007 and 0011.
+10. Fixed in 29f5478: the intro says there is no 0014.
+11. Fixed in 29f5478: up to 101 Boards, and a full storage keeps no newer change.
+12. Fixed in 29f5478: 0011's cost names what is written in two components. The JSDoc type in `board.js` is kept: it isn't an import, and gives the editor the game's type.
+13. Fixed in 29f5478: `index.html` and `style.css` are under UI; the Glue section describes `browser.js` and `app.js`.
+14. Kept: running `npm run check` before every push is stricter than 0010 asks, and a push to `main` is published at once.
+15. Kept: the solved Puzzles get their decision in plan 03; production gets one when its slice is planned.
