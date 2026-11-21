@@ -75,4 +75,4 @@ Commits reviewed: 8a5942c and ab99173 (tests, 2(a)) and 9fa5edf (implementation 
 4. Kept: the test checks what its name says, and is more robust, as the finding says.
 5. Kept: the page scrolls on a computer too; no rule forbids it, and the Board and its status line stay in view.
 
-A Puzzle's layout and a screenshot test changed. The tests pass; the second review is the decisions review that finishes the plan, which reads this too.
+A Puzzle's layout and a screenshot test changed, so the fixes have a [second review](review-step-2-2.md).
