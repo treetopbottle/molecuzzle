@@ -22,3 +22,11 @@ Commits reviewed: 4e28322 (tests, step 3(a)) and b245f9a (implementation, step 3
 1. **should fix**: tests/unit/puzzle/generate.test.js:24-25 and tests/unit/puzzle/generate-script.test.js:45. Every new case has the unknown Element in the second label (`H1-Xx1`, `H1-constructor1`). A mutation of line 29 that checks only `y` would pass every test, though Generate.02 covers any Atom of the Bond. Add a case with the unknown Element first, e.g. `findLayout("Xx1-H1")`.
 2. **note**: tests/unit/puzzle/generate.test.js:25. At 4e28322 the `constructor1` assertion is never reached, because the `Xx1` assertion before it fails first. So nothing shows it failing without the fix. It does catch the mutations it is there for: with `in` or `ELEMENTS[…]` instead of `Object.hasOwn`, `constructor` passes the check and `findLayout` doesn't throw `can't read`. This is fine as it is.
 3. **note**: src/puzzle/generate.js:67, outside this step. Bonds that don't connect into one Molecule, such as `H1-O1 H2-H3`, still end in a `TypeError` (`pos.get(i)` is undefined), not in a message. Generate.02 doesn't cover this, since every Bond can be read. It is a possible backlog item, not something for this step.
+
+## Outcome
+
+1. Fixed in d06bb27: `Xx1-H1` is tested too.
+2. Kept: fine as it is, as the finding says.
+3. Kept: outside Generate.02; moved to the backlog when the plan finishes.
+
+Only a test changed, and it passes, so there is no second review.
