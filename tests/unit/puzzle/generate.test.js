@@ -22,6 +22,7 @@ test("Generate.02 a Bond it can't read stops it", () => {
 
 test("Generate.02 a Bond with an Element the game doesn't have stops it", () => {
   expect(() => findLayout("H1-Xx1")).toThrow("can't read H1-Xx1");
+  expect(() => findLayout("Xx1-H1")).toThrow("can't read Xx1-H1");
   expect(() => findLayout("H1-constructor1")).toThrow("can't read H1-constructor1");
 });
 
