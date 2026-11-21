@@ -11,7 +11,7 @@
 const SUBSCRIPTS = "₀₁₂₃₄₅₆₇₈₉";
 
 /** An Atom as in a formula: CH₂, OH, C. */
-export const label = a => a.el + (a.h ? "H" + (a.h > 1 ? SUBSCRIPTS[a.h] : "") : "");
+const label = a => a.el + (a.h ? "H" + (a.h > 1 ? SUBSCRIPTS[a.h] : "") : "");
 
 export function draw(game) {
   const { puzzle, atoms, bonds } = game, order = game.order;
