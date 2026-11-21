@@ -58,6 +58,9 @@ p { margin: 0; }
 .atom .body { stroke-width: 2; transition: filter .2s; }
 .atom .shine { fill: #fff; opacity: .22; }
 .atom .sym { font-weight: 700; font-size: 16px; }
+.atom .fixed { stroke: rgba(201,211,230,.55); stroke-width: 1.6; }
+.atom .hydrogen circle { stroke-width: 1.2; }
+.atom .hydrogen text { font-size: 9px; font-weight: 700; }
 .atom.ok .body { filter: drop-shadow(0 0 5px rgba(60,224,180,.8)); }
 .atom .badge circle { fill: var(--warn); stroke: #3a2600; }
 .atom .badge text { font-size: 11px; font-weight: 700; fill: #3a2600; }
@@ -96,7 +99,7 @@ p { margin: 0; }
 <script>
 (() => {
   // src/storage/progress.js
-  var STORAGE_KEY = "molecuzzle-v2";
+  var STORAGE_KEY = "molecuzzle-v3";
   var UNDO_MAX = 100;
   var isObject = (x) => typeof x === "object" && x !== null && !Array.isArray(x);
   var isIndex = (x) => Number.isInteger(x) && x >= 0;
@@ -200,44 +203,14 @@ p { margin: 0; }
   // src/puzzle/puzzles.js
   var PUZZLES = [
     {
-      id: "water",
-      name: "Water",
-      formula: "H2O",
-      fact: "About 60% of your body is water. Its bent shape makes it polar, so it dissolves many substances.",
-      rows: 2,
-      cols: 2,
-      atoms: [["H", 0, 0], ["O", 0, 1], ["H", 1, 1]],
-      solution: [[0, 1, 1], [1, 2, 1]]
-    },
-    {
-      id: "hydrogen-cyanide",
-      name: "Hydrogen cyanide",
-      formula: "HCN",
-      fact: "Hydrogen cyanide is very poisonous, and has been found in space, including in the tails of comets.",
-      rows: 1,
-      cols: 3,
-      atoms: [["H", 0, 0], ["C", 0, 1], ["N", 0, 2]],
+      id: "acetonitrile",
+      name: "Acetonitrile",
+      formula: "C2H3N",
+      fact: "Acetonitrile has been found around young stars and in comets; on Earth it is a common solvent in labs.",
+      rows: 3,
+      cols: 1,
+      atoms: [["C", 0, 0, 3], ["C", 1, 0, 0], ["N", 2, 0, 0]],
       solution: [[0, 1, 1], [1, 2, 3]]
-    },
-    {
-      id: "formaldehyde",
-      name: "Formaldehyde",
-      formula: "CH2O",
-      fact: "Dissolved in water as formalin, formaldehyde has long been used to preserve biological specimens.",
-      rows: 3,
-      cols: 2,
-      atoms: [["H", 0, 0], ["C", 1, 0], ["H", 1, 1], ["O", 2, 0]],
-      solution: [[0, 1, 1], [1, 2, 1], [1, 3, 2]]
-    },
-    {
-      id: "methanol",
-      name: "Methanol",
-      formula: "CH4O",
-      fact: "Methanol is also called wood alcohol, because it was once made by heating wood. It is poisonous to drink.",
-      rows: 3,
-      cols: 3,
-      atoms: [["H", 0, 1], ["O", 1, 0], ["C", 1, 1], ["H", 1, 2], ["H", 2, 0], ["H", 2, 1]],
-      solution: [[0, 2, 1], [1, 2, 1], [1, 4, 1], [2, 3, 1], [2, 5, 1]]
     },
     {
       id: "acetic-acid",
@@ -245,159 +218,139 @@ p { margin: 0; }
       formula: "C2H4O2",
       fact: "Vinegar is acetic acid in water, about 4 to 8% of it.",
       rows: 3,
-      cols: 5,
-      atoms: [["H", 0, 0], ["O", 0, 1], ["C", 0, 2], ["O", 0, 4], ["H", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 2]],
-      solution: [[0, 1, 1], [1, 2, 1], [2, 3, 2], [2, 5, 1], [4, 5, 1], [5, 6, 1], [5, 7, 1]]
-    },
-    {
-      id: "ethylene",
-      name: "Ethylene",
-      formula: "C2H4",
-      fact: "Ethylene is a plant hormone: ripe bananas give it off, which makes fruit nearby ripen faster.",
-      rows: 3,
       cols: 2,
-      atoms: [["H", 0, 0], ["H", 0, 1], ["C", 1, 0], ["C", 1, 1], ["H", 2, 0], ["H", 2, 1]],
-      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 2], [2, 4, 1], [3, 5, 1]]
-    },
-    {
-      id: "acrylonitrile",
-      name: "Acrylonitrile",
-      formula: "C3H3N",
-      fact: "Acrylonitrile is the building block of acrylic fibres, used in sweaters and blankets.",
-      rows: 4,
-      cols: 2,
-      atoms: [["N", 0, 1], ["H", 1, 0], ["C", 1, 1], ["C", 2, 0], ["C", 2, 1], ["H", 3, 0], ["H", 3, 1]],
-      solution: [[0, 2, 3], [1, 3, 1], [2, 4, 1], [3, 4, 2], [3, 5, 1], [4, 6, 1]]
-    },
-    {
-      id: "urea",
-      name: "Urea",
-      formula: "CH4N2O",
-      fact: "In 1828 Friedrich W\xF6hler made urea from non-living materials, the first time a compound from living things was made in a lab.",
-      rows: 3,
-      cols: 4,
-      atoms: [["H", 0, 0], ["N", 0, 1], ["H", 0, 2], ["C", 1, 1], ["O", 1, 3], ["H", 2, 0], ["N", 2, 1], ["H", 2, 2]],
-      solution: [[0, 1, 1], [1, 2, 1], [1, 3, 1], [3, 4, 2], [3, 6, 1], [5, 6, 1], [6, 7, 1]]
-    },
-    {
-      id: "halothane",
-      name: "Halothane",
-      formula: "C2HBrClF3",
-      fact: "Halothane, with three different halogens, was a widely used anaesthetic from the 1950s.",
-      rows: 3,
-      cols: 4,
-      atoms: [["F", 0, 1], ["Cl", 0, 2], ["F", 1, 0], ["C", 1, 1], ["C", 1, 2], ["H", 1, 3], ["F", 2, 1], ["Br", 2, 2]],
-      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 7, 1]]
-    },
-    {
-      id: "acetone",
-      name: "Acetone",
-      formula: "C3H6O",
-      fact: "Acetone is the solvent in many nail polish removers. Your body makes a little of it when it burns fat.",
-      rows: 5,
-      cols: 4,
-      atoms: [["H", 0, 2], ["H", 1, 1], ["C", 1, 2], ["H", 1, 3], ["O", 2, 0], ["C", 2, 2], ["H", 3, 1], ["C", 3, 2], ["H", 3, 3], ["H", 4, 2]],
-      solution: [[0, 2, 1], [1, 2, 1], [2, 3, 1], [2, 5, 1], [4, 5, 2], [5, 7, 1], [6, 7, 1], [7, 8, 1], [7, 9, 1]]
-    },
-    {
-      id: "ethanol",
-      name: "Ethanol",
-      formula: "C2H6O",
-      fact: "Ethanol is the alcohol in drinks, made by yeast from sugar. It is also mixed into petrol as a fuel.",
-      rows: 3,
-      cols: 4,
-      atoms: [["H", 0, 1], ["H", 0, 2], ["H", 1, 0], ["C", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 1], ["O", 2, 2], ["H", 2, 3]],
-      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 7, 1], [7, 8, 1]]
+      atoms: [["O", 0, 1, 0], ["C", 1, 0, 3], ["C", 1, 1, 0], ["O", 2, 1, 1]],
+      solution: [[0, 2, 2], [1, 2, 1], [2, 3, 1]]
     },
     {
       id: "glycine",
       name: "Glycine",
       formula: "C2H5NO2",
       fact: "Glycine is the simplest amino acid, one of the building blocks of proteins. Traces have even been found in samples from comets.",
-      rows: 4,
-      cols: 5,
-      atoms: [["O", 0, 1], ["C", 0, 2], ["O", 0, 3], ["H", 0, 4], ["H", 1, 0], ["C", 1, 2], ["H", 1, 4], ["H", 3, 1], ["N", 3, 2], ["H", 3, 3]],
-      solution: [[0, 1, 2], [1, 2, 1], [1, 5, 1], [2, 3, 1], [4, 5, 1], [5, 6, 1], [5, 8, 1], [7, 8, 1], [8, 9, 1]]
-    },
-    {
-      id: "lactic-acid",
-      name: "Lactic acid",
-      formula: "C3H6O3",
-      fact: "Lactic acid gives yoghurt and sourdough their sour taste, and is made in your muscles during hard exercise.",
-      rows: 6,
-      cols: 4,
-      atoms: [["O", 0, 0], ["H", 0, 1], ["O", 0, 2], ["C", 1, 0], ["C", 1, 2], ["H", 1, 3], ["O", 3, 0], ["H", 3, 1], ["C", 3, 2], ["H", 3, 3], ["H", 5, 0], ["H", 5, 2]],
-      solution: [[0, 3, 2], [1, 2, 1], [2, 4, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 8, 1], [6, 10, 1], [7, 8, 1], [8, 9, 1], [8, 11, 1]]
-    },
-    {
-      id: "ethyl-acetate",
-      name: "Ethyl acetate",
-      formula: "C4H8O2",
-      fact: "Ethyl acetate is the solvent in many nail polish removers, and part of the sweet smell of pears and wine.",
-      rows: 6,
-      cols: 4,
-      atoms: [["H", 0, 1], ["H", 0, 2], ["H", 1, 0], ["C", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 1], ["O", 2, 2], ["O", 3, 0], ["C", 3, 2], ["H", 4, 1], ["C", 4, 2], ["H", 4, 3], ["H", 5, 2]],
-      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [4, 7, 1], [7, 9, 1], [8, 9, 2], [9, 11, 1], [10, 11, 1], [11, 12, 1], [11, 13, 1]]
-    },
-    {
-      id: "alanine",
-      name: "Alanine",
-      formula: "C3H7NO2",
-      fact: "Alanine is one of the 20 amino acids that make up proteins. Silk is rich in it.",
-      rows: 4,
-      cols: 4,
-      atoms: [["H", 0, 0], ["N", 0, 1], ["H", 0, 2], ["O", 0, 3], ["H", 1, 0], ["C", 1, 1], ["C", 1, 3], ["H", 2, 0], ["C", 2, 1], ["H", 2, 2], ["O", 2, 3], ["H", 3, 1], ["H", 3, 3]],
-      solution: [[0, 1, 1], [1, 2, 1], [1, 5, 1], [3, 6, 2], [4, 5, 1], [5, 6, 1], [5, 8, 1], [6, 10, 1], [7, 8, 1], [8, 9, 1], [8, 11, 1], [10, 12, 1]]
+      rows: 3,
+      cols: 2,
+      atoms: [["O", 0, 0, 1], ["N", 0, 1, 2], ["C", 1, 0, 0], ["C", 1, 1, 2], ["O", 2, 0, 0]],
+      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 1], [2, 4, 2]]
     },
     {
       id: "glycerol",
       name: "Glycerol",
       formula: "C3H8O3",
       fact: "Glycerol is the backbone of fats and oils; it keeps soaps, creams and toothpaste moist.",
-      rows: 5,
-      cols: 4,
-      atoms: [["H", 0, 2], ["H", 1, 0], ["O", 1, 1], ["C", 1, 2], ["H", 1, 3], ["H", 2, 0], ["O", 2, 1], ["C", 2, 2], ["H", 2, 3], ["H", 3, 0], ["O", 3, 1], ["C", 3, 2], ["H", 3, 3], ["H", 4, 2]],
-      solution: [[0, 3, 1], [1, 2, 1], [2, 3, 1], [3, 4, 1], [3, 7, 1], [5, 6, 1], [6, 7, 1], [7, 8, 1], [7, 11, 1], [9, 10, 1], [10, 11, 1], [11, 12, 1], [11, 13, 1]]
+      rows: 3,
+      cols: 2,
+      atoms: [["O", 0, 0, 1], ["C", 0, 1, 2], ["C", 1, 0, 2], ["C", 1, 1, 1], ["O", 2, 0, 1], ["O", 2, 1, 1]],
+      solution: [[0, 1, 1], [1, 3, 1], [2, 3, 1], [2, 4, 1], [3, 5, 1]]
+    },
+    {
+      id: "morpholine",
+      name: "Morpholine",
+      formula: "C4H9NO",
+      fact: "A little morpholine in the water of power-station boilers keeps their steam pipes from rusting.",
+      rows: 3,
+      cols: 2,
+      atoms: [["N", 0, 0, 1], ["C", 0, 1, 2], ["C", 1, 0, 2], ["C", 1, 1, 2], ["C", 2, 0, 2], ["O", 2, 1, 0]],
+      solution: [[0, 1, 1], [0, 2, 1], [1, 3, 1], [2, 4, 1], [3, 5, 1], [4, 5, 1]]
+    },
+    {
+      id: "cyclohexene",
+      name: "Cyclohexene",
+      formula: "C6H10",
+      fact: "Shaken with orange bromine water, cyclohexene turns it clear: the classic test for a carbon\u2013carbon double bond.",
+      rows: 3,
+      cols: 2,
+      atoms: [["C", 0, 0, 2], ["C", 0, 1, 2], ["C", 1, 0, 2], ["C", 1, 1, 2], ["C", 2, 0, 1], ["C", 2, 1, 1]],
+      solution: [[0, 1, 1], [0, 2, 1], [1, 3, 1], [2, 4, 1], [3, 5, 1], [4, 5, 2]]
     },
     {
       id: "serine",
       name: "Serine",
       formula: "C3H7NO3",
       fact: "Serine is the amino acid at the heart of many enzymes that cut up proteins, such as trypsin in your gut.",
+      rows: 4,
+      cols: 2,
+      atoms: [["N", 0, 0, 2], ["O", 0, 1, 1], ["C", 1, 0, 1], ["C", 1, 1, 2], ["C", 2, 0, 0], ["O", 2, 1, 1], ["O", 3, 0, 0]],
+      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 1], [2, 4, 1], [4, 5, 1], [4, 6, 2]]
+    },
+    {
+      id: "cyclohexanol",
+      name: "Cyclohexanol",
+      formula: "C6H12O",
+      fact: "Most cyclohexanol is turned into adipic acid, one of the two building blocks of nylon 6,6.",
+      rows: 4,
+      cols: 2,
+      atoms: [["C", 0, 0, 2], ["C", 0, 1, 2], ["C", 1, 0, 2], ["C", 1, 1, 2], ["C", 2, 0, 2], ["C", 2, 1, 1], ["O", 3, 1, 1]],
+      solution: [[0, 1, 1], [0, 2, 1], [1, 3, 1], [2, 4, 1], [3, 5, 1], [4, 5, 1], [5, 6, 1]]
+    },
+    {
+      id: "cyclohexane-1-4-dione",
+      name: "Cyclohexane-1,4-dione",
+      formula: "C6H8O2",
+      fact: "Cyclohexane-1,4-dione is benzoquinone with hydrogens in place of its two C=C double bonds.",
       rows: 5,
+      cols: 2,
+      atoms: [["O", 0, 1, 0], ["C", 1, 0, 2], ["C", 1, 1, 0], ["C", 2, 0, 2], ["C", 2, 1, 2], ["C", 3, 0, 0], ["C", 3, 1, 2], ["O", 4, 0, 0]],
+      solution: [[0, 2, 2], [1, 2, 1], [1, 3, 1], [2, 4, 1], [3, 5, 1], [4, 6, 1], [5, 6, 1], [5, 7, 2]]
+    },
+    {
+      id: "1-4-benzoquinone",
+      name: "1,4-Benzoquinone",
+      formula: "C6H4O2",
+      fact: "Bombardier beetles spray a boiling mix of benzoquinones at their attackers.",
+      rows: 3,
       cols: 4,
-      atoms: [["H", 0, 1], ["N", 0, 2], ["H", 0, 3], ["O", 1, 1], ["O", 2, 0], ["C", 2, 1], ["C", 2, 2], ["H", 2, 3], ["H", 3, 0], ["H", 3, 1], ["C", 3, 2], ["O", 3, 3], ["H", 4, 2], ["H", 4, 3]],
-      solution: [[0, 1, 1], [1, 2, 1], [1, 6, 1], [3, 5, 2], [4, 5, 1], [4, 8, 1], [5, 6, 1], [6, 7, 1], [6, 10, 1], [9, 10, 1], [10, 11, 1], [10, 12, 1], [11, 13, 1]]
+      atoms: [["C", 0, 1, 1], ["C", 0, 2, 1], ["O", 1, 0, 0], ["C", 1, 1, 0], ["C", 1, 2, 0], ["O", 1, 3, 0], ["C", 2, 1, 1], ["C", 2, 2, 1]],
+      solution: [[0, 1, 2], [0, 3, 1], [1, 4, 1], [2, 3, 2], [3, 6, 1], [4, 5, 2], [4, 7, 1], [6, 7, 2]]
     },
     {
-      id: "cysteine",
-      name: "Cysteine",
-      formula: "C3H7NO2S",
-      fact: "Cysteine has a sulfur atom: bridges between the sulfur atoms of two cysteines hold the shape of hair and nails.",
-      rows: 5,
+      id: "malic-acid",
+      name: "Malic acid",
+      formula: "C4H6O5",
+      fact: "Malic acid makes green apples sour; its name comes from malum, Latin for apple.",
+      rows: 3,
       cols: 4,
-      atoms: [["H", 0, 2], ["H", 0, 3], ["H", 1, 0], ["C", 1, 2], ["S", 1, 3], ["H", 2, 0], ["N", 2, 1], ["C", 2, 2], ["H", 2, 3], ["H", 3, 1], ["H", 3, 3], ["O", 4, 0], ["C", 4, 2], ["O", 4, 3]],
-      solution: [[0, 3, 1], [1, 4, 1], [2, 3, 1], [3, 4, 1], [3, 7, 1], [5, 6, 1], [6, 7, 1], [6, 9, 1], [7, 8, 1], [7, 12, 1], [10, 13, 1], [11, 12, 2], [12, 13, 1]]
+      atoms: [["O", 0, 1, 0], ["C", 0, 2, 0], ["O", 0, 3, 1], ["O", 1, 1, 1], ["C", 1, 2, 2], ["O", 2, 0, 0], ["C", 2, 1, 0], ["C", 2, 2, 1], ["O", 2, 3, 1]],
+      solution: [[0, 1, 2], [1, 2, 1], [1, 4, 1], [3, 6, 1], [4, 7, 1], [5, 6, 2], [6, 7, 1], [7, 8, 1]]
     },
     {
-      id: "threonine",
-      name: "Threonine",
-      formula: "C4H9NO3",
-      fact: "Threonine was the last of the 20 amino acids that make up proteins to be discovered, in 1935.",
-      rows: 6,
-      cols: 5,
-      atoms: [["H", 0, 3], ["H", 1, 0], ["C", 1, 3], ["H", 1, 4], ["H", 2, 1], ["H", 2, 2], ["N", 3, 1], ["C", 3, 2], ["C", 3, 3], ["H", 3, 4], ["H", 4, 0], ["H", 4, 1], ["O", 4, 3], ["H", 4, 4], ["O", 5, 0], ["C", 5, 2], ["O", 5, 3]],
-      solution: [[0, 2, 1], [1, 2, 1], [2, 3, 1], [2, 8, 1], [4, 6, 1], [5, 7, 1], [6, 7, 1], [6, 11, 1], [7, 8, 1], [7, 15, 1], [8, 9, 1], [8, 12, 1], [10, 14, 1], [12, 13, 1], [14, 15, 1], [15, 16, 2]]
+      id: "tartaric-acid",
+      name: "Tartaric acid",
+      formula: "C4H6O6",
+      fact: "Tartaric acid comes from grapes. In 1848 Louis Pasteur sorted crystals of one of its salts by hand, and found that molecules can be left- or right-handed.",
+      rows: 3,
+      cols: 4,
+      atoms: [["O", 0, 1, 1], ["O", 0, 2, 1], ["O", 0, 3, 1], ["C", 1, 1, 1], ["C", 1, 2, 1], ["C", 1, 3, 0], ["O", 2, 0, 0], ["C", 2, 1, 0], ["O", 2, 2, 1], ["O", 2, 3, 0]],
+      solution: [[0, 3, 1], [1, 4, 1], [2, 5, 1], [3, 4, 1], [3, 7, 1], [4, 5, 1], [5, 9, 2], [6, 7, 2], [7, 8, 1]]
     },
     {
-      id: "valine",
-      name: "Valine",
-      formula: "C5H11NO2",
-      fact: "In sickle cell disease, one amino acid in haemoglobin is replaced by valine, which makes red blood cells stiff and curved.",
-      rows: 6,
+      id: "glutamic-acid",
+      name: "Glutamic acid",
+      formula: "C5H9NO4",
+      fact: "Glutamic acid gives food its savoury umami taste; its sodium salt is MSG.",
+      rows: 4,
+      cols: 3,
+      atoms: [["N", 0, 0, 2], ["O", 0, 1, 1], ["C", 1, 0, 1], ["C", 1, 1, 0], ["O", 1, 2, 0], ["C", 2, 0, 2], ["C", 2, 1, 2], ["O", 3, 0, 1], ["C", 3, 1, 0], ["O", 3, 2, 0]],
+      solution: [[0, 2, 1], [1, 3, 1], [2, 3, 1], [2, 5, 1], [3, 4, 2], [5, 6, 1], [6, 8, 1], [7, 8, 1], [8, 9, 2]]
+    },
+    {
+      id: "glucose",
+      name: "Glucose",
+      formula: "C6H12O6",
+      fact: "Glucose is the sugar your cells run on; in water most of it curls up into this ring of five carbons and an oxygen.",
+      rows: 3,
       cols: 5,
-      atoms: [["H", 0, 1], ["H", 0, 4], ["H", 1, 0], ["C", 1, 1], ["H", 1, 2], ["H", 1, 3], ["O", 1, 4], ["H", 2, 0], ["C", 2, 1], ["C", 2, 3], ["C", 2, 4], ["H", 3, 0], ["C", 3, 1], ["H", 3, 2], ["O", 3, 4], ["H", 4, 1], ["H", 4, 2], ["N", 4, 3], ["H", 5, 3]],
-      solution: [[0, 3, 1], [1, 6, 1], [2, 3, 1], [3, 4, 1], [3, 8, 1], [5, 9, 1], [6, 10, 1], [7, 8, 1], [8, 9, 1], [8, 12, 1], [9, 10, 1], [9, 17, 1], [10, 14, 2], [11, 12, 1], [12, 13, 1], [12, 15, 1], [16, 17, 1], [17, 18, 1]]
+      atoms: [["O", 0, 0, 1], ["C", 0, 1, 1], ["C", 0, 2, 1], ["O", 0, 3, 1], ["O", 1, 0, 1], ["C", 1, 1, 1], ["C", 1, 2, 1], ["O", 1, 3, 1], ["O", 2, 1, 0], ["C", 2, 2, 1], ["C", 2, 3, 2], ["O", 2, 4, 1]],
+      solution: [[0, 1, 1], [1, 2, 1], [1, 5, 1], [2, 3, 1], [2, 6, 1], [4, 5, 1], [5, 8, 1], [6, 7, 1], [6, 9, 1], [8, 9, 1], [9, 10, 1], [10, 11, 1]]
+    },
+    {
+      id: "citric-acid",
+      name: "Citric acid",
+      formula: "C6H8O7",
+      fact: "Citric acid makes lemons sour, and is at the heart of the cycle in which your cells burn food for energy.",
+      rows: 6,
+      cols: 3,
+      atoms: [["O", 0, 0, 0], ["O", 0, 1, 1], ["C", 1, 1, 0], ["O", 1, 2, 0], ["C", 2, 1, 2], ["C", 3, 0, 0], ["C", 3, 1, 0], ["O", 3, 2, 1], ["O", 4, 0, 1], ["C", 4, 1, 2], ["O", 5, 0, 0], ["C", 5, 1, 0], ["O", 5, 2, 1]],
+      solution: [[0, 5, 2], [1, 2, 1], [2, 3, 2], [2, 4, 1], [4, 6, 1], [5, 6, 1], [5, 8, 1], [6, 7, 1], [6, 9, 1], [9, 11, 1], [10, 11, 2], [11, 12, 1]]
     }
   ];
 
@@ -455,7 +408,8 @@ p { margin: 0; }
   // src/puzzle/game.js
   var UNDO_LIMIT = 100;
   function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
-    const atoms = puzzle.atoms.map(([el2, r, c]) => ({ el: el2, r, c }));
+    const atoms = puzzle.atoms.map(([el2, r, c, h = 0]) => ({ el: el2, r, c, h }));
+    const room = (i) => ELEMENTS[atoms[i].el].valence - atoms[i].h;
     const bonds = candidateBonds(atoms);
     const empty = () => bonds.map(() => 0);
     const bondCount = (i, o) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? o[k] : 0), 0);
@@ -468,7 +422,7 @@ p { margin: 0; }
         if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
         o[k] = n;
       }
-      if (atoms.some((atom, i) => bondCount(i, o) > ELEMENTS[atom.el].valence)) return null;
+      if (atoms.some((_, i) => bondCount(i, o) > room(i))) return null;
       if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
       return o;
     }
@@ -483,7 +437,7 @@ p { margin: 0; }
         revealed = shown === true && order.some(Boolean);
       }
     }
-    const remaining = (i) => ELEMENTS[atoms[i].el].valence - bondCount(i, order);
+    const remaining = (i) => room(i) - bondCount(i, order);
     function status() {
       const open = atoms.filter((_, i) => remaining(i) > 0).length;
       if (!order.some(Boolean)) return { kind: "empty" };
@@ -587,6 +541,9 @@ p { margin: 0; }
   var HIT = 22;
   var ORDER_NAMES = ["no bond", "single bond", "double bond", "triple bond"];
   var OFFSETS = [[], [0], [-4.5, 4.5], [-8, 0, 8]];
+  var HYDROGENS = [[-1, 1], [1, 1], [-1, -1]];
+  var H_R = 8.5;
+  var H_AT = 28;
   function el(tag, attrs, parent) {
     const e = parent.ownerDocument.createElementNS(SVGNS, tag);
     for (const k in attrs) e.setAttribute(k, attrs[k]);
@@ -632,6 +589,12 @@ p { margin: 0; }
     const atomEls = atoms.map((a) => {
       const E = ELEMENTS2[a.el], [x, y] = xy(a);
       const g = el("g", { class: "atom", role: "img", transform: `translate(${x},${y})` }, atomsLayer);
+      for (const [dx, dy] of HYDROGENS.slice(0, a.h)) {
+        el("line", { class: "fixed", x1: dx * E.r * 0.7, y1: dy * E.r * 0.7, x2: dx * (H_AT - 3), y2: dy * (H_AT - 3) }, g);
+        const h = el("g", { class: "hydrogen", transform: `translate(${dx * H_AT},${dy * H_AT})` }, g);
+        el("circle", { r: H_R, fill: ELEMENTS2.H.color, stroke: ELEMENTS2.H.stroke }, h);
+        el("text", { "text-anchor": "middle", "dominant-baseline": "central", fill: ELEMENTS2.H.text, y: 0.5 }, h).textContent = "H";
+      }
       el("circle", { class: "body", r: E.r, fill: E.color, stroke: E.stroke }, g);
       el("circle", { class: "shine", r: E.r * 0.42, cx: -E.r * 0.32, cy: -E.r * 0.36 }, g);
       const t = el("text", { class: "sym", "text-anchor": "middle", "dominant-baseline": "central", fill: E.text, y: 1 }, g);
@@ -658,7 +621,8 @@ p { margin: 0; }
         const left = game.remaining(i), { g, count } = atomEls[i];
         g.classList.toggle("ok", left === 0);
         count.textContent = left;
-        g.setAttribute("aria-label", `${ELEMENTS2[a.el].name} ${place(a)}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
+        const hydrogens = a.h ? `, with ${a.h} hydrogen${a.h > 1 ? "s" : ""}` : "";
+        g.setAttribute("aria-label", `${ELEMENTS2[a.el].name} ${place(a)}${hydrogens}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
       });
       const solved = game.status().kind === "solved";
       svg.classList.toggle("solved", solved);
@@ -675,7 +639,7 @@ p { margin: 0; }
     "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
     "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
     "Bonds can't cross.",
-    "Each atom needs exactly its number of bonds (orange badge): H, F, Cl, Br and I 1; O and S 2; N 3; C 4.",
+    "Each atom needs exactly its number of bonds: C\xA04, N\xA03, O and S\xA02, F, Cl, Br and I\xA01. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs.",
     "All atoms join into one molecule. There is exactly one solution."
   ];
   var BADGES = { solved: "\u2713 Solved" };
