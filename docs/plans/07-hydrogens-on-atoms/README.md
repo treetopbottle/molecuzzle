@@ -8,7 +8,7 @@ The hydrogens leave the Grid: each Atom has its hydrogens bonded from the start,
 
 Covers:
 
-- Puzzle: Puzzle.07 (new: hydrogens on their Atom), Valence.01 (an Atom needs its valence minus its hydrogens), Puzzle.03 (more Bonds than its valence minus its hydrogens), Generate.01 and Generate.02 (labels with hydrogens), Puzzle.05 (difficulty counts loops), Puzzle.08 (new: at least 2 loops after the tutorial), Puzzle.01, Puzzle.04 and Puzzle.06 (the new Puzzles and the removed ones)
+- Puzzle: Puzzle.07 (new: hydrogens on their Atom), Valence.01 (an Atom needs its valence minus its hydrogens), Puzzle.03 (a bond count over its valence minus its hydrogens), Generate.01 and Generate.02 (labels with hydrogens), Puzzle.05 (difficulty counts loops), Puzzle.08 (new: at least 2 loops after the tutorial), Puzzle.01, Puzzle.04 and Puzzle.06 (the new Puzzles and the removed ones)
 - UI: Board.01 and Board.04 (hydrogens drawn and named), Panel.04 (the rule on valence)
 - Storage: Progress.03 (the key `molecuzzle-v3`)
 - Every example that names a Puzzle, now on the new list: Puzzle.02, Puzzle.03, Progress.03, Grid.01–02, Bond.01–06, Bond.08–11, Valence.02, Check.01–04, Help.01–02, Progress.01, Progress.05, Progress.06, Page.01, Board.02, Input.01–03, Input.05, Messages.01–02, Panel.01–03, List.01–02, and the narrative
@@ -55,7 +55,7 @@ The Puzzles, and the Bonds and arguments that give their layouts with `node scri
 | 14 | Glucose | `O-CH:a CH:a-OH:a CH:a-CH:b CH:b-OH:b CH:b-CH:c CH:c-OH:c CH:c-CH:d CH:d-OH:d CH:d-CH:e CH:e-O CH:e-CH2 CH2-OH:e` |
 | 15 | Citric acid | `OH:a-C:a C:a=O:a C:a-CH2:a CH2:a-C:b C:b-OH:b C:b-C:c C:c=O:b C:c-OH:c C:b-CH2:b CH2:b-C:d C:d=O:c C:d-OH:d` |
 
-They were chosen from 30 candidates by three checks, with scripts that aren't kept: at least 2 loops after the first three; the obvious moves (two one-Bond Atoms never bond, an Atom whose open lines exactly fit what it needs fills them, a Bond blocks the lines it crosses) leave lines open; and no two of the same size are the same layout, turned, flipped or with other symbols of the same valence ([decision 0020](../../decisions.md#0020)). No layout has crossing Dotted lines, so the crossing rules get an example on a made-up Grid. 1,4-Dioxane was left out for having the formula of Ethyl acetate, which is removed; Morpholine, its look-alike, takes its place.
+They were chosen from 30 candidates by three checks, with scripts that aren't kept: at least 2 loops after the first three; the obvious moves of [decision 0024](../../decisions.md#0024) (bounds on each line from what its Atoms need, as the cost there says) leave lines open; and no two of the same size are the same layout, turned, flipped or with other symbols of the same valence ([decision 0020](../../decisions.md#0020)). No layout has crossing Dotted lines, so the crossing rules get an example on a made-up Grid. 1,4-Dioxane was left out for having the formula of Ethyl acetate, which is removed; Morpholine, its look-alike, takes its place.
 
 The candidates left out whose reason depends on their layout, with the Bonds tried (`100000 6 5 1`):
 
