@@ -184,7 +184,7 @@ The [UI spec](spec/ui.md) shows the page and its parts as screenshots. Playwrigh
 <a id="0015"></a>
 ## 0015: Every Puzzle in progress is kept, until it is solved or reset
 
-Accepted (2026-11-15). Partly superseded by [0017](#0017): solving keeps the Board.
+Accepted (2026-11-15). Partly superseded by [0017](#0017): solving keeps the Bonds, but still ends the undo history.
 
 Progress keeps, for every Puzzle in progress, its Bonds, whether the solution was shown, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone. Show solution now writes to Progress, but never a solved mark: the Progress of [0004](#0004) is the solved marks.
 
@@ -195,7 +195,7 @@ Progress keeps, for every Puzzle in progress, its Bonds, whether the solution wa
 <a id="0016"></a>
 ## 0016: Progress keeps its key while it only gains fields
 
-Accepted (2026-11-21)
+Accepted (2026-11-21). Partly superseded by [0017](#0017): the key also stays when a field holds more entries, as long as older builds still read each entry right.
 
 Progress stays under the key `molecuzzle-v2` when a change only adds an optional field to it, as `boards` did ([0015](#0015)). Only a field that changes its meaning or format gets a new key.
 
