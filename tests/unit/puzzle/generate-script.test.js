@@ -41,6 +41,7 @@ test("Generate.01 with no size given, the script looks for a Grid of at most 6 b
   const [, rows, cols] = stdout.match(/rows: (\d+), cols: (\d+)/).map(Number);
   expect(rows).toBeLessThanOrEqual(6);
   expect(cols).toBeLessThanOrEqual(5);
+  expect([rows, cols]).toEqual([6, 4]); // butane's layout uses the 6th row
 });
 
 test("Generate.02 the script stops at a Bond it can't read", () => {
