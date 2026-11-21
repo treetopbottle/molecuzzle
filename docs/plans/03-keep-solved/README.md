@@ -1,6 +1,6 @@
 # 03: Solved Puzzles keep their solution
 
-Status: Draft
+Status: Active
 
 A solved Puzzle opens again as it was solved, showing its Molecule, until the Player resets it ([decision 0017](../../decisions.md#0017)).
 

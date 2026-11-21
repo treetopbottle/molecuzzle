@@ -36,3 +36,13 @@ Commits reviewed: 02051d2 (the plan, its spec changes and decision 0017). Read a
 6. **note**: `docs/plans/03-keep-solved/README.md:27`: "gets the class `pulse` only when a `render()` finds it solved and the one before didn't" doesn't say whether `pulse` stays on later renders while the Board is still solved. An implementation that turns it off on the next render would stop the animation part-way, for example on Show solution over a solved Board, which calls `keep()` and so `render()`. Say that it stays until the status leaves solved or a new Board is created. Also, `style.css:59` (the reduced-motion rule) changes from `.solved` to `.pulse` along with `:57`.
 
 7. **note**: `docs/spec/storage.md:12` (Progress.06): "a solved Puzzle" can be read as "marked solved" (Progress.01) rather than "status solved" (Check.04). A Puzzle that is marked solved, then reset and half rebuilt, is in progress (Progress.05), not kept as solved. Progress.05 says "whose status isn't solved ([Check.04])", so Progress.06 could say "a Puzzle whose status is solved ([Check.04])" to match. In the same way, storage.md:7, "the Board of every Puzzle ... solved", is only true for Puzzles solved after this change.
+
+## Outcome
+
+1. Fixed in 0ea15c5: step 1(a) lists "Progress.01 a solved Puzzle is marked solved".
+2. Fixed in 0ea15c5: `createBoard` removes `pulse`; the unit test uses an svg that just had `pulse`, and the end-to-end test opens a solved Puzzle right after solving another.
+3. Fixed in 0ea15c5: the README's Progress keeps the Boards of Puzzles in progress or solved.
+4. Fixed in 0ea15c5: 0017 says why the key stays, and what an older build does with a solved Board.
+5. Fixed in 0ea15c5: step 1(b) updates both docstrings.
+6. Fixed in 0ea15c5: `pulse` stays until the status leaves solved or a new Board is created; the reduced-motion rule changes too.
+7. Fixed in 0ea15c5: Progress.06 is about a Puzzle whose status is solved.
