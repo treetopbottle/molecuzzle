@@ -7,12 +7,12 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 | Plan | Status |
 |---|---|
 | [02: Components](02-components/README.md) | Done (2026-11-21) |
+| [03: Solved Puzzles keep their solution](03-keep-solved/README.md) | Draft |
 
 ## Backlog
 
 Contains features, slices or small tasks to work on, in order of importance.
 
-- Solved puzzles should keep showing the solution when you go back to it, until you reset it.
 - The halogens (F, Cl, Br, I; 1 Bond) and S (2 Bonds) as Elements, for more real Molecules: chloroform, vinyl chloride, thiols, CS₂. They play like H and O, so they add variety, not harder logic. `scripts/generate.js` should then also stop with "can't read" for an Element it doesn't know, which now ends in a TypeError (review of step 5 of plan 02).
 - More Puzzles, larger and harder; `scripts/generate.js` finds the layouts.
 - Deploy the puzzle that is build from the `main` branch to a production environment, GitHub Pages is only for testing.

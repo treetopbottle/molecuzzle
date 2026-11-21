@@ -16,6 +16,7 @@ What the Player does and what the rules are.
 - [0004: Show solution doesn't solve a Puzzle](#0004)
 - [0008: Every Puzzle has exactly one solution](#0008)
 - [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
+- [0017: A solved Puzzle keeps its Board, until it is reset](#0017)
 
 ### Technical
 
@@ -182,7 +183,7 @@ The [UI spec](spec/ui.md) shows the page and its parts as screenshots. Playwrigh
 <a id="0015"></a>
 ## 0015: Every Puzzle in progress is kept, until it is solved or reset
 
-Accepted (2026-11-15)
+Accepted (2026-11-15). Partly superseded by [0017](#0017): solving keeps the Board.
 
 Progress keeps, for every Puzzle in progress, its Bonds, whether the solution was shown, and its undo history, after every change. Solving or resetting a Puzzle removes them, and its undo history in the game too: Reset can't be undone. Show solution now writes to Progress, but never a solved mark: the Progress of [0004](#0004) is the solved marks.
 
@@ -200,3 +201,14 @@ Progress stays under the key `molecuzzle-v2` when a change only adds an optional
 - **Why:** an older Progress is still a valid Progress, so no Player loses their solved Puzzles, and there is no migration code.
 - **Cost:** an older build on the same origin ([0009](#0009)) loads the Progress and drops the fields it doesn't know on its next save. The key says nothing about which fields there are.
 - **Alternatives:** a new key for every change: older builds keep their own Progress, but every Player starts over, unless the new build reads the old key. A version field inside Progress, with a migration for each version: exact, but code for every change, more than an optional field needs.
+
+<a id="0017"></a>
+## 0017: A solved Puzzle keeps its Board, until it is reset
+
+Accepted (2026-11-21)
+
+Solving a Puzzle keeps its Board in Progress, with nothing to undo, so it opens again solved; only Reset removes it. A Puzzle marked solved with no Board kept opens with no Bonds.
+
+- **Why:** going back to a solved Puzzle shows the Molecule the Player built, and its name and fact, as a collection; Reset, which asks first, is how a Player plays it again. A solved Board is the solution ([0008](#0008)), so it can't be wrong.
+- **Cost:** one more entry in Progress per solved Puzzle, a few Bonds each. Puzzles solved before this have no Board kept, so they open with no Bonds until they are solved again. Playing a solved Puzzle again takes a Reset.
+- **Alternatives:** open every Puzzle marked solved with its `solution`, with nothing kept: also works for Puzzles solved before, but then a Reset needs a mark of its own in Progress, or the solution is back the next time it opens. Open solved Puzzles with no Bonds, as before: nothing to see of what was solved.

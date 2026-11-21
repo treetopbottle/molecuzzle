@@ -31,7 +31,7 @@ Example (Layout.01), on a phone:
 
 - Drawing: each Atom is a ball with its Element's symbol: H white, O red, N blue, C dark grey. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
 - Needs: each Atom that needs Bonds ([Valence.01](puzzle.md#valence)) shows an orange badge with how many; a complete Atom ([Valence.02](puzzle.md#valence)) glows and has no badge (Board.02)
-- Solved: when the Puzzle is solved ([Check.04](puzzle.md#check)), the Atoms pulse, unless the browser asks for reduced motion (Board.03)
+- Solved: when the Player solves the Puzzle ([Check.04](puzzle.md#check)), the Atoms pulse, unless the browser asks for reduced motion; a Puzzle that opens solved ([Progress.06](storage.md#progress)) doesn't pulse (Board.03)
 - Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>: needs <n> more bond(s)" or "<Element> <place>: complete", with the Element's name (Hydrogen, Oxygen, Nitrogen, Carbon); each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
 
 Example (Board.01, Board.02), Puzzle 3, Formaldehyde, with C═O:

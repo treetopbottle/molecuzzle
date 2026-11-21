@@ -19,7 +19,7 @@
     },
     "boards": {
       "type": "object",
-      "description": "Per Puzzle in progress, by its id",
+      "description": "Per Puzzle in progress or solved, by its id",
       "additionalProperties": {
         "type": "object",
         "required": [
