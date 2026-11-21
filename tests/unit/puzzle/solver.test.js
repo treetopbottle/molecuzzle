@@ -1,10 +1,15 @@
 import { expect, test } from "vitest";
 import { solve } from "../../../src/puzzle/solver.js";
 
-const atoms = list => list.map(([el, r, c]) => ({ el, r, c }));
+const atoms = list => list.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
 
 test("finds the one way to bond water", () => {
   expect(solve(atoms([["H", 0, 0], ["O", 0, 1], ["H", 0, 2]]))).toEqual([[1, 1]]);
+});
+
+test("finds the one way to bond Acetic acid, each Atom needing its valence minus its hydrogens", () => {
+  // O at 1,2, CH₃ at 2,1, C at 2,2 and OH at 3,2: the Dotted lines O–C, CH₃–C and C–OH.
+  expect(solve(atoms([["O", 0, 1, 0], ["C", 1, 0, 3], ["C", 1, 1, 0], ["O", 2, 1, 1]]), 5)).toEqual([[2, 1, 1]]);
 });
 
 test("finds both ways when there are two", () => {

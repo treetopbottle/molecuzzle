@@ -7,6 +7,21 @@ import { schemaErrors } from "../../helpers/schemas.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 
+// The spec's Acetic acid and Glycine, with their hydrogens on their Atoms:
+// made up until their Puzzles are in puzzles.js (plan 07, step 7).
+const aceticAcid = {
+  id: "acetic-acid", name: "Acetic acid", formula: "C2H4O2", fact: "Vinegar is acetic acid in water.",
+  rows: 3, cols: 2,
+  atoms: [["O",0,1,0],["C",1,0,3],["C",1,1,0],["O",2,1,1]],
+  solution: [[0,2,2],[1,2,1],[2,3,1]],
+};
+const glycine = {
+  id: "glycine", name: "Glycine", formula: "C2H5NO2", fact: "Glycine is the smallest amino acid.",
+  rows: 3, cols: 2,
+  atoms: [["O",0,0,1],["N",0,1,2],["C",1,0,0],["C",1,1,2],["O",2,0,0]],
+  solution: [[0,2,1],[1,3,1],[2,3,1],[2,4,2]],
+};
+
 describe("Puzzle", () => {
   test("Puzzle.02 a Puzzle starts with no Bonds", () => {
     expect(draw(createGame(puzzle("formaldehyde")))).toMatchInlineSnapshot(`
@@ -70,6 +85,49 @@ describe("Puzzle", () => {
     const game = createGame(p, { bonds, revealed: true, undo });
     expect(game.order.some(Boolean)).toBe(false);
     expect(game.canUndo).toBe(false);
+    build(game);
+    expect(game.status()).toEqual({ kind: "solved" });
+  });
+});
+
+describe("Hydrogens", () => {
+  test("Puzzle.07 Acetic acid's Atoms are an O with no hydrogens, a C with 3, a C with none and an O with 1, and no change touches them", () => {
+    const game = createGame(aceticAcid);
+    const hydrogens = () => game.atoms.map(a => `${a.el}${a.h}`).join(" ");
+    expect(hydrogens()).toBe("O0 C3 C0 O1");
+    click(game, "1,2", "2,2", 2);
+    click(game, "2,1", "2,2");
+    game.undo();
+    game.showSolution();
+    expect(hydrogens()).toBe("O0 C3 C0 O1");
+  });
+
+  test("Puzzle.03 with an Atom whose bond count is over its valence minus its hydrogens, it starts with no Bonds", () => {
+    const game = createGame(aceticAcid, { bonds: [[1, 2, 2]], revealed: false, undo: [[]] }); // CH₃═C
+    expect(game.order.some(Boolean)).toBe(false);
+    expect(game.canUndo).toBe(false);
+  });
+
+  test("Puzzle.03 a Board whose Atoms have room for their Bonds next to their hydrogens starts where it was left", () => {
+    const game = createGame(aceticAcid, { bonds: [[1, 2, 1]], revealed: false, undo: [[]] }); // CH₃─C
+    expect(game.board()).toEqual([[1, 2, 1]]);
+    expect(game.canUndo).toBe(true);
+  });
+
+  test("Bond.03 stronger on a Bond whose Atom's hydrogens leave it no room removes it", () => {
+    const game = createGame(aceticAcid);
+    click(game, "2,1", "2,2", 2);
+    expect(game.order.some(Boolean)).toBe(false);
+  });
+
+  test("Bond.04 an Atom whose hydrogens and Bonds fill it takes no new Bond, with the reason full: Glycine's OH 1,1", () => {
+    const game = createGame(glycine);
+    click(game, "1,1", "2,1");
+    expect(click(game, "1,1", "1,2")).toEqual({ changed: false, reason: "full", atom: 0 });
+  });
+
+  test("Check.04 Acetic acid, its hydrogens on its Atoms, is solved once its skeleton is built", () => {
+    const game = createGame(aceticAcid);
     build(game);
     expect(game.status()).toEqual({ kind: "solved" });
   });
@@ -283,6 +341,16 @@ describe("Valence", () => {
     expect(needs()).toBe("H1 C4 H1 O2");
     click(game, "2,1", "3,1", 2);
     expect(needs()).toBe("H1 C2 H1 O0");
+  });
+
+  test("Valence.01 each Atom needs its valence minus its hydrogens minus its bond count: Acetic acid", () => {
+    const game = createGame(aceticAcid);
+    const label = a => a.el + (a.h ? "H" + (a.h > 1 ? a.h : "") : "");
+    const needs = () => game.atoms.map((a, i) => `${label(a)} ${game.remaining(i)}`).join(", ");
+    expect(needs()).toBe("O 2, CH3 1, C 4, OH 1");
+    click(game, "1,2", "2,2", 2); // C═O
+    expect(needs()).toBe("O 0, CH3 1, C 2, OH 1");
+    expect(game.status()).toEqual({ kind: "open", open: 3 });
   });
 
   test("Valence.02 an Atom that needs no more Bonds is complete", () => {
