@@ -5,7 +5,7 @@ import { start, openPuzzle, clickBond, build, status, bond, PUZZLES } from "./he
 test("First day", async ({ page }) => {
   // Noor opens Molecuzzle: Puzzle 1, a mystery molecule of H, O and H.
   await start(page);
-  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 13");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 21");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("?");
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
 
@@ -43,7 +43,7 @@ test("First day", async ({ page }) => {
 
   // The next day, in the same browser, the game opens where Noor left off, still showing Glycine.
   await page.reload();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 11 of 13");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 11 of 21");
   await expect(status(page)).toHaveText("✓ Solved! It's Glycine.");
-  await expect(page.locator("#score")).toHaveText("Solved 4 of 13");
+  await expect(page.locator("#score")).toHaveText("Solved 4 of 21");
 });

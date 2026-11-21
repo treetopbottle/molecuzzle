@@ -31,7 +31,7 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
     - complementary:
       - navigation "Puzzle":
         - button "Previous puzzle"
-        - text: Puzzle 11 of 13
+        - text: Puzzle 11 of 21
         - button "Next puzzle"
         - text: ✓ Solved
       - text: Mystery molecule
@@ -45,9 +45,9 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
       - paragraph: Glycine is the simplest amino acid, one of the building blocks of proteins. Traces have even been found in samples from comets.
       - button "Next puzzle →"
   `);
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 13");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 21");
   await page.getByRole("button", { name: "Next puzzle →" }).click();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 13");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 21");
 });
 
 test("Messages.01 the status line is green when solved and when revealed", async ({ page }) => {
@@ -64,9 +64,9 @@ test("Messages.01 the status line is green when solved and when revealed", async
 });
 
 test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
-  await openPuzzle(page, 13);
-  await build(page, PUZZLES[12]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Alanine.");
+  await openPuzzle(page, 21);
+  await build(page, PUZZLES[20]);
+  await expect(status(page)).toHaveText("✓ Solved! It's Halothane.");
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
@@ -83,7 +83,7 @@ test("Input.04, Messages.01, Panel.01, List.01, List.02 Show solution asks first
   await expect(status(page)).toHaveText("Here is Urea. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.getByRole("button", { name: "Puzzle 9", exact: true })).toBeVisible();
-  await expect(page.locator("#score")).toHaveText("Solved 0 of 13");
+  await expect(page.locator("#score")).toHaveText("Solved 0 of 21");
 });
 
 test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it solved", async ({ page }) => {
@@ -92,7 +92,7 @@ test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it s
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(status(page)).toHaveText("Here is Urea. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 13");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 21");
 });
 
 test("Messages.01, Panel.01 after Reset, building it marks it solved", async ({ page }) => {

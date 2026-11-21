@@ -18,7 +18,7 @@ export async function start(page, progress) {
 
 /** The Bond between the Atoms at two places, "row,col" counted from 1. */
 export const bond = (page, from, to) =>
-  page.getByRole("button", { name: new RegExp(`^[A-Z] ${from} to [A-Z] ${to}:`) });
+  page.getByRole("button", { name: new RegExp(`^[A-Z][a-z]? ${from} to [A-Z][a-z]? ${to}:`) });
 
 /**
  * Clicks a Bond near its first Atom, half a cell along, where no other

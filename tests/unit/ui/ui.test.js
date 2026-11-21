@@ -114,7 +114,7 @@ test("Panel.01, List.02 a shown solution leaves the Puzzle unsolved", () => {
   game.showSolution();
   ui.render(view(8, game));
   expect(document.querySelector("nav").textContent).toContain("Unsolved");
-  expect(document.querySelector("header").textContent).toContain("Solved 0 of 13");
+  expect(document.querySelector("header").textContent).toContain("Solved 0 of 21");
 });
 
 test("List.01, List.02 a button per Puzzle opens it, and the header shows the score", () => {
@@ -123,7 +123,7 @@ test("List.01, List.02 a button per Puzzle opens it, and the header shows the sc
   expect([...list.querySelectorAll("button")].slice(0, 3).map(b => b.getAttribute("aria-label")))
     .toEqual(["Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3"]);
   expect(list.querySelector('[aria-current="true"]').getAttribute("aria-label")).toBe("Puzzle 3");
-  expect(document.querySelector("header").textContent).toContain("Solved 1 of 13");
+  expect(document.querySelector("header").textContent).toContain("Solved 1 of 21");
   button("Puzzle 13").click();
   expect(handlers.onOpen).toHaveBeenCalledWith(12);
 });
