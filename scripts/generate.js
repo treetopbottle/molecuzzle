@@ -8,6 +8,7 @@
 // src/puzzle/generate.js.
 import { findLayout } from "../src/puzzle/generate.js";
 import { candidateBonds } from "../src/puzzle/grid.js";
+import { difficulty } from "../src/puzzle/difficulty.js";
 
 // Arguments left out are findLayout's defaults, such as a Grid of at most 6
 // rows by 5 columns, as every Puzzle's (decision 0019).
@@ -33,6 +34,6 @@ const width = Math.max(...atoms.map(([el]) => el.length));
 const grid = Array.from({ length: rows }, () => Array(cols).fill("·"));
 for (const [el, r, c] of atoms) grid[r][c] = el;
 console.log(grid.map(row => ("  // " + row.map(p => p.padEnd(width)).join(" ")).trimEnd()).join("\n"));
-console.log(`  rows: ${rows}, cols: ${cols}, // ${unused} unused candidate bonds`);
+console.log(`  rows: ${rows}, cols: ${cols}, // difficulty ${difficulty(layout)}: ${solution.length + unused} Dotted lines, ${unused} empty`);
 console.log(`  atoms: [${atoms.map(a => JSON.stringify(a)).join(",")}],`);
 console.log(`  solution: [${solution.map(x => `[${x}]`).join(",")}],`);
