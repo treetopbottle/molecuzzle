@@ -37,3 +37,8 @@ Commits reviewed: cf8e6de (tests, step 2(a)) and 6a14f81 (implementation, step 2
 2. **note**: `src/ui/puzzle-list.js:21`: the open Puzzle's own button in the list still calls `onOpen`, so clicking it right after solving makes a new Board and stops the pulse part-way (`board.js:29`). Board.03 doesn't forbid this, since that counts as opening a solved Puzzle, and it was already the case before this step. I mention it only because it is a flow where the pulse goes missing.
 
 No other findings.
+
+## Outcome
+
+1. Fixed in 4bbf93f: the unit test rebuilds the Board after Reset and expects `pulse` again. Only a test changed, and it passes, so there is no second review.
+2. Kept: it counts as opening a solved Puzzle, as the finding says; moved to the backlog when the plan finishes.
