@@ -22,3 +22,11 @@ Commits reviewed: a74e122 (tests, step 1(a)) and d252533 (implementation, step 1
 3. **note**: `docs/architecture.md:38` says the tests use the difficulty "to check the Puzzles in `puzzles.js`". At this commit no test does that: the order test comes in step 2. At the same commit, the old "Puzzle.05 Puzzles 22 to 28" test and the comment at `src/puzzle/puzzles.js:155` still refer to the rule that Puzzle.05 replaced. Step 2 of the plan already removes both, so no action is needed in this step.
 
 No must-fix or should-fix findings.
+
+## Outcome
+
+1. Fixed in 4df5be1: the test also checks Glycine's 12 Dotted lines and 3 empty, through `dottedLines`.
+2. Fixed in 4df5be1: `dottedLines` counts them once, and both the difficulty and the script's comment use it.
+3. Kept: step 2 adds the order test and removes the old ones, as the finding says.
+
+Code changed, so the fixes have a [second review](review-step-1-2.md).
