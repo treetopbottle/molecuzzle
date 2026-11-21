@@ -1,6 +1,7 @@
-// The puzzles, easiest first. Atoms are [Element, row, column], in reading
-// order; the solution lists [atom, atom, Bond order]. Layouts come from
-// scripts/generate.js; tests check each has exactly this one solution.
+// The puzzles, easiest first within each batch (decision 0018). Atoms are
+// [Element, row, column], in reading order; the solution lists [atom, atom,
+// Bond order]. Layouts come from scripts/generate.js; tests check each has
+// exactly this one solution.
 export const PUZZLES = [
   {
     id: "water", name: "Water", formula: "H2O",
@@ -92,5 +93,63 @@ export const PUZZLES = [
     rows: 4, cols: 4,
     atoms: [["H",0,0],["N",0,1],["H",0,2],["O",0,3],["H",1,0],["C",1,1],["C",1,3],["H",2,0],["C",2,1],["H",2,2],["O",2,3],["H",3,1],["H",3,3]],
     solution: [[0,1,1],[1,2,1],[1,5,1],[3,6,2],[4,5,1],[5,6,1],[5,8,1],[6,10,1],[7,8,1],[8,9,1],[8,11,1],[10,12,1]],
+  },
+  // New Puzzles go at the end, easiest first among themselves (decision 0018):
+  // the halogens and sulfur.
+  {
+    id: "carbon-disulfide", name: "Carbon disulfide", formula: "CS2",
+    fact: "Carbon disulfide turns the cellulose of wood into viscose, which is spun into rayon and cast into cellophane.",
+    rows: 3, cols: 1,
+    atoms: [["S",0,0],["C",1,0],["S",2,0]],
+    solution: [[0,1,2],[1,2,2]],
+  },
+  {
+    id: "chloroform", name: "Chloroform", formula: "CHCl3",
+    fact: "Chloroform was one of the first anaesthetics, from 1847, until safer ones replaced it.",
+    rows: 3, cols: 3,
+    atoms: [["Cl",0,1],["H",1,0],["C",1,1],["Cl",1,2],["Cl",2,1]],
+    solution: [[0,2,1],[1,2,1],[2,3,1],[2,4,1]],
+  },
+  {
+    id: "methanethiol", name: "Methanethiol", formula: "CH4S",
+    fact: "Methanethiol smells of rotten cabbage, and is one of the gases behind bad breath.",
+    rows: 3, cols: 3,
+    atoms: [["H",0,0],["H",0,1],["S",1,0],["C",1,1],["H",1,2],["H",2,1]],
+    solution: [[0,2,1],[1,3,1],[2,3,1],[3,4,1],[3,5,1]],
+  },
+  {
+    id: "phosgene", name: "Phosgene", formula: "CCl2O",
+    fact: "Phosgene was a poison gas in the First World War; today it is made on a large scale to make plastics such as polycarbonate.",
+    rows: 3, cols: 2,
+    atoms: [["Cl",0,1],["Cl",1,0],["C",1,1],["O",2,1]],
+    solution: [[0,2,1],[1,2,1],[2,3,2]],
+  },
+  {
+    id: "vinyl-chloride", name: "Vinyl chloride", formula: "C2H3Cl",
+    fact: "Vinyl chloride is the building block of PVC, used for pipes, window frames and cables.",
+    rows: 3, cols: 2,
+    atoms: [["Cl",0,0],["H",0,1],["C",1,0],["C",1,1],["H",2,0],["H",2,1]],
+    solution: [[0,2,1],[1,3,1],[2,3,2],[2,4,1],[3,5,1]],
+  },
+  {
+    id: "tetrafluoroethylene", name: "Tetrafluoroethylene", formula: "C2F4",
+    fact: "Tetrafluoroethylene is the building block of PTFE, better known as Teflon, the coating of non-stick pans.",
+    rows: 3, cols: 2,
+    atoms: [["F",0,0],["F",0,1],["C",1,0],["C",1,1],["F",2,0],["F",2,1]],
+    solution: [[0,2,1],[1,3,1],[2,3,2],[2,4,1],[3,5,1]],
+  },
+  {
+    id: "iodoethane", name: "Iodoethane", formula: "C2H5I",
+    fact: "Iodoethane slowly turns brown in the light, as it breaks down and frees iodine.",
+    rows: 3, cols: 4,
+    atoms: [["H",0,1],["I",0,2],["H",1,0],["C",1,1],["C",1,2],["H",1,3],["H",2,1],["H",2,2]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,6,1],[4,5,1],[4,7,1]],
+  },
+  {
+    id: "halothane", name: "Halothane", formula: "C2HBrClF3",
+    fact: "Halothane, with three different halogens, was a widely used anaesthetic from the 1950s.",
+    rows: 3, cols: 4,
+    atoms: [["F",0,1],["Cl",0,2],["F",1,0],["C",1,1],["C",1,2],["H",1,3],["F",2,1],["Br",2,2]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,6,1],[4,5,1],[4,7,1]],
   },
 ];
