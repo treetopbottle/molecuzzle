@@ -11,7 +11,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 | [04: The halogens and sulfur](04-halogens-and-sulfur/README.md) | Done (2026-11-21) |
 | [05: Larger and harder Puzzles](05-larger-puzzles/README.md) | Done (2026-11-21) |
 | [06: Puzzles in order of difficulty, and fewer easy ones](06-difficulty/README.md) | Done (2026-11-21) |
-| [07: Hydrogens on their Atoms, and Puzzles with loops](07-hydrogens-on-atoms/README.md) | Draft |
+| [07: Hydrogens on their Atoms, and Puzzles with loops](07-hydrogens-on-atoms/README.md) | Active |
 
 ## Backlog
 
