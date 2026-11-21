@@ -28,3 +28,10 @@ Commits reviewed: the work of plan 03, `02051d2..20ef703` (14 commits), and `020
    - 0018 cites 0016 for "Progress is by id", which is in `docs/spec/schemas.md` instead.
 
    Also, 0018's cost ("the Puzzles with new Elements follow Alanine") describes Puzzles that aren't in `src/puzzle/puzzles.js` yet: it still has 13. That is expected while plan 04 is a draft.
+
+## Outcome
+
+1. Fixed in dfe4c76: 0016 is partly superseded by 0017.
+2. Kept: local to the UI and small, as the finding says; the comment in `board.js` gives the reason, and Board.03 the behaviour.
+3. Fixed in dfe4c76: 0015's note says solving keeps the Bonds but still ends the undo history.
+4. Fixed in d959cca, with plan 04's review.
