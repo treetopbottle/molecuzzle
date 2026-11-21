@@ -60,3 +60,19 @@ Commit reviewed: 3ea7190 (the plan, its spec changes and decision 0018), read in
 12. **note**: Overlap with plan 03 (active). Plan 03 step 2 also changes `tests/unit/ui/board.test.js`, `tests/e2e/check.spec.js` and `tests/e2e/screenshots.spec.js`, and its step 1 changes the narrative test. Plan 04 should say it starts after plan 03 is done, or expect conflicts in those files.
 
 13. **note**: `docs/plans/04-halogens-and-sulfur/README.md:39-41`. Step 3 is the largest step: eight layouts and facts, about 30 count edits in 7 test files, and 7 screenshots. It is mostly mechanical, but it would be easier to review with the files and screenshots listed (finding 2), or with the count edits as their own commit inside (a).
+
+## Outcome
+
+1. Fixed in d959cca: Panel.04 names every Element's valence, in step 1, with the screenshots that show the rules.
+2. Fixed in d959cca: step 4(a) names the test files and the last Puzzle's test, and (b) the screenshots that change and the ones that stay.
+3. Fixed in d959cca: `bond()` is in step 4(a).
+4. Fixed in d959cca: two-letter symbols take two characters in the spec's drawings, `draw.js` and the script's comment; a new step 2, with no rule ids.
+5. Fixed in d959cca: 0003 is partly superseded by 0018.
+6. Fixed in d959cca: the arrow is in step 3(b), as `generate.js` doesn't import `elements.js` yet.
+7. Fixed in d959cca: the colour helpers move to `tests/helpers/colors.js`.
+8. Fixed in d959cca: 0018 links the schemas for the ids.
+9. Fixed in d959cca: `Object.hasOwn`, in Design.
+10. Fixed in d959cca: Design says to check the badge and glow on the new colours when the screenshots are remade.
+11. Kept: the plan doesn't claim a notation for the table.
+12. Fixed in d959cca: the plan starts once plan 03 is done.
+13. Fixed in d959cca: step 4(a) is two commits, the count first.
