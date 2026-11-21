@@ -3,7 +3,10 @@
 // For the tests and the generator; the game doesn't use it.
 import { candidateBonds } from "./grid.js";
 
-/** The Puzzle's Dotted lines, and how many its solution leaves empty. */
+/**
+ * The Puzzle's Dotted lines, and how many its solution leaves empty.
+ * @param {{ atoms: [string, number, number][], solution: number[][] }} puzzle
+ */
 export function dottedLines({ atoms, solution }) {
   const dotted = candidateBonds(atoms.map(([el, r, c]) => ({ el, r, c }))).length;
   return { dotted, empty: dotted - solution.length };

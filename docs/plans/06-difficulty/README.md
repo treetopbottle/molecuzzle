@@ -20,7 +20,7 @@ Left out:
 
 Interfaces that change:
 
-- `puzzle/difficulty.js`, new: `difficulty(puzzle)` returns the number of candidate Bonds of its Atoms (`candidateBonds` in `grid.js`) plus twice the number its `solution` leaves out. It is in the Puzzle component, for the tests and the generator; the game doesn't use it. `docs/architecture.md` gets it, with its arrow to `grid.js`.
+- `puzzle/difficulty.js`, new: `dottedLines(puzzle)` returns `{ dotted, empty }`, the number of candidate Bonds of its Atoms and how many its `solution` leaves out, which the script prints; `difficulty(puzzle)` returns the number of candidate Bonds of its Atoms (`candidateBonds` in `grid.js`) plus twice the number its `solution` leaves out. It is in the Puzzle component, for the tests and the generator; the game doesn't use it. `docs/architecture.md` gets it, with its arrow to `grid.js`.
 - `scripts/generate.js`: the comment after `rows` and `cols` becomes `// difficulty <n>: <d> Dotted lines, <e> empty`, in place of `// <e> unused candidate bonds`.
 - `puzzle/removed.js`, new: `REMOVED`, the eight Puzzles as they were in `puzzles.js`, in the order of the spec's table of removed Puzzles. Nothing in the game imports it; the tests do.
 - `puzzle/puzzles.js`: the eight move out, and the other 20 are in order of difficulty, with a new one after those of the same difficulty. Its top comment says so, and the batch comments go.
@@ -30,7 +30,7 @@ The new numbers, for the tests: Water 1, Hydrogen cyanide 2 (was 4), Formaldehyd
 
 ## Steps
 
-1. **The difficulty.** Puzzle.05, Generate.01.
+1. **The difficulty.** `[DONE]` ([review](review-step-1.md), [2](review-step-1-2.md)) Puzzle.05, Generate.01.
    - (a) Tests: in `tests/unit/puzzle/difficulty.test.js`, the Puzzle.05 example, Glycine's 12 + 2 × 3 = 18, and Water's 2; in `tests/unit/puzzle/generate-script.test.js`, the Generate.01 example prints difficulty 2.
    - (b) Implementation: `puzzle/difficulty.js`, the script's comment, and `docs/architecture.md`.
 2. **Fewer Puzzles, in order of difficulty.** Puzzle.01, Puzzle.04, Puzzle.05, Puzzle.06, and the examples in Scope.
