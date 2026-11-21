@@ -123,7 +123,7 @@ Then the message is "Oxygen already has all its bonds."
 - Puzzle: "Puzzle <n> of <N>" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on the last. Next to it, "Unsolved" or "✓ Solved" (Panel.01)
 - Mystery: under the heading "Mystery molecule", until the Board is solved or shows the solution, the panel shows "?" and "Bond every atom to find out what it is." (Panel.02)
 - Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on the last) (Panel.03)
-- Rules: the panel lists the rules of the game, as in the screenshots; the one on valence names every Element's: "Each atom needs exactly its number of bonds: C 4, N 3, O and S 2, F, Cl, Br and I 1. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs." (Panel.04)
+- Rules: the panel lists the rules of the game, as in the screenshots; the one on valence names every Element's, each symbol on one line with its number: "Each atom needs exactly its number of bonds: C 4, N 3, O and S 2, F, Cl, Br and I 1. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs." (Panel.04)
 
 Example (Panel.01, Panel.02, Panel.04), Puzzle 2, unsolved:
 

@@ -76,7 +76,7 @@ test("Panel.04 the rules of the game, the one on valence naming every Element's"
     "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
     "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
     "Bonds can't cross.",
-    "Each atom needs exactly its number of bonds: C 4, N 3, O and S 2, F, Cl, Br and I 1. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs.",
+    "Each atom needs exactly its number of bonds: C\u00a04, N\u00a03, O and S\u00a02, F, Cl, Br and I\u00a01. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs.",
     "All atoms join into one molecule. There is exactly one solution.",
   ]);
 });
