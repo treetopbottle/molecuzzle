@@ -4,9 +4,9 @@ import { schemaErrors } from "../helpers/schemas.js";
 
 test("Progress.05 a Puzzle in progress, Undo included, is kept after the browser closes", async ({ page, context }) => {
   await start(page);
-  await openPuzzle(page, 4);
+  await openPuzzle(page, 2);
   await clickBond(page, "1,1", "1,2");
-  await openPuzzle(page, 5);
+  await openPuzzle(page, 4);
   expect(await storedProgress(page)).toEqual({
     puzzles: {}, current: "methanol",
     boards: { "hydrogen-cyanide": { bonds: [[0, 1, 1]], revealed: false, undo: [[]] } },
@@ -25,18 +25,18 @@ test("Progress.05 a Puzzle in progress, Undo included, is kept after the browser
 
 test("Progress.05 a shown solution is still unsolved after a reload", async ({ page }) => {
   await start(page);
-  await openPuzzle(page, 9);
+  await openPuzzle(page, 8);
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
   await page.reload();
   await expect(status(page)).toHaveText("Here is Urea. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
-  await expect(page.locator("#score")).toHaveText("Solved 0 of 28");
+  await expect(page.locator("#score")).toHaveText("Solved 0 of 20");
 });
 
 test("Progress.03, Progress.05, Progress.06 what is stored is a Progress", async ({ page }) => {
   await start(page);
-  await openPuzzle(page, 2);
+  await openPuzzle(page, 3);
   await clickBond(page, "1,1", "2,1");
   await clickBond(page, "2,1", "2,2");
   await page.getByRole("button", { name: "Undo" }).click();
@@ -44,7 +44,7 @@ test("Progress.03, Progress.05, Progress.06 what is stored is a Progress", async
   await build(page, PUZZLES[0]);
   const stored = await storedProgress(page);
   expect(stored.boards).toEqual({
-    ammonia: { bonds: [[0, 1, 1]], revealed: false, undo: [[]] },
+    formaldehyde: { bonds: [[0, 1, 1]], revealed: false, undo: [[]] },
     water: { bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] },
   });
   expect(schemaErrors("progress.schema.json", stored)).toEqual([]);

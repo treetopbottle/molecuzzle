@@ -32,20 +32,20 @@ H───C───H
 `);
 });
 
-test("a Board with a two-letter symbol: Chloroform, with no Bonds and solved", () => {
-  const chloroform = PUZZLES.find(p => p.id === "chloroform");
-  expect(draw(createGame(chloroform))).toBe(`
-   Cl
-   ·
-H··C··Cl
-   ·
-   Cl
+test("a Board with a two-letter symbol: Halothane, with no Bonds and solved", () => {
+  const halothane = PUZZLES.find(p => p.id === "halothane");
+  expect(draw(createGame(halothane))).toBe(`
+   F··Cl
+   ·  ·
+F··C··C··H
+   ·  ·
+   F··Br
 `);
-  expect(draw(solved(chloroform))).toBe(`
-   Cl
-   │
-H──C──Cl
-   │
-   Cl
+  expect(draw(solved(halothane))).toBe(`
+   F··Cl
+   │  │
+F──C──C──H
+   │  │
+   F··Br
 `);
 });

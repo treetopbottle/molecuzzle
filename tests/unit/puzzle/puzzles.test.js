@@ -77,7 +77,7 @@ describe("Puzzle.01 the puzzles", () => {
   const emptyDottedLines = p => createGame(p).bonds.length - p.solution.length;
 
   test("Puzzle.04 Valine, with 19 Atoms, has a Grid of 6 rows and 5 columns", () => {
-    const valine = PUZZLES[27];
+    const valine = PUZZLES[19];
     expect([valine.name, valine.atoms.length, valine.rows, valine.cols]).toEqual(["Valine", 19, 6, 5]);
   });
 

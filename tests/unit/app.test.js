@@ -25,7 +25,7 @@ function start(stored = { puzzles: {}, current: null }) {
 }
 
 test("Progress.01 it opens the stored Puzzle, or Puzzle 1 if that is missing or unknown", () => {
-  expect(start({ puzzles: {}, current: "urea" }).ui.view().index).toBe(8);
+  expect(start({ puzzles: {}, current: "urea" }).ui.view().index).toBe(7);
   expect(start({ puzzles: {}, current: "urea" }).ui.game().puzzle.id).toBe("urea");
   expect(start({ puzzles: {}, current: null }).ui.view().index).toBe(0);
   expect(start({ puzzles: {}, current: "no-such-puzzle" }).ui.view().index).toBe(0);
@@ -54,7 +54,7 @@ test("Progress.01 a solved Puzzle is marked solved, and the UI shows it", () => 
 });
 
 test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, and the UI shows the result", () => {
-  const { store, ui } = start({ puzzles: {}, current: "ammonia" });
+  const { store, ui } = start({ puzzles: {}, current: "formaldehyde" });
   ui.handlers.onChange(0, 1);
   expect(ui.said.at(-1)).toEqual({ changed: true });
   expect(ui.view()).toMatchObject({ status: { kind: "open", open: 3 }, canUndo: true, hasBonds: true });
@@ -71,15 +71,15 @@ describe("Progress.05, Progress.06", () => {
   const entry = id => store => store.saved.boards?.[id];
 
   test("Progress.05 a change, Undo and Show solution keep the open Puzzle's Board, its undo history and whether the solution was shown", () => {
-    const { store, ui } = start({ puzzles: {}, current: "ammonia" });
-    const ammonia = entry("ammonia");
+    const { store, ui } = start({ puzzles: {}, current: "formaldehyde" });
+    const formaldehyde = entry("formaldehyde");
     ui.handlers.onChange(0, 1);
-    expect(ammonia(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
+    expect(formaldehyde(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
     ui.handlers.onChange(1, 1);
     ui.handlers.onUndo();
-    expect(ammonia(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
+    expect(formaldehyde(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
     ui.handlers.onSolve();
-    expect(ammonia(store)).toEqual({ bonds: PUZZLES[1].solution, revealed: true, undo: [[], [[0, 1, 1]]] });
+    expect(formaldehyde(store)).toEqual({ bonds: PUZZLES.find(p => p.id === "formaldehyde").solution, revealed: true, undo: [[], [[0, 1, 1]]] });
   });
 
   test("Progress.05 Reset removes what was kept, and no boards are left", () => {

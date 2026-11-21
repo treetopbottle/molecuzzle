@@ -13,8 +13,8 @@ test.describe("at 1280×800", () => {
 
   test("Page.01 Puzzle 11 solved", async ({ page }) => {
     await start(page);
-    await openPuzzle(page, 11);
-    await build(page, PUZZLES[10]);
+    await openPuzzle(page, 12);
+    await build(page, PUZZLES[11]);
     await expect(page).toHaveScreenshot("page-solved.png", { fullPage: true });
   });
 
@@ -27,13 +27,13 @@ test.describe("at 1280×800", () => {
 
   test("Board.01, Board.02 Halothane with no Bonds", async ({ page }) => {
     await start(page);
-    await openPuzzle(page, 21);
+    await openPuzzle(page, 9);
     await expect(page.locator(".stage")).toHaveScreenshot("board-halothane.png");
   });
 
   test("Input.03 the actions, with Bonds and something to undo", async ({ page }) => {
     await start(page);
-    await openPuzzle(page, 2);
+    await openPuzzle(page, 3);
     await clickBond(page, "1,1", "2,1");
     await expect(page.locator(".actions")).toHaveScreenshot("actions.png");
   });
@@ -47,8 +47,8 @@ test.describe("at 1280×800", () => {
 
   test("Panel.01, Panel.03 the panel of Puzzle 11, solved", async ({ page }) => {
     await start(page);
-    await openPuzzle(page, 11);
-    await build(page, PUZZLES[10]);
+    await openPuzzle(page, 12);
+    await build(page, PUZZLES[11]);
     await page.mouse.move(0, 0);
     await expect(page.locator(".panel")).toHaveScreenshot("panel-solved.png");
   });

@@ -165,7 +165,7 @@ describe("Bond", () => {
   });
 
   test("Bond.08 undo restores the Bonds before the last change", () => {
-    const game = createGame(puzzle("ammonia"));
+    const game = createGame(puzzle("formaldehyde"));
     expect(game.canUndo).toBe(false);
     click(game, "1,1", "2,1");
     click(game, "2,1", "2,2");
@@ -174,9 +174,9 @@ describe("Bond", () => {
       "
       H
       │
-      N·H
+      C·H
       ·
-      H
+      O
       "
     `);
     game.undo();
@@ -198,18 +198,18 @@ describe("Bond", () => {
   });
 
   test("Bond.08, Bond.09 reset removes every Bond and the undo history", () => {
-    const game = createGame(puzzle("ammonia"));
+    const game = createGame(puzzle("formaldehyde"));
     expect(game.reset()).toBe(false);
     click(game, "1,1", "2,1");
-    click(game, "2,1", "3,1");
+    click(game, "2,1", "2,2");
     game.undo();
     expect(draw(game)).toMatchInlineSnapshot(`
       "
       H
       │
-      N·H
+      C·H
       ·
-      H
+      O
       "
     `);
     expect(game.reset()).toBe(true);
@@ -219,7 +219,7 @@ describe("Bond", () => {
   });
 
   test("Bond.09 reset works with no Bonds but something to undo", () => {
-    const game = createGame(puzzle("ammonia"));
+    const game = createGame(puzzle("formaldehyde"));
     click(game, "1,1", "2,1");
     click(game, "1,1", "2,1", 1, -1);
     expect(game.canUndo).toBe(true);
@@ -297,11 +297,11 @@ describe("Valence", () => {
 
 describe("Check", () => {
   test("Check.01 no Bonds", () => {
-    expect(createGame(puzzle("ammonia")).status()).toEqual({ kind: "empty" });
+    expect(createGame(puzzle("formaldehyde")).status()).toEqual({ kind: "empty" });
   });
 
   test("Check.02 Atoms that still need Bonds", () => {
-    const game = createGame(puzzle("ammonia"));
+    const game = createGame(puzzle("formaldehyde"));
     click(game, "1,1", "2,1");
     expect(game.status()).toEqual({ kind: "open", open: 3 });
   });

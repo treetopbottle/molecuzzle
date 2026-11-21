@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("Input.01 clicking makes a Bond, then stronger, then removes it", async ({ page }) => {
-  await openPuzzle(page, 4); // H C N
+  await openPuzzle(page, 2); // H C N
   for (const name of ["single bond", "double bond", "triple bond", "no bond"]) {
     await clickBond(page, "1,2", "1,3");
     await expect(bond(page, "1,2", "1,3")).toHaveAccessibleName(`C 1,2 to N 1,3: ${name}`);
@@ -14,7 +14,7 @@ test("Input.01 clicking makes a Bond, then stronger, then removes it", async ({ 
 });
 
 test("Messages.02 an Atom with all its bonds says so", async ({ page }) => {
-  await openPuzzle(page, 5); // Methanol: . H . / O C H / H H .
+  await openPuzzle(page, 4); // Methanol: . H . / O C H / H H .
   await clickBond(page, "3,1", "3,2"); // H–H
   await clickBond(page, "2,1", "3,1"); // O–H: that H is full
   await expect(page.getByRole("alert")).toHaveText("Hydrogen already has all its bonds.");
@@ -22,7 +22,7 @@ test("Messages.02 an Atom with all its bonds says so", async ({ page }) => {
 });
 
 test("Messages.02 Bonds can't cross", async ({ page }) => {
-  await openPuzzle(page, 11); // Glycine
+  await openPuzzle(page, 12); // Glycine
   await clickBond(page, "2,1", "2,3"); // H–C across the middle
   await clickBond(page, "1,2", "4,2"); // O–H down through it
   await expect(page.getByRole("alert")).toHaveText("Bonds can't cross.");
@@ -30,7 +30,7 @@ test("Messages.02 Bonds can't cross", async ({ page }) => {
 });
 
 test("Input.01 right-click makes a Bond one weaker", async ({ page }) => {
-  await openPuzzle(page, 4);
+  await openPuzzle(page, 2);
   await clickBond(page, "1,2", "1,3", { times: 3 });
   await clickBond(page, "1,2", "1,3", { button: "right" });
   await expect(bond(page, "1,2", "1,3")).toHaveAccessibleName("C 1,2 to N 1,3: double bond");
@@ -39,7 +39,7 @@ test("Input.01 right-click makes a Bond one weaker", async ({ page }) => {
 });
 
 test("Input.02 Bonds can be reached with Tab and changed with keys", async ({ page }) => {
-  await openPuzzle(page, 4);
+  await openPuzzle(page, 2);
   await bond(page, "1,1", "1,2").focus();
   await page.keyboard.press("Tab");
   await expect(bond(page, "1,2", "1,3")).toBeFocused();
@@ -52,31 +52,31 @@ test("Input.02 Bonds can be reached with Tab and changed with keys", async ({ pa
 
 test("Input.02, Input.03 Undo and Ctrl+Z go back one change", async ({ page }) => {
   const undo = page.getByRole("button", { name: "Undo" });
-  await openPuzzle(page, 2); // Ammonia
+  await openPuzzle(page, 3); // Formaldehyde
   await expect(undo).toBeDisabled();
   await clickBond(page, "1,1", "2,1");
   await clickBond(page, "2,1", "2,2");
   await undo.click();
-  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("N 2,1 to H 2,2: no bond");
+  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("C 2,1 to H 2,2: no bond");
   await page.keyboard.press("ControlOrMeta+z");
-  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to N 2,1: no bond");
+  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to C 2,1: no bond");
   await expect(undo).toBeDisabled();
 });
 
 test("Input.02, Input.03 Reset removes every Bond and the undo history", async ({ page }) => {
   const reset = page.getByRole("button", { name: "Reset" }), undo = page.getByRole("button", { name: "Undo" });
-  await openPuzzle(page, 2);
+  await openPuzzle(page, 3);
   await expect(reset).toBeDisabled();
   await clickBond(page, "1,1", "2,1");
-  await clickBond(page, "2,1", "3,1");
+  await clickBond(page, "2,1", "2,2");
   page.once("dialog", dialog => dialog.accept());
   await reset.click();
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
   await expect(reset).toBeDisabled();
   await expect(undo).toBeDisabled();
   await page.keyboard.press("ControlOrMeta+z");
-  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to N 2,1: no bond");
-  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("N 2,1 to H 3,1: no bond");
+  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to C 2,1: no bond");
+  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("C 2,1 to H 2,2: no bond");
 });
 
 test("Board.02 Atoms show what they still need, and glow when complete", async ({ page }) => {

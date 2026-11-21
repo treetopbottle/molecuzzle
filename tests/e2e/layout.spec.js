@@ -21,7 +21,7 @@ test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page, is
 test("Layout.01, Puzzle.04 on a phone, the largest Grid, Valine's, fits: no sideways scroll, and the Board and its status line fit the screen", async ({ page, isMobile }) => {
   test.skip(!isMobile, "phone only");
   await start(page);
-  await openPuzzle(page, 28);
+  await openPuzzle(page, 20);
   const { width, height } = page.viewportSize();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   const stage = await page.locator(".stage").boundingBox();
