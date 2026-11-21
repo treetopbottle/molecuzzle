@@ -20,6 +20,11 @@ test("Generate.02 a Bond it can't read stops it", () => {
   expect(() => findLayout("H1-O1 O1~H2")).toThrow("can't read O1~H2");
 });
 
+test("Generate.02 a Bond with an Element the game doesn't have stops it", () => {
+  expect(() => findLayout("H1-Xx1")).toThrow("can't read H1-Xx1");
+  expect(() => findLayout("H1-constructor1")).toThrow("can't read H1-constructor1");
+});
+
 test("Generate.02 no layout with exactly one solution gives null", () => {
   expect(findLayout("H1-O1 O1-H2", { tries: 100, maxRows: 1, maxCols: 1, seed: 1 })).toBeNull();
 });

@@ -41,6 +41,12 @@ test("Generate.02 the script stops at a Bond it can't read", () => {
   expect(status).not.toBe(0);
 });
 
+test("Generate.02 the script stops at a Bond with an Element the game doesn't have", () => {
+  const { stderr, status } = run("H1-Xx1");
+  expect(stderr.trim()).toBe("can't read H1-Xx1");
+  expect(status).not.toBe(0);
+});
+
 test("Generate.02 the script says when no unique layout is found", () => {
   const { stderr, status } = run("H1-O1 O1-H2", "100", "1", "1");
   expect(stderr.trim()).toBe("no unique layout found");
