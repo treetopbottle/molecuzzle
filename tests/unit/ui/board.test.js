@@ -103,7 +103,7 @@ describe("Board", () => {
     expect(classes()).toEqual(["solved", "pulse"]);
   });
 
-  test("Board.03 a Board created solved doesn't pulse, also on an svg that just pulsed; after Reset, neither", () => {
+  test("Board.03 a Board created solved doesn't pulse, also on an svg that just pulsed; after Reset, neither, until it is solved again", () => {
     const first = createGame(puzzle("water"));
     const board = createBoard(svg, first, { onChange() {} });
     build(first);
@@ -117,5 +117,8 @@ describe("Board", () => {
     solved.reset();
     again.render();
     expect(classes()).toEqual([]);
+    build(solved);
+    again.render();
+    expect(classes()).toEqual(["solved", "pulse"]);
   });
 });
