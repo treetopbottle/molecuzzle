@@ -41,3 +41,13 @@ I read and ran 8f1c626 and 48d66c1 in separate `git worktree`s, each with `npm i
 5. **note**: `tests/unit/puzzle/removed.test.js:25-28`: it checks that each removed Puzzle has one solution, but not that this is its `solution`, nor that its Atoms match its formula, as `puzzles.test.js` checks for the 20. All eight entries are byte-identical to entries that passed those checks before, so this is minor.
 
 No must-fix findings.
+
+## Outcome
+
+1. Fixed in fdd00ce: both test names say Puzzle 12.
+2. Kept: a made-up list of its own, which counts its own Puzzles.
+3. Kept: made-up lists and stored data; in the storage tests, an id the game doesn't know is a case worth keeping.
+4. Kept: the test doesn't depend on the Puzzle, as the finding says.
+5. Fixed in fdd00ce: each removed Puzzle has the Atoms of its formula, and its one solution is its `solution`.
+
+Only tests changed, and they pass, so there is no second review.
