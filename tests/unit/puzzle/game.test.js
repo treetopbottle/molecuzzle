@@ -1,5 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { createGame } from "../../../src/puzzle/game.js";
+import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw, click, build, bondIndex } from "../../helpers/draw.js";
 import { schemaErrors } from "../../helpers/schemas.js";
@@ -271,6 +272,11 @@ describe("Bond", () => {
 });
 
 describe("Valence", () => {
+  test("Valence.01 each Element needs the Bonds of the table of valences", () => {
+    const valences = Object.fromEntries(Object.entries(ELEMENTS).map(([el, e]) => [el, e.valence]));
+    expect(valences).toEqual({ H: 1, F: 1, Cl: 1, Br: 1, I: 1, O: 2, S: 2, N: 3, C: 4 });
+  });
+
   test("Valence.01 each Atom needs its valence minus its bond count", () => {
     const game = createGame(puzzle("formaldehyde"));
     const needs = () => game.atoms.map((a, i) => `${a.el}${game.remaining(i)}`).join(" ");

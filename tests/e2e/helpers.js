@@ -60,13 +60,4 @@ export const colors = locator =>
   locator.evaluate(e => [getComputedStyle(e).color, getComputedStyle(e).borderTopColor])
     .then(css => css.map(c => c.match(/\d+/g).slice(0, 3).map(Number)));
 
-/** The hue of an [r, g, b] colour in degrees, or null for one that is (nearly) grey. */
-function hue([r, g, b]) {
-  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
-  if (d < 25) return null;
-  const h = max === r ? (g - b) / d : max === g ? 2 + (b - r) / d : 4 + (r - g) / d;
-  return (h * 60 + 360) % 360;
-}
-const inHue = (from, to) => c => { const h = hue(c); return h !== null && h >= from && h <= to; };
-export const isGreen = inHue(90, 180);
-export const isOrange = inHue(15, 50);
+export { isGreen, isOrange } from "../helpers/colors.js";

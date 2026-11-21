@@ -6,6 +6,7 @@ import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { ELEMENTS as VALENCES } from "../../../src/puzzle/elements.js";
 import { ELEMENTS as LOOKS } from "../../../src/ui/elements.js";
 import { click, build } from "../../helpers/draw.js";
+import { rgb, hue, lightness, inHue } from "../../helpers/colors.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 let svg;
@@ -20,6 +21,31 @@ const edge = name => [...svg.querySelectorAll(".edge")].find(e => e.getAttribute
 describe("Board", () => {
   test("Board.01, Board.04 every Element of the Puzzles has a look and a name", () => {
     expect(Object.keys(LOOKS).sort()).toEqual(Object.keys(VALENCES).sort());
+  });
+
+  test("Board.04 each Element's name", () => {
+    expect(Object.fromEntries(Object.entries(LOOKS).map(([el, look]) => [el, look.name]))).toEqual({
+      H: "Hydrogen", O: "Oxygen", N: "Nitrogen", C: "Carbon",
+      S: "Sulfur", F: "Fluorine", Cl: "Chlorine", Br: "Bromine", I: "Iodine",
+    });
+  });
+
+  test("Board.01 each Element's colour: H white, O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red, I violet", () => {
+    const color = el => rgb(LOOKS[el].color);
+    const red = inHue(345, 15), green = inHue(90, 150);
+    expect(hue(color("H"))).toBeNull();
+    expect(lightness(color("H"))).toBeGreaterThan(0.85);
+    expect(red(color("O"))).toBe(true);
+    expect(inHue(200, 240)(color("N"))).toBe(true);
+    expect(hue(color("C"))).toBeNull();
+    expect(lightness(color("C"))).toBeLessThan(0.4);
+    expect(inHue(40, 65)(color("S"))).toBe(true);
+    expect(lightness(color("S"))).toBeGreaterThan(0.5);
+    expect(green(color("F")) && green(color("Cl"))).toBe(true);
+    expect(lightness(color("F"))).toBeGreaterThan(lightness(color("Cl")) + 0.1);
+    expect(red(color("Br"))).toBe(true);
+    expect(lightness(color("Br"))).toBeLessThan(lightness(color("O")) - 0.1);
+    expect(inHue(260, 300)(color("I"))).toBe(true);
   });
 
   test("Board.01, Board.04 names each Atom with what it needs, and each dotted line", () => {
