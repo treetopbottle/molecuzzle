@@ -28,7 +28,7 @@ Interfaces that change:
 
 ## Steps
 
-1. **A solved Puzzle is kept.** Progress.01, Progress.05, Progress.06.
+1. **A solved Puzzle is kept.** `[DONE]` ([review](review-step-1.md)) Progress.01, Progress.05, Progress.06.
    - (a) Tests: in `tests/unit/puzzle/game.test.js`, `saved()` after solving is the solution with nothing to undo and `revealed` false, and `createGame` from it is solved with nothing to undo; `saved()` is still `null` after Reset (the test "saved() is null after Reset and after solving" splits in two). In `tests/unit/app.test.js`: solving keeps the entry, Reset removes it (the tests "Reset and solving remove what was kept" and "Progress.01 a solved Puzzle is marked solved" change), and opening the solved Puzzle passes its entry to `createGame`, solved. End-to-end: the Progress.06 example, in place of "a solved Puzzle opens again with no Bonds"; the stored value of the Progress.01 example (`tests/e2e/puzzle.spec.js`); the solved Water in "what is stored is a Progress" (`tests/e2e/progress.spec.js`); and, in the narrative test, Glycine still solved after the reload.
    - (b) Implementation: `saved()` in `game.js`, and its docstring and `withEntry`'s in `app.js`.
 2. **The pulse only when solving.** Board.03.
