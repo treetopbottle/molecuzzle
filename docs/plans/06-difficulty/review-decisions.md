@@ -42,3 +42,11 @@ Commits reviewed: the work of plan 06, `81c411b..65edaab` ("docs: move the lefto
 5. **note**: `docs/decisions.md:70` and `:224` (0003, 0018). Both notes are right. 0018 is fully superseded, and 0021's Alternatives give its trade-off. In effect 0021 puts back 0003's "easiest first", now measured instead of judged. "Partly superseded by 0018, and that by 0021" is accurate, though it might read better as "restored by 0021".
 
 No must-fix findings.
+
+## Outcome
+
+1. Fixed in e078516: 0022's cost says a look-alike test would now need no exceptions, and the test is in the backlog.
+2. Fixed in e078516: 0022 says a new Puzzle earns its place by being unlike the others and having something to rule out; only the tutorial may have nothing.
+3. Fixed in e078516: 0020's note says its numbers are from before plan 06, that Halothane stayed and Iodoethane went, and that Puzzle.05 now names the difficulty.
+4. Fixed in e078516: 0022 says the three had nothing to rule out beyond the tutorial's first Puzzles.
+5. Fixed in e078516: 0003's note says 0021 brings back easiest first, measured.
