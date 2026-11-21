@@ -67,7 +67,7 @@ Every H is an Atom on the Grid that the Player bonds, instead of hydrogens being
 <a id="0003"></a>
 ## 0003: All Puzzles are open
 
-Accepted (2026-11-10). Partly superseded by [0018](#0018), and that by [0021](#0021): the order is by difficulty.
+Accepted (2026-11-10). Partly superseded by [0018](#0018), which [0021](#0021) superseded in turn: the order is easiest first again, measured by difficulty.
 
 No Puzzle is locked; the order, easiest first, only suggests a path.
 
@@ -243,7 +243,7 @@ No Puzzle's Grid is wider than 5 columns or taller than 6 rows, and the generato
 <a id="0020"></a>
 ## 0020: New Puzzles are harder, and unlike the others
 
-Accepted (2026-11-21). Partly superseded by [0021](#0021), which measures how hard every Puzzle is, in place of a threshold for Puzzles 22 to 28, and by [0022](#0022), which removes the look-alikes of the batch before.
+Accepted (2026-11-21). Partly superseded by [0021](#0021), which measures how hard every Puzzle is, in place of a threshold for Puzzles 22 to 28, and by [0022](#0022), which removed the look-alikes of the batch before (Halothane stays, Iodoethane went). Its Puzzle numbers are those from before plan 06, and its Puzzle.05 was that threshold; the id now names the difficulty.
 
 A batch of larger Puzzles is made harder by the Dotted lines its solution leaves empty: Puzzles 22 to 28 each leave at least 5 ([Puzzle.05](spec/puzzle.md#puzzle)). And no new Puzzle's layout is another's, or nearly so, turned, flipped, or with other symbols of the same valence.
 
@@ -267,8 +267,8 @@ Every Puzzle has a difficulty, its Dotted lines plus twice those its solution le
 
 Accepted (2026-11-21)
 
-Eight easy Puzzles were taken out of the game: those with almost nothing to rule out, and those that are another Puzzle's layout with other symbols ([0020](#0020)). They are kept in `src/puzzle/removed.js`, and listed in the [spec](spec/puzzle.md#puzzle) with why; a test checks no Puzzle has the id or the formula of a removed one ([Puzzle.06](spec/puzzle.md#puzzle)).
+Eight easy Puzzles were taken out of the game: those with no empty Dotted line, nothing to rule out, beyond the first Puzzles that teach single, double and triple Bonds, and those that are another Puzzle's layout with other symbols ([0020](#0020)). The same holds for a new Puzzle: it earns its place by being unlike the others and having something to rule out, and only the first Puzzles, the tutorial, may have nothing. They are kept in `src/puzzle/removed.js`, and listed in the [spec](spec/puzzle.md#puzzle) with why; a test checks no Puzzle has the id or the formula of a removed one ([Puzzle.06](spec/puzzle.md#puzzle)).
 
 - **Why:** the list starts with a short run of easy Puzzles to learn the rules, single, double and triple Bonds and the first empty Dotted line, and then gets harder, without a long stretch of Puzzles that teach nothing new. Keeping the removed ones, with why, stops them coming back, and keeps their layouts if they are ever wanted.
-- **Cost:** Iodine has no Puzzle left, though it stays an Element. A Player who solved a removed Puzzle keeps its mark and Board in Progress, under an id the game no longer knows ([Progress.01](spec/storage.md#progress), [Progress.03](spec/storage.md#progress)); the score counts only Puzzles in the game ([List.02](spec/ui.md#list)), so "Solved k of 20" can go down. The formula check also keeps out a different Molecule with a removed one's formula, an isomer of it.
+- **Cost:** Iodine has no Puzzle left, though it stays an Element. A Player who solved a removed Puzzle keeps its mark and Board in Progress, under an id the game no longer knows ([Progress.01](spec/storage.md#progress), [Progress.03](spec/storage.md#progress)); the score counts only Puzzles in the game ([List.02](spec/ui.md#list)), so "Solved k of 20" can go down. The formula check also keeps out a different Molecule with a removed one's formula, an isomer of it. Whether a new Puzzle is unlike the others is still judged when it is made: with the look-alikes gone, a test of it would need no exceptions, and is in the backlog.
 - **Alternatives:** delete them with no record: one could be added again. A section of extra Puzzles: they stay in the game, still easy, and need a place in the UI. Mark them as removed in `puzzles.js`: the game would have to skip them.
