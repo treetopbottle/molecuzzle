@@ -6,6 +6,9 @@ const SVGNS = "http://www.w3.org/2000/svg";
 export const CELL = 84, PAD = 46, SCALE = 1.25, HIT = 22;
 const ORDER_NAMES = ["no bond", "single bond", "double bond", "triple bond"];
 const OFFSETS = [[], [0], [-4.5, 4.5], [-8, 0, 8]];
+// Where an Atom's hydrogens go: on the diagonals below-left, below-right and
+// above-left, where no Dotted line runs; the badge keeps the top right.
+const HYDROGENS = [[-1, 1], [1, 1], [-1, -1]], H_R = 8.5, H_AT = 28;
 
 function el(tag, attrs, parent) {
   const e = parent.ownerDocument.createElementNS(SVGNS, tag);
@@ -57,6 +60,14 @@ export function createBoard(svg, game, { onChange }) {
   const atomEls = atoms.map(a => {
     const E = ELEMENTS[a.el], [x, y] = xy(a);
     const g = el("g", { class: "atom", role: "img", transform: `translate(${x},${y})` }, atomsLayer);
+    // Its hydrogens, already bonded: inside the Atom's group, so not clickable,
+    // and drawn first, under it. They aren't .body, so they don't glow or pulse.
+    for (const [dx, dy] of HYDROGENS.slice(0, a.h)) {
+      el("line", { class: "fixed", x1: dx * E.r * .7, y1: dy * E.r * .7, x2: dx * (H_AT - 3), y2: dy * (H_AT - 3) }, g);
+      const h = el("g", { class: "hydrogen", transform: `translate(${dx * H_AT},${dy * H_AT})` }, g);
+      el("circle", { r: H_R, fill: ELEMENTS.H.color, stroke: ELEMENTS.H.stroke }, h);
+      el("text", { "text-anchor": "middle", "dominant-baseline": "central", fill: ELEMENTS.H.text, y: .5 }, h).textContent = "H";
+    }
     el("circle", { class: "body", r: E.r, fill: E.color, stroke: E.stroke }, g);
     el("circle", { class: "shine", r: E.r * .42, cx: -E.r * .32, cy: -E.r * .36 }, g);
     const t = el("text", { class: "sym", "text-anchor": "middle", "dominant-baseline": "central", fill: E.text, y: 1 }, g);
@@ -84,7 +95,8 @@ export function createBoard(svg, game, { onChange }) {
       const left = game.remaining(i), { g, count } = atomEls[i];
       g.classList.toggle("ok", left === 0);
       count.textContent = left;
-      g.setAttribute("aria-label", `${ELEMENTS[a.el].name} ${place(a)}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
+      const hydrogens = a.h ? `, with ${a.h} hydrogen${a.h > 1 ? "s" : ""}` : "";
+      g.setAttribute("aria-label", `${ELEMENTS[a.el].name} ${place(a)}${hydrogens}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
     });
     const solved = game.status().kind === "solved";
     svg.classList.toggle("solved", solved);

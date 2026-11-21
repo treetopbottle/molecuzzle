@@ -1,4 +1,5 @@
-// How each Element looks: its name, the colours of its ball and its size.
+// How each Element looks: its name, the colours of its ball and its size. H is
+// also how the small hydrogens beside an Atom look.
 export const ELEMENTS = {
   H:  { name: "Hydrogen", color: "#eef2f7", stroke: "#9aa6b8", text: "#2a2f38", r: 17 },
   C:  { name: "Carbon",   color: "#454b55", stroke: "#1e2228", text: "#ffffff", r: 22 },
