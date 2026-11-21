@@ -14,6 +14,16 @@ test("Generate.01 the script prints the layout of water", () => {
   expect(stdout).toContain("solution: [[0,1,1],[1,2,1]],");
 });
 
+test("the script draws a layout with only one-letter symbols, every point one character wide", () => {
+  const { stdout } = run("C1-H1 C1-H2 C1-H3 C1-O1 O1-H4", "200", "3", "3", "1");
+  expect(stdout).toContain('atoms: [["H",0,0],["H",0,1],["O",1,0],["C",1,1],["H",1,2],["H",2,1]],');
+  expect(stdout.split("\n").slice(0, 3)).toEqual([
+    "  // H H ·",
+    "  // O C H",
+    "  // · H ·",
+  ]);
+});
+
 test("the script draws the layout, every point two characters wide with a two-letter symbol", () => {
   const { stdout, status } = run("C1-H1 C1-H2 C1-H3 C1-Cl1", "200", "3", "3", "1");
   expect(status).toBe(0);
