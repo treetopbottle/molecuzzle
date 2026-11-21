@@ -12,6 +12,7 @@ test("Generate.01 the script prints the layout of water", () => {
   expect(stdout).toContain("rows: 3, cols: 1,");
   expect(stdout).toContain('atoms: [["H",0,0],["O",1,0],["H",2,0]],');
   expect(stdout).toContain("solution: [[0,1,1],[1,2,1]],");
+  expect(stdout).toContain("rows: 3, cols: 1, // difficulty 2: 2 Dotted lines, 0 empty");
 });
 
 test("the script draws a layout with only one-letter symbols, every point one character wide", () => {
