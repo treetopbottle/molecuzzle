@@ -39,3 +39,11 @@ Commits reviewed: the work of plan 04, `3ea7190..9d129e7`. The range also holds 
 4. **note**: `docs/spec/README.md:25`. A Board drawn as text has two widths: points are two characters wide only when a two-letter symbol is present. The reason, that every existing one-letter drawing and snapshot stays the same, is only in plan 04's Design. This is a convention for the tests and the spec, and it is cheap to change, so a decision is optional.
 
 5. **note**: `docs/decisions.md:237` (0019, Cost). "Larger Molecules wait for another Grid" is vague. It probably means the hex grid or diagonals in the backlog; saying so, or linking the backlog, would make it concrete.
+
+## Outcome
+
+1. Fixed in 5ec3b3f: 0001's cost names S with 4 or 6 Bonds.
+2. Fixed in 5ec3b3f: 0011's cost names the schema, the panel's rule, and what a new Element takes.
+3. Kept: "easiest" is a judgement within a batch; Phosgene's double Bond makes it harder than its 4 Atoms say. Plan 05's measure is for its own batch only.
+4. Kept: a convention for the tests and the spec, cheap to change, as the finding says.
+5. Fixed in 5ec3b3f: 0019 names the hex grid of the backlog.
