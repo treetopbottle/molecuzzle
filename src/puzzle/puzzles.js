@@ -156,9 +156,9 @@ export const PUZZLES = [
   {
     id: "lactic-acid", name: "Lactic acid", formula: "C3H6O3",
     fact: "Lactic acid gives yoghurt and sourdough their sour taste, and is made in your muscles during hard exercise.",
-    rows: 4, cols: 4,
-    atoms: [["O",0,0],["H",0,1],["H",0,2],["H",1,1],["C",1,2],["H",1,3],["C",2,0],["C",2,2],["H",2,3],["O",3,0],["H",3,1],["O",3,2]],
-    solution: [[0,1,1],[0,6,1],[2,4,1],[3,4,1],[4,5,1],[4,7,1],[6,7,1],[6,9,2],[7,8,1],[7,11,1],[10,11,1]],
+    rows: 6, cols: 4,
+    atoms: [["O",0,0],["H",0,1],["O",0,2],["C",1,0],["C",1,2],["H",1,3],["O",3,0],["H",3,1],["C",3,2],["H",3,3],["H",5,0],["H",5,2]],
+    solution: [[0,3,2],[1,2,1],[2,4,1],[3,4,1],[3,6,1],[4,5,1],[4,8,1],[6,10,1],[7,8,1],[8,9,1],[8,11,1]],
   },
   {
     id: "ethyl-acetate", name: "Ethyl acetate", formula: "C4H8O2",
@@ -177,9 +177,9 @@ export const PUZZLES = [
   {
     id: "serine", name: "Serine", formula: "C3H7NO3",
     fact: "Serine is the amino acid at the heart of many enzymes that cut up proteins, such as trypsin in your gut.",
-    rows: 4, cols: 4,
-    atoms: [["H",0,0],["N",0,1],["H",0,2],["O",0,3],["H",1,0],["C",1,1],["C",1,3],["O",2,0],["C",2,1],["H",2,2],["O",2,3],["H",3,0],["H",3,1],["H",3,3]],
-    solution: [[0,1,1],[1,2,1],[1,5,1],[3,6,2],[4,5,1],[5,6,1],[5,8,1],[6,10,1],[7,8,1],[7,11,1],[8,9,1],[8,12,1],[10,13,1]],
+    rows: 5, cols: 4,
+    atoms: [["H",0,1],["N",0,2],["H",0,3],["O",1,1],["O",2,0],["C",2,1],["C",2,2],["H",2,3],["H",3,0],["H",3,1],["C",3,2],["O",3,3],["H",4,2],["H",4,3]],
+    solution: [[0,1,1],[1,2,1],[1,6,1],[3,5,2],[4,5,1],[4,8,1],[5,6,1],[6,7,1],[6,10,1],[9,10,1],[10,11,1],[10,12,1],[11,13,1]],
   },
   {
     id: "cysteine", name: "Cysteine", formula: "C3H7NO2S",
