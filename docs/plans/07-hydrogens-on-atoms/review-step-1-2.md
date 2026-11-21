@@ -27,4 +27,4 @@ No must-fix or should-fix findings.
 
 ## Outcome
 
-1. Fixed in this commit: step 7 names the spec's Bond.03 example on Acetonitrile.
+1. Fixed in 6ab1f9b: step 7 names the spec's Bond.03 example on Acetonitrile.
