@@ -42,3 +42,12 @@ Commits reviewed: the work of plan 05, `c4afef4..1ea47c9`. I read everything at 
 6. **note**: process, not a decision.
    - No commit in the range does finish-a-plan step 1 for plan 05: nothing moves plan content into the spec, the decisions or the backlog. Findings 1 and 2 are what such a step would move.
    - `docs/plans/05-larger-puzzles/review-step-2.md:78` links `review-step-2-2.md`, which doesn't exist at `1ea47c9`, while step 2 is marked `[DONE]` (`README.md`, step 2). The plan shouldn't be set Done until that second review is in.
+
+## Outcome
+
+1. Fixed in 6aa456a: decision 0020 gives the measure, the threshold of 5, its cost and the alternatives; Puzzle.05 links it.
+2. Fixed in 6aa456a: 0020 also says no layout is another's or nearly so, turned, flipped or with other symbols, and that it is checked by hand; the plan's Design links it.
+3. Fixed in 6aa456a: the Design says the table goes by Atoms, and those with as many keep the table's order.
+4. Kept: "fits" is meant with the page at the top; after opening from the list the Board is still in view.
+5. Fixed in 6aa456a: 0002's cost names Valine's 19 Atoms.
+6. Fixed: findings 1 and 2 move the plan's choices into the decisions, which is finish-a-plan's step 1; the plan has no other leftovers. The second review of step 2 is in, and its fixes have a third review before the plan is set Done.

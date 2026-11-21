@@ -37,3 +37,10 @@ Commits reviewed: 1c2290e (Cysteine's new layout), 645ad7f (the mouse leaves the
    - Fix: give Serine a seed whose layout isn't Alanine's plus an OH, and record the new arguments in the plan.
 2. **note**: `docs/plans/05-larger-puzzles/review-step-2.md:74`. Outcome 3 says "Fixed in the commit after 645ad7f" instead of naming da9c327. review.md asks for the commit.
    - Also, da9c327 is the commit that marks step 2 `[DONE]` (`README.md:45`), although c22f803's message says it does. Commit messages can't be changed now, so this is only for the record.
+
+## Outcome
+
+1. Fixed in f943d24: Serine is seed 5's 5×4 layout, and shares at most 7 of its 14 points with any Puzzle under any turn, flip or shift. Lactic acid, 9 of 12 points on Alanine's, is seed 6's, with at most 6 of 12. Every new layout now shares at most 9 points with another; the arguments are in the plan (6aa456a).
+2. Fixed: Outcome 3 of the first review names da9c327.
+
+A layout changed again, so the fixes have a [third review](review-step-2-3.md).
