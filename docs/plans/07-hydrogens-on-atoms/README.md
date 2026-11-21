@@ -1,6 +1,6 @@
 # 07: Hydrogens on their Atoms, and Puzzles with loops
 
-Status: Draft
+Status: Draft, reviewed twice
 
 The hydrogens leave the Grid: each Atom has its hydrogens bonded from the start, drawn small beside it, and needs its valence minus them in Bonds to other Atoms ([decision 0023](../../decisions.md#0023)). The Board is then the Molecule's skeleton, and the Puzzles are chosen for their loops of Dotted lines, the choices a Player has to make; the difficulty counts them ([decision 0024](../../decisions.md#0024)). Fifteen Puzzles, from Acetonitrile to Citric acid, most of them rings or acids; sixteen of today's twenty are removed, too easy without their hydrogens. The prototype `prototypes/implicit-hydrogens.html` tried it first.
 

@@ -43,3 +43,14 @@ Commits reviewed: e49d056 (fixes after the first review; Morpholine for 1,4-Diox
 4. **note**: `docs/decisions.md:297`: "That leaves S and the halogens with no Puzzle for now: in the Molecules tried, each closes its loops." This is wrong for S. The only S candidate, Cysteine, was left out as Serine's layout (`README.md:70`, `puzzle.md:61`), not for closed loops. Its layout has 2 loops, and the obvious moves leave 4 of 8 lines open.
 5. **note**: `docs/spec/puzzle.md:11`: Puzzle.03 says "an Atom with more Bonds than its valence minus its hydrogens". The check counts Bond orders (`bondCount` in `src/puzzle/game.js:33`). "A bond count over its valence minus its hydrogens", using the term defined at `puzzle.md:171`, would be exact: one double Bond is one Bond but a bond count of 2.
 6. **note**: `prototypes/implicit-hydrogens.html:122-123` still has 1,4-Dioxane as a Puzzle. Prototypes are outside the spec, so this is only for the record.
+
+## Outcome
+
+1. Fixed in 94652c6: 0024 now states the obvious moves the script used, bounds on each line from what its Atoms need, not only lines that exactly fit. With them, Threonine and Valine are solved (0 of 10 open) and 12 of today's 20 are, as stated; the narrower moves the plan described give the review's 5 of 10 and 9 of 20. The plan points at 0024.
+2. Fixed in 94652c6: "a single nearest Atom with more than one Bond". (Outcome 4 of the first review miscounted Halothane's halogens; the decision has it right.)
+3. Fixed in 94652c6: the moves are in 0024 now, so the link holds.
+4. Fixed in 94652c6: S has no Puzzle because its one candidate is Serine's layout.
+5. Fixed in 94652c6: Puzzle.03 says "a bond count over".
+6. Kept: the prototype is outside the spec, and keeps the set the Player tried.
+
+Only docs changed; the spec, decisions and plan agree with the numbers.
