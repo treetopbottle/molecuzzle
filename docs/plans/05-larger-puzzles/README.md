@@ -40,7 +40,7 @@ The Molecules, as Bonds for the generator:
 
 ## Steps
 
-1. **Grids that fit a phone.** Puzzle.04, Generate.01.
+1. **Grids that fit a phone.** `[DONE]` ([review](review-step-1.md)) Puzzle.04, Generate.01.
    - (a) Tests: in `tests/unit/puzzle/puzzles.test.js`, every Puzzle's Grid has at most 6 rows and 5 columns (all 21 do, so it passes at once); in `tests/unit/puzzle/generate-script.test.js`, the script for butane with no size given prints a layout of at most 6 by 5 (with today's defaults it is wider than 5).
    - (b) Implementation: the defaults in `generate.js`, and the comment of `scripts/generate.js`.
 2. **The new Puzzles.** Puzzle.01, Puzzle.04, Puzzle.05, Layout.01, Page.01, Panel.01, Panel.03, List.01, List.02.

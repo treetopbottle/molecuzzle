@@ -28,3 +28,10 @@ Commits reviewed: 6a2629d (tests) and 1376476 (implementation), range 40136b0..1
 
 1. **note**: `tests/unit/puzzle/generate-script.test.js:41-43`. The test only checks "at most 6 by 5". Defaults of 5 by 5, or even 4 by 4, would also pass it, so it doesn't show the 6th row is allowed. Butane now gives exactly 6×4, so asserting `rows: 6, cols: 4` would pin the new default. The rule's wording ("at most") makes the current test acceptable.
 2. **note**: `scripts/generate.js:12-13`. The comment repeats `findLayout`'s other defaults (20000 tries, seed 1). That is two places to keep in step if those defaults ever change.
+
+## Outcome
+
+1. Fixed in dc4851a: the test also expects butane's 6 by 4.
+2. Fixed in dc4851a: the comment names only the size, and points to `findLayout` for the rest.
+
+A test and a comment changed, and the tests pass, so there is no second review.
