@@ -49,10 +49,10 @@ The three components ([decision 0011](docs/decisions.md#0011)) and the Glue, `br
 
 ```mermaid
 flowchart TD
-  glue["Glue<br/>src/app.js, src/browser.js"]
-  ui["UI<br/>src/ui/"]
-  puzzle["Puzzle<br/>src/puzzle/<br/>puzzles and the rules"]
-  storage["Storage<br/>src/storage/"]
+  glue["Glue<br/><code>src/app.js</code>, <code>src/browser.js</code>"]
+  ui["UI<br/><code>src/ui/</code>"]
+  puzzle["Puzzle<br/><code>src/puzzle/</code><br/>puzzles and the rules"]
+  storage["Storage<br/><code>src/storage/</code>"]
 
   glue --> ui
   glue --> puzzle

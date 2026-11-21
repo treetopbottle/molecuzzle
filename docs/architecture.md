@@ -14,12 +14,12 @@ Each diagram shows the files of one component; an arrow is an import. Arrows are
 
 ```mermaid
 flowchart TD
-  uijs["ui.js<br/>owns the page"]
-  board["board.js<br/>the Board in SVG"]
-  panel["panel.js<br/>the open Puzzle and the rules"]
-  list["puzzle-list.js<br/>the list of Puzzles"]
-  messages["messages.js<br/>the texts for the Player"]
-  looks["elements.js<br/>how Elements look"]
+  uijs["<code>ui.js</code><br/>owns the page"]
+  board["<code>board.js</code><br/>the Board in SVG"]
+  panel["<code>panel.js</code><br/>the open Puzzle and the rules"]
+  list["<code>puzzle-list.js</code><br/>the list of Puzzles"]
+  messages["<code>messages.js</code><br/>the texts for the Player"]
+  looks["<code>elements.js</code><br/>how Elements look"]
 
   uijs --> board
   uijs --> panel
@@ -37,12 +37,12 @@ The Puzzles and the rules. `game.js` keeps the Bonds of a Board and gives its st
 
 ```mermaid
 flowchart TD
-  puzzles["puzzles.js<br/>the Puzzles"]
-  game["game.js<br/>a Puzzle being played"]
-  solver["solver.js<br/>finds the solutions"]
-  gen["generate.js<br/>finds layouts for new Puzzles"]
-  grid["grid.js<br/>where Bonds can go"]
-  elements["elements.js<br/>the Elements and their valence"]
+  puzzles["<code>puzzles.js</code><br/>the Puzzles"]
+  game["<code>game.js</code><br/>a Puzzle being played"]
+  solver["<code>solver.js</code><br/>finds the solutions"]
+  gen["<code>generate.js</code><br/>finds layouts for new Puzzles"]
+  grid["<code>grid.js</code><br/>where Bonds can go"]
+  elements["<code>elements.js</code><br/>the Elements and their valence"]
 
   game --> elements
   game --> grid
