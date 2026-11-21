@@ -26,7 +26,8 @@ export function createBoard(svg, game, { onChange }) {
   const { puzzle, atoms, bonds } = game;
   const xy = a => [PAD + a.c * CELL, PAD + a.r * CELL];
   svg.replaceChildren();
-  svg.classList.remove("solved");
+  svg.classList.remove("solved", "pulse");
+  let wasSolved = game.status().kind === "solved"; // a Board created solved doesn't pulse
   const width = PAD * 2 + (puzzle.cols - 1) * CELL, height = PAD * 2 + (puzzle.rows - 1) * CELL;
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
   svg.setAttribute("width", width * SCALE);
@@ -85,7 +86,12 @@ export function createBoard(svg, game, { onChange }) {
       count.textContent = left;
       g.setAttribute("aria-label", `${ELEMENTS[a.el].name} ${place(a)}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
     });
-    svg.classList.toggle("solved", game.status().kind === "solved");
+    const solved = game.status().kind === "solved";
+    svg.classList.toggle("solved", solved);
+    // Pulses when a render finds it solved and the one before didn't; stays until it isn't solved.
+    if (!solved) svg.classList.remove("pulse");
+    else if (!wasSolved) svg.classList.add("pulse");
+    wasSolved = solved;
   }
 
   render();
