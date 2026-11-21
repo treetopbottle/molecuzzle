@@ -78,13 +78,13 @@ The candidates left out whose reason depends on their layout, with the Bonds tri
 3. **Labels in the generator.** `[DONE]` ([review](review-step-3.md)) Generate.01, Generate.02.
    - (a) Tests: the new Generate.01 and Generate.02 examples in `tests/unit/puzzle/generate.test.js` and through the script; H as an Element, and an Atom with no room left (`CH4-C`), are "can't read". The old examples, with H Atoms, go.
    - (b) Implementation: the labels in `generate.js`, and the script's printing and drawing.
-4. **Difficulty counts loops.** Puzzle.05, Puzzle.08.
+4. **Difficulty counts loops.** `[DONE]` ([review](review-step-4.md)) Puzzle.05, Puzzle.08.
    - (a) Tests in `tests/unit/puzzle/difficulty.test.js`: the Puzzle.05 example on the new Glycine and the Puzzle.08 example on Glycerol, made-up until step 7; and Morpholine, a ring, where loops and empty Dotted lines differ (2 loops, 1 empty; difficulty 11). The script's comment, in `generate-script.test.js`.
    - (b) Implementation: `difficulty.js` and the script's comment.
-5. **The Board draws hydrogens.** Board.01, Board.04, Panel.04.
+5. **The Board draws hydrogens.** `[DONE]` ([review](review-step-5.md)) Board.01, Board.04, Panel.04.
    - (a) Tests in `tests/unit/ui/board.test.js` on a made-up Acetic acid: its CH₃ has three hydrogens drawn, not focusable and outside every Dotted line's hit area, and the names of the Board.04 example; in `panel.test.js`, the rule. Board.01's colours lose H, which stays in `ui/elements.js` for the hydrogens.
    - (b) Implementation: `board.js`, `style.css`, `panel.js`.
-6. **Progress under a new key.** Progress.03.
+6. **Progress under a new key.** `[DONE]` ([review](review-step-6.md)) Progress.03.
    - (a) Tests: in `tests/unit/storage/progress.test.js`, the key is `molecuzzle-v3`, and what is stored under `molecuzzle-v2` isn't read.
    - (b) Implementation: `STORAGE_KEY`.
 7. **The new Puzzles.** Puzzle.01, Puzzle.04, Puzzle.05, Puzzle.06, Puzzle.07, Puzzle.08, and the examples in Scope.

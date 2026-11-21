@@ -52,3 +52,10 @@ Commits reviewed: d949c54 (tests, step 5(a)) and 69b87ca (implementation with re
    - The code comment at `src/ui/board.js:64` records the link.
 
 No must-fix findings.
+
+## Outcome
+
+1. Fixed in a4c7134: a no-break space keeps each symbol with its number; Panel.04 says so, and the five screenshots are remade, looked at on a computer and a phone.
+2. Kept for step 7, which checks the page's height with 15 Puzzles.
+3. Kept for step 7, as the finding says.
+4. Kept: the code comment records the link, and happy-dom computes no styles.

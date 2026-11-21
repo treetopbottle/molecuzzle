@@ -32,3 +32,8 @@ Commits reviewed: 2445e54 (tests, step 6(a)) and fb9cdcf (implementation, step 6
    - Decision 0023's cost doesn't mention it.
 
 No must-fix findings.
+
+## Outcome
+
+1. Fixed in 0266c89: 0016 says "its key", and notes that 0023 moved it to `molecuzzle-v3`.
+2. Fixed in 0266c89: 0023's cost says what is under the old key stays, read only by older builds.

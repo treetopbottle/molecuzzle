@@ -37,3 +37,10 @@ Commits reviewed: 6833833 (tests, step 4(a)) and 6ef22b7 (implementation, step 4
    - A Puzzle whose Dotted lines fall into separate groups would get too few loops. No test or caller can build one, so this is only worth knowing.
 
 No must-fix or should-fix findings.
+
+## Outcome
+
+1. Kept: step 7 removes the Water test.
+2. Kept until step 7, which rewrites the test on the Puzzles of `puzzles.js` and drops the line.
+3. Kept: it is the plan's format, and only the generator's comment.
+4. Kept: every Puzzle has a solution, so its Dotted lines join its Atoms, as the code comment says.
