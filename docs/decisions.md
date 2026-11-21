@@ -47,7 +47,7 @@ Accepted (2026-11-10)
 Each Element has one valence, the number of Bonds it needs; there are no charges, ions or lone pairs.
 
 - **Why:** a Player can learn the rule in a minute ("C needs 4"), and the badge on each Atom shows how many it still needs.
-- **Cost:** Molecules that need formal charges can't be Puzzles: carbon monoxide, nitric acid, nitro groups, salts. Puzzles are chosen to fit.
+- **Cost:** Molecules that need formal charges can't be Puzzles: carbon monoxide, nitric acid, nitro groups, salts. Nor can those where an Element has another number of Bonds than its one valence, such as S with 4 or 6 in DMSO, sulfuric acid or SF₆. Puzzles are chosen to fit.
 - **Alternatives:** formal charges and lone pairs: closer to real chemistry, but much harder to show and to reason about.
 
 <a id="0002"></a>
@@ -157,7 +157,7 @@ Accepted (2026-11-15)
 The code is three components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser) and UI (`src/ui/`: the page, what it shows and what the Player does). A component imports only from itself. `src/browser.js` and `src/app.js` are not a component: they import the components and wire them together, handing each what it needs from the others as arguments, and add nothing of their own, so they have no spec: what they do is in the features they wire. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component.
 
 - **Why:** each component can be read, specified and tested on its own, and replaced: `app.js` gets the storage and the Puzzles passed in, so tests can pass their own.
-- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know. What two components both need is written in each: the Element symbols in the Puzzle's and the UI's `elements.js`, and the undo limit in `game.js`, `progress.js` and the Progress schema.
+- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know. What two components both need is written in each: the Element symbols in the Puzzle's and the UI's `elements.js` and in the Puzzle schema, the valences in `puzzle/elements.js` and in the rule the panel shows, and the undo limit in `game.js`, `progress.js` and the Progress schema. A new Element means changing all of those, and the spec.
 - **Alternatives:** the flat `src/` as it was: fewer files, but the boundaries were only in comments, and `app.js` mixed wiring with the panel's DOM. A framework or a container for dependency injection: more than the page needs ([0006](#0006)). The wiring as a fourth component: but it adds nothing and has no spec.
 
 <a id="0012"></a>
@@ -234,5 +234,5 @@ Accepted (2026-11-21)
 No Puzzle's Grid is wider than 5 columns or taller than 6 rows, and the generator looks for no larger ones unless it is told to.
 
 - **Why:** on a phone, 390 px wide, the Board shrinks to fit ([Layout.01](spec/ui.md#layout)). At 5 columns a C or an O is 36 px across, 62% of its size on a computer, still large enough to see and to tap next to; at 6 columns it would be about 30 px. A Board of 6 rows by 5 columns is then about 400 px tall, so it fits on the screen with its status line. Larger and harder Puzzles have to grow by more Atoms on the same Grid, with more Dotted lines left empty, not by a bigger Grid.
-- **Cost:** some Molecules don't fit, or have no layout with exactly one solution in that size: Valine, with 19 Atoms, only just has one. Larger Molecules wait for another Grid ([decision 0002](#0002)'s cost).
+- **Cost:** some Molecules don't fit, or have no layout with exactly one solution in that size: Valine, with 19 Atoms, only just has one. Larger Molecules wait for a Grid with more neighbours per Atom, such as the hex grid in the backlog ([decision 0002](#0002)'s cost).
 - **Alternatives:** larger Grids that scroll sideways on a phone: goes against Layout.01, and the Board is hard to see whole. Zooming or panning the Board: more UI, and the Player loses sight of the Molecule. Smaller cells for large Grids: the Atoms get too small to tap.
