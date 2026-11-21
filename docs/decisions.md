@@ -201,9 +201,9 @@ Progress keeps, for every Puzzle in progress, its Bonds, whether the solution wa
 <a id="0016"></a>
 ## 0016: Progress keeps its key while it only gains fields
 
-Accepted (2026-11-21). Partly superseded by [0017](#0017): the key also stays when a field holds more entries, as long as older builds still read each entry right.
+Accepted (2026-11-21). Partly superseded by [0017](#0017): the key also stays when a field holds more entries, as long as older builds still read each entry right. The key it names was `molecuzzle-v2`; [0023](#0023) changed the meaning of the Boards, so Progress moved to `molecuzzle-v3`.
 
-Progress stays under the key `molecuzzle-v2` when a change only adds an optional field to it, as `boards` did ([0015](#0015)). Only a field that changes its meaning or format gets a new key.
+Progress stays under its key when a change only adds an optional field to it, as `boards` did ([0015](#0015)). Only a field that changes its meaning or format gets a new key.
 
 - **Why:** an older Progress is still a valid Progress, so no Player loses their solved Puzzles, and there is no migration code.
 - **Cost:** an older build on the same origin ([0009](#0009)) loads the Progress and drops the fields it doesn't know on its next save. The key says nothing about which fields there are.
@@ -283,7 +283,7 @@ Accepted (2026-11-21)
 Every hydrogen is bonded to its Atom from the start. It isn't an Atom on the Grid, and the Player can't change it; the Board draws it as a small white ball on a short thin line beside its Atom, and an Atom needs its valence minus its hydrogens in Bonds to other Atoms ([Puzzle.07](spec/puzzle.md#puzzle)).
 
 - **Why:** the hydrogens gave nothing to think about. An H has one Bond, and its partner was nearly always the Atom next to it. In the 20 Puzzles before this, of the 110 Atoms with one Bond (105 H, and Halothane's F, Cl and Br), 97 had a single nearest Atom with more than one Bond along their Dotted lines, and it was their partner; a line between two such Atoms is never a Bond; and the obvious moves of [0024](#0024) solved 12 of the 20 outright. Without them the Board is the Molecule's skeleton, and the reasoning is about its loops and Bond orders. Drawing the hydrogens, rather than writing CH₃ on the ball, keeps them visible and shows they are already bonded; the prototype in `prototypes/implicit-hydrogens.html` first wrote CH₃ on the ball, which looked odd, and now draws them.
-- **Cost:** every Puzzle needs a new layout, and Molecules of only one or two Atoms besides their hydrogens, such as Water and Formaldehyde, can't be Puzzles any more. A Puzzle's format changes: each Atom gains its hydrogens. Boards stored for the old layouts mean other Bonds now, so Progress moves to a new key, as [0016](#0016) asks, and Players start again. The Puzzles removed with this change are kept in `removed.js` as they were, with their hydrogens as Atoms, and are no longer checked against the rules. The Board is harder to read for a Player who counted H balls, and each Atom draws up to three small balls.
+- **Cost:** every Puzzle needs a new layout, and Molecules of only one or two Atoms besides their hydrogens, such as Water and Formaldehyde, can't be Puzzles any more. A Puzzle's format changes: each Atom gains its hydrogens. Boards stored for the old layouts mean other Bonds now, so Progress moves to a new key, as [0016](#0016) asks, and Players start again; what is under the old key stays in the browser, read only by builds from before this change on the same origin ([0009](#0009)). The Puzzles removed with this change are kept in `removed.js` as they were, with their hydrogens as Atoms, and are no longer checked against the rules. The Board is harder to read for a Player who counted H balls, and each Atom draws up to three small balls.
 - **Alternatives:** keep every H on the Grid ([0002](#0002)) and make better layouts: a lot of generator work for hydrogens that still teach nothing. Write CH₃ on the ball: compact, but it reads as a formula, not as Atoms. Show only a number of hydrogens: less to draw, but the Bonds they make aren't seen.
 
 <a id="0024"></a>
