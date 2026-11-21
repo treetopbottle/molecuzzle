@@ -6,9 +6,10 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 ### Puzzle
 
-- Puzzles: there are 21, in the order of the table below; new Puzzles go at the end ([decision 0018](../decisions.md#0018)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
+- Puzzles: there are 28, in the order of the table below; new Puzzles go at the end ([decision 0018](../decisions.md#0018)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
+- Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
 
 | # | Molecule | Formula |
 |---|---|---|
@@ -33,6 +34,13 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 | 19 | Tetrafluoroethylene | C₂F₄ |
 | 20 | Iodoethane | C₂H₅I |
 | 21 | Halothane | C₂HBrClF₃ |
+| 22 | Lactic acid | C₃H₆O₃ |
+| 23 | Ethyl acetate | C₄H₈O₂ |
+| 24 | Glycerol | C₃H₈O₃ |
+| 25 | Serine | C₃H₇NO₃ |
+| 26 | Cysteine | C₃H₇NO₂S |
+| 27 | Threonine | C₄H₉NO₃ |
+| 28 | Valine | C₅H₁₁NO₂ |
 
 The Grids, solutions and facts are in `src/puzzle/puzzles.js`.
 
@@ -54,9 +62,16 @@ And its one solution is
   O
 ```
 
+Example (Puzzle.04):
+
+```
+Given Puzzle 28, Valine, with 19 Atoms
+Then its Grid has 6 rows and 5 columns
+```
+
 ### Generate
 
-- Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols` on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order; the same arguments print the same layout (Generate.01)
+- Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order; the same arguments print the same layout (Generate.01)
 - None: if it can't read a Bond, or a Bond has an Atom whose Element isn't in the [table of valences](#board), it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
 
 Bonds are written between labelled Atoms: the label's letters are the Element, `-` `=` `#` a single, double and triple Bond.

@@ -138,8 +138,8 @@ Example (Panel.01):
 ```
 Given Puzzle 1 is open
 Then ‹ is disabled
-When the Player clicks › and then opens Puzzle 21
-Then "Puzzle 21 of 21" and "Unsolved" show, and › is disabled
+When the Player clicks › and then opens Puzzle 28
+Then "Puzzle 28 of 28" and "Unsolved" show, and › is disabled
 ```
 
 ### List
@@ -156,7 +156,7 @@ Example (List.01, List.02):
 ```
 Given Puzzle 1 is solved
 When the Player opens the game
-Then the list has "Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 21"
+Then the list has "Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 28"
 When the Player clicks "Puzzle 13"
 Then Puzzle 13 opens
 ```

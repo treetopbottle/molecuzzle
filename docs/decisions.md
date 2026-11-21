@@ -18,6 +18,7 @@ What the Player does and what the rules are.
 - [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 - [0017: A solved Puzzle keeps its Board, until it is reset](#0017)
 - [0018: New Puzzles go at the end](#0018)
+- [0019: Grids of at most 6 rows by 5 columns](#0019)
 
 ### Technical
 
@@ -224,3 +225,14 @@ New Puzzles are added after the last one, easiest first among themselves, instea
 - **Why:** a Player who has solved the first Puzzles finds the new ones after them, not scattered among solved ones; the numbers in the spec, the tests and the Players' heads stay the same. Progress is by the Puzzles' ids ([schemas](spec/schemas.md#progress)), so it would survive either way.
 - **Cost:** the whole list is no longer easiest first ([0003](#0003)): a batch of easy Puzzles can follow hard ones, as the Puzzles with new Elements follow Alanine.
 - **Alternatives:** keep the whole list easiest first, renumbering the Puzzles after each insert: the best path for a new Player, but every number in the spec and the tests moves, and a returning Player has to look for what is new. Groups or chapters of Puzzles: a clear path per group, but a new part of the UI.
+
+<a id="0019"></a>
+## 0019: Grids of at most 6 rows by 5 columns
+
+Accepted (2026-11-21)
+
+No Puzzle's Grid is wider than 5 columns or taller than 6 rows, and the generator looks for no larger ones unless it is told to.
+
+- **Why:** on a phone, 390 px wide, the Board shrinks to fit ([Layout.01](spec/ui.md#layout)). At 5 columns a C or an O is 36 px across, 62% of its size on a computer, still large enough to see and to tap next to; at 6 columns it would be about 30 px. A Board of 6 rows by 5 columns is then about 400 px tall, so it fits on the screen with its status line. Larger and harder Puzzles have to grow by more Atoms on the same Grid, with more Dotted lines left empty, not by a bigger Grid.
+- **Cost:** some Molecules don't fit, or have no layout with exactly one solution in that size: Valine, with 19 Atoms, only just has one. Larger Molecules wait for another Grid ([decision 0002](#0002)'s cost).
+- **Alternatives:** larger Grids that scroll sideways on a phone: goes against Layout.01, and the Board is hard to see whole. Zooming or panning the Board: more UI, and the Player loses sight of the Molecule. Smaller cells for large Grids: the Atoms get too small to tap.
