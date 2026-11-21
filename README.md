@@ -43,88 +43,32 @@ Domain entities, capitalized, each with an example the spec can reuse:
 - `tests/`: `unit/` (Vitest: `puzzle/`, `storage/` and `ui/`, the UI in happy-dom, and `app.test.js`, the Glue with fakes), `e2e/` (Playwright, on the built page), `helpers/`
 - `prototypes/`: try-outs of other puzzle modes, outside the spec
 - [docs/spec/](docs/spec/README.md): the specification for the software, with its schemas
+- [docs/architecture.md](docs/architecture.md): how the files in `src/` fit together, a diagram per component
 - [docs/decisions.md](docs/decisions.md): any decisions made about the project
 - [docs/plans/](docs/plans/README.md): the backlog, including specific plans for implementing features/slices
 - [docs/workflow/](docs/workflow/): documentation of the development process
 
 ### How `src/` fits together
 
-Solid arrows are imports, dotted arrows are calls at runtime (the page loading files, callbacks, the browser's storage).
+The four components ([0011](docs/decisions.md#0011)); each is drawn file by file in [docs/architecture.md](docs/architecture.md). Solid arrows are imports, dotted arrows are calls at runtime.
 
 ```mermaid
 flowchart TD
-  subgraph glue["Glue"]
-    browser["browser.js<br/>(entry point)"]
-    app["app.js<br/>wires the components, no DOM"]
-  end
-
-  subgraph ui["UI: ui/"]
-    html["index.html"]
-    css["style.css"]
-    uijs["ui.js<br/>createUi: owns the page"]
-    board["board.js<br/>Board in SVG"]
-    panel["panel.js<br/>open Puzzle, name, formula, rules"]
-    list["puzzle-list.js<br/>puzzle buttons"]
-    messages["messages.js<br/>status and reason texts"]
-    looks["elements.js<br/>names, colours"]
-  end
-
-  subgraph puzzle["Puzzle: puzzle/ (no DOM)"]
-    puzzles["puzzles.js<br/>PUZZLES"]
-    game["game.js<br/>Bond orders, undo, status, reasons"]
-    grid["grid.js<br/>candidate Bonds, crossings, connected"]
-    solver["solver.js<br/>finds solutions"]
-    gen["generate.js<br/>findLayout"]
-    elements["elements.js<br/>ELEMENTS, valence"]
-  end
-
-  subgraph storage["Storage: storage/"]
-    progress["progress.js<br/>store: load, update; markSolved"]
-  end
-
+  glue["Glue<br/>browser.js, app.js"]
+  ui["UI: ui/<br/>the page"]
+  puzzle["Puzzle: puzzle/<br/>the Puzzles and the rules, no DOM"]
+  storage["Storage: storage/<br/>the Progress"]
   local[("localStorage")]
   generate["scripts/generate.js"]
-  tests["tests/"]
 
-  html -.-> css
-  html -.-> browser
-  browser --> app
-  browser --> puzzles
-  browser --> game
-  browser --> progress
-  browser --> uijs
-  browser -. "passes" .-> local
-
-  app --> progress
-  app -. "createGame, passed in" .-> game
-  app -. "store: load, update" .-> progress
-  app -. "open, render, say" .-> uijs
-  uijs -. "onChange, onOpen, onUndo,<br/>onReset, onSolve" .-> app
-
-  uijs --> board
-  uijs --> panel
-  uijs --> list
-  uijs --> messages
-  board --> looks
-  messages --> looks
-  board -. "reads state of" .-> game
-  uijs -. "reads atoms of" .-> game
-
-  game --> elements
-  game --> grid
-  solver --> elements
-  solver --> grid
-
-  progress -.-> local
-
-  generate --> gen
-  generate --> grid
-  gen --> grid
-  gen --> solver
-  tests -. "check every Puzzle<br/>has one solution" .-> solver
+  glue --> ui
+  glue --> puzzle
+  glue --> storage
+  ui -. "loads browser.js,<br/>callbacks" .-> glue
+  ui -. "reads the game" .-> puzzle
+  storage -.-> local
+  generate --> puzzle
 ```
-
-`solver.js` and `generate.js` are not part of the game itself: `scripts/generate.js` uses `findLayout` to find new layouts, and the tests use the solver to check the Puzzles in `puzzles.js`.
 
 ## Development
 
