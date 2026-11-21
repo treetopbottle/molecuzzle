@@ -10,7 +10,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
-- Harder: Puzzles 22 to 28 each leave at least 5 Dotted lines with no Bond in their solution, more Bonds to rule out than any Puzzle before them but Alanine (Puzzle.05)
+- Harder: Puzzles 22 to 28 each leave at least 5 Dotted lines with no Bond in their solution, more Bonds to rule out than any Puzzle before them but Alanine ([decision 0020](../decisions.md#0020)) (Puzzle.05)
 
 | # | Molecule | Formula |
 |---|---|---|

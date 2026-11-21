@@ -18,6 +18,7 @@ What the Player does and what the rules are.
 - [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 - [0017: A solved Puzzle keeps its Board, until it is reset](#0017)
 - [0018: New Puzzles go at the end](#0018)
+- [0020: New Puzzles are harder, and unlike the others](#0020)
 - [0019: Grids of at most 6 rows by 5 columns](#0019)
 
 ### Technical
@@ -58,7 +59,7 @@ Accepted (2026-11-10)
 Every H is an Atom on the Grid that the Player bonds, instead of hydrogens being implied as in skeletal formulas.
 
 - **Why:** the puzzle is "every Atom gets exactly its Bonds"; an H can take only one, so it is part of what the Player reasons from, and hiding it would hide part of the puzzle.
-- **Cost:** bigger Grids (13 Atoms for Alanine), which limits how big a Molecule can be, especially on a phone.
+- **Cost:** bigger Grids (13 Atoms for Alanine, 19 for Valine), which limits how big a Molecule can be, especially on a phone.
 - **Alternatives:** implicit hydrogens: smaller Grids, but each Atom would need its H count shown, and fewer Bonds would be left to reason about.
 
 <a id="0003"></a>
@@ -236,3 +237,14 @@ No Puzzle's Grid is wider than 5 columns or taller than 6 rows, and the generato
 - **Why:** on a phone, 390 px wide, the Board shrinks to fit ([Layout.01](spec/ui.md#layout)). At 5 columns a C or an O is 36 px across, 62% of its size on a computer, still large enough to see and to tap next to; at 6 columns it would be about 30 px. A Board of 6 rows by 5 columns is then about 400 px tall, so it fits on the screen with its status line; on a computer, at 1280×800, it fits too, if only just. Larger and harder Puzzles have to grow by more Atoms on the same Grid, with more Dotted lines left empty, not by a bigger Grid.
 - **Cost:** some Molecules don't fit, or have no layout with exactly one solution in that size: Valine, with 19 Atoms, has layouts only on the full 6 by 5. Larger Molecules wait for a Grid with more neighbours per Atom, such as the hex grid in the backlog ([decision 0002](#0002)'s cost).
 - **Alternatives:** larger Grids that scroll sideways on a phone: goes against Layout.01, and the Board is hard to see whole. Zooming or panning the Board: more UI, and the Player loses sight of the Molecule. Smaller cells for large Grids: the Atoms get too small to tap.
+
+<a id="0020"></a>
+## 0020: New Puzzles are harder, and unlike the others
+
+Accepted (2026-11-21)
+
+A batch of larger Puzzles is made harder by the Dotted lines its solution leaves empty: Puzzles 22 to 28 each leave at least 5 ([Puzzle.05](spec/puzzle.md#puzzle)). And no new Puzzle's layout is another's, or nearly so, turned, flipped, or with other symbols of the same valence.
+
+- **Why:** an empty Dotted line is a Bond the Player has to rule out, so it counts the reasoning a Puzzle asks for, and it is what the generator already makes as large as it can. 5 is more than any Puzzle before but Alanine, and lets Lactic acid, the smallest, open the batch. A layout the Player has solved before plays the same with S for O or Cl for H, so it adds nothing.
+- **Cost:** Lactic acid isn't harder than Alanine. Each later batch needs its own rule. Whether layouts are alike is checked by hand, with a script, while a batch is made, not by a test. In the batch before, Puzzles 18, 19 and 21 are layouts of 6 and 20 with other symbols; they stay, as that batch adds Elements, not harder logic.
+- **Alternatives:** the number of Atoms alone: a larger Grid of easy Bonds isn't harder. A difficulty from the solver, such as the steps a Player needs: nearer to how hard a Puzzle feels, but new code and a measure to tune. A threshold of 6: Lactic acid and Ethyl acetate drop out. A test that no two layouts are alike: the batch before would need exceptions.
