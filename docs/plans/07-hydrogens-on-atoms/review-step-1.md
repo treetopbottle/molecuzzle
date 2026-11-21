@@ -58,3 +58,10 @@ Commits reviewed: 812a79d (tests, step 1(a)) and eb10798 (implementation, step 1
    - Step 7 lists `puzzles.test.js` among its files but doesn't name this mapping. It should carry `h` through, as `solver.test.js:4` now does. `removed.test.js` can keep the mapping: the plan says it checks only ids and formulas from step 7.
 
 No must-fix or should-fix findings.
+
+## Outcome
+
+1. Fixed in 99682f9: the test reads the hydrogens back through what each Atom needs, after Undo, Show solution and Reset.
+2. Fixed in 99682f9: the refused Board is stored as shown, and building it afterwards solves the Puzzle.
+3. Fixed in 99682f9: Check.04 is on Glycine. The Bond.03 test on CH₃─C stays as an extra; the spec's Acetonitrile example is tested in step 7, with the Puzzles.
+4. Kept for step 7, which now names it: `puzzles.test.js` carries the hydrogens to the solver.

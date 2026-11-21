@@ -71,7 +71,7 @@ The candidates left out whose reason depends on their layout, with the Bonds tri
 
 ## Steps
 
-1. **Hydrogens in the rules.** Puzzle.07, Valence.01, Puzzle.03.
+1. **Hydrogens in the rules.** `[DONE]` ([review](review-step-1.md)) Puzzle.07, Valence.01, Puzzle.03.
    - (a) Tests in `tests/unit/puzzle/game.test.js` and `solver.test.js`, on made-up Puzzles with hydrogens (the spec's Acetic acid): what each Atom needs (the Valence example with its hydrogens), `full` on an Atom whose hydrogens and Bonds fill it, a stored Board with more Bonds than an Atom needs is refused, and the solver finds the one solution with them.
    - (b) Implementation: the need in `game.js` and `solver.js`.
 2. **Labels in the text drawings.** No rule ids. `tests/helpers/draw.js`, with a test in `tests/unit/draw.test.js` of the spec's Glycine, as a made-up Puzzle until step 7, and of a Board with no hydrogens, drawn as now.
@@ -88,5 +88,5 @@ The candidates left out whose reason depends on their layout, with the Bonds tri
    - (a) Tests: in `tests/unit/storage/progress.test.js`, the key is `molecuzzle-v3`, and what is stored under `molecuzzle-v2` isn't read.
    - (b) Implementation: `STORAGE_KEY`.
 7. **The new Puzzles.** Puzzle.01, Puzzle.04, Puzzle.05, Puzzle.06, Puzzle.07, Puzzle.08, and the examples in Scope.
-   - (a) Tests, in three commits. First the unit tests of the rules, the storage and the Glue on the new Puzzles, as the spec's examples now are (`game.test.js`, `app.test.js`, `ui.test.js`, `board.test.js`, `draw.test.js`, `difficulty.test.js`, with the made-up Puzzles of steps 1, 2, 4 and 5 now read from `puzzles.js` and its Water test gone, and the Progress.03 example in `progress.test.js`); the Grid.02 and Bond.05 examples on the made-up Grid. Then `puzzles.test.js` (the table, the hydrogens of the formula, Puzzle.04, Puzzle.07, Puzzle.08) and `removed.test.js` (the 24, by id and formula only). Then the end-to-end tests, the narrative and the screenshot tests (`board-glucose.png` in place of `board-halothane.png`).
+   - (a) Tests, in three commits. First the unit tests of the rules, the storage and the Glue on the new Puzzles, as the spec's examples now are (`game.test.js`, `app.test.js`, `ui.test.js`, `board.test.js`, `draw.test.js`, `difficulty.test.js`, with the made-up Puzzles of steps 1, 2, 4 and 5 now read from `puzzles.js` and its Water test gone, and the Progress.03 example in `progress.test.js`); the Grid.02 and Bond.05 examples on the made-up Grid. Then `puzzles.test.js` (the table, the hydrogens of the formula, carried to the solver, Puzzle.04, Puzzle.07, Puzzle.08) and `removed.test.js` (the 24, by id and formula only). Then the end-to-end tests, the narrative and the screenshot tests (`board-glucose.png` in place of `board-halothane.png`).
    - (b) Implementation: `puzzles.js`, `removed.js` and the Puzzle schema. Remake every screenshot that changes, all but `actions.png`, and look at each against ui.md: the hydrogens, which don't glow or pulse, the badge and the glow on the new Boards, and Glucose and Citric acid on a phone. The step is large but mechanical; its review checks the examples one by one.
