@@ -6,42 +6,48 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 ### Puzzle
 
-- Puzzles: there are 28, in the order of the table below; new Puzzles go at the end ([decision 0018](../decisions.md#0018)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
+- Puzzles: there are 20, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and in the order they were added when it is the same ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
-- Harder: Puzzles 22 to 28 each leave at least 5 Dotted lines with no Bond in their solution, more Bonds to rule out than any Puzzle before them but Alanine ([decision 0020](../decisions.md#0020)) (Puzzle.05)
+- Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number its solution leaves with no Bond: each is a connection to look at, and an empty one is also a Bond to rule out ([decision 0021](../decisions.md#0021)) (Puzzle.05)
+- Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and as Puzzles in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)) (Puzzle.06)
 
-| # | Molecule | Formula |
+| # | Molecule | Formula | Difficulty |
+|---|---|---|---|
+| 1 | Water | H₂O | 2 |
+| 2 | Hydrogen cyanide | HCN | 2 |
+| 3 | Formaldehyde | CH₂O | 3 |
+| 4 | Methanol | CH₄O | 8 |
+| 5 | Acetic acid | C₂H₄O₂ | 10 |
+| 6 | Ethylene | C₂H₄ | 11 |
+| 7 | Acrylonitrile | C₃H₃N | 12 |
+| 8 | Urea | CH₄N₂O | 13 |
+| 9 | Halothane | C₂HBrClF₃ | 13 |
+| 10 | Acetone | C₃H₆O | 15 |
+| 11 | Ethanol | C₂H₆O | 17 |
+| 12 | Glycine | C₂H₅NO₂ | 18 |
+| 13 | Lactic acid | C₃H₆O₃ | 26 |
+| 14 | Ethyl acetate | C₄H₈O₂ | 28 |
+| 15 | Alanine | C₃H₇NO₂ | 30 |
+| 16 | Glycerol | C₃H₈O₃ | 31 |
+| 17 | Serine | C₃H₇NO₃ | 31 |
+| 18 | Cysteine | C₃H₇NO₂S | 31 |
+| 19 | Threonine | C₄H₉NO₃ | 37 |
+| 20 | Valine | C₅H₁₁NO₂ | 45 |
+
+Removed Puzzles, which aren't added again:
+
+| Molecule | Formula | Why |
 |---|---|---|
-| 1 | Water | H₂O |
-| 2 | Ammonia | NH₃ |
-| 3 | Formaldehyde | CH₂O |
-| 4 | Hydrogen cyanide | HCN |
-| 5 | Methanol | CH₄O |
-| 6 | Ethylene | C₂H₄ |
-| 7 | Acrylonitrile | C₃H₃N |
-| 8 | Acetic acid | C₂H₄O₂ |
-| 9 | Urea | CH₄N₂O |
-| 10 | Ethanol | C₂H₆O |
-| 11 | Glycine | C₂H₅NO₂ |
-| 12 | Acetone | C₃H₆O |
-| 13 | Alanine | C₃H₇NO₂ |
-| 14 | Carbon disulfide | CS₂ |
-| 15 | Chloroform | CHCl₃ |
-| 16 | Methanethiol | CH₄S |
-| 17 | Phosgene | CCl₂O |
-| 18 | Vinyl chloride | C₂H₃Cl |
-| 19 | Tetrafluoroethylene | C₂F₄ |
-| 20 | Iodoethane | C₂H₅I |
-| 21 | Halothane | C₂HBrClF₃ |
-| 22 | Lactic acid | C₃H₆O₃ |
-| 23 | Ethyl acetate | C₄H₈O₂ |
-| 24 | Glycerol | C₃H₈O₃ |
-| 25 | Serine | C₃H₇NO₃ |
-| 26 | Cysteine | C₃H₇NO₂S |
-| 27 | Threonine | C₄H₉NO₃ |
-| 28 | Valine | C₅H₁₁NO₂ |
+| Ammonia | NH₃ | Water again, with one more H |
+| Carbon disulfide | CS₂ | 3 Atoms in a row, with nothing to rule out |
+| Chloroform | CHCl₃ | One C with four neighbours, nothing to rule out |
+| Methanethiol | CH₄S | Methanol's layout, with S for O |
+| Phosgene | CCl₂O | Formaldehyde's layout, with Cl for H |
+| Vinyl chloride | C₂H₃Cl | Ethylene's layout, with Cl for an H |
+| Tetrafluoroethylene | C₂F₄ | Ethylene's layout, with F for H |
+| Iodoethane | C₂H₅I | Halothane's layout, with other symbols |
 
 The Grids, solutions and facts are in `src/puzzle/puzzles.js`.
 
@@ -66,20 +72,28 @@ And its one solution is
 Example (Puzzle.04):
 
 ```
-Given Puzzle 28, Valine, with 19 Atoms
+Given Puzzle 20, Valine, with 19 Atoms
 Then its Grid has 6 rows and 5 columns
 ```
 
 Example (Puzzle.05):
 
 ```
-Given Puzzle 22, Lactic acid, solved
-Then 5 of its Dotted lines have no Bond
+Given Puzzle 12, Glycine, with 12 Dotted lines
+And its solution leaves 3 of them with no Bond
+Then its difficulty is 12 + 2 × 3 = 18
+```
+
+Example (Puzzle.06):
+
+```
+Given Ammonia, NH₃, is removed
+Then no Puzzle has the id ammonia or the formula NH3
 ```
 
 ### Generate
 
-- Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order; the same arguments print the same layout (Generate.01)
+- Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order, and its difficulty ([Puzzle.05](#puzzle)); the same arguments print the same layout (Generate.01)
 - None: if it can't read a Bond, or a Bond has an Atom whose Element isn't in the [table of valences](#board), it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
 
 Bonds are written between labelled Atoms: the label's letters are the Element, `-` `=` `#` a single, double and triple Bond.
@@ -87,7 +101,7 @@ Bonds are written between labelled Atoms: the label's letters are the Element, `
 Example (Puzzle.03):
 
 ```
-Given Puzzle 4, Hydrogen cyanide, the Board [[0, 1, 1]] and the undo history [[]]
+Given Puzzle 2, Hydrogen cyanide, the Board [[0, 1, 1]] and the undo history [[]]
 Then it starts with H─C·N
 When the last change is undone
 Then it is H·C·N
@@ -99,7 +113,7 @@ Example (Generate.01):
 
 ```
 Given the Bonds "H1-O1 O1-H2", 2000 tries, at most 3 by 3, seed 1
-Then it prints rows: 3, cols: 1, atoms: [["H",0,0],["O",1,0],["H",2,0]], solution: [[0,1,1],[1,2,1]]
+Then it prints rows: 3, cols: 1, atoms: [["H",0,0],["O",1,0],["H",2,0]], solution: [[0,1,1],[1,2,1]] and difficulty 2
 ```
 
 Example (Generate.02):
@@ -137,7 +151,7 @@ An Atom's bond count is the sum of its Bonds: single 1, double 2, triple 3. It h
 Example (Grid.01, Grid.02):
 
 ```
-Given Puzzle 11, Glycine
+Given Puzzle 12, Glycine
 Then the Board is
     O·C·O·H
     · · · ·
@@ -167,7 +181,7 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 Example (Bond.01, Bond.02, Bond.03):
 
 ```
-Given Puzzle 4, H·C·N
+Given Puzzle 2, H·C·N
 When C·N is made stronger once, twice, three times, four times
 Then the Board is H·C─N, H·C═N, H·C≡N, H·C·N
 ```
@@ -175,7 +189,7 @@ Then the Board is H·C─N, H·C═N, H·C≡N, H·C·N
 Example (Bond.04):
 
 ```
-Given Puzzle 5, Methanol, with a Bond H 3,1 to H 3,2
+Given Puzzle 4, Methanol, with a Bond H 3,1 to H 3,2
 When the Dotted line O 2,1 to H 3,1 is made stronger
 Then no Bond is made, and the reason is full, with H 3,1
 ```
@@ -183,7 +197,7 @@ Then no Bond is made, and the reason is full, with H 3,1
 Example (Bond.05):
 
 ```
-Given Puzzle 11, Glycine, with a Bond H 2,1 to C 2,3
+Given Puzzle 12, Glycine, with a Bond H 2,1 to C 2,3
 When the Dotted line O 1,2 to H 4,2 is made stronger
 Then no Bond is made, and the reason is crossing
 ```
@@ -191,7 +205,7 @@ Then no Bond is made, and the reason is crossing
 Example (Bond.06):
 
 ```
-Given Puzzle 4, with C≡N
+Given Puzzle 2, with C≡N
 When it is made weaker, twice
 Then it is C═N, then C─N
 ```
@@ -199,7 +213,7 @@ Then it is C═N, then C─N
 Example (Bond.08):
 
 ```
-Given Puzzle 4, H·C·N
+Given Puzzle 2, H·C·N
 When C·N is made stronger 101 times
 Then Undo goes back 100 times, to the Board after the first change, H·C─N, and then does nothing
 ```
@@ -207,9 +221,9 @@ Then Undo goes back 100 times, to the Board after the first change, H·C─N, an
 Example (Bond.08, Bond.09):
 
 ```
-Given Puzzle 2, Ammonia, with Bonds H 1,1 to N 2,1 and then N 2,1 to H 3,1
+Given Puzzle 3, Formaldehyde, with Bonds H 1,1 to C 2,1 and then C 2,1 to H 2,2
 When the last change is undone
-Then only H 1,1 to N 2,1 is left
+Then only H 1,1 to C 2,1 is left
 When it is reset
 Then there are no Bonds, and nothing to undo
 ```
@@ -257,16 +271,16 @@ After every change to the Bonds, the status is the first that applies:
 Example (Check.01, Check.02):
 
 ```
-Given Puzzle 2, Ammonia, with no Bonds
+Given Puzzle 3, Formaldehyde, with no Bonds
 Then the status is empty
-When H 1,1 to N 2,1 is bonded
+When H 1,1 to C 2,1 is bonded
 Then the status is open, with 3 Atoms
 ```
 
 Example (Check.03):
 
 ```
-Given Puzzle 5, Methanol
+Given Puzzle 4, Methanol
 When H─H and H₂C═O are built apart
     H
     │
@@ -279,7 +293,7 @@ Then the status is pieces
 Example (Check.04):
 
 ```
-Given Puzzle 11
+Given Puzzle 12
 When Glycine is built
 Then the status is solved
 ```
@@ -292,7 +306,7 @@ Then the status is solved
 Example (Help.01, Help.02):
 
 ```
-Given Puzzle 9, Urea
+Given Puzzle 8, Urea
 When the solution is shown
 Then the status is revealed
 When it is reset and Urea is built

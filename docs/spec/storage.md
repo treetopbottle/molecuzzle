@@ -15,8 +15,8 @@ Example (Progress.01), solved Puzzles and the open one are kept over a reload:
 
 ```
 Given a new browser
-When the Player solves Puzzle 1, opens Puzzle 4 and reloads the page
-Then Puzzle 4 is open, with no Bonds, and Puzzle 1 is solved
+When the Player solves Puzzle 1, opens Puzzle 2 and reloads the page
+Then Puzzle 2 is open, with no Bonds, and Puzzle 1 is solved
 And the browser stores {"puzzles":{"water":"solved"},"current":"hydrogen-cyanide","boards":{"water":{"bonds":[[0,1,1],[1,2,1]],"revealed":false,"undo":[]}}}
 ```
 
@@ -39,8 +39,8 @@ Then the only request the page made is for the page itself
 Example (Progress.05), a Puzzle in progress, Undo included, is kept after the browser closes:
 
 ```
-Given Puzzle 4, with H─C·N, and then Puzzle 5 open
-When the Player closes the browser, opens the game again and opens Puzzle 4
+Given Puzzle 2, with H─C·N, and then Puzzle 4 open
+When the Player closes the browser, opens the game again and opens Puzzle 2
 Then it is H─C·N, and Undo makes it H·C·N
 And before that the browser stores {"puzzles":{},"current":"methanol","boards":{"hydrogen-cyanide":{"bonds":[[0,1,1]],"revealed":false,"undo":[[]]}}}
 ```

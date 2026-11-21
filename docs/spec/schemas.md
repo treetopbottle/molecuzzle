@@ -38,7 +38,7 @@ Example: Puzzles 1 and 2 solved, and Puzzle 3 open, with C═O made in two click
 
 ```json
 {
-  "puzzles": { "water": "solved", "ammonia": "solved" },
+  "puzzles": { "water": "solved", "hydrogen-cyanide": "solved" },
   "current": "formaldehyde",
   "boards": {
     "formaldehyde": { "bonds": [[1, 3, 2]], "revealed": false, "undo": [[], [[1, 3, 1]]] }

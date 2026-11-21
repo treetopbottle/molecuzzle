@@ -10,11 +10,11 @@ The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a
 
 - Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it; and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
 
-Example (Page.01), Puzzle 1 at the start, and Puzzle 11 solved:
+Example (Page.01), Puzzle 1 at the start, and Puzzle 12 solved:
 
 ![The page with Puzzle 1, Water, and no Bonds](screenshots/page-start.png)
 
-![The page with Puzzle 11, Glycine, solved](screenshots/page-solved.png)
+![The page with Puzzle 12, Glycine, solved](screenshots/page-solved.png)
 
 ### Layout
 
@@ -38,7 +38,7 @@ Example (Board.01, Board.02), Puzzle 3, Formaldehyde, with C═O:
 
 ![The Board of Formaldehyde with a double Bond from C to O](screenshots/board.png)
 
-Example (Board.01, Board.02), Puzzle 21, Halothane, with no Bonds:
+Example (Board.01, Board.02), Puzzle 9, Halothane, with no Bonds:
 
 ![The Board of Halothane, with its F, Cl, Br, C and H Atoms](screenshots/board-halothane.png)
 
@@ -63,7 +63,7 @@ And the Dotted lines and Bonds are "H 1,1 to C 2,1: no bond", "C 2,1 to H 2,2: n
 Example (Input.01, Input.02):
 
 ```
-Given Puzzle 4, H·C·N
+Given Puzzle 2, H·C·N
 When the Player clicks C·N three times, then right-clicks it
 Then it is C═N
 When the Player tabs to it and presses Delete
@@ -75,9 +75,9 @@ Then it is C═N
 Example (Input.05):
 
 ```
-Given Puzzle 2, Ammonia, with H 1,1 to N 2,1
+Given Puzzle 3, Formaldehyde, with H 1,1 to C 2,1
 When the Player clicks Reset and cancels
-Then H 1,1 to N 2,1 is still there, and Undo is enabled
+Then H 1,1 to C 2,1 is still there, and Undo is enabled
 When the Player clicks Reset and confirms
 Then there are no Bonds, and Undo is disabled
 ```
@@ -102,16 +102,16 @@ Example (Input.03), with Bonds and something to undo:
 Example (Messages.01):
 
 ```
-Given Puzzle 2, Ammonia, with no Bonds
+Given Puzzle 3, Formaldehyde, with no Bonds
 Then the status line is "Click a dotted line between two atoms to bond them."
-When the Player bonds H 1,1 to N 2,1
+When the Player bonds H 1,1 to C 2,1
 Then it is "3 atoms still need bonds."
 ```
 
 Example (Messages.02):
 
 ```
-Given Puzzle 5, Methanol, with a Bond H 3,1 to H 3,2
+Given Puzzle 4, Methanol, with a Bond H 3,1 to H 3,2
 When the Player clicks the Dotted line O 2,1 to H 3,1
 Then the message is "Hydrogen already has all its bonds."
 ```
@@ -129,17 +129,17 @@ Example (Panel.01, Panel.02, Panel.04), Puzzle 3, unsolved:
 
 ![The panel of Puzzle 3, a mystery molecule](screenshots/panel-mystery.png)
 
-Example (Panel.01, Panel.03), Puzzle 11, solved:
+Example (Panel.01, Panel.03), Puzzle 12, solved:
 
-![The panel of Puzzle 11, Glycine, with its formula and fact](screenshots/panel-solved.png)
+![The panel of Puzzle 12, Glycine, with its formula and fact](screenshots/panel-solved.png)
 
 Example (Panel.01):
 
 ```
 Given Puzzle 1 is open
 Then ‹ is disabled
-When the Player clicks › and then opens Puzzle 28
-Then "Puzzle 28 of 28" and "Unsolved" show, and › is disabled
+When the Player clicks › and then opens Puzzle 20
+Then "Puzzle 20 of 20" and "Unsolved" show, and › is disabled
 ```
 
 ### List
@@ -156,7 +156,7 @@ Example (List.01, List.02):
 ```
 Given Puzzle 1 is solved
 When the Player opens the game
-Then the list has "Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 28"
+Then the list has "Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 20"
 When the Player clicks "Puzzle 13"
 Then Puzzle 13 opens
 ```

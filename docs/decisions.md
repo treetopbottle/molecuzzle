@@ -20,6 +20,8 @@ What the Player does and what the rules are.
 - [0018: New Puzzles go at the end](#0018)
 - [0019: Grids of at most 6 rows by 5 columns](#0019)
 - [0020: New Puzzles are harder, and unlike the others](#0020)
+- [0021: Puzzles are in order of difficulty](#0021)
+- [0022: Removed Puzzles are kept, and not added again](#0022)
 
 ### Technical
 
@@ -65,7 +67,7 @@ Every H is an Atom on the Grid that the Player bonds, instead of hydrogens being
 <a id="0003"></a>
 ## 0003: All Puzzles are open
 
-Accepted (2026-11-10). Partly superseded by [0018](#0018): the order is easiest first within each batch of Puzzles.
+Accepted (2026-11-10). Partly superseded by [0018](#0018), and that by [0021](#0021): the order is by difficulty.
 
 No Puzzle is locked; the order, easiest first, only suggests a path.
 
@@ -219,7 +221,7 @@ Solving a Puzzle keeps its Board in Progress, with nothing to undo, so it opens 
 <a id="0018"></a>
 ## 0018: New Puzzles go at the end
 
-Accepted (2026-11-21)
+Accepted (2026-11-21). Superseded by [0021](#0021).
 
 New Puzzles are added after the last one, easiest first among themselves, instead of between the Puzzles by how hard they are. A Puzzle keeps its number once it is published.
 
@@ -241,10 +243,32 @@ No Puzzle's Grid is wider than 5 columns or taller than 6 rows, and the generato
 <a id="0020"></a>
 ## 0020: New Puzzles are harder, and unlike the others
 
-Accepted (2026-11-21)
+Accepted (2026-11-21). Partly superseded by [0021](#0021), which measures how hard every Puzzle is, in place of a threshold for Puzzles 22 to 28, and by [0022](#0022), which removes the look-alikes of the batch before.
 
 A batch of larger Puzzles is made harder by the Dotted lines its solution leaves empty: Puzzles 22 to 28 each leave at least 5 ([Puzzle.05](spec/puzzle.md#puzzle)). And no new Puzzle's layout is another's, or nearly so, turned, flipped, or with other symbols of the same valence.
 
 - **Why:** an empty Dotted line is a Bond the Player has to rule out, so it counts the reasoning a Puzzle asks for, and it is what the generator already makes as large as it can. 5 is more than any Puzzle before but Alanine, and lets Lactic acid, the smallest, open the batch. A layout the Player has solved before plays the same with S for O or Cl for H, so it adds nothing.
 - **Cost:** Lactic acid isn't harder than Alanine. Each later batch needs its own rule. Whether layouts are alike is checked while a batch is made, not by a test: for this batch, by a script that isn't kept, which found no new layout with more than 9 of its points on Atoms of the same valence in another Puzzle, under any turn, flip or shift. In the batch before, Puzzles 16, 17, 18, 19 and 21 are the layouts of 5, 3, 6, 6 and 20 with other symbols; they stay, as that batch adds Elements, not harder logic.
 - **Alternatives:** the number of Atoms alone: a larger Grid of easy Bonds isn't harder. A difficulty from the solver, such as the steps a Player needs: nearer to how hard a Puzzle feels, but new code and a measure to tune. A threshold of 6: Lactic acid and Ethyl acetate drop out. A test that no two layouts are alike: the batch before would need five exceptions.
+
+<a id="0021"></a>
+## 0021: Puzzles are in order of difficulty
+
+Accepted (2026-11-21)
+
+Every Puzzle has a difficulty, its Dotted lines plus twice those its solution leaves empty ([Puzzle.05](spec/puzzle.md#puzzle)), and the list is in that order, easiest first. A new Puzzle goes where its difficulty puts it, and the Puzzles after it move up a number.
+
+- **Why:** the list is a path from easy to hard ([0003](#0003)), so its order should follow one measure, not when a Puzzle was added. Each Dotted line is a connection the Player looks at; an empty one is also a Bond to rule out, and that reasoning is what makes a Puzzle hard, so it counts twice. Both are counted from the Puzzle, with no judgement, and the generator prints the difficulty of a layout it finds.
+- **Cost:** adding a Puzzle renumbers those after it, and the examples, tests and screenshots that name them. Progress is by id ([schemas](spec/schemas.md#progress)), so Players keep it, but a Player's next unsolved Puzzle can turn up among solved ones. The measure doesn't see how a Bond's order follows from its neighbours, so Puzzles of the same difficulty can feel different, and a few ties are broken by the order they were added in.
+- **Alternatives:** new Puzzles at the end, easiest first per batch ([0018](#0018)): stable numbers, but a hard batch is followed by an easy one, and "easiest" was a judgement. Empty Dotted lines alone: a larger Board with as few left empty isn't easier. A difficulty from the solver, such as the steps a Player needs: nearer to how hard a Puzzle feels, but new code and a measure to tune. Showing the difficulty to the Player: not asked for yet.
+
+<a id="0022"></a>
+## 0022: Removed Puzzles are kept, and not added again
+
+Accepted (2026-11-21)
+
+Eight easy Puzzles were taken out of the game: those with almost nothing to rule out, and those that are another Puzzle's layout with other symbols ([0020](#0020)). They are kept in `src/puzzle/removed.js`, and listed in the [spec](spec/puzzle.md#puzzle) with why; a test checks no Puzzle has the id or the formula of a removed one ([Puzzle.06](spec/puzzle.md#puzzle)).
+
+- **Why:** the list starts with a short run of easy Puzzles to learn the rules, single, double and triple Bonds and the first empty Dotted line, and then gets harder, without a long stretch of Puzzles that teach nothing new. Keeping the removed ones, with why, stops them coming back, and keeps their layouts if they are ever wanted.
+- **Cost:** Iodine has no Puzzle left, though it stays an Element. A Player who solved a removed Puzzle keeps its mark and Board in Progress, under an id the game no longer knows ([0016](#0016)); the score counts only Puzzles in the game, so "Solved k of 20" can go down. The formula check also keeps out a different Molecule with a removed one's formula, an isomer of it.
+- **Alternatives:** delete them with no record: one could be added again. A section of extra Puzzles: they stay in the game, still easy, and need a place in the UI. Mark them as removed in `puzzles.js`: the game would have to skip them.

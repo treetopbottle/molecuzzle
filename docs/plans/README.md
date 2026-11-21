@@ -10,6 +10,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 | [03: Solved Puzzles keep their solution](03-keep-solved/README.md) | Done (2026-11-21) |
 | [04: The halogens and sulfur](04-halogens-and-sulfur/README.md) | Done (2026-11-21) |
 | [05: Larger and harder Puzzles](05-larger-puzzles/README.md) | Done (2026-11-21) |
+| [06: Puzzles in order of difficulty, and fewer easy ones](06-difficulty/README.md) | Draft |
 
 ## Backlog
 

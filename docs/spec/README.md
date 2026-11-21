@@ -34,12 +34,12 @@ H···C···H          H───C───H
   H·N·H              H─N─H
 ```
 
-Chloroform, solved:
+Halothane, solved:
 
 ```
-   Cl
-   │
-H──C──Cl
-   │
-   Cl
+   F··Cl
+   │  │
+F──C──C──H
+   │  │
+   F··Br
 ```
