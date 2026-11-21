@@ -23,3 +23,10 @@ Commits reviewed: 4df5be1 (refactor: `dottedLines` counts the Dotted lines once,
 2. **note**: `src/puzzle/difficulty.js:6`: `dottedLines` has a one-line comment but no `@param` type. `difficulty` has one at `:12`.
 
 No must-fix or should-fix findings.
+
+## Outcome
+
+1. Fixed in 24e35bd: the plan's Design names `dottedLines`. `docs/architecture.md` describes files, not their functions, so it stays.
+2. Fixed in 24e35bd: `dottedLines` has its `@param`.
+
+Only a comment changed in the code, so there is no third review.
