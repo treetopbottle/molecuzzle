@@ -34,7 +34,7 @@ const button = name => document.querySelector(`button[aria-label="${name}"]`)
 const key = init => document.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, cancelable: true, ...init }));
 
 test("Input.01, Input.02 the Board, the buttons and Ctrl+Z call their handlers", () => {
-  const { ui, game } = show(1); // Hydrogen cyanide
+  const { ui, game } = show(1); // Acetic acid
   game.change(0, 1);
   ui.render(view(1, game));
   document.querySelector(".edge").dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -90,13 +90,13 @@ test("Input.05 Reset asks first, and only after OK calls onReset", () => {
 });
 
 test("Messages.02 say words why a Bond isn't made, and says nothing without a reason", () => {
-  const { ui } = show(3); // Methanol
+  const { ui } = show(2); // Glycine
   const message = () => document.querySelector('[role="alert"]');
   ui.say({ changed: false });
   ui.say({ changed: true });
   expect(message().textContent).toBe("");
-  ui.say({ changed: false, reason: "full", atom: 4 });
-  expect(message().textContent).toBe("Hydrogen already has all its bonds.");
+  ui.say({ changed: false, reason: "full", atom: 0 }); // OH 1,1
+  expect(message().textContent).toBe("Oxygen already has all its bonds.");
 });
 
 test("Panel.01, Panel.03 ‹, › and Next puzzle → open their Puzzle", () => {
@@ -110,20 +110,21 @@ test("Panel.01, Panel.03 ‹, › and Next puzzle → open their Puzzle", () => 
 });
 
 test("Panel.01, List.02 a shown solution leaves the Puzzle unsolved", () => {
-  const { ui, game } = show(7); // Urea
+  const { ui, game } = show(7); // Cyclohexanol
   game.showSolution();
   ui.render(view(7, game));
   expect(document.querySelector("nav").textContent).toContain("Unsolved");
-  expect(document.querySelector("header").textContent).toContain("Solved 0 of 20");
+  expect(document.querySelector("header").textContent).toContain("Solved 0 of 15");
 });
 
 test("List.01, List.02 a button per Puzzle opens it, and the header shows the score", () => {
-  show(2, { progress: { puzzles: { water: "solved" }, current: "formaldehyde" } });
+  show(2, { progress: { puzzles: { acetonitrile: "solved" }, current: "glycine" } });
   const list = document.querySelector('[aria-label="Puzzles"]');
   expect([...list.querySelectorAll("button")].slice(0, 3).map(b => b.getAttribute("aria-label")))
-    .toEqual(["Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3"]);
+    .toEqual(["Puzzle 1: Acetonitrile, solved", "Puzzle 2", "Puzzle 3"]);
+  expect(list.querySelectorAll("button")).toHaveLength(15);
   expect(list.querySelector('[aria-current="true"]').getAttribute("aria-label")).toBe("Puzzle 3");
-  expect(document.querySelector("header").textContent).toContain("Solved 1 of 20");
+  expect(document.querySelector("header").textContent).toContain("Solved 1 of 15");
   button("Puzzle 13").click();
   expect(handlers.onOpen).toHaveBeenCalledWith(12);
 });

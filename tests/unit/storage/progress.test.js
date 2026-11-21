@@ -13,18 +13,18 @@ describe("Progress", () => {
     const storage = memoryStorage();
     const store = createProgressStore(storage);
     expect(store.load()).toEqual({ puzzles: {}, current: null });
-    store.update(progress => markSolved(progress, "water"));
-    store.update(progress => ({ ...progress, current: "formaldehyde" }));
+    store.update(progress => markSolved(progress, "acetonitrile"));
+    store.update(progress => ({ ...progress, current: "acetic-acid" }));
     expect(JSON.parse(storage.data[STORAGE_KEY])).toMatchInlineSnapshot(`
       {
-        "current": "formaldehyde",
+        "current": "acetic-acid",
         "puzzles": {
-          "water": "solved",
+          "acetonitrile": "solved",
         },
       }
     `);
     expect(schemaErrors("progress.schema.json", JSON.parse(storage.data[STORAGE_KEY]))).toEqual([]);
-    expect(load(storage)).toEqual({ puzzles: { water: "solved" }, current: "formaldehyde" });
+    expect(load(storage)).toEqual({ puzzles: { acetonitrile: "solved" }, current: "acetic-acid" });
   });
 
   test("Progress.03 kept under the key molecuzzle-v3", () => {
@@ -40,27 +40,27 @@ describe("Progress", () => {
   });
 
   test("Progress.01 a Puzzle marked solved stays solved", () => {
-    const progress = markSolved({ puzzles: {}, current: "water" }, "water");
-    expect(progress).toEqual({ puzzles: { water: "solved" }, current: "water" });
-    expect(markSolved(progress, "water")).toBe(progress);
+    const progress = markSolved({ puzzles: {}, current: "acetonitrile" }, "acetonitrile");
+    expect(progress).toEqual({ puzzles: { acetonitrile: "solved" }, current: "acetonitrile" });
+    expect(markSolved(progress, "acetonitrile")).toBe(progress);
   });
 
   test("Progress.03 wrong data is left out, and the rest still loads", () => {
-    const storage = memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"water":"solved","urea":"seen"},"current":7}' });
-    expect(load(storage)).toEqual({ puzzles: { water: "solved" }, current: null });
+    const storage = memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"acetonitrile":"solved","glycine":"seen"},"current":7}' });
+    expect(load(storage)).toEqual({ puzzles: { acetonitrile: "solved" }, current: null });
   });
 
   test("Progress.03, Progress.05 load keeps the Boards of Puzzles in progress, and leaves out an entry that doesn't fit", () => {
     const kept = { bonds: [[0, 1, 1]], revealed: false, undo: [[]] };
     const boards = {
-      "hydrogen-cyanide": kept,
-      water: { bonds: [], revealed: false, undo: Array.from({ length: 101 }, () => []) },
-      urea: { bonds: [[0, 1, 1]], revealed: "yes", undo: [] },
-      methanol: { bonds: [[0, 1, 4]], revealed: false, undo: [] },
+      "acetic-acid": kept,
+      acetonitrile: { bonds: [], revealed: false, undo: Array.from({ length: 101 }, () => []) },
+      serine: { bonds: [[0, 1, 1]], revealed: "yes", undo: [] },
+      glycerol: { bonds: [[0, 1, 4]], revealed: false, undo: [] },
       glycine: { bonds: [[0, 1, 1]], revealed: false },
     };
-    const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify({ puzzles: {}, current: "methanol", boards }) });
-    expect(load(storage)).toEqual({ puzzles: {}, current: "methanol", boards: { "hydrogen-cyanide": kept } });
+    const storage = memoryStorage({ [STORAGE_KEY]: JSON.stringify({ puzzles: {}, current: "glycerol", boards }) });
+    expect(load(storage)).toEqual({ puzzles: {}, current: "glycerol", boards: { "acetic-acid": kept } });
     expect(schemaErrors("progress.schema.json", load(storage))).toEqual([]);
   });
 
@@ -75,26 +75,26 @@ describe("Progress", () => {
     ["an entry of null", null],
     ["an entry that is a list", []],
   ])("Progress.03 an entry with %s is left out, and the rest still loads", (_, entry) => {
-    const stored = { puzzles: { water: "solved" }, current: "water", boards: { ammonia: entry } };
+    const stored = { puzzles: { acetonitrile: "solved" }, current: "acetonitrile", boards: { ammonia: entry } };
     expect(schemaErrors("progress.schema.json", stored)).not.toEqual([]);
-    expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify(stored) }))).toEqual({ puzzles: { water: "solved" }, current: "water" });
+    expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify(stored) }))).toEqual({ puzzles: { acetonitrile: "solved" }, current: "acetonitrile" });
   });
 
   test("Progress.03 puzzles that isn't an object is left out", () => {
-    const stored = { puzzles: ["solved"], current: "water" };
+    const stored = { puzzles: ["solved"], current: "acetonitrile" };
     expect(schemaErrors("progress.schema.json", stored)).not.toEqual([]);
-    expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify(stored) }))).toEqual({ puzzles: {}, current: "water" });
+    expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify(stored) }))).toEqual({ puzzles: {}, current: "acetonitrile" });
   });
 
   test("Progress.03 boards that don't fit, or have no entry left, are left out", () => {
-    for (const boards of ["none", [], { water: { bonds: "x", revealed: false, undo: [] } }])
-      expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify({ puzzles: {}, current: "water", boards }) })))
-        .toEqual({ puzzles: {}, current: "water" });
+    for (const boards of ["none", [], { acetonitrile: { bonds: "x", revealed: false, undo: [] } }])
+      expect(load(memoryStorage({ [STORAGE_KEY]: JSON.stringify({ puzzles: {}, current: "acetonitrile", boards }) })))
+        .toEqual({ puzzles: {}, current: "acetonitrile" });
   });
 
   test("Progress.03 unreadable or unknown values count as empty", () => {
     expect(load(memoryStorage({ [STORAGE_KEY]: "{not json" }))).toEqual({ puzzles: {}, current: null });
-    expect(load(memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"water":"maybe","ammonia":"revealed"},"current":3}' })))
+    expect(load(memoryStorage({ [STORAGE_KEY]: '{"puzzles":{"acetonitrile":"maybe","ammonia":"revealed"},"current":3}' })))
       .toEqual({ puzzles: {}, current: null });
   });
 
@@ -102,8 +102,8 @@ describe("Progress", () => {
     const broken = { getItem() { throw new Error("blocked"); }, setItem() { throw new Error("blocked"); } };
     const store = createProgressStore(broken);
     expect(store.load()).toEqual({ puzzles: {}, current: null });
-    expect(store.update(progress => ({ ...progress, current: "water" }))).toEqual({ puzzles: {}, current: "water" });
-    expect(store.update(progress => markSolved(progress, "water"))).toEqual({ puzzles: { water: "solved" }, current: "water" });
+    expect(store.update(progress => ({ ...progress, current: "acetonitrile" }))).toEqual({ puzzles: {}, current: "acetonitrile" });
+    expect(store.update(progress => markSolved(progress, "acetonitrile"))).toEqual({ puzzles: { acetonitrile: "solved" }, current: "acetonitrile" });
     expect(load(undefined)).toEqual({ puzzles: {}, current: null });
     expect(() => createProgressStore(undefined).update(progress => progress)).not.toThrow();
   });

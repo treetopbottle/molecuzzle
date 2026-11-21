@@ -10,14 +10,7 @@ import { rgb, hue, lightness, inHue } from "../../helpers/colors.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 
-// The spec's Acetic acid, with its hydrogens on its Atoms: made up until its
-// Puzzle is in puzzles.js (plan 07, step 7).
-const aceticAcid = {
-  id: "acetic-acid", name: "Acetic acid", formula: "C2H4O2", fact: "Vinegar is acetic acid in water.",
-  rows: 3, cols: 2,
-  atoms: [["O",0,1,0],["C",1,0,3],["C",1,1,0],["O",2,1,1]],
-  solution: [[0,2,2],[1,2,1],[2,3,1]],
-};
+const aceticAcid = puzzle("acetic-acid");
 let svg;
 beforeEach(() => {
   document.body.innerHTML = '<svg id="board"></svg>';
@@ -55,44 +48,21 @@ describe("Board", () => {
     expect(inHue(260, 300)(color("I"))).toBe(true);
   });
 
-  test("Board.01, Board.04 names each Atom with what it needs, and each dotted line", () => {
-    createBoard(svg, createGame(puzzle("formaldehyde")), { onChange() {} });
-    expect(svg.getAttribute("aria-label")).toBe("Board, 3 by 2");
-    expect(labels(".atom")).toMatchInlineSnapshot(`
-      [
-        "Hydrogen 1,1: needs 1 more bond",
-        "Carbon 2,1: needs 4 more bonds",
-        "Hydrogen 2,2: needs 1 more bond",
-        "Oxygen 3,1: needs 2 more bonds",
-      ]
-    `);
-    expect(labels(".edge")).toMatchInlineSnapshot(`
-      [
-        "H 1,1 to C 2,1: no bond",
-        "C 2,1 to H 2,2: no bond",
-        "C 2,1 to O 3,1: no bond",
-      ]
-    `);
-    expect(svg.querySelectorAll(".edge .maybe")).toHaveLength(3);
-  });
-
-  test("Board.04 names the Board, its Atoms, and its Dotted lines and Bonds", () => {
-    const game = createGame(puzzle("formaldehyde"));
-    const board = createBoard(svg, game, { onChange() {} });
-    click(game, "2,1", "3,1", 2);
-    board.render();
+  test("Board.01, Board.04 names the Board, each Atom with its hydrogens and what it needs, and each dotted line", () => {
+    createBoard(svg, createGame(aceticAcid), { onChange() {} });
     expect(svg.getAttribute("aria-label")).toBe("Board, 3 by 2");
     expect(labels(".atom")).toEqual([
-      "Hydrogen 1,1: needs 1 more bond",
-      "Carbon 2,1: needs 2 more bonds",
-      "Hydrogen 2,2: needs 1 more bond",
-      "Oxygen 3,1: complete",
+      "Oxygen 1,2: needs 2 more bonds",
+      "Carbon 2,1, with 3 hydrogens: needs 1 more bond",
+      "Carbon 2,2: needs 4 more bonds",
+      "Oxygen 3,2, with 1 hydrogen: needs 1 more bond",
     ]);
     expect(labels(".edge")).toEqual([
-      "H 1,1 to C 2,1: no bond",
-      "C 2,1 to H 2,2: no bond",
-      "C 2,1 to O 3,1: double bond",
+      "O 1,2 to C 2,2: no bond",
+      "C 2,1 to C 2,2: no bond",
+      "C 2,2 to O 3,2: no bond",
     ]);
+    expect(svg.querySelectorAll(".edge .maybe")).toHaveLength(3);
   });
 
   /** Where each of the Board's hydrogens is: its Atom's place, and its centre in the svg. */
@@ -123,9 +93,9 @@ describe("Board", () => {
     expect(svg.querySelectorAll(".atom .fixed")).toHaveLength(4);
   });
 
-  test("Board.01 the hydrogens can't be clicked: they aren't focusable, and are outside every Dotted line's hit area", () => {
+  test("Board.01 on every Puzzle, the hydrogens can't be clicked: they aren't focusable, and are outside every Dotted line's hit area", () => {
     let checked = 0;
-    for (const p of [aceticAcid, ...PUZZLES]) {
+    for (const p of PUZZLES) {
       createBoard(svg, createGame(p), { onChange() {} });
       const hits = [...svg.querySelectorAll(".hit")].map(r => ["x", "y", "width", "height"].map(k => Number(r.getAttribute(k))));
       for (const { h, x, y } of hydrogens()) {
@@ -136,7 +106,7 @@ describe("Board", () => {
           expect(x + r <= hx || x - r >= hx + w || y + r <= hy || y - r >= hy + ht).toBe(true);
       }
     }
-    expect(checked).toBeGreaterThan(0);
+    expect(checked).toBe(PUZZLES.reduce((n, p) => n + p.atoms.reduce((m, a) => m + a[3], 0), 0));
   });
 
   test("Board.04 Acetic acid with C═O: its Atoms with their hydrogens, and its Dotted lines and Bonds", () => {
@@ -159,8 +129,8 @@ describe("Board", () => {
 
   test("Input.01, Input.02 clicks, right-clicks and keys on a Bond go to onChange", () => {
     const onChange = vi.fn();
-    createBoard(svg, createGame(puzzle("water")), { onChange });
-    const bond = edge("H 1,1 to O 1,2");
+    createBoard(svg, createGame(puzzle("acetonitrile")), { onChange });
+    const bond = edge("C 1,1 to C 2,1");
     bond.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     bond.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
     for (const key of ["Enter", " ", "Backspace", "Delete", "-", "a"])
@@ -171,27 +141,27 @@ describe("Board", () => {
   });
 
   test("Board.01, Board.02, Board.04 render shows Bonds, what Atoms still need, and complete Atoms", () => {
-    const game = createGame(puzzle("formaldehyde"));
+    const game = createGame(aceticAcid);
     const board = createBoard(svg, game, { onChange() {} });
-    game.change(2, 1);
-    game.change(2, 1);
+    game.change(0, 1);
+    game.change(0, 1);
     board.render();
-    expect(edge("C 2,1 to O 3,1").getAttribute("aria-label")).toBe("C 2,1 to O 3,1: double bond");
-    expect(edge("C 2,1 to O 3,1").querySelectorAll(".vis")).toHaveLength(2);
-    expect(labels(".atom")[3]).toBe("Oxygen 3,1: complete");
+    expect(edge("O 1,2 to C 2,2").getAttribute("aria-label")).toBe("O 1,2 to C 2,2: double bond");
+    expect(edge("O 1,2 to C 2,2").querySelectorAll(".vis")).toHaveLength(2);
+    expect(labels(".atom")[0]).toBe("Oxygen 1,2: complete");
     expect(svg.querySelectorAll(".atom.ok")).toHaveLength(1);
-    expect(svg.querySelectorAll(".atom .badge text")[1].textContent).toBe("2");
+    expect(svg.querySelectorAll(".atom .badge text")[2].textContent).toBe("2");
   });
 
   const classes = () => ["solved", "pulse"].filter(c => svg.classList.contains(c));
 
   test("Board.03 solving the Board marks it solved, and its Atoms pulse, also after another render", () => {
-    const game = createGame(puzzle("water"));
+    const game = createGame(puzzle("acetonitrile"));
     const board = createBoard(svg, game, { onChange() {} });
     game.change(0, 1);
     board.render();
     expect(classes()).toEqual([]);
-    game.change(1, 1);
+    for (let n = 0; n < 3; n++) game.change(1, 1);
     board.render();
     expect(classes()).toEqual(["solved", "pulse"]);
     board.render();
@@ -199,12 +169,12 @@ describe("Board", () => {
   });
 
   test("Board.03 a Board created solved doesn't pulse, also on an svg that just pulsed; after Reset, neither, until it is solved again", () => {
-    const first = createGame(puzzle("water"));
+    const first = createGame(puzzle("acetonitrile"));
     const board = createBoard(svg, first, { onChange() {} });
     build(first);
     board.render();
     expect(classes()).toEqual(["solved", "pulse"]);
-    const solved = createGame(puzzle("hydrogen-cyanide"), { bonds: puzzle("hydrogen-cyanide").solution, revealed: false, undo: [] });
+    const solved = createGame(aceticAcid, { bonds: aceticAcid.solution, revealed: false, undo: [] });
     const again = createBoard(svg, solved, { onChange() {} });
     expect(classes()).toEqual(["solved"]);
     again.render();

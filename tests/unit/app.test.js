@@ -25,18 +25,18 @@ function start(stored = { puzzles: {}, current: null }) {
 }
 
 test("Progress.01 it opens the stored Puzzle, or Puzzle 1 if that is missing or unknown", () => {
-  expect(start({ puzzles: {}, current: "urea" }).ui.view().index).toBe(7);
-  expect(start({ puzzles: {}, current: "urea" }).ui.game().puzzle.id).toBe("urea");
+  expect(start({ puzzles: {}, current: "cyclohexanol" }).ui.view().index).toBe(7);
+  expect(start({ puzzles: {}, current: "cyclohexanol" }).ui.game().puzzle.id).toBe("cyclohexanol");
   expect(start({ puzzles: {}, current: null }).ui.view().index).toBe(0);
   expect(start({ puzzles: {}, current: "no-such-puzzle" }).ui.view().index).toBe(0);
 });
 
 test("Progress.01 the open Puzzle is saved", () => {
   const { store, ui } = start();
-  expect(store.saved.current).toBe("water");
+  expect(store.saved.current).toBe("acetonitrile");
   ui.handlers.onOpen(1);
-  expect(store.saved).toEqual({ puzzles: {}, current: "hydrogen-cyanide" });
-  expect(ui.game().puzzle.id).toBe("hydrogen-cyanide");
+  expect(store.saved).toEqual({ puzzles: {}, current: "acetic-acid" });
+  expect(ui.game().puzzle.id).toBe("acetic-acid");
   expect(ui.view()).toMatchObject({ index: 1, progress: store.saved });
 });
 
@@ -44,18 +44,24 @@ test("Progress.01 a solved Puzzle is marked solved, and the UI shows it", () => 
   const { store, ui } = start();
   const k = (a, b) => ui.game().bonds.findIndex(e => e.a === a && e.b === b);
   ui.handlers.onChange(k(0, 1), 1);
-  expect(store.saved.puzzles).toEqual({});
-  ui.handlers.onChange(k(1, 2), 1);
+  for (let n = 0; n < 3; n++) ui.handlers.onChange(k(1, 2), 1);
   expect(store.saved).toEqual({
-    puzzles: { water: "solved" }, current: "water",
-    boards: { water: { bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] } },
+    puzzles: { acetonitrile: "solved" }, current: "acetonitrile",
+    boards: { acetonitrile: { bonds: [[0, 1, 1], [1, 2, 3]], revealed: false, undo: [] } },
   });
   expect(ui.view()).toMatchObject({ status: { kind: "solved" }, done: true, progress: store.saved });
 });
 
-test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, and the UI shows the result", () => {
-  const { store, ui } = start({ puzzles: {}, current: "formaldehyde" });
+test("Progress.01 a Puzzle not yet solved isn't marked", () => {
+  const { store, ui } = start();
   ui.handlers.onChange(0, 1);
+  ui.handlers.onChange(1, 1);
+  expect(store.saved.puzzles).toEqual({});
+});
+
+test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, and the UI shows the result", () => {
+  const { store, ui } = start({ puzzles: {}, current: "acetic-acid" });
+  ui.handlers.onChange(1, 1); // CH₃─C
   expect(ui.said.at(-1)).toEqual({ changed: true });
   expect(ui.view()).toMatchObject({ status: { kind: "open", open: 3 }, canUndo: true, hasBonds: true });
   ui.handlers.onUndo();
@@ -71,55 +77,55 @@ describe("Progress.05, Progress.06", () => {
   const entry = id => store => store.saved.boards?.[id];
 
   test("Progress.05 a change, Undo and Show solution keep the open Puzzle's Board, its undo history and whether the solution was shown", () => {
-    const { store, ui } = start({ puzzles: {}, current: "formaldehyde" });
-    const formaldehyde = entry("formaldehyde");
-    ui.handlers.onChange(0, 1);
-    expect(formaldehyde(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
+    const { store, ui } = start({ puzzles: {}, current: "acetic-acid" });
+    const aceticAcid = entry("acetic-acid");
     ui.handlers.onChange(1, 1);
+    expect(aceticAcid(store)).toEqual({ bonds: [[1, 2, 1]], revealed: false, undo: [[]] });
+    ui.handlers.onChange(2, 1);
     ui.handlers.onUndo();
-    expect(formaldehyde(store)).toEqual({ bonds: [[0, 1, 1]], revealed: false, undo: [[]] });
+    expect(aceticAcid(store)).toEqual({ bonds: [[1, 2, 1]], revealed: false, undo: [[]] });
     ui.handlers.onSolve();
-    expect(formaldehyde(store)).toEqual({ bonds: PUZZLES.find(p => p.id === "formaldehyde").solution, revealed: true, undo: [[], [[0, 1, 1]]] });
+    expect(aceticAcid(store)).toEqual({ bonds: PUZZLES.find(p => p.id === "acetic-acid").solution, revealed: true, undo: [[], [[1, 2, 1]]] });
   });
 
   test("Progress.05 Reset removes what was kept, and no boards are left", () => {
-    const { store, ui } = start({ puzzles: {}, current: "water" });
+    const { store, ui } = start({ puzzles: {}, current: "acetonitrile" });
     ui.handlers.onChange(0, 1);
-    expect(entry("water")(store)).toBeDefined();
+    expect(entry("acetonitrile")(store)).toBeDefined();
     ui.handlers.onReset();
-    expect(store.saved).toEqual({ puzzles: {}, current: "water" });
+    expect(store.saved).toEqual({ puzzles: {}, current: "acetonitrile" });
   });
 
   test("Progress.06 solving keeps the solved Board, it opens again solved, and Reset removes it", () => {
-    const { store, ui } = start({ puzzles: {}, current: "water" });
-    const solved = { bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] };
+    const { store, ui } = start({ puzzles: {}, current: "acetonitrile" });
+    const solved = { bonds: [[0, 1, 1], [1, 2, 3]], revealed: false, undo: [] };
     ui.handlers.onChange(0, 1);
-    ui.handlers.onChange(1, 1);
-    expect(store.saved).toEqual({ puzzles: { water: "solved" }, current: "water", boards: { water: solved } });
+    for (let n = 0; n < 3; n++) ui.handlers.onChange(1, 1);
+    expect(store.saved).toEqual({ puzzles: { acetonitrile: "solved" }, current: "acetonitrile", boards: { acetonitrile: solved } });
     ui.handlers.onOpen(1);
     ui.handlers.onOpen(0);
-    expect(ui.created.at(-1)).toEqual(["water", solved]);
+    expect(ui.created.at(-1)).toEqual(["acetonitrile", solved]);
     expect(ui.view()).toMatchObject({ status: { kind: "solved" }, done: true, canUndo: false, hasBonds: true });
     ui.handlers.onReset();
-    expect(store.saved).toEqual({ puzzles: { water: "solved" }, current: "water" });
+    expect(store.saved).toEqual({ puzzles: { acetonitrile: "solved" }, current: "acetonitrile" });
     expect(ui.view()).toMatchObject({ status: { kind: "empty" }, hasBonds: false });
   });
 
   test("Progress.05 an entry whose Board can't be on the Grid is removed when its Puzzle opens", () => {
-    const { store } = start({ puzzles: {}, current: "hydrogen-cyanide", boards: { "hydrogen-cyanide": { bonds: [[0, 2, 1]], revealed: false, undo: [] } } });
-    expect(store.saved).toEqual({ puzzles: {}, current: "hydrogen-cyanide" });
+    const { store } = start({ puzzles: {}, current: "acetonitrile", boards: { acetonitrile: { bonds: [[0, 2, 1]], revealed: false, undo: [] } } });
+    expect(store.saved).toEqual({ puzzles: {}, current: "acetonitrile" });
   });
 
   test("Progress.05 opening a Puzzle goes on where it was left, and another Puzzle's Board stays kept", () => {
-    const kept = { bonds: [[0, 1, 1]], revealed: false, undo: [[]] };
-    const { store, ui } = start({ puzzles: {}, current: "methanol", boards: { "hydrogen-cyanide": kept } });
-    expect(ui.created).toEqual([["methanol", undefined]]);
+    const kept = { bonds: [[1, 2, 1]], revealed: false, undo: [[]] };
+    const { store, ui } = start({ puzzles: {}, current: "glycine", boards: { "acetic-acid": kept } });
+    expect(ui.created).toEqual([["glycine", undefined]]);
     ui.handlers.onOpen(1);
-    expect(ui.created.at(-1)).toEqual(["hydrogen-cyanide", kept]);
-    expect(ui.game().board()).toEqual([[0, 1, 1]]);
+    expect(ui.created.at(-1)).toEqual(["acetic-acid", kept]);
+    expect(ui.game().board()).toEqual([[1, 2, 1]]);
     expect(ui.view().canUndo).toBe(true);
     ui.handlers.onOpen(0);
     ui.handlers.onChange(0, 1);
-    expect(store.saved.boards).toEqual({ "hydrogen-cyanide": kept, water: { bonds: [[0, 1, 1]], revealed: false, undo: [[]] } });
+    expect(store.saved.boards).toEqual({ "acetic-acid": kept, acetonitrile: { bonds: [[0, 1, 1]], revealed: false, undo: [[]] } });
   });
 });
