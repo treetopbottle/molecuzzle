@@ -5,33 +5,33 @@ test.beforeEach(async ({ page }) => {
   await start(page);
 });
 
-test("Messages.01 the status line says what is left to do", async ({ page }) => {
-  await openPuzzle(page, 3);
+test("Messages.01 the status line says what is left to do: Acetic acid", async ({ page }) => {
+  await openPuzzle(page, 2);
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
-  await clickBond(page, "1,1", "2,1");
+  await clickBond(page, "2,1", "2,2");
   await expect(status(page)).toHaveText("3 atoms still need bonds.");
 });
 
-test("Messages.01 every Atom complete, but in two pieces, in orange", async ({ page }) => {
-  await openPuzzle(page, 4); // Methanol: . H . / O C H / H H .
-  await clickBond(page, "3,1", "3,2"); // H–H
-  await clickBond(page, "2,1", "2,2", { times: 2 }); // O=C
-  await clickBond(page, "1,2", "2,2"); // C–H
-  await clickBond(page, "2,2", "2,3"); // C–H
+test("Messages.01 every Atom complete, but in two pieces, in orange: Glycerol with OH─OH apart", async ({ page }) => {
+  await openPuzzle(page, 4);
+  await clickBond(page, "1,1", "1,2");
+  await clickBond(page, "1,2", "2,2");
+  await clickBond(page, "2,1", "2,2", { times: 2 });
+  await clickBond(page, "3,1", "3,2");
   await expect(status(page)).toHaveText("Every atom has its bonds, but they form more than one molecule. Everything must join up.");
   expect((await colors(status(page))).every(isOrange)).toBe(true);
 });
 
 test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building the molecule solves the puzzle and names it", async ({ page }) => {
-  await openPuzzle(page, 12);
-  await build(page, PUZZLES[11]);
+  await openPuzzle(page, 3);
+  await build(page, PUZZLES[2]);
   await expect(status(page)).toHaveText("✓ Solved! It's Glycine.");
   await expect(page.locator("#board")).toHaveClass(/\bsolved\b/);
   await expect(page.getByRole("complementary")).toMatchAriaSnapshot(`
     - complementary:
       - navigation "Puzzle":
         - button "Previous puzzle"
-        - text: Puzzle 12 of 20
+        - text: Puzzle 3 of 15
         - button "Next puzzle"
         - text: ✓ Solved
       - text: Mystery molecule
@@ -45,28 +45,28 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
       - paragraph: Glycine is the simplest amino acid, one of the building blocks of proteins. Traces have even been found in samples from comets.
       - button "Next puzzle →"
   `);
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 20");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 15");
   await page.getByRole("button", { name: "Next puzzle →" }).click();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 13 of 20");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 4 of 15");
 });
 
 test("Messages.01 the status line is green when solved and when revealed", async ({ page }) => {
   await openPuzzle(page, 1);
   expect((await colors(status(page))).some(c => isGreen(c) || isOrange(c))).toBe(false);
   await build(page, PUZZLES[0]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Water.");
+  await expect(status(page)).toHaveText("✓ Solved! It's Acetonitrile.");
   expect((await colors(status(page))).every(isGreen)).toBe(true);
-  await openPuzzle(page, 3);
+  await openPuzzle(page, 2);
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
-  await expect(status(page)).toHaveText("Here is Formaldehyde. Reset and build it yourself to mark it solved.");
+  await expect(status(page)).toHaveText("Here is Acetic acid. Reset and build it yourself to mark it solved.");
   expect((await colors(status(page))).every(isGreen)).toBe(true);
 });
 
 test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
-  await openPuzzle(page, 20);
-  await build(page, PUZZLES[19]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Valine.");
+  await openPuzzle(page, 15);
+  await build(page, PUZZLES[14]);
+  await expect(status(page)).toHaveText("✓ Solved! It's Citric acid.");
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
@@ -80,29 +80,30 @@ test("Input.04, Messages.01, Panel.01, List.01, List.02 Show solution asks first
     dialog.accept();
   });
   await page.getByRole("button", { name: "Show solution" }).click();
-  await expect(status(page)).toHaveText("Here is Urea. Reset and build it yourself to mark it solved.");
+  await expect(status(page)).toHaveText("Here is Cyclohexanol. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.getByRole("button", { name: "Puzzle 8", exact: true })).toBeVisible();
-  await expect(page.locator("#score")).toHaveText("Solved 0 of 20");
+  await expect(page.locator("#score")).toHaveText("Solved 0 of 15");
 });
 
 test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it solved", async ({ page }) => {
-  await start(page, { puzzles: { urea: "solved" }, current: "urea" });
+  await start(page, { puzzles: { cyclohexanol: "solved" }, current: "cyclohexanol" });
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
-  await expect(status(page)).toHaveText("Here is Urea. Reset and build it yourself to mark it solved.");
+  await expect(status(page)).toHaveText("Here is Cyclohexanol. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 20");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 15");
 });
 
-test("Messages.01, Panel.01 after Reset, building it marks it solved", async ({ page }) => {
-  await openPuzzle(page, 8);
+test("Help.01, Help.02, Messages.01, Panel.01 Serine: the solution shown, then Reset, and building it marks it solved", async ({ page }) => {
+  await openPuzzle(page, 7);
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
+  await expect(status(page)).toHaveText("Here is Serine. Reset and build it yourself to mark it solved.");
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Reset" }).click();
-  await build(page, PUZZLES[7]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Urea.");
+  await build(page, PUZZLES[6]);
+  await expect(status(page)).toHaveText("✓ Solved! It's Serine.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
 });
 
@@ -113,7 +114,7 @@ test("Board.03 a solved Puzzle that opens again doesn't pulse, also right after 
   await build(page, PUZZLES[0]);
   await expect(page.locator("#board")).toHaveClass(/\bpulse\b/);
   await openPuzzle(page, 2);
-  await expect(status(page)).toHaveText("✓ Solved! It's Hydrogen cyanide.");
+  await expect(status(page)).toHaveText("✓ Solved! It's Acetic acid.");
   await expect(page.locator("#board")).toHaveClass(/\bsolved\b/);
   await expect(page.locator("#board")).not.toHaveClass(/\bpulse\b/);
 });

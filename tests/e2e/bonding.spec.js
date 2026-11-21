@@ -5,83 +5,93 @@ test.beforeEach(async ({ page }) => {
   await start(page);
 });
 
+// No Puzzle has Dotted lines that cross, so "Bonds can't cross." is tested
+// only in the unit tests, on a made-up Grid (Bond.05, Messages.02).
+
 test("Input.01 clicking makes a Bond, then stronger, then removes it", async ({ page }) => {
-  await openPuzzle(page, 2); // H C N
+  await openPuzzle(page, 1); // Acetonitrile: CH₃ / C / N
   for (const name of ["single bond", "double bond", "triple bond", "no bond"]) {
-    await clickBond(page, "1,2", "1,3");
-    await expect(bond(page, "1,2", "1,3")).toHaveAccessibleName(`C 1,2 to N 1,3: ${name}`);
+    await clickBond(page, "2,1", "3,1");
+    await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName(`C 2,1 to N 3,1: ${name}`);
   }
 });
 
-test("Messages.02 an Atom with all its bonds says so", async ({ page }) => {
-  await openPuzzle(page, 4); // Methanol: . H . / O C H / H H .
-  await clickBond(page, "3,1", "3,2"); // H–H
-  await clickBond(page, "2,1", "3,1"); // O–H: that H is full
-  await expect(page.getByRole("alert")).toHaveText("Hydrogen already has all its bonds.");
-  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("O 2,1 to H 3,1: no bond");
+test("Messages.02 an Atom with all its bonds says so: Glycine's OH 1,1, bonded to C 2,1", async ({ page }) => {
+  await openPuzzle(page, 3);
+  await clickBond(page, "1,1", "2,1");
+  await clickBond(page, "1,1", "1,2");
+  await expect(page.getByRole("alert")).toHaveText("Oxygen already has all its bonds.");
+  await expect(bond(page, "1,1", "1,2")).toHaveAccessibleName("O 1,1 to N 1,2: no bond");
 });
 
-test("Messages.02 Bonds can't cross", async ({ page }) => {
-  await openPuzzle(page, 12); // Glycine
-  await clickBond(page, "2,1", "2,3"); // H–C across the middle
-  await clickBond(page, "1,2", "4,2"); // O–H down through it
-  await expect(page.getByRole("alert")).toHaveText("Bonds can't cross.");
-  await expect(bond(page, "1,2", "4,2")).toHaveAccessibleName("O 1,2 to H 4,2: no bond");
+test("Input.01 right-click makes a Bond one weaker, and does nothing to a dotted line", async ({ page }) => {
+  await openPuzzle(page, 1);
+  await clickBond(page, "2,1", "3,1", { times: 3 });
+  await clickBond(page, "2,1", "3,1", { button: "right" });
+  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("C 2,1 to N 3,1: double bond");
+  await clickBond(page, "1,1", "2,1", { button: "right" });
+  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("C 1,1 to C 2,1: no bond");
 });
 
-test("Input.01 right-click makes a Bond one weaker", async ({ page }) => {
-  await openPuzzle(page, 2);
-  await clickBond(page, "1,2", "1,3", { times: 3 });
-  await clickBond(page, "1,2", "1,3", { button: "right" });
-  await expect(bond(page, "1,2", "1,3")).toHaveAccessibleName("C 1,2 to N 1,3: double bond");
-  await clickBond(page, "1,1", "1,2", { button: "right" });
-  await expect(bond(page, "1,1", "1,2")).toHaveAccessibleName("H 1,1 to C 1,2: no bond");
-});
-
-test("Input.02 Bonds can be reached with Tab and changed with keys", async ({ page }) => {
-  await openPuzzle(page, 2);
-  await bond(page, "1,1", "1,2").focus();
+test("Input.01, Input.02 Acetonitrile: three clicks, a right-click, Delete and Ctrl+Z", async ({ page }) => {
+  await openPuzzle(page, 1);
+  await clickBond(page, "2,1", "3,1", { times: 3 });
+  await clickBond(page, "2,1", "3,1", { button: "right" });
+  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("C 2,1 to N 3,1: double bond");
+  await bond(page, "1,1", "2,1").focus();
   await page.keyboard.press("Tab");
-  await expect(bond(page, "1,2", "1,3")).toBeFocused();
+  await expect(bond(page, "2,1", "3,1")).toBeFocused();
+  await page.keyboard.press("Delete");
+  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("C 2,1 to N 3,1: single bond");
+  await page.keyboard.press("ControlOrMeta+z");
+  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("C 2,1 to N 3,1: double bond");
+});
+
+test("Input.02 Enter and Space act as a click, Backspace and - as a right-click", async ({ page }) => {
+  await openPuzzle(page, 1);
+  await bond(page, "2,1", "3,1").focus();
   await page.keyboard.press("Enter");
   await page.keyboard.press("Space");
-  await expect(bond(page, "1,2", "1,3")).toHaveAccessibleName("C 1,2 to N 1,3: double bond");
-  await page.keyboard.press("Delete");
-  await expect(bond(page, "1,2", "1,3")).toHaveAccessibleName("C 1,2 to N 1,3: single bond");
+  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("C 2,1 to N 3,1: double bond");
+  await page.keyboard.press("Backspace");
+  await page.keyboard.press("-");
+  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("C 2,1 to N 3,1: no bond");
 });
 
 test("Input.02, Input.03 Undo and Ctrl+Z go back one change", async ({ page }) => {
   const undo = page.getByRole("button", { name: "Undo" });
-  await openPuzzle(page, 3); // Formaldehyde
+  await openPuzzle(page, 2); // Acetic acid
   await expect(undo).toBeDisabled();
-  await clickBond(page, "1,1", "2,1");
   await clickBond(page, "2,1", "2,2");
+  await clickBond(page, "2,2", "3,2");
   await undo.click();
-  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("C 2,1 to H 2,2: no bond");
+  await expect(bond(page, "2,2", "3,2")).toHaveAccessibleName("C 2,2 to O 3,2: no bond");
+  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("C 2,1 to C 2,2: single bond");
   await page.keyboard.press("ControlOrMeta+z");
-  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to C 2,1: no bond");
+  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("C 2,1 to C 2,2: no bond");
   await expect(undo).toBeDisabled();
 });
 
 test("Input.02, Input.03 Reset removes every Bond and the undo history", async ({ page }) => {
   const reset = page.getByRole("button", { name: "Reset" }), undo = page.getByRole("button", { name: "Undo" });
-  await openPuzzle(page, 3);
+  await openPuzzle(page, 2);
   await expect(reset).toBeDisabled();
-  await clickBond(page, "1,1", "2,1");
   await clickBond(page, "2,1", "2,2");
+  await clickBond(page, "2,2", "3,2");
   page.once("dialog", dialog => dialog.accept());
   await reset.click();
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
   await expect(reset).toBeDisabled();
   await expect(undo).toBeDisabled();
   await page.keyboard.press("ControlOrMeta+z");
-  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("H 1,1 to C 2,1: no bond");
-  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("C 2,1 to H 2,2: no bond");
+  await expect(bond(page, "2,1", "2,2")).toHaveAccessibleName("C 2,1 to C 2,2: no bond");
+  await expect(bond(page, "2,2", "3,2")).toHaveAccessibleName("C 2,2 to O 3,2: no bond");
 });
 
-test("Board.02 Atoms show what they still need, and glow when complete", async ({ page }) => {
-  await openPuzzle(page, 3); // Formaldehyde
-  await clickBond(page, "2,1", "3,1", { times: 2 });
-  await expect(page.getByRole("img", { name: "Carbon 2,1: needs 2 more bonds" })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Oxygen 3,1: complete" })).toHaveClass(/\bok\b/);
+test("Board.02, Board.04 Atoms show what they still need, with their hydrogens, and glow when complete", async ({ page }) => {
+  await openPuzzle(page, 2); // Acetic acid
+  await clickBond(page, "1,2", "2,2", { times: 2 });
+  await expect(page.getByRole("img", { name: "Carbon 2,2: needs 2 more bonds" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Carbon 2,1, with 3 hydrogens: needs 1 more bond" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Oxygen 1,2: complete" })).toHaveClass(/\bok\b/);
 });

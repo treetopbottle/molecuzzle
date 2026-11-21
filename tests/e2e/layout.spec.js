@@ -14,17 +14,18 @@ test("Layout.01 wide screens have the Board left of the panel, narrow ones above
 test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page, isMobile }) => {
   test.skip(!isMobile, "touch only");
   await start(page);
-  await clickBond(page, "1,1", "1,2", { tap: true });
-  await expect(bond(page, "1,1", "1,2")).toHaveAccessibleName("H 1,1 to O 1,2: single bond");
+  await clickBond(page, "1,1", "2,1", { tap: true });
+  await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("C 1,1 to C 2,1: single bond");
 });
 
-test("Layout.01, Puzzle.04 on a phone, the largest Grid, Valine's, fits: no sideways scroll, and the Board and its status line fit the screen", async ({ page, isMobile }) => {
-  test.skip(!isMobile, "phone only");
-  await start(page);
-  await openPuzzle(page, 20);
-  const { width, height } = page.viewportSize();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-  const stage = await page.locator(".stage").boundingBox();
-  const status = await page.getByRole("status").boundingBox();
-  expect(status.y + status.height - stage.y).toBeLessThanOrEqual(height);
-});
+for (const [number, name] of [[14, "Glucose's, the widest"], [15, "Citric acid's, the tallest"]])
+  test(`Layout.01, Puzzle.04 on a phone, the largest Grids fit: ${name}, with no sideways scroll, and the Board and its status line fit the screen`, async ({ page, isMobile }) => {
+    test.skip(!isMobile, "phone only");
+    await start(page);
+    await openPuzzle(page, number);
+    const { width, height } = page.viewportSize();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    const stage = await page.locator(".stage").boundingBox();
+    const status = await page.getByRole("status").boundingBox();
+    expect(status.y + status.height - stage.y).toBeLessThanOrEqual(height);
+  });

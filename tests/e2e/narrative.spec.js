@@ -3,49 +3,55 @@ import { test, expect } from "@playwright/test";
 import { start, openPuzzle, clickBond, build, status, bond, PUZZLES } from "./helpers.js";
 
 test("First day", async ({ page }) => {
-  // Noor opens Molecuzzle: Puzzle 1, a mystery molecule of H, O and H.
+  // Noor opens Molecuzzle: Puzzle 1, a mystery molecule of three atoms in a
+  // column, a C with three small hydrogens, another C and an N.
   await start(page);
-  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 20");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 15");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("?");
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
+  await expect(page.getByRole("group", { name: "Board, 3 by 1" })).toMatchAriaSnapshot(`
+    - 'button "C 1,1 to C 2,1: no bond"'
+    - 'button "C 2,1 to N 3,1: no bond"'
+    - 'img "Carbon 1,1, with 3 hydrogens: needs 1 more bond"'
+    - 'img "Carbon 2,1: needs 4 more bonds"'
+    - 'img "Nitrogen 3,1: needs 3 more bonds"'
+  `);
+  await expect(page.locator("#board .hydrogen")).toHaveCount(3);
 
-  // Two clicks on the dotted lines, and it is Water.
-  await clickBond(page, "1,1", "1,2");
-  await expect(status(page)).toHaveText("2 atoms still need bonds.");
-  await clickBond(page, "1,2", "2,2");
-  await expect(status(page)).toHaveText("✓ Solved! It's Water.");
-  await expect(page.getByText(PUZZLES[0].fact)).toBeVisible();
-  await page.getByRole("button", { name: "Next puzzle →" }).click();
-  // Hydrogen cyanide needs a triple Bond.
-  await build(page, PUZZLES[1]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Hydrogen cyanide.");
-  await page.getByRole("button", { name: "Next puzzle →" }).click();
-
-  // Formaldehyde needs a double Bond: click the C–O line twice.
+  // The top dotted line, then three clicks for a triple Bond, and it is Acetonitrile.
   await clickBond(page, "1,1", "2,1");
+  await expect(status(page)).toHaveText("2 atoms still need bonds.");
+  await clickBond(page, "2,1", "3,1", { times: 3 });
+  await expect(status(page)).toHaveText("✓ Solved! It's Acetonitrile.");
+  await expect(page.locator("#board .atom.ok")).toHaveCount(3);
+  await expect(page.getByText(PUZZLES[0].fact)).toBeVisible();
+
+  // Next puzzle brings Acetic acid: the line between C and O takes two clicks.
+  await page.getByRole("button", { name: "Next puzzle →" }).click();
+  await clickBond(page, "1,2", "2,2", { times: 2 });
+  await expect(bond(page, "1,2", "2,2")).toHaveAccessibleName("O 1,2 to C 2,2: double bond");
   await clickBond(page, "2,1", "2,2");
-  await clickBond(page, "2,1", "3,1", { times: 2 });
-  await expect(bond(page, "2,1", "3,1")).toHaveAccessibleName("C 2,1 to O 3,1: double bond");
-  await expect(status(page)).toHaveText("✓ Solved! It's Formaldehyde.");
+  await clickBond(page, "2,2", "3,2");
+  await expect(status(page)).toHaveText("✓ Solved! It's Acetic acid.");
 
-  // On Glycine, a Bond across another one isn't allowed.
-  await openPuzzle(page, 12);
-  await clickBond(page, "2,1", "2,3");
-  await clickBond(page, "1,2", "4,2");
-  await expect(page.getByRole("alert")).toHaveText("Bonds can't cross.");
+  // On Serine, a second Bond on an OH isn't allowed.
+  await openPuzzle(page, 7);
+  await clickBond(page, "1,2", "2,2");
+  await clickBond(page, "1,1", "1,2");
+  await expect(page.getByRole("alert")).toHaveText("Oxygen already has all its bonds.");
 
-  // Stuck, Noor looks at the solution, resets, and builds it alone.
+  // Stuck, Noor looks at the solution, resets, and builds Serine alone.
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Reset" }).click();
-  await build(page, PUZZLES[11]);
+  await build(page, PUZZLES[6]);
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
 
-  // The next day, in the same browser, the game opens where Noor left off, still showing Glycine.
+  // The next day, in the same browser, the game opens on Puzzle 7, still showing Serine.
   await page.reload();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 12 of 20");
-  await expect(status(page)).toHaveText("✓ Solved! It's Glycine.");
-  await expect(page.locator("#score")).toHaveText("Solved 4 of 20");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 7 of 15");
+  await expect(status(page)).toHaveText("✓ Solved! It's Serine.");
+  await expect(page.locator("#score")).toHaveText("Solved 3 of 15");
 });
