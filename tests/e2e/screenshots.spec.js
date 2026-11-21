@@ -41,6 +41,7 @@ test.describe("at 1280×800", () => {
   test("Panel.01, Panel.02, Panel.04 the panel of Puzzle 3, unsolved", async ({ page }) => {
     await start(page);
     await openPuzzle(page, 3);
+    await page.mouse.move(0, 0); // no button hovered when the panel scrolls into view
     await expect(page.locator(".panel")).toHaveScreenshot("panel-mystery.png");
   });
 
@@ -48,6 +49,7 @@ test.describe("at 1280×800", () => {
     await start(page);
     await openPuzzle(page, 11);
     await build(page, PUZZLES[10]);
+    await page.mouse.move(0, 0);
     await expect(page.locator(".panel")).toHaveScreenshot("panel-solved.png");
   });
 
