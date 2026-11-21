@@ -6,7 +6,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 ### Puzzle
 
-- Puzzles: there are 20, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and in the order they were added when it is the same ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
+- Puzzles: there are 20, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and a new Puzzle after those of the same difficulty ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
@@ -40,7 +40,7 @@ Removed Puzzles, which aren't added again:
 
 | Molecule | Formula | Why |
 |---|---|---|
-| Ammonia | NH₃ | Water again, with one more H |
+| Ammonia | NH₃ | No empty Dotted line, nothing to rule out |
 | Carbon disulfide | CS₂ | 3 Atoms in a row, with nothing to rule out |
 | Chloroform | CHCl₃ | One C with four neighbours, nothing to rule out |
 | Methanethiol | CH₄S | Methanol's layout, with S for O |

@@ -20,7 +20,7 @@ Roles, capitalized, each with an example the spec can reuse:
 
 Domain entities, capitalized, each with an example the spec can reuse:
 
-- Puzzle: a Grid with Atoms, whose Bonds can be filled in only one way, into a named Molecule; Puzzle 11, Glycine, C₂H₅NO₂
+- Puzzle: a Grid with Atoms, whose Bonds can be filled in only one way, into a named Molecule; Puzzle 12, Glycine, C₂H₅NO₂
 - Element: a type of atom, with the number of Bonds it needs (its valence); Carbon, 4 Bonds
 - Atom: a single Element at a point on the Grid; the N at row 4, column 3 in Glycine
 - Molecule: Atoms are connected by Bonds into one molecule; Water H2O

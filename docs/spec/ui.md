@@ -145,7 +145,7 @@ Then "Puzzle 20 of 20" and "Unsolved" show, and › is disabled
 ### List
 
 - Buttons: per Puzzle a button with its number, and ✓ if solved ([Progress.01](storage.md#progress)), named "Puzzle <n>", or "Puzzle <n>: <name>, solved" once it is; the open Puzzle is marked, and clicking a button opens its Puzzle (List.01)
-- Score: the header shows "Solved <k> of <N>" (List.02)
+- Score: the header shows "Solved <k> of <N>", k the Puzzles in the game that are solved (List.02)
 
 Example (List.01), Puzzle 1 solved and Puzzle 3 open:
 
