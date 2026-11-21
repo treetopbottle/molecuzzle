@@ -1,23 +1,31 @@
-// Draws a game's Board as text, for inline snapshots.
+// Draws a game's Board as text, for inline snapshots, as the spec's README
+// draws them.
 //
-//   H─O     Atoms by Element; a space where there's none
-//     │     Bonds: ─ │ single, ═ ║ double, ≡ ⦀ triple
-//   H·N     · a dotted line (no Bond yet)
+//   OH··NH₂   Atoms by their label: Element, then hydrogens (C, CH₂, OH)
+//   │   ·     Bonds: ─ │ single, ═ ║ double, ≡ ⦀ triple
+//   C───CH₂   · a dotted line (no Bond yet); a space where there's no Atom
 //
-// With a two-letter symbol on the Board, every Grid point is two characters
-// wide, a one-letter symbol in its first, and the columns are three apart.
+// Every Grid point is as wide as the longest label on the Board, a shorter
+// label in its first characters, and the columns are one character more
+// apart. A Bond along a column runs under the first characters of its labels.
+const SUBSCRIPTS = "₀₁₂₃₄₅₆₇₈₉";
+
+/** An Atom as in a formula: CH₂, OH, C. */
+export const label = a => a.el + (a.h ? "H" + (a.h > 1 ? SUBSCRIPTS[a.h] : "") : "");
+
 export function draw(game) {
   const { puzzle, atoms, bonds } = game, order = game.order;
-  const width = atoms.some(a => a.el.length > 1) ? 2 : 1, step = width + 1;
+  const labels = atoms.map(a => [...label(a)]);
+  const width = Math.max(...labels.map(l => l.length)), step = width + 1;
   const W = (puzzle.cols - 1) * step + width, H = puzzle.rows * 2 - 1;
   const grid = Array.from({ length: H }, () => Array(W).fill(" "));
   bonds.forEach((e, k) => {
     const A = atoms[e.a], B = atoms[e.b], o = order[k];
     const ch = e.horizontal ? " ─═≡"[o] : " │║⦀"[o];
-    if (e.horizontal) for (let x = A.c * step + A.el.length; x < B.c * step; x++) grid[A.r * 2][x] = o ? ch : "·";
+    if (e.horizontal) for (let x = A.c * step + labels[e.a].length; x < B.c * step; x++) grid[A.r * 2][x] = o ? ch : "·";
     else for (let y = A.r * 2 + 1; y < B.r * 2; y++) grid[y][A.c * step] = o ? ch : "·";
   });
-  atoms.forEach(a => [...a.el].forEach((ch, i) => (grid[a.r * 2][a.c * step + i] = ch)));
+  atoms.forEach((a, i) => labels[i].forEach((ch, x) => (grid[a.r * 2][a.c * step + x] = ch)));
   return "\n" + grid.map(row => row.join("").trimEnd()).join("\n") + "\n";
 }
 
