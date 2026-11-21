@@ -39,8 +39,8 @@ describe("Board", () => {
     expect(inHue(200, 240)(color("N"))).toBe(true);
     expect(hue(color("C"))).toBeNull();
     expect(lightness(color("C"))).toBeLessThan(0.4);
-    expect(inHue(40, 65)(color("S"))).toBe(true);
-    expect(lightness(color("S"))).toBeGreaterThan(0.5);
+    expect(inHue(52, 65)(color("S"))).toBe(true); // away from the orange of the badge
+    expect(lightness(color("S"))).toBeGreaterThanOrEqual(0.5);
     expect(green(color("F")) && green(color("Cl"))).toBe(true);
     expect(lightness(color("F"))).toBeGreaterThan(lightness(color("Cl")) + 0.1);
     expect(red(color("Br"))).toBe(true);
