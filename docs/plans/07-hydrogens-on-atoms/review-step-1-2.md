@@ -24,3 +24,7 @@ Commits reviewed: 99682f9, the fixes to the findings of `review-step-1.md`. I al
    - Naming Bond.03 next to "carried to the solver" would make sure step 7 doesn't drop it.
 
 No must-fix or should-fix findings.
+
+## Outcome
+
+1. Fixed in this commit: step 7 names the spec's Bond.03 example on Acetonitrile.

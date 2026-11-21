@@ -29,3 +29,8 @@ Commits reviewed: 181ea19, step 2. It has no rule ids, so it is one commit, with
 2. **note**: `tests/unit/draw.test.js:15` defines the same made-up Glycine as `tests/unit/puzzle/game.test.js:18`. That makes two copies until step 7 swaps them for `puzzles.js`, as the plan says. Harmless, but if one copy changes before then, the other won't follow.
 
 No must-fix or should-fix findings.
+
+## Outcome
+
+1. Fixed in 476e8ef: `label` isn't exported.
+2. Kept: step 7 replaces both copies with Glycine from `puzzles.js`, as the plan says.

@@ -47,3 +47,11 @@ Commits reviewed: 52b8a8f (tests, step 3(a)) and 588b5f7 (implementation, step 3
    - One `label` in `src/puzzle/` would remove the copy. That would be an interface the plan doesn't name, so leave it unless it changes again.
 
 No must-fix findings.
+
+## Outcome
+
+1. Fixed in 7bd9169: `check()` takes a layout only if the solver's one solution is the given Bonds, so wrong Bonds end in "no unique layout found"; Generate.02 says so, with a test of both examples.
+2. Kept: a refusal test can't fail for the old parser's reason alone, as the finding says.
+3. Fixed in 7bd9169: Generate.02 names H.
+4. Fixed in 7bd9169: a count of hydrogens is 2 to 9, so `CH1` can't be read, with a test.
+5. Kept: the script can't import the test helper, and the plan names no shared label.
