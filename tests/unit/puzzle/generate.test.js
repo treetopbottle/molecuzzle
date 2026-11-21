@@ -32,6 +32,7 @@ test.each([
   ["Xx-CH3", "an Element the game doesn't have, first"],
   ["CH3-constructor", "a label that isn't one"],
   ["C2-O", "a count with no H"],
+  ["CH1-C", "a count of 1, which a formula doesn't write"],
   ["CH3-C:", "a `:` with no name"],
   ["H-C", "H as an Element"],
   ["HH-C", "H as an Element, with a hydrogen"],
@@ -39,6 +40,11 @@ test.each([
   ["C-OH2", "hydrogens that leave the Atom no room for a Bond, second"],
 ])("Generate.02 a Bond with %s, %s, stops it", bond => {
   expect(() => findLayout(bond)).toThrow(`can't read ${bond}`);
+});
+
+test("Generate.02 Bonds that don't give each Atom its valence give no layout: C─O in Acetic acid, or a second Bond on its OH", () => {
+  expect(findLayout("CH3-C C-O C-OH", { tries: 2000, maxRows: 3, maxCols: 3, seed: 1 })).toBeNull();
+  expect(findLayout("CH3-C C=O C=OH", { tries: 2000, maxRows: 3, maxCols: 3, seed: 1 })).toBeNull();
 });
 
 test("Generate.02 no layout with exactly one solution gives null", () => {

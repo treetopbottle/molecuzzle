@@ -121,7 +121,7 @@ Then it has 7 − 6 + 1 = 2 loops
 ### Generate
 
 - Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order, and its difficulty ([Puzzle.05](#puzzle)); the same arguments print the same layout (Generate.01)
-- None: if it can't read a Bond, or a Bond has an Atom whose Element isn't in the [table of valences](#board), or whose hydrogens leave it no room for a Bond, it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
+- None: if it can't read a Bond, or a Bond has an Atom whose Element is H or isn't in the [table of valences](#board), or whose hydrogens leave it no room for a Bond, it stops with "can't read <bond>", and if no try has exactly one solution, these Bonds, with "no unique layout found": so also for Bonds that don't give each Atom its valence (Generate.02)
 
 Bonds are written between labelled Atoms, `-` `=` `#` a single, double and triple Bond. A label is the Atom as in a formula, its Element and then its hydrogens, such as `C`, `CH3`, `OH` or `NH2`; Atoms with the same label are told apart by `:` and a name after it, such as `CH2:a` and `CH2:b`.
 

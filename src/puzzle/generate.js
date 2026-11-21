@@ -14,7 +14,7 @@ import { ELEMENTS } from "./elements.js";
  * Atom whose hydrogens leave it no room for a Bond, throws "can't read <bond>".
  * Returns the best of `tries` random layouts of at most maxRows by maxCols
  * (6 by 5 if left out, as every Puzzle's Grid)
- * whose only solution is this Molecule, as { rows, cols, atoms, solution }
+ * whose only solution is this Molecule, with these Bonds, as { rows, cols, atoms, solution }
  * of a Puzzle, the Atoms in reading order with their hydrogens; or null if
  * no try has exactly one solution. The same arguments give the same layout.
  */
@@ -25,7 +25,7 @@ export function findLayout(text, { tries = 20000, maxRows = 6, maxCols = 5, seed
 
   /** A label's Element and hydrogens, or null if it isn't a label of an Atom with room for a Bond. */
   function atom(label) {
-    const m = label.match(/^([A-Z][a-z]?)(H([1-9]\d*)?)?(:[A-Za-z0-9]+)?$/);
+    const m = label.match(/^([A-Z][a-z]?)(H([2-9])?)?(:[A-Za-z0-9]+)?$/);
     if (!m) return null;
     const [, el, hs, count] = m, h = hs ? Number(count ?? 1) : 0;
     if (el === "H" || !Object.hasOwn(ELEMENTS, el) || ELEMENTS[el].valence - h < 1) return null;
@@ -88,7 +88,10 @@ export function findLayout(text, { tries = 20000, maxRows = 6, maxCols = 5, seed
     }
     const cross = crossings(p.atoms, cand);
     if (order.some((o, k) => o && cross[k].some(j => order[j]))) return null;
-    if (solve(p.atoms, 2).length !== 1) return null;
+    // Exactly one solution, and it is these Bonds: Bonds that don't give each
+    // Atom its valence, with its hydrogens, never are.
+    const solutions = solve(p.atoms, 2);
+    if (solutions.length !== 1 || solutions[0].some((o, k) => o !== order[k])) return null;
     return { cand };
   }
 
