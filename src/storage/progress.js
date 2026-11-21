@@ -1,5 +1,5 @@
 // Progress, kept in the browser. Works without storage: then nothing is kept.
-export const STORAGE_KEY = "molecuzzle-v2";
+export const STORAGE_KEY = "molecuzzle-v3";
 
 const UNDO_MAX = 100;
 const isObject = x => typeof x === "object" && x !== null && !Array.isArray(x);
