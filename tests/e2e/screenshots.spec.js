@@ -25,6 +25,12 @@ test.describe("at 1280×800", () => {
     await expect(page.locator(".stage")).toHaveScreenshot("board.png");
   });
 
+  test("Board.01, Board.02 Halothane with no Bonds", async ({ page }) => {
+    await start(page);
+    await openPuzzle(page, 21);
+    await expect(page.locator(".stage")).toHaveScreenshot("board-halothane.png");
+  });
+
   test("Input.03 the actions, with Bonds and something to undo", async ({ page }) => {
     await start(page);
     await openPuzzle(page, 2);

@@ -26,6 +26,14 @@ describe("Puzzle.01 the puzzles", () => {
         "Glycine C2H5NO2",
         "Acetone C3H6O",
         "Alanine C3H7NO2",
+        "Carbon disulfide CS2",
+        "Chloroform CHCl3",
+        "Methanethiol CH4S",
+        "Phosgene CCl2O",
+        "Vinyl chloride C2H3Cl",
+        "Tetrafluoroethylene C2F4",
+        "Iodoethane C2H5I",
+        "Halothane C2HBrClF3",
       ]
     `);
     expect(new Set(PUZZLES.map(p => p.id)).size).toBe(PUZZLES.length);

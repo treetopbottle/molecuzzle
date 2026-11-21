@@ -33,12 +33,7 @@ H───C───H
 });
 
 test("a Board with a two-letter symbol: Chloroform, with no Bonds and solved", () => {
-  const chloroform = {
-    id: "chloroform", name: "Chloroform", formula: "CHCl3", fact: "",
-    rows: 3, cols: 3,
-    atoms: [["Cl", 0, 1], ["H", 1, 0], ["C", 1, 1], ["Cl", 1, 2], ["Cl", 2, 1]],
-    solution: [[0, 2, 1], [1, 2, 1], [2, 3, 1], [2, 4, 1]],
-  };
+  const chloroform = PUZZLES.find(p => p.id === "chloroform");
   expect(draw(createGame(chloroform))).toBe(`
    Cl
    ·
