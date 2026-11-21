@@ -14,7 +14,7 @@ A general narrative is used to describe a typical usage flow, see [narratives.md
 
 ## Scope
 
-In scope: Puzzles on a Grid, where the Player fills in the Bonds so every Atom has exactly its valence ([decision 0001](../decisions.md#0001)), with every hydrogen an Atom of its own ([decision 0002](../decisions.md#0002)), and each Puzzle has exactly one solution ([decision 0008](../decisions.md#0008)); seeing a solution; Progress kept in the browser ([decision 0005](../decisions.md#0005)).
+In scope: Puzzles on a Grid, where the Player fills in the Bonds so every Atom has exactly its valence ([decision 0001](../decisions.md#0001)), with every hydrogen bonded to its Atom from the start, drawn beside it ([decision 0023](../decisions.md#0023)), and each Puzzle has exactly one solution ([decision 0008](../decisions.md#0008)); seeing a solution; Progress kept in the browser ([decision 0005](../decisions.md#0005)).
 
 Left out: building freely without a Grid, recognising other Molecules (Isomers), charges and ions, Elements other than H, C, N, O, S and the halogens F, Cl, Br and I, stereochemistry, 3D shapes, and saving Progress anywhere but the browser. Other puzzle modes are in `prototypes/`, outside this spec.
 
@@ -22,24 +22,12 @@ Left out: building freely without a Grid, recognising other Molecules (Isomers),
 
 The examples fit inline, or are screenshots. The formats of a Puzzle, a Board and the stored Progress are in [schemas.md](schemas.md).
 
-Boards in examples are drawn as text, as the unit tests do: Atoms by Element at the Grid points, `·` a Dotted line, `─ │` single, `═ ║` double, and `≡ ⦀` triple Bonds. Places are written "row,column", counted from 1. In a Board with a two-letter symbol, such as Cl, every Grid point is two characters wide, with a one-letter symbol in its first, so the columns are three characters apart; a Dotted line or Bond along a row fills every character between its two Atoms, and one along a column runs under their first characters. Glycine, with no Bonds and solved:
+Boards in examples are drawn as text, as the unit tests do: Atoms by their label as in a formula, their Element and then their hydrogens (C, CH₂, OH, NH₂), at the Grid points, `·` a Dotted line, `─ │` single, `═ ║` double, and `≡ ⦀` triple Bonds. Places are written "row,column", counted from 1. Every Grid point is as wide as the longest label on the Board, with a shorter label in its first characters, so the columns are one character more apart; a Dotted line or Bond along a row fills every character between its two labels, and one along a column runs under their first characters. Glycine, with no Bonds and solved:
 
 ```
-  O·C·O·H            O═C─O─H
-  · · · ·            · │ · ·
-H···C···H          H───C───H
-  · · ·              · │ ·
-  · · ·              · │ ·
-  · · ·              · │ ·
-  H·N·H              H─N─H
-```
-
-Halothane, solved:
-
-```
-   F··Cl
-   │  │
-F──C──C──H
-   │  │
-   F··Br
+  OH··NH₂            OH··NH₂
+  ·   ·              │   │
+  C···CH₂            C───CH₂
+  ·                  ║
+  O                  O
 ```

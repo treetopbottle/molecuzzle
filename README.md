@@ -20,14 +20,14 @@ Roles, capitalized, each with an example the spec can reuse:
 
 Domain entities, capitalized, each with an example the spec can reuse:
 
-- Puzzle: a Grid with Atoms, whose Bonds can be filled in only one way, into a named Molecule; Puzzle 12, Glycine, C₂H₅NO₂
+- Puzzle: a Grid with Atoms, whose Bonds can be filled in only one way, into a named Molecule; Puzzle 3, Glycine, C₂H₅NO₂
 - Element: a type of atom, with the number of Bonds it needs (its valence); Carbon, 4 Bonds
-- Atom: a single Element at a point on the Grid; the N at row 4, column 3 in Glycine
+- Atom: a single Element at a point on the Grid, with the hydrogens bonded to it from the start; the C with 2 hydrogens at row 2, column 2 in Glycine
 - Molecule: Atoms are connected by Bonds into one molecule; Water H2O
-- Grid: the rows and columns of points the Atoms of a Puzzle sit on; Glycine's Grid of 4 rows and 5 columns
-- Dotted line: where a Bond can go, from an Atom to the nearest Atom in the same row or column; the dotted line from O 1,2 down to H 4,2 in Glycine
-- Board: a Puzzle being played, with the Bonds the Player has made; Formaldehyde with only C═O
-- Bond: a link along a Dotted line between two Atoms, single, double or triple; the C=O double Bond in Formaldehyde
+- Grid: the rows and columns of points the Atoms of a Puzzle sit on; Glycine's Grid of 3 rows and 2 columns
+- Dotted line: where a Bond can go, from an Atom to the nearest Atom in the same row or column; the dotted line from OH 1,1 to NH₂ 1,2 in Glycine
+- Board: a Puzzle being played, with the Bonds the Player has made; Acetic acid with only C═O
+- Bond: a link along a Dotted line between two Atoms, single, double or triple; the C=O double Bond in Acetic acid
 - Progress: which Puzzles are solved, the open Puzzle, and the Boards of Puzzles in progress or solved; stored in the browser
 
 ## Where things are

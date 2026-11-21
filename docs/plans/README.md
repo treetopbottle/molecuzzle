@@ -11,6 +11,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 | [04: The halogens and sulfur](04-halogens-and-sulfur/README.md) | Done (2026-11-21) |
 | [05: Larger and harder Puzzles](05-larger-puzzles/README.md) | Done (2026-11-21) |
 | [06: Puzzles in order of difficulty, and fewer easy ones](06-difficulty/README.md) | Done (2026-11-21) |
+| [07: Hydrogens on their Atoms, and Puzzles with loops](07-hydrogens-on-atoms/README.md) | Draft |
 
 ## Backlog
 
@@ -21,7 +22,7 @@ Contains features, slices or small tasks to work on, in order of importance.
 - A more complicated valence model: formal charges, and Elements with more than one valence (S 2, 4 or 6; P 3 or 5), for Molecules such as carbon monoxide (⁻C≡O⁺), nitro groups and nitric acid. Each Atom still shows the one number of Bonds it needs (N⁺ needs 4, O⁻ needs 1), so Puzzles stay logic with one solution; letting the Player choose an Atom's valence would leave few Grids with exactly one solution. Goes against [decision 0001](../decisions.md#0001).
 - Show each Puzzle's difficulty to the Player, e.g. in the panel or the list ([decision 0021](../decisions.md#0021)); left out of plan 06.
 - A test that no Puzzle's layout is another's, or nearly so, turned, flipped or with other symbols of the same valence ([decisions 0020 and 0022](../decisions.md#0022)): with the look-alikes removed, it needs no exceptions.
-- A Puzzle with Iodine, which has none since Iodoethane was removed ([decision 0022](../decisions.md#0022)): a layout unlike the others, with difficulty enough to earn its place.
+- Puzzles with S, F, Cl, Br or I, which have none since plan 07: Molecules whose loops don't close on the one-Bond halogens, such as a ring with S in it ([decision 0024](../decisions.md#0024)).
 - Moving between Dotted lines with the arrow keys, instead of only Tab.
 - Clicking the open Puzzle in the Puzzles list opens it again, which stops the pulse of a Puzzle just solved; it could do nothing (review of step 2 of plan 03).
 - The buttons of the Puzzles list keep one width: a solved one, "11 ✓", is wider, so the buttons after it in its row are out of line with the rows above and below (review of step 4 of plan 04).

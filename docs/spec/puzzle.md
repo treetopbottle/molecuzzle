@@ -6,35 +6,32 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 ### Puzzle
 
-- Puzzles: there are 20, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and a new Puzzle after those of the same difficulty ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms of its formula, each at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
+- Puzzles: there are 15, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and a new Puzzle after those of the same difficulty ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms and hydrogens of its formula, each Atom at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
-- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence (Puzzle.03)
+- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than it needs ([Valence.01](#valence)) (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
-- Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number its solution leaves with no Bond: each is a connection to look at, and an empty one is also a Bond to rule out ([decision 0021](../decisions.md#0021)) (Puzzle.05)
-- Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and as Puzzles in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)) (Puzzle.06)
+- Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number of its loops: its Dotted lines minus its Atoms plus 1. Each Dotted line is a connection to look at, and each loop a choice: which of its lines stays empty, or, round a ring, that none does ([decision 0024](../decisions.md#0024)) (Puzzle.05)
+- Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and, as they were, in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)) (Puzzle.06)
+- Hydrogens: an Atom has a number of hydrogens bonded to it from the start. They aren't Atoms on the Grid, and no change touches them ([decision 0023](../decisions.md#0023)) (Puzzle.07)
+- Loops: every Puzzle after the first three has at least 2 loops ([decision 0024](../decisions.md#0024)) (Puzzle.08)
 
 | # | Molecule | Formula | Difficulty |
 |---|---|---|---|
-| 1 | Water | H₂O | 2 |
-| 2 | Hydrogen cyanide | HCN | 2 |
-| 3 | Formaldehyde | CH₂O | 3 |
-| 4 | Methanol | CH₄O | 8 |
-| 5 | Acetic acid | C₂H₄O₂ | 10 |
-| 6 | Ethylene | C₂H₄ | 11 |
-| 7 | Acrylonitrile | C₃H₃N | 12 |
-| 8 | Urea | CH₄N₂O | 13 |
-| 9 | Halothane | C₂HBrClF₃ | 13 |
-| 10 | Acetone | C₃H₆O | 15 |
-| 11 | Ethanol | C₂H₆O | 17 |
-| 12 | Glycine | C₂H₅NO₂ | 18 |
-| 13 | Lactic acid | C₃H₆O₃ | 26 |
-| 14 | Ethyl acetate | C₄H₈O₂ | 28 |
-| 15 | Alanine | C₃H₇NO₂ | 30 |
-| 16 | Glycerol | C₃H₈O₃ | 31 |
-| 17 | Serine | C₃H₇NO₃ | 31 |
-| 18 | Cysteine | C₃H₇NO₂S | 31 |
-| 19 | Threonine | C₄H₉NO₃ | 37 |
-| 20 | Valine | C₅H₁₁NO₂ | 45 |
+| 1 | Acetonitrile | C₂H₃N | 2 |
+| 2 | Acetic acid | C₂H₄O₂ | 3 |
+| 3 | Glycine | C₂H₅NO₂ | 7 |
+| 4 | Glycerol | C₃H₈O₃ | 11 |
+| 5 | 1,4-Dioxane | C₄H₈O₂ | 11 |
+| 6 | Cyclohexene | C₆H₁₀ | 11 |
+| 7 | Serine | C₃H₇NO₃ | 12 |
+| 8 | Cyclohexanol | C₆H₁₂O | 12 |
+| 9 | Cyclohexane-1,4-dione | C₆H₈O₂ | 13 |
+| 10 | 1,4-Benzoquinone | C₆H₄O₂ | 13 |
+| 11 | Malic acid | C₄H₆O₅ | 17 |
+| 12 | Tartaric acid | C₄H₆O₆ | 21 |
+| 13 | Glutamic acid | C₅H₉NO₄ | 21 |
+| 14 | Glucose | C₆H₁₂O₆ | 26 |
+| 15 | Citric acid | C₆H₈O₇ | 27 |
 
 Removed Puzzles, which aren't added again:
 
@@ -48,40 +45,56 @@ Removed Puzzles, which aren't added again:
 | Vinyl chloride | C₂H₃Cl | Ethylene's layout, with Cl for an H |
 | Tetrafluoroethylene | C₂F₄ | Ethylene's layout, with F for H |
 | Iodoethane | C₂H₅I | Halothane's layout, with other symbols |
+| Water | H₂O | With its hydrogens on its Atom, one Atom and nothing to bond |
+| Hydrogen cyanide | HCN | Two Atoms and one Dotted line |
+| Formaldehyde | CH₂O | Two Atoms and one Dotted line |
+| Methanol | CH₄O | Two Atoms and one Dotted line |
+| Ethylene | C₂H₄ | Two Atoms and one Dotted line |
+| Acrylonitrile | C₃H₃N | No loop: every Dotted line is a Bond |
+| Urea | CH₄N₂O | No loop: every Dotted line is a Bond |
+| Acetone | C₃H₆O | No loop: every Dotted line is a Bond |
+| Ethanol | C₂H₆O | No loop: every Dotted line is a Bond |
+| Halothane | C₂HBrClF₃ | Its loops close on F, Cl and Br, so nothing is left to choose |
+| Lactic acid | C₃H₆O₃ | One loop, closed on its CH₃ and OH |
+| Ethyl acetate | C₄H₈O₂ | One loop, closed on its CH₃ |
+| Alanine | C₃H₇NO₂ | One loop, closed on its CH₃ |
+| Cysteine | C₃H₇NO₂S | Serine's layout, with S for O |
+| Threonine | C₄H₉NO₃ | Its loops close on CH₃ and OH, so nothing is left to choose |
+| Valine | C₅H₁₁NO₂ | Its loops close on its two CH₃, so nothing is left to choose |
 
 The Grids, solutions and facts are in `src/puzzle/puzzles.js`.
 
 Example (Puzzle.01, Puzzle.02):
 
 ```
-Given Puzzle 3, Formaldehyde
+Given Puzzle 2, Acetic acid
 Then it starts with the Board
-  H
-  ·
-  C·H
-  ·
-  O
+      O
+      ·
+  CH₃·C
+      ·
+      OH
 And its one solution is
-  H
-  │
-  C─H
-  ║
-  O
+      O
+      ║
+  CH₃─C
+      │
+      OH
 ```
 
 Example (Puzzle.04):
 
 ```
-Given Puzzle 20, Valine, with 19 Atoms
-Then its Grid has 6 rows and 5 columns
+Given Puzzle 14, Glucose, and Puzzle 15, Citric acid
+Then their Grids have 3 rows and 5 columns, and 6 rows and 3 columns
 ```
 
 Example (Puzzle.05):
 
 ```
-Given Puzzle 12, Glycine, with 12 Dotted lines
-And its solution leaves 3 of them with no Bond
-Then its difficulty is 12 + 2 × 3 = 18
+Given Puzzle 3, Glycine, with 5 Atoms and 5 Dotted lines
+Then it has 5 − 5 + 1 = 1 loop
+And its difficulty is 5 + 2 × 1 = 7
 ```
 
 Example (Puzzle.06):
@@ -91,43 +104,57 @@ Given Ammonia, NH₃, is removed
 Then no Puzzle has the id ammonia or the formula NH3
 ```
 
+Example (Puzzle.07):
+
+```
+Given Puzzle 2, Acetic acid
+Then its Atoms are an O with no hydrogens, a C with 3, a C with none and an O with 1
+```
+
+Example (Puzzle.08):
+
+```
+Given Puzzle 4, Glycerol, with 6 Atoms and 7 Dotted lines
+Then it has 7 − 6 + 1 = 2 loops
+```
+
 ### Generate
 
 - Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order, and its difficulty ([Puzzle.05](#puzzle)); the same arguments print the same layout (Generate.01)
-- None: if it can't read a Bond, or a Bond has an Atom whose Element isn't in the [table of valences](#board), it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
+- None: if it can't read a Bond, or a Bond has an Atom whose Element isn't in the [table of valences](#board), or whose hydrogens leave it no room for a Bond, it stops with "can't read <bond>", and if no try gives exactly one solution, with "no unique layout found" (Generate.02)
 
-Bonds are written between labelled Atoms: the label's letters are the Element, `-` `=` `#` a single, double and triple Bond.
+Bonds are written between labelled Atoms, `-` `=` `#` a single, double and triple Bond. A label is the Atom as in a formula, its Element and then its hydrogens, such as `C`, `CH3`, `OH` or `NH2`; Atoms with the same label are told apart by `:` and a name after it, such as `CH2:a` and `CH2:b`.
 
 Example (Puzzle.03):
 
 ```
-Given Puzzle 2, Hydrogen cyanide, the Board [[0, 1, 1]] and the undo history [[]]
-Then it starts with H─C·N
+Given Puzzle 1, Acetonitrile, the Board [[0, 1, 1]] and the undo history [[]]
+Then it starts with a single Bond CH₃ 1,1 to C 2,1, and no other
 When the last change is undone
-Then it is H·C·N
+Then there are no Bonds
 Given the Board [[0, 2, 1]] instead, which isn't on a Dotted line
-Then it starts with H·C·N, and nothing to undo
+Then it starts with no Bonds, and nothing to undo
 ```
 
 Example (Generate.01):
 
 ```
-Given the Bonds "H1-O1 O1-H2", 2000 tries, at most 3 by 3, seed 1
-Then it prints rows: 3, cols: 1, atoms: [["H",0,0],["O",1,0],["H",2,0]], solution: [[0,1,1],[1,2,1]] and difficulty 2
+Given the Bonds "CH3-C C#N", 2000 tries, at most 3 by 3, seed 1
+Then it prints rows: 3, cols: 1, atoms: [["C",0,0,3],["C",1,0,0],["N",2,0,0]], solution: [[0,1,1],[1,2,3]] and difficulty 2
 ```
 
 Example (Generate.02):
 
 ```
-Given the Bonds "H1-O1 O1~H2"
-Then it stops with "can't read O1~H2"
+Given the Bonds "CH3-C C~N"
+Then it stops with "can't read C~N"
 ```
 
 Example (Generate.02), an Element the game doesn't have:
 
 ```
-Given the Bonds "H1-Xx1"
-Then it stops with "can't read H1-Xx1"
+Given the Bonds "CH3-Xx"
+Then it stops with "can't read CH3-Xx"
 ```
 
 ## Board
@@ -141,26 +168,30 @@ Then it stops with "can't read H1-Xx1"
 | N | 3 |
 | C | 4 |
 
-An Atom's bond count is the sum of its Bonds: single 1, double 2, triple 3. It has room for its valence minus its bond count.
+H is only ever a hydrogen on an Atom ([Puzzle.07](#puzzle)). An Atom's bond count is the sum of its Bonds: single 1, double 2, triple 3. It has room for what it needs ([Valence.01](#valence)) minus its bond count.
 
 ### Grid
 
 - Dotted lines: from each Atom to the nearest Atom in the same row, and in the same column, with no Atom in between (Grid.01)
 - Crossing: a Dotted line along a row and one along a column cross when they meet at a point that is not one of their Atoms (Grid.02)
 
-Example (Grid.01, Grid.02):
+Example (Grid.01):
 
 ```
-Given Puzzle 12, Glycine
+Given Puzzle 3, Glycine
 Then the Board is
-    O·C·O·H
-    · · · ·
-  H···C···H
-    · · ·
-    · · ·
-    · · ·
-    H·N·H
-And the Dotted line H 2,1 to C 2,3 crosses O 1,2 to H 4,2, but not C 1,3 to C 2,3
+  OH··NH₂
+  ·   ·
+  C···CH₂
+  ·
+  O
+```
+
+Example (Grid.02), on a Grid that isn't a Puzzle's:
+
+```
+Given a Grid of 3 by 3, with O at 1,2 and 3,2, and CH₂ at 2,1 and 2,3
+Then the Dotted line O 1,2 to O 3,2 crosses CH₂ 2,1 to CH₂ 2,3, at 2,2
 ```
 
 ### Bond
@@ -181,49 +212,49 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 Example (Bond.01, Bond.02, Bond.03):
 
 ```
-Given Puzzle 2, H·C·N
-When C·N is made stronger once, twice, three times, four times
-Then the Board is H·C─N, H·C═N, H·C≡N, H·C·N
+Given Puzzle 1, Acetonitrile, with no Bonds
+When C 2,1 to N 3,1 is made stronger once, twice, three times, four times
+Then it is a single, a double and a triple Bond, and then no Bond
 ```
 
 Example (Bond.04):
 
 ```
-Given Puzzle 4, Methanol, with a Bond H 3,1 to H 3,2
-When the Dotted line O 2,1 to H 3,1 is made stronger
-Then no Bond is made, and the reason is full, with H 3,1
+Given Puzzle 3, Glycine, with a Bond OH 1,1 to C 2,1
+When the Dotted line OH 1,1 to NH₂ 1,2 is made stronger
+Then no Bond is made, and the reason is full, with OH 1,1
 ```
 
-Example (Bond.05):
+Example (Bond.05), on the Grid of the Grid.02 example:
 
 ```
-Given Puzzle 12, Glycine, with a Bond H 2,1 to C 2,3
-When the Dotted line O 1,2 to H 4,2 is made stronger
+Given a Bond CH₂ 2,1 to CH₂ 2,3
+When the Dotted line O 1,2 to O 3,2 is made stronger
 Then no Bond is made, and the reason is crossing
 ```
 
 Example (Bond.06):
 
 ```
-Given Puzzle 2, with C≡N
+Given Puzzle 1, with a triple Bond C 2,1 to N 3,1
 When it is made weaker, twice
-Then it is C═N, then C─N
+Then it is a double, then a single Bond
 ```
 
 Example (Bond.08):
 
 ```
-Given Puzzle 2, H·C·N
-When C·N is made stronger 101 times
-Then Undo goes back 100 times, to the Board after the first change, H·C─N, and then does nothing
+Given Puzzle 1, with no Bonds
+When C 2,1 to N 3,1 is made stronger 101 times
+Then Undo goes back 100 times, to the Board after the first change, a single Bond C 2,1 to N 3,1, and then does nothing
 ```
 
 Example (Bond.08, Bond.09):
 
 ```
-Given Puzzle 3, Formaldehyde, with Bonds H 1,1 to C 2,1 and then C 2,1 to H 2,2
+Given Puzzle 2, Acetic acid, with Bonds CH₃ 2,1 to C 2,2 and then C 2,2 to OH 3,2
 When the last change is undone
-Then only H 1,1 to C 2,1 is left
+Then only CH₃ 2,1 to C 2,2 is left
 When it is reset
 Then there are no Bonds, and nothing to undo
 ```
@@ -231,28 +262,28 @@ Then there are no Bonds, and nothing to undo
 Example (Bond.10):
 
 ```
-Given Puzzle 1, Water, with H─O
-When O 1,2 to H 2,2 is bonded
+Given Puzzle 1, Acetonitrile, with a Bond CH₃ 1,1 to C 2,1
+When C 2,1 to N 3,1 is made stronger three times
 Then it is solved, and there is nothing to undo
 ```
 
 Example (Bond.11):
 
 ```
-Given Puzzle 1, Water, with a Bond H 1,1 to O 1,2
+Given Puzzle 1, Acetonitrile, with a Bond CH₃ 1,1 to C 2,1
 Then the Board is [[0, 1, 1]]
 ```
 
 ### Valence
 
-- Needs: each Atom needs its Element's valence, in the table above, minus its bond count (Valence.01)
+- Needs: each Atom needs its Element's valence, in the table above, minus its hydrogens ([Puzzle.07](#puzzle)), minus its bond count (Valence.01)
 - Complete: an Atom that needs none is complete (Valence.02)
 
 Example:
 
 ```
-Given Puzzle 3, Formaldehyde, with no Bonds
-Then H, C, H and O need 1, 4, 1 and 2
+Given Puzzle 2, Acetic acid, with no Bonds
+Then O, CH₃, C and OH need 2, 1, 4 and 1
 When C═O is made
 Then C needs 2, and O is complete
 ```
@@ -271,29 +302,29 @@ After every change to the Bonds, the status is the first that applies:
 Example (Check.01, Check.02):
 
 ```
-Given Puzzle 3, Formaldehyde, with no Bonds
+Given Puzzle 2, Acetic acid, with no Bonds
 Then the status is empty
-When H 1,1 to C 2,1 is bonded
+When CH₃ 2,1 to C 2,2 is bonded
 Then the status is open, with 3 Atoms
 ```
 
 Example (Check.03):
 
 ```
-Given Puzzle 4, Methanol
-When H─H and H₂C═O are built apart
-    H
-    │
-  O═C─H
-  · ·
-  H─H
+Given Puzzle 4, Glycerol
+When OH─OH is built apart from the rest
+  OH──CH₂
+  ·   │
+  CH₂═CH
+  ·   ·
+  OH──OH
 Then the status is pieces
 ```
 
 Example (Check.04):
 
 ```
-Given Puzzle 12
+Given Puzzle 3
 When Glycine is built
 Then the status is solved
 ```
@@ -306,9 +337,9 @@ Then the status is solved
 Example (Help.01, Help.02):
 
 ```
-Given Puzzle 8, Urea
+Given Puzzle 7, Serine
 When the solution is shown
 Then the status is revealed
-When it is reset and Urea is built
+When it is reset and Serine is built
 Then the status is solved
 ```

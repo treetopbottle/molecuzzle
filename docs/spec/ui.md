@@ -10,11 +10,11 @@ The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a
 
 - Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it; and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
 
-Example (Page.01), Puzzle 1 at the start, and Puzzle 12 solved:
+Example (Page.01), Puzzle 1 at the start, and Puzzle 3 solved:
 
-![The page with Puzzle 1, Water, and no Bonds](screenshots/page-start.png)
+![The page with Puzzle 1, Acetonitrile, and no Bonds](screenshots/page-start.png)
 
-![The page with Puzzle 12, Glycine, solved](screenshots/page-solved.png)
+![The page with Puzzle 3, Glycine, solved](screenshots/page-solved.png)
 
 ### Layout
 
@@ -29,27 +29,27 @@ Example (Layout.01), on a phone:
 
 ### Board
 
-- Drawing: each Atom is a ball with its Element's symbol: H white, O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red and I violet. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
+- Drawing: each Atom is a ball with its Element's symbol: O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red and I violet. Its hydrogens ([Puzzle.07](puzzle.md#puzzle)) are small white balls with an H, each on a short thin line from the Atom, on the diagonals below it and then the one above it on the left, where no Dotted line runs; they can't be clicked. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
 - Needs: each Atom that needs Bonds ([Valence.01](puzzle.md#valence)) shows an orange badge with how many; a complete Atom ([Valence.02](puzzle.md#valence)) glows and has no badge (Board.02)
 - Solved: when the Player solves the Puzzle ([Check.04](puzzle.md#check)), the Atoms pulse, unless the browser asks for reduced motion; a Puzzle that opens solved ([Progress.06](storage.md#progress)) doesn't pulse (Board.03)
-- Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>: needs <n> more bond(s)" or "<Element> <place>: complete", with the Element's name (Hydrogen, Oxygen, Nitrogen, Carbon, Sulfur, Fluorine, Chlorine, Bromine, Iodine); each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
+- Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>: needs <n> more bond(s)" or "<Element> <place>: complete", with the Element's name (Oxygen, Nitrogen, Carbon, Sulfur, Fluorine, Chlorine, Bromine, Iodine), and ", with <h> hydrogen(s)" after the place if it has any; each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
 
-Example (Board.01, Board.02), Puzzle 3, Formaldehyde, with C═O:
+Example (Board.01, Board.02), Puzzle 2, Acetic acid, with C═O:
 
-![The Board of Formaldehyde with a double Bond from C to O](screenshots/board.png)
+![The Board of Acetic acid with a double Bond from C to O](screenshots/board.png)
 
-Example (Board.01, Board.02), Puzzle 9, Halothane, with no Bonds:
+Example (Board.01, Board.02), Puzzle 14, Glucose, with no Bonds:
 
-![The Board of Halothane, with its F, Cl, Br, C and H Atoms](screenshots/board-halothane.png)
+![The Board of Glucose, its C and O Atoms with their hydrogens](screenshots/board-glucose.png)
 
 Example (Board.04):
 
 ```
-Given Puzzle 3, Formaldehyde, with C═O
-Then the Atoms are "Hydrogen 1,1: needs 1 more bond", "Carbon 2,1: needs 2 more bonds",
-  "Hydrogen 2,2: needs 1 more bond" and "Oxygen 3,1: complete"
-And the Dotted lines and Bonds are "H 1,1 to C 2,1: no bond", "C 2,1 to H 2,2: no bond"
-  and "C 2,1 to O 3,1: double bond"
+Given Puzzle 2, Acetic acid, with C═O
+Then the Atoms are "Oxygen 1,2: complete", "Carbon 2,1, with 3 hydrogens: needs 1 more bond",
+  "Carbon 2,2: needs 2 more bonds" and "Oxygen 3,2, with 1 hydrogen: needs 1 more bond"
+And the Dotted lines and Bonds are "O 1,2 to C 2,2: double bond", "C 2,1 to C 2,2: no bond"
+  and "C 2,2 to O 3,2: no bond"
 ```
 
 ### Input
@@ -63,21 +63,21 @@ And the Dotted lines and Bonds are "H 1,1 to C 2,1: no bond", "C 2,1 to H 2,2: n
 Example (Input.01, Input.02):
 
 ```
-Given Puzzle 2, H·C·N
-When the Player clicks C·N three times, then right-clicks it
-Then it is C═N
+Given Puzzle 1, Acetonitrile, with no Bonds
+When the Player clicks C 2,1 to N 3,1 three times, then right-clicks it
+Then it is a double Bond
 When the Player tabs to it and presses Delete
-Then it is C─N
+Then it is a single Bond
 When the Player presses Ctrl+Z
-Then it is C═N
+Then it is a double Bond
 ```
 
 Example (Input.05):
 
 ```
-Given Puzzle 3, Formaldehyde, with H 1,1 to C 2,1
+Given Puzzle 2, Acetic acid, with CH₃ 2,1 to C 2,2
 When the Player clicks Reset and cancels
-Then H 1,1 to C 2,1 is still there, and Undo is enabled
+Then CH₃ 2,1 to C 2,2 is still there, and Undo is enabled
 When the Player clicks Reset and confirms
 Then there are no Bonds, and Undo is disabled
 ```
@@ -102,18 +102,18 @@ Example (Input.03), with Bonds and something to undo:
 Example (Messages.01):
 
 ```
-Given Puzzle 3, Formaldehyde, with no Bonds
+Given Puzzle 2, Acetic acid, with no Bonds
 Then the status line is "Click a dotted line between two atoms to bond them."
-When the Player bonds H 1,1 to C 2,1
+When the Player bonds CH₃ 2,1 to C 2,2
 Then it is "3 atoms still need bonds."
 ```
 
 Example (Messages.02):
 
 ```
-Given Puzzle 4, Methanol, with a Bond H 3,1 to H 3,2
-When the Player clicks the Dotted line O 2,1 to H 3,1
-Then the message is "Hydrogen already has all its bonds."
+Given Puzzle 3, Glycine, with a Bond OH 1,1 to C 2,1
+When the Player clicks the Dotted line OH 1,1 to NH₂ 1,2
+Then the message is "Oxygen already has all its bonds."
 ```
 
 ## Panel
@@ -123,23 +123,23 @@ Then the message is "Hydrogen already has all its bonds."
 - Puzzle: "Puzzle <n> of <N>" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on the last. Next to it, "Unsolved" or "✓ Solved" (Panel.01)
 - Mystery: under the heading "Mystery molecule", until the Board is solved or shows the solution, the panel shows "?" and "Bond every atom to find out what it is." (Panel.02)
 - Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on the last) (Panel.03)
-- Rules: the panel lists the rules of the game, as in the screenshots; the one on valence names every Element's: "Each atom needs exactly its number of bonds (orange badge): H, F, Cl, Br and I 1; O and S 2; N 3; C 4." (Panel.04)
+- Rules: the panel lists the rules of the game, as in the screenshots; the one on valence names every Element's: "Each atom needs exactly its number of bonds: C 4, N 3, O and S 2, F, Cl, Br and I 1. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs." (Panel.04)
 
-Example (Panel.01, Panel.02, Panel.04), Puzzle 3, unsolved:
+Example (Panel.01, Panel.02, Panel.04), Puzzle 2, unsolved:
 
-![The panel of Puzzle 3, a mystery molecule](screenshots/panel-mystery.png)
+![The panel of Puzzle 2, a mystery molecule](screenshots/panel-mystery.png)
 
-Example (Panel.01, Panel.03), Puzzle 12, solved:
+Example (Panel.01, Panel.03), Puzzle 3, solved:
 
-![The panel of Puzzle 12, Glycine, with its formula and fact](screenshots/panel-solved.png)
+![The panel of Puzzle 3, Glycine, with its formula and fact](screenshots/panel-solved.png)
 
 Example (Panel.01):
 
 ```
 Given Puzzle 1 is open
 Then ‹ is disabled
-When the Player clicks › and then opens Puzzle 20
-Then "Puzzle 20 of 20" and "Unsolved" show, and › is disabled
+When the Player clicks › and then opens Puzzle 15
+Then "Puzzle 15 of 15" and "Unsolved" show, and › is disabled
 ```
 
 ### List
@@ -156,7 +156,7 @@ Example (List.01, List.02):
 ```
 Given Puzzle 1 is solved
 When the Player opens the game
-Then the list has "Puzzle 1: Water, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 20"
+Then the list has "Puzzle 1: Acetonitrile, solved", "Puzzle 2", "Puzzle 3", and the header "Solved 1 of 15"
 When the Player clicks "Puzzle 13"
 Then Puzzle 13 opens
 ```

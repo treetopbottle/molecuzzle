@@ -22,6 +22,8 @@ What the Player does and what the rules are.
 - [0020: New Puzzles are harder, and unlike the others](#0020)
 - [0021: Puzzles are in order of difficulty](#0021)
 - [0022: Removed Puzzles are kept, and not added again](#0022)
+- [0023: Hydrogens are drawn on their Atom, not placed on the Grid](#0023)
+- [0024: Puzzles have loops, and difficulty counts them](#0024)
 
 ### Technical
 
@@ -56,7 +58,7 @@ Each Element has one valence, the number of Bonds it needs; there are no charges
 <a id="0002"></a>
 ## 0002: Every hydrogen is an Atom on the Grid
 
-Accepted (2026-11-10)
+Accepted (2026-11-10). Superseded by [0023](#0023).
 
 Every H is an Atom on the Grid that the Player bonds, instead of hydrogens being implied as in skeletal formulas.
 
@@ -254,7 +256,7 @@ A batch of larger Puzzles is made harder by the Dotted lines its solution leaves
 <a id="0021"></a>
 ## 0021: Puzzles are in order of difficulty
 
-Accepted (2026-11-21)
+Accepted (2026-11-21). Partly superseded by [0024](#0024), which counts loops in place of empty Dotted lines.
 
 Every Puzzle has a difficulty, its Dotted lines plus twice those its solution leaves empty ([Puzzle.05](spec/puzzle.md#puzzle)), and the list is in that order, easiest first. A new Puzzle goes where its difficulty puts it, after those of the same difficulty, and the Puzzles after it move up a number.
 
@@ -272,3 +274,25 @@ Eight easy Puzzles were taken out of the game: those with no empty Dotted line, 
 - **Why:** the list starts with a short run of easy Puzzles to learn the rules, single, double and triple Bonds and the first empty Dotted line, and then gets harder, without a long stretch of Puzzles that teach nothing new. Keeping the removed ones, with why, stops them coming back, and keeps their layouts if they are ever wanted.
 - **Cost:** Iodine has no Puzzle left, though it stays an Element. A Player who solved a removed Puzzle keeps its mark and Board in Progress, under an id the game no longer knows ([Progress.01](spec/storage.md#progress), [Progress.03](spec/storage.md#progress)); the score counts only Puzzles in the game ([List.02](spec/ui.md#list)), so "Solved k of 20" can go down. The formula check also keeps out a different Molecule with a removed one's formula, an isomer of it. Whether a new Puzzle is unlike the others is still judged when it is made: with the look-alikes gone, a test of it would need no exceptions, and is in the backlog.
 - **Alternatives:** delete them with no record: one could be added again. A section of extra Puzzles: they stay in the game, still easy, and need a place in the UI. Mark them as removed in `puzzles.js`: the game would have to skip them.
+
+<a id="0023"></a>
+## 0023: Hydrogens are drawn on their Atom, not placed on the Grid
+
+Accepted (2026-11-21)
+
+Every hydrogen is bonded to its Atom from the start. It isn't an Atom on the Grid, and the Player can't change it; the Board draws it as a small white ball on a short thin line beside its Atom, and an Atom needs its valence minus its hydrogens in Bonds to other Atoms ([Puzzle.07](spec/puzzle.md#puzzle)).
+
+- **Why:** the hydrogens gave nothing to think about. An H has one Bond, and its partner was nearly always the Atom next to it: in the 20 Puzzles before this, 97 of the 110 H Atoms bonded to their nearest Atom, and lines between two H were never Bonds, so the obvious moves solved 13 Puzzles outright. Without them the Board is the Molecule's skeleton, and the reasoning is about its loops and Bond orders. Drawing the hydrogens, rather than writing CH₃ on the ball, keeps them visible and shows they are already bonded; the prototype in `prototypes/implicit-hydrogens.html` tried both, and labels like CH₃ looked odd.
+- **Cost:** every Puzzle needs a new layout, and Molecules of only one or two Atoms besides their hydrogens, such as Water and Formaldehyde, can't be Puzzles any more. A Puzzle's format changes: each Atom gains its hydrogens. Boards stored for the old layouts mean other Bonds now, so Progress moves to a new key, as [0016](#0016) asks, and Players start again. The Puzzles removed with this change are kept in `removed.js` as they were, with their hydrogens as Atoms, and are no longer checked against the rules. The Board is harder to read for a Player who counted H balls, and each Atom draws up to three small balls.
+- **Alternatives:** keep every H on the Grid ([0002](#0002)) and make better layouts: a lot of generator work for hydrogens that still teach nothing. Write CH₃ on the ball: compact, but it reads as a formula, not as Atoms. Show only a number of hydrogens: less to draw, but the Bonds they make aren't seen.
+
+<a id="0024"></a>
+## 0024: Puzzles have loops, and difficulty counts them
+
+Accepted (2026-11-21)
+
+A loop of Dotted lines is a choice; without one, every Dotted line has to be a Bond to join the Atoms up, and only the Bond orders are left to find. So every Puzzle after a tutorial of three has at least 2 loops ([Puzzle.08](spec/puzzle.md#puzzle)), and a Puzzle's difficulty is its Dotted lines plus twice its loops ([Puzzle.05](spec/puzzle.md#puzzle)): its Dotted lines minus its Atoms plus 1.
+
+- **Why:** the Player in the prototype found the Puzzles with loops, such as citric acid, the good ones, and the ones without them a matter of connecting everything and filling in what is left. Counting loops rather than empty Dotted lines also counts the choice round a ring, where no line stays empty but each could have; for a Molecule with no ring the two are the same. The tutorial teaches single, double and triple Bonds and the first loop.
+- **Cost:** a loop that closes on an Atom with one Bond to give, such as CH₃, OH or F, is decided at once, so loops alone don't make a Puzzle hard: Threonine and Valine have 3 and the obvious moves solve them. Whether they do is checked with a script while a batch is made, not by a test, and such Puzzles are left out. Rings of 4 or 6 Atoms fit the square Grid; rings of 3 or 5 can't, as every loop on it has an even number of Atoms.
+- **Alternatives:** empty Dotted lines, as before ([0021](#0021)): the same for most Molecules, but blind to rings. A difficulty from a solver that plays like a Player, the lines its obvious moves leave open: nearer to how hard a Puzzle feels, but new code and a measure to tune; the script used to choose this set does a simple version. Loops of 1: more Puzzles fit, but many with a single loop closed on a CH₃.

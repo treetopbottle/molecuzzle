@@ -4,17 +4,17 @@ Language-independent [JSON Schema](https://json-schema.org/)s (draft 2020-12), a
 
 ## Puzzle
 
-[puzzle.schema.json](schemas/puzzle.schema.json): one Puzzle, as in `src/puzzle/puzzles.js` ([Puzzle.01](puzzle.md#puzzle)). Its `solution` is a [Board](#board). Also: the `id`s are unique, every Atom is inside the Grid (row below `rows`, column below `cols`) at its own point, the Atoms are in reading order, and they are those of the formula.
+[puzzle.schema.json](schemas/puzzle.schema.json): one Puzzle, as in `src/puzzle/puzzles.js` ([Puzzle.01](puzzle.md#puzzle)). Its `solution` is a [Board](#board). Each Atom is `[element, row, column, hydrogens]`, its hydrogens those bonded to it from the start ([Puzzle.07](puzzle.md#puzzle)). Also: the `id`s are unique, every Atom is inside the Grid (row below `rows`, column below `cols`) at its own point, the Atoms are in reading order, an Atom's hydrogens leave it room for at least one Bond, and the Atoms with their hydrogens are those of the formula.
 
 Example: Puzzle 1.
 
 ```json
 {
-  "id": "water", "name": "Water", "formula": "H2O",
-  "fact": "About 60% of your body is water. Its bent shape makes it polar, so it dissolves many substances.",
-  "rows": 2, "cols": 2,
-  "atoms": [["H", 0, 0], ["O", 0, 1], ["H", 1, 1]],
-  "solution": [[0, 1, 1], [1, 2, 1]]
+  "id": "acetonitrile", "name": "Acetonitrile", "formula": "C2H3N",
+  "fact": "Acetonitrile has been found around young stars and in comets; on Earth it is a common solvent in labs.",
+  "rows": 3, "cols": 1,
+  "atoms": [["C", 0, 0, 3], ["C", 1, 0, 0], ["N", 2, 0, 0]],
+  "solution": [[0, 1, 1], [1, 2, 3]]
 }
 ```
 
@@ -24,10 +24,10 @@ Example: Puzzle 1.
 
 It is only the Bonds, the same for a Puzzle's solution as for a Board being played: whether the solution was shown, and the undo history, are kept next to it, in [Progress](#progress).
 
-Example: Water with both Bonds, the solution above.
+Example: Acetonitrile with both Bonds, the solution above.
 
 ```json
-[[0, 1, 1], [1, 2, 1]]
+[[0, 1, 1], [1, 2, 3]]
 ```
 
 ## Progress
@@ -38,10 +38,10 @@ Example: Puzzles 1 and 2 solved, and Puzzle 3 open, with C═O made in two click
 
 ```json
 {
-  "puzzles": { "water": "solved", "hydrogen-cyanide": "solved" },
-  "current": "formaldehyde",
+  "puzzles": { "acetonitrile": "solved", "acetic-acid": "solved" },
+  "current": "glycine",
   "boards": {
-    "formaldehyde": { "bonds": [[1, 3, 2]], "revealed": false, "undo": [[], [[1, 3, 1]]] }
+    "glycine": { "bonds": [[2, 4, 2]], "revealed": false, "undo": [[], [[2, 4, 1]]] }
   }
 }
 ```
