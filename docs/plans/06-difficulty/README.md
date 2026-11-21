@@ -1,6 +1,6 @@
 # 06: Puzzles in order of difficulty, and fewer easy ones
 
-Status: Active
+Status: Done (2026-11-21), with a [review of the decisions](review-decisions.md)
 
 Every Puzzle gets a difficulty: its Dotted lines plus twice those its solution leaves empty. The Puzzles are sorted by it, easiest first ([decision 0021](../../decisions.md#0021)). Eight easy Puzzles are removed: those with almost nothing to rule out, and those that are another Puzzle's layout with other symbols. They are kept for reference, and a test stops them coming back ([decision 0022](../../decisions.md#0022)). The game then starts with a short tutorial, Water, Hydrogen cyanide, Formaldehyde and Methanol (single, triple and double Bonds, then the first empty Dotted line), and gets harder from there: 20 Puzzles, difficulty 2 to 45.
 
