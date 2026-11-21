@@ -8,7 +8,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 - Puzzles: there are 15, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and a new Puzzle after those of the same difficulty ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms and hydrogens of its formula, each Atom at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
-- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than it needs ([Valence.01](#valence)) (Puzzle.03)
+- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with more Bonds than its valence minus its hydrogens (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
 - Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number of its loops: its Dotted lines minus its Atoms plus 1. Each Dotted line is a connection to look at, and each loop a choice: which of its lines stays empty, or, round a ring, that none does ([decision 0024](../decisions.md#0024)) (Puzzle.05)
 - Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and, as they were, in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)) (Puzzle.06)
@@ -21,7 +21,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 | 2 | Acetic acid | C₂H₄O₂ | 3 |
 | 3 | Glycine | C₂H₅NO₂ | 7 |
 | 4 | Glycerol | C₃H₈O₃ | 11 |
-| 5 | 1,4-Dioxane | C₄H₈O₂ | 11 |
+| 5 | Morpholine | C₄H₉NO | 11 |
 | 6 | Cyclohexene | C₆H₁₀ | 11 |
 | 7 | Serine | C₃H₇NO₃ | 12 |
 | 8 | Cyclohexanol | C₆H₁₂O | 12 |
@@ -59,8 +59,8 @@ Removed Puzzles, which aren't added again:
 | Ethyl acetate | C₄H₈O₂ | One loop, closed on its CH₃ |
 | Alanine | C₃H₇NO₂ | One loop, closed on its CH₃ |
 | Cysteine | C₃H₇NO₂S | Serine's layout, with S for O |
-| Threonine | C₄H₉NO₃ | Its loops close on CH₃ and OH, so nothing is left to choose |
-| Valine | C₅H₁₁NO₂ | Its loops close on its two CH₃, so nothing is left to choose |
+| Threonine | C₄H₉NO₃ | Its loops close on CH₃ and OH; in the layout tried, the obvious moves leave nothing to choose |
+| Valine | C₅H₁₁NO₂ | Its loops close on its two CH₃; in the layout tried, the obvious moves leave nothing to choose |
 
 The Grids, solutions and facts are in `src/puzzle/puzzles.js`.
 
@@ -168,7 +168,7 @@ Then it stops with "can't read CH3-Xx"
 | N | 3 |
 | C | 4 |
 
-H is only ever a hydrogen on an Atom ([Puzzle.07](#puzzle)). An Atom's bond count is the sum of its Bonds: single 1, double 2, triple 3. It has room for what it needs ([Valence.01](#valence)) minus its bond count.
+H is only ever a hydrogen on an Atom ([Puzzle.07](#puzzle)). An Atom's bond count is the sum of its Bonds: single 1, double 2, triple 3. It has room for its valence, minus its hydrogens, minus its bond count: what it still needs ([Valence.01](#valence)).
 
 ### Grid
 
@@ -192,6 +192,13 @@ Example (Grid.02), on a Grid that isn't a Puzzle's:
 ```
 Given a Grid of 3 by 3, with O at 1,2 and 3,2, and CH₂ at 2,1 and 2,3
 Then the Dotted line O 1,2 to O 3,2 crosses CH₂ 2,1 to CH₂ 2,3, at 2,2
+```
+
+Example (Grid.02):
+
+```
+Given Puzzle 3, Glycine
+Then the Dotted lines OH 1,1 to NH₂ 1,2 and OH 1,1 to C 2,1 meet at OH 1,1, and don't cross
 ```
 
 ### Bond

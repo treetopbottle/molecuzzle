@@ -8,10 +8,10 @@ The hydrogens leave the Grid: each Atom has its hydrogens bonded from the start,
 
 Covers:
 
-- Puzzle: Puzzle.07 (new: hydrogens on their Atom), Valence.01 (an Atom needs its valence minus its hydrogens), Puzzle.03 (more Bonds than it needs), Generate.01 and Generate.02 (labels with hydrogens), Puzzle.05 (difficulty counts loops), Puzzle.08 (new: at least 2 loops after the tutorial), Puzzle.01, Puzzle.04 and Puzzle.06 (the new Puzzles and the removed ones)
+- Puzzle: Puzzle.07 (new: hydrogens on their Atom), Valence.01 (an Atom needs its valence minus its hydrogens), Puzzle.03 (more Bonds than its valence minus its hydrogens), Generate.01 and Generate.02 (labels with hydrogens), Puzzle.05 (difficulty counts loops), Puzzle.08 (new: at least 2 loops after the tutorial), Puzzle.01, Puzzle.04 and Puzzle.06 (the new Puzzles and the removed ones)
 - UI: Board.01 and Board.04 (hydrogens drawn and named), Panel.04 (the rule on valence)
 - Storage: Progress.03 (the key `molecuzzle-v3`)
-- Every example that names a Puzzle, now on the new list: Puzzle.02, Grid.01–02, Bond.01–06, Bond.08–11, Valence.02, Check.01–04, Help.01–02, Progress.01, Progress.05, Progress.06, Page.01, Board.02, Input.01–03, Input.05, Messages.01–02, Panel.01–03, List.01–02, and the narrative
+- Every example that names a Puzzle, now on the new list: Puzzle.02, Puzzle.03, Progress.03, Grid.01–02, Bond.01–06, Bond.08–11, Valence.02, Check.01–04, Help.01–02, Progress.01, Progress.05, Progress.06, Page.01, Board.02, Input.01–03, Input.05, Messages.01–02, Panel.01–03, List.01–02, and the narrative
 - The spec's text drawings, with labels as in a formula ([README](../../spec/README.md#examples))
 
 Left out:
@@ -43,7 +43,7 @@ The Puzzles, and the Bonds and arguments that give their layouts with `node scri
 | 2 | Acetic acid | `CH3-C C=O C-OH` |
 | 3 | Glycine | `NH2-CH2 CH2-C C=O C-OH` |
 | 4 | Glycerol | `OH:a-CH2:a CH2:a-CH CH-OH:b CH-CH2:b CH2:b-OH:c` |
-| 5 | 1,4-Dioxane | `CH2:a-O:a O:a-CH2:b CH2:b-CH2:c CH2:c-O:b O:b-CH2:d CH2:d-CH2:a` |
+| 5 | Morpholine | `O-CH2:a CH2:a-CH2:b CH2:b-NH NH-CH2:c CH2:c-CH2:d CH2:d-O` |
 | 6 | Cyclohexene | `CH:a=CH:b CH:b-CH2:a CH2:a-CH2:b CH2:b-CH2:c CH2:c-CH2:d CH2:d-CH:a` |
 | 7 | Serine | `NH2-CH CH-CH2 CH2-OH:a CH-C C=O C-OH:b` |
 | 8 | Cyclohexanol | `CH-OH CH-CH2:a CH2:a-CH2:b CH2:b-CH2:c CH2:c-CH2:d CH2:d-CH2:e CH2:e-CH` |
@@ -55,7 +55,19 @@ The Puzzles, and the Bonds and arguments that give their layouts with `node scri
 | 14 | Glucose | `O-CH:a CH:a-OH:a CH:a-CH:b CH:b-OH:b CH:b-CH:c CH:c-OH:c CH:c-CH:d CH:d-OH:d CH:d-CH:e CH:e-O CH:e-CH2 CH2-OH:e` |
 | 15 | Citric acid | `OH:a-C:a C:a=O:a C:a-CH2:a CH2:a-C:b C:b-OH:b C:b-C:c C:c=O:b C:c-OH:c C:b-CH2:b CH2:b-C:d C:d=O:c C:d-OH:d` |
 
-They were chosen from 30 candidates by three checks, with scripts that aren't kept: at least 2 loops after the first three; the obvious moves (two one-Bond Atoms never bond, an Atom whose open lines exactly fit what it needs fills them, a Bond blocks the lines it crosses) leave lines open; and no two of the same size are the same layout, turned, flipped or with other symbols of the same valence ([decision 0020](../../decisions.md#0020)). No layout has crossing Dotted lines, so the crossing rules get an example on a made-up Grid.
+They were chosen from 30 candidates by three checks, with scripts that aren't kept: at least 2 loops after the first three; the obvious moves (two one-Bond Atoms never bond, an Atom whose open lines exactly fit what it needs fills them, a Bond blocks the lines it crosses) leave lines open; and no two of the same size are the same layout, turned, flipped or with other symbols of the same valence ([decision 0020](../../decisions.md#0020)). No layout has crossing Dotted lines, so the crossing rules get an example on a made-up Grid. 1,4-Dioxane was left out for having the formula of Ethyl acetate, which is removed; Morpholine, its look-alike, takes its place.
+
+The candidates left out whose reason depends on their layout, with the Bonds tried (`100000 6 5 1`):
+
+| Molecule | Bonds | Loops | Lines the obvious moves leave |
+|---|---|---|---|
+| Halothane | `C-F:a C-F:b C-F:c C-CH CH-Br CH-Cl` | 2 | 0 of 8 |
+| Lactic acid | `OH:a-CH CH-CH3 CH-C C=O C-OH:b` | 1 | 0 of 6 |
+| Ethyl acetate | `CH3:a-C C=O C-O:b O:b-CH2 CH2-CH3:b` | 1 | 0 of 6 |
+| Alanine | `NH2-CH CH-CH3 CH-C C=O C-OH` | 1 | 0 of 6 |
+| Threonine | `NH2-CH:a CH:a-CH:b CH:b-OH:a CH:b-CH3 CH:a-C C=O C-OH:b` | 3 | 0 of 10 |
+| Valine | `NH2-CH:a CH:a-C C=O C-OH CH:a-CH:b CH:b-CH3:a CH:b-CH3:b` | 3 | 0 of 10 |
+| Cysteine | `NH2-CH CH-CH2 CH2-SH CH-C C=O C-OH` | 2 | Serine's layout, with S for O |
 
 ## Steps
 
@@ -66,8 +78,8 @@ They were chosen from 30 candidates by three checks, with scripts that aren't ke
 3. **Labels in the generator.** Generate.01, Generate.02.
    - (a) Tests: the new Generate.01 and Generate.02 examples in `tests/unit/puzzle/generate.test.js` and through the script; H as an Element, and an Atom with no room left (`CH4-C`), are "can't read". The old examples, with H Atoms, go.
    - (b) Implementation: the labels in `generate.js`, and the script's printing and drawing.
-4. **Difficulty counts loops.** Puzzle.05.
-   - (a) Tests in `tests/unit/puzzle/difficulty.test.js`: the Puzzle.05 example on the new Glycine and the Puzzle.08 example on Glycerol, made-up until step 7; and 1,4-Dioxane, a ring, where loops and empty Dotted lines differ (2 loops, 1 empty; difficulty 11). The script's comment, in `generate-script.test.js`.
+4. **Difficulty counts loops.** Puzzle.05, Puzzle.08.
+   - (a) Tests in `tests/unit/puzzle/difficulty.test.js`: the Puzzle.05 example on the new Glycine and the Puzzle.08 example on Glycerol, made-up until step 7; and Morpholine, a ring, where loops and empty Dotted lines differ (2 loops, 1 empty; difficulty 11). The script's comment, in `generate-script.test.js`.
    - (b) Implementation: `difficulty.js` and the script's comment.
 5. **The Board draws hydrogens.** Board.01, Board.04, Panel.04.
    - (a) Tests in `tests/unit/ui/board.test.js` on a made-up Acetic acid: its CH₃ has three hydrogens drawn, not focusable and outside every Dotted line's hit area, and the names of the Board.04 example; in `panel.test.js`, the rule. Board.01's colours lose H, which stays in `ui/elements.js` for the hydrogens.
@@ -76,5 +88,5 @@ They were chosen from 30 candidates by three checks, with scripts that aren't ke
    - (a) Tests: in `tests/unit/storage/progress.test.js`, the key is `molecuzzle-v3`, and what is stored under `molecuzzle-v2` isn't read.
    - (b) Implementation: `STORAGE_KEY`.
 7. **The new Puzzles.** Puzzle.01, Puzzle.04, Puzzle.05, Puzzle.06, Puzzle.07, Puzzle.08, and the examples in Scope.
-   - (a) Tests, in three commits. First the unit tests of the rules and the Glue on the new Puzzles, as the spec's examples now are (`game.test.js`, `app.test.js`, `ui.test.js`, `board.test.js`, `draw.test.js`, with the made-up Puzzles of steps 2, 4 and 5 now read from `puzzles.js`); the Grid.02 and Bond.05 examples on the made-up Grid. Then `puzzles.test.js` (the table, the hydrogens of the formula, Puzzle.04, Puzzle.07, Puzzle.08) and `removed.test.js` (the 24, by id and formula only). Then the end-to-end tests, the narrative and the screenshot tests (`board-glucose.png` in place of `board-halothane.png`).
-   - (b) Implementation: `puzzles.js`, `removed.js` and the Puzzle schema. Remake every screenshot that changes, which is all of them, and look at each against ui.md: the hydrogens, the badge and the glow on the new Boards, and Glucose and Citric acid on a phone.
+   - (a) Tests, in three commits. First the unit tests of the rules, the storage and the Glue on the new Puzzles, as the spec's examples now are (`game.test.js`, `app.test.js`, `ui.test.js`, `board.test.js`, `draw.test.js`, `difficulty.test.js`, with the made-up Puzzles of steps 1, 2, 4 and 5 now read from `puzzles.js` and its Water test gone, and the Progress.03 example in `progress.test.js`); the Grid.02 and Bond.05 examples on the made-up Grid. Then `puzzles.test.js` (the table, the hydrogens of the formula, Puzzle.04, Puzzle.07, Puzzle.08) and `removed.test.js` (the 24, by id and formula only). Then the end-to-end tests, the narrative and the screenshot tests (`board-glucose.png` in place of `board-halothane.png`).
+   - (b) Implementation: `puzzles.js`, `removed.js` and the Puzzle schema. Remake every screenshot that changes, all but `actions.png`, and look at each against ui.md: the hydrogens, which don't glow or pulse, the badge and the glow on the new Boards, and Glucose and Citric acid on a phone. The step is large but mechanical; its review checks the examples one by one.
