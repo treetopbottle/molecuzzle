@@ -9,6 +9,15 @@ import { click, build } from "../../helpers/draw.js";
 import { rgb, hue, lightness, inHue } from "../../helpers/colors.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
+
+// The spec's Acetic acid, with its hydrogens on its Atoms: made up until its
+// Puzzle is in puzzles.js (plan 07, step 7).
+const aceticAcid = {
+  id: "acetic-acid", name: "Acetic acid", formula: "C2H4O2", fact: "Vinegar is acetic acid in water.",
+  rows: 3, cols: 2,
+  atoms: [["O",0,1,0],["C",1,0,3],["C",1,1,0],["O",2,1,1]],
+  solution: [[0,2,2],[1,2,1],[2,3,1]],
+};
 let svg;
 beforeEach(() => {
   document.body.innerHTML = '<svg id="board"></svg>';
@@ -30,11 +39,9 @@ describe("Board", () => {
     });
   });
 
-  test("Board.01 each Element's colour: H white, O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red, I violet", () => {
+  test("Board.01 each Element's colour: O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red, I violet", () => {
     const color = el => rgb(LOOKS[el].color);
     const red = inHue(345, 15), green = inHue(90, 150);
-    expect(hue(color("H"))).toBeNull();
-    expect(lightness(color("H"))).toBeGreaterThan(0.85);
     expect(red(color("O"))).toBe(true);
     expect(inHue(200, 240)(color("N"))).toBe(true);
     expect(hue(color("C"))).toBeNull();
@@ -85,6 +92,68 @@ describe("Board", () => {
       "H 1,1 to C 2,1: no bond",
       "C 2,1 to H 2,2: no bond",
       "C 2,1 to O 3,1: double bond",
+    ]);
+  });
+
+  /** Where each of the Board's hydrogens is: its Atom's place, and its centre in the svg. */
+  const hydrogens = () => [...svg.querySelectorAll(".hydrogen")].map(h => {
+    const at = g => g.getAttribute("transform").match(/translate\(([-\d.]+),([-\d.]+)\)/).slice(1).map(Number);
+    const atom = h.closest(".atom"), [ax, ay] = at(atom), [dx, dy] = at(h);
+    return { h, atom, x: ax + dx, y: ay + dy, dx, dy };
+  });
+
+  test("Board.01 an Atom's hydrogens are small white balls with an H, on thin lines on the diagonals below it and then above it on the left", () => {
+    createBoard(svg, createGame(aceticAcid), { onChange() {} });
+    const all = hydrogens();
+    expect(all.map(({ atom }) => atom.getAttribute("aria-label").split(":")[0])).toEqual([
+      "Carbon 2,1, with 3 hydrogens", "Carbon 2,1, with 3 hydrogens", "Carbon 2,1, with 3 hydrogens",
+      "Oxygen 3,2, with 1 hydrogen",
+    ]);
+    expect(all.map(({ dx, dy }) => [Math.sign(dx), Math.sign(dy)])).toEqual([[-1, 1], [1, 1], [-1, -1], [-1, 1]]);
+    for (const { h, atom } of all) {
+      const ball = h.querySelector("circle");
+      expect(Number(ball.getAttribute("r"))).toBe(8.5);
+      expect(Number(ball.getAttribute("r"))).toBeLessThan(LOOKS.C.r / 2);
+      expect(hue(rgb(ball.getAttribute("fill")))).toBeNull();
+      expect(lightness(rgb(ball.getAttribute("fill")))).toBeGreaterThan(0.85);
+      expect(h.querySelector("text").textContent).toBe("H");
+      expect(ball.classList.contains("body")).toBe(false); // it doesn't glow or pulse with its Atom
+      expect(atom.querySelectorAll(".fixed")).toHaveLength(atom.querySelectorAll(".hydrogen").length);
+    }
+    expect(svg.querySelectorAll(".atom .fixed")).toHaveLength(4);
+  });
+
+  test("Board.01 the hydrogens can't be clicked: they aren't focusable, and are outside every Dotted line's hit area", () => {
+    let checked = 0;
+    for (const p of [aceticAcid, ...PUZZLES]) {
+      createBoard(svg, createGame(p), { onChange() {} });
+      const hits = [...svg.querySelectorAll(".hit")].map(r => ["x", "y", "width", "height"].map(k => Number(r.getAttribute(k))));
+      for (const { h, x, y } of hydrogens()) {
+        checked++;
+        expect(h.closest("[tabindex], [role=button], .edge")).toBeNull();
+        const r = Number(h.querySelector("circle").getAttribute("r"));
+        for (const [hx, hy, w, ht] of hits)
+          expect(x + r <= hx || x - r >= hx + w || y + r <= hy || y - r >= hy + ht).toBe(true);
+      }
+    }
+    expect(checked).toBeGreaterThan(0);
+  });
+
+  test("Board.04 Acetic acid with C═O: its Atoms with their hydrogens, and its Dotted lines and Bonds", () => {
+    const game = createGame(aceticAcid);
+    const board = createBoard(svg, game, { onChange() {} });
+    click(game, "1,2", "2,2", 2);
+    board.render();
+    expect(labels(".atom")).toEqual([
+      "Oxygen 1,2: complete",
+      "Carbon 2,1, with 3 hydrogens: needs 1 more bond",
+      "Carbon 2,2: needs 2 more bonds",
+      "Oxygen 3,2, with 1 hydrogen: needs 1 more bond",
+    ]);
+    expect(labels(".edge")).toEqual([
+      "O 1,2 to C 2,2: double bond",
+      "C 2,1 to C 2,2: no bond",
+      "C 2,2 to O 3,2: no bond",
     ]);
   });
 
