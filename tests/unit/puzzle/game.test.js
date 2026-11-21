@@ -93,19 +93,25 @@ describe("Puzzle", () => {
 describe("Hydrogens", () => {
   test("Puzzle.07 Acetic acid's Atoms are an O with no hydrogens, a C with 3, a C with none and an O with 1, and no change touches them", () => {
     const game = createGame(aceticAcid);
-    const hydrogens = () => game.atoms.map(a => `${a.el}${a.h}`).join(" ");
-    expect(hydrogens()).toBe("O0 C3 C0 O1");
+    expect(game.atoms.map(a => `${a.el}${a.h}`).join(" ")).toBe("O0 C3 C0 O1");
+    const needs = () => game.atoms.map((_, i) => game.remaining(i));
+    expect(needs()).toEqual([2, 1, 4, 1]);
     click(game, "1,2", "2,2", 2);
     click(game, "2,1", "2,2");
-    game.undo();
+    while (game.undo());
+    expect(needs()).toEqual([2, 1, 4, 1]);
     game.showSolution();
-    expect(hydrogens()).toBe("O0 C3 C0 O1");
+    expect(needs()).toEqual([0, 0, 0, 0]);
+    game.reset();
+    expect(needs()).toEqual([2, 1, 4, 1]);
   });
 
-  test("Puzzle.03 with an Atom whose bond count is over its valence minus its hydrogens, it starts with no Bonds", () => {
-    const game = createGame(aceticAcid, { bonds: [[1, 2, 2]], revealed: false, undo: [[]] }); // CH₃═C
+  test("Puzzle.03 with an Atom whose bond count is over its valence minus its hydrogens, it starts with no Bonds, nothing to undo and the solution not shown", () => {
+    const game = createGame(aceticAcid, { bonds: [[1, 2, 2]], revealed: true, undo: [[]] }); // CH₃═C
     expect(game.order.some(Boolean)).toBe(false);
     expect(game.canUndo).toBe(false);
+    build(game);
+    expect(game.status()).toEqual({ kind: "solved" });
   });
 
   test("Puzzle.03 a Board whose Atoms have room for their Bonds next to their hydrogens starts where it was left", () => {
@@ -126,8 +132,8 @@ describe("Hydrogens", () => {
     expect(click(game, "1,1", "1,2")).toEqual({ changed: false, reason: "full", atom: 0 });
   });
 
-  test("Check.04 Acetic acid, its hydrogens on its Atoms, is solved once its skeleton is built", () => {
-    const game = createGame(aceticAcid);
+  test("Check.04 Glycine, its hydrogens on its Atoms, is solved once its skeleton is built", () => {
+    const game = createGame(glycine);
     build(game);
     expect(game.status()).toEqual({ kind: "solved" });
   });
