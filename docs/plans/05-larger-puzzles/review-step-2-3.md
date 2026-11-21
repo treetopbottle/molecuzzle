@@ -43,3 +43,13 @@ Commits reviewed: f943d24 (Serine's and Lactic acid's new layouts), 6aa456a (dec
    - 8 of Ethanol's 9 Atoms keep their symbols, and 7 of its 8 Bonds are in the same places.
    - The difference: the O bonds down to the acetyl group instead of to Ethanol's H at row 2, column 3.
    - A Player who has solved Ethanol already knows that part. It is a part of the layout, not all of it, so it doesn't break 0020's wording. It is only recorded here.
+
+## Outcome
+
+1. Fixed in 67bd898: 0020 names Puzzles 16, 17, 18, 19 and 21, and five exceptions.
+2. Fixed in 67bd898: the second review's Outcome 1 says "points on Atoms of the same valence", which is what the script counted.
+3. Fixed in 67bd898: 0020's cost gives the measure, and says the script isn't kept.
+4. Fixed in 67bd898: the index is in number order.
+5. Kept: Ethyl acetate holds an ethyl group, as Ethanol does, so part of its layout is alike; the whole isn't, and the rest of the Molecule is new.
+
+Only decisions and an Outcome changed, so there is no fourth review.
