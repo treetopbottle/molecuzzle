@@ -40,7 +40,7 @@ Commits reviewed: 1c2290e (Cysteine's new layout), 645ad7f (the mouse leaves the
 
 ## Outcome
 
-1. Fixed in f943d24: Serine is seed 5's 5×4 layout, and shares at most 7 of its 14 points with any Puzzle under any turn, flip or shift. Lactic acid, 9 of 12 points on Alanine's, is seed 6's, with at most 6 of 12. Every new layout now shares at most 9 points with another; the arguments are in the plan (6aa456a).
+1. Fixed in f943d24: Serine is seed 5's 5×4 layout, and puts at most 7 of its 14 points on Atoms of the same valence in any Puzzle, under any turn, flip or shift. Lactic acid, 9 of 12 such points on Alanine's, is seed 6's, with at most 6 of 12. Every new layout now has at most 9 such points with another; the arguments are in the plan (6aa456a).
 2. Fixed: Outcome 3 of the first review names da9c327.
 
 A layout changed again, so the fixes have a [third review](review-step-2-3.md).

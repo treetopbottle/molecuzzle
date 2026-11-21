@@ -18,8 +18,8 @@ What the Player does and what the rules are.
 - [0015: Every Puzzle in progress is kept, until it is solved or reset](#0015)
 - [0017: A solved Puzzle keeps its Board, until it is reset](#0017)
 - [0018: New Puzzles go at the end](#0018)
-- [0020: New Puzzles are harder, and unlike the others](#0020)
 - [0019: Grids of at most 6 rows by 5 columns](#0019)
+- [0020: New Puzzles are harder, and unlike the others](#0020)
 
 ### Technical
 
@@ -246,5 +246,5 @@ Accepted (2026-11-21)
 A batch of larger Puzzles is made harder by the Dotted lines its solution leaves empty: Puzzles 22 to 28 each leave at least 5 ([Puzzle.05](spec/puzzle.md#puzzle)). And no new Puzzle's layout is another's, or nearly so, turned, flipped, or with other symbols of the same valence.
 
 - **Why:** an empty Dotted line is a Bond the Player has to rule out, so it counts the reasoning a Puzzle asks for, and it is what the generator already makes as large as it can. 5 is more than any Puzzle before but Alanine, and lets Lactic acid, the smallest, open the batch. A layout the Player has solved before plays the same with S for O or Cl for H, so it adds nothing.
-- **Cost:** Lactic acid isn't harder than Alanine. Each later batch needs its own rule. Whether layouts are alike is checked by hand, with a script, while a batch is made, not by a test. In the batch before, Puzzles 18, 19 and 21 are layouts of 6 and 20 with other symbols; they stay, as that batch adds Elements, not harder logic.
-- **Alternatives:** the number of Atoms alone: a larger Grid of easy Bonds isn't harder. A difficulty from the solver, such as the steps a Player needs: nearer to how hard a Puzzle feels, but new code and a measure to tune. A threshold of 6: Lactic acid and Ethyl acetate drop out. A test that no two layouts are alike: the batch before would need exceptions.
+- **Cost:** Lactic acid isn't harder than Alanine. Each later batch needs its own rule. Whether layouts are alike is checked while a batch is made, not by a test: for this batch, by a script that isn't kept, which found no new layout with more than 9 of its points on Atoms of the same valence in another Puzzle, under any turn, flip or shift. In the batch before, Puzzles 16, 17, 18, 19 and 21 are the layouts of 5, 3, 6, 6 and 20 with other symbols; they stay, as that batch adds Elements, not harder logic.
+- **Alternatives:** the number of Atoms alone: a larger Grid of easy Bonds isn't harder. A difficulty from the solver, such as the steps a Player needs: nearer to how hard a Puzzle feels, but new code and a measure to tune. A threshold of 6: Lactic acid and Ethyl acetate drop out. A test that no two layouts are alike: the batch before would need five exceptions.
