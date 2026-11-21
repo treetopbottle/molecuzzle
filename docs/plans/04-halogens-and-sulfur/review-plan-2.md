@@ -76,3 +76,14 @@ Commits reviewed: d959cca (fixes to the plan, the spec and the decisions) and d5
 7. **note**: Step 2 changes the comment that `scripts/generate.js` prints, but the step only tests `draw.js`, and `tests/unit/puzzle/generate-script.test.js` doesn't check the comment. The two copies of the drawing code (`tests/helpers/draw.js:16`, `scripts/generate.js:29-31`) can drift apart unseen.
 
 8. **note**: `src/puzzle/puzzles.js:1` says "The puzzles, easiest first". After 0018 that is only true within each batch. No step updates it; step 4(b) could.
+
+## Outcome
+
+1. Fixed in ad3d01d: `panel.test.js` keeps its 13 fake Puzzles.
+2. Fixed in ad3d01d: the README says where a one-letter symbol sits, what a line along a row fills, and how a line along a column runs; its example is Chloroform, with a one-letter Atom between lines; the script's empty point is in Design.
+3. Fixed in ad3d01d: Chloroform's layout is the drawing's, named in Design.
+4. Fixed in ad3d01d: the failing screenshots are named in step 1(b).
+5. Fixed in ad3d01d: Carbon disulfide and Iodoethane are looked at in the browser in step 4(b).
+6. Fixed in ad3d01d: `rgb(hex)` and `lightness` in `colors.js`.
+7. Fixed in ad3d01d: step 2 tests the script's comment for "H1-Cl1".
+8. Fixed in ad3d01d: step 4(b) updates the comment of `puzzles.js`.
