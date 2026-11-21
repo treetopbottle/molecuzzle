@@ -1,18 +1,18 @@
 // Finds the solutions of a puzzle: Bond orders for the candidate Bonds such
-// that every Atom has exactly its valence, no Bonds cross, and all Atoms join
-// into one Molecule.
+// that every Atom has exactly its valence, with its hydrogens, no Bonds
+// cross, and all Atoms join into one Molecule.
 import { ELEMENTS, MAX_ORDER } from "./elements.js";
 import { candidateBonds, crossings, connected } from "./grid.js";
 
 /**
- * @param {{el:string,r:number,c:number}[]} atoms
+ * @param {{el:string,r:number,c:number,h?:number}[]} atoms h, its hydrogens, is 0 if left out
  * @param {number} [limit] stop after this many solutions
  * @returns {number[][]} each solution as an order per candidate Bond
  */
 export function solve(atoms, limit = 2) {
   const bonds = candidateBonds(atoms);
   const cross = crossings(atoms, bonds);
-  const need = atoms.map(a => ELEMENTS[a.el].valence);
+  const need = atoms.map(a => ELEMENTS[a.el].valence - (a.h ?? 0));
   const order = bonds.map(() => 0);
   // Bonds not yet decided, per Atom, to prune Atoms that can't be filled.
   const open = atoms.map((_, i) => bonds.filter(e => e.a === i || e.b === i).length);

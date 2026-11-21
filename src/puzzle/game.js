@@ -14,7 +14,10 @@ export const UNDO_LIMIT = 100;
  * undo, since solving ends the undo history.
  */
 export function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
-  const atoms = puzzle.atoms.map(([el, r, c]) => ({ el, r, c }));
+  // An Atom's hydrogens are bonded from the start (Puzzle.07); a missing count is none.
+  const atoms = puzzle.atoms.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
+  /** The Bonds an Atom takes from other Atoms: its valence minus its hydrogens. */
+  const room = i => ELEMENTS[atoms[i].el].valence - atoms[i].h;
   const bonds = candidateBonds(atoms);
   const empty = () => bonds.map(() => 0);
 
@@ -30,7 +33,7 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
       if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
       o[k] = n;
     }
-    if (atoms.some((atom, i) => bondCount(i, o) > ELEMENTS[atom.el].valence)) return null;
+    if (atoms.some((_, i) => bondCount(i, o) > room(i))) return null;
     if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
     return o;
   }
@@ -47,7 +50,7 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
     }
   }
 
-  const remaining = i => ELEMENTS[atoms[i].el].valence - bondCount(i, order);
+  const remaining = i => room(i) - bondCount(i, order);
 
   function status() {
     const open = atoms.filter((_, i) => remaining(i) > 0).length;
