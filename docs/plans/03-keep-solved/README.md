@@ -1,6 +1,6 @@
 # 03: Solved Puzzles keep their solution
 
-Status: Active
+Status: Done (2026-11-21), with a [review of the decisions](review-decisions.md)
 
 A solved Puzzle opens again as it was solved, showing its Molecule, until the Player resets it ([decision 0017](../../decisions.md#0017)).
 
