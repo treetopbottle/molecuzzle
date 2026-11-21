@@ -336,13 +336,21 @@ describe("Saved", () => {
     expect(again.saved()).toEqual(game.saved());
   });
 
-  test("Bond.09, Bond.10 saved() is null after Reset and after solving", () => {
+  test("Bond.09 saved() is null after Reset", () => {
     const game = createGame(puzzle("water"));
     click(game, "1,1", "1,2");
     game.reset();
     expect(game.saved()).toBeNull();
+  });
+
+  test("Puzzle.03, Bond.10 saved() after solving is the solution, with nothing to undo, and starts solved", () => {
+    const game = createGame(puzzle("water"));
     build(game);
-    expect(game.saved()).toBeNull();
+    expect(game.saved()).toEqual({ bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] });
+    const again = createGame(puzzle("water"), game.saved());
+    expect(again.status()).toEqual({ kind: "solved" });
+    expect(again.canUndo).toBe(false);
+    expect(again.saved()).toEqual(game.saved());
   });
 
   test("Help.01 saved() keeps that the solution was shown, also after Undo", () => {

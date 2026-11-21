@@ -46,7 +46,10 @@ test("Progress.01 a solved Puzzle is marked solved, and the UI shows it", () => 
   ui.handlers.onChange(k(0, 1), 1);
   expect(store.saved.puzzles).toEqual({});
   ui.handlers.onChange(k(1, 2), 1);
-  expect(store.saved).toEqual({ puzzles: { water: "solved" }, current: "water" });
+  expect(store.saved).toEqual({
+    puzzles: { water: "solved" }, current: "water",
+    boards: { water: { bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] } },
+  });
   expect(ui.view()).toMatchObject({ status: { kind: "solved" }, done: true, progress: store.saved });
 });
 
@@ -64,7 +67,7 @@ test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, 
   expect(ui.view()).toMatchObject({ status: { kind: "empty" }, hasBonds: false });
 });
 
-describe("Progress.05", () => {
+describe("Progress.05, Progress.06", () => {
   const entry = id => store => store.saved.boards?.[id];
 
   test("Progress.05 a change, Undo and Show solution keep the open Puzzle's Board, its undo history and whether the solution was shown", () => {
@@ -79,15 +82,27 @@ describe("Progress.05", () => {
     expect(ammonia(store)).toEqual({ bonds: PUZZLES[1].solution, revealed: true, undo: [[], [[0, 1, 1]]] });
   });
 
-  test("Progress.05 Reset and solving remove what was kept, and no boards are left", () => {
+  test("Progress.05 Reset removes what was kept, and no boards are left", () => {
     const { store, ui } = start({ puzzles: {}, current: "water" });
     ui.handlers.onChange(0, 1);
     expect(entry("water")(store)).toBeDefined();
     ui.handlers.onReset();
     expect(store.saved).toEqual({ puzzles: {}, current: "water" });
+  });
+
+  test("Progress.06 solving keeps the solved Board, it opens again solved, and Reset removes it", () => {
+    const { store, ui } = start({ puzzles: {}, current: "water" });
+    const solved = { bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] };
     ui.handlers.onChange(0, 1);
     ui.handlers.onChange(1, 1);
+    expect(store.saved).toEqual({ puzzles: { water: "solved" }, current: "water", boards: { water: solved } });
+    ui.handlers.onOpen(1);
+    ui.handlers.onOpen(0);
+    expect(ui.created.at(-1)).toEqual(["water", solved]);
+    expect(ui.view()).toMatchObject({ status: { kind: "solved" }, done: true, canUndo: false, hasBonds: true });
+    ui.handlers.onReset();
     expect(store.saved).toEqual({ puzzles: { water: "solved" }, current: "water" });
+    expect(ui.view()).toMatchObject({ status: { kind: "empty" }, hasBonds: false });
   });
 
   test("Progress.05 an entry whose Board can't be on the Grid is removed when its Puzzle opens", () => {

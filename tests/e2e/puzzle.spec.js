@@ -57,14 +57,17 @@ test("Panel.01, List.01, List.02 the list and the badge show what is solved", as
   await expect(page.locator("#badge")).toHaveText("Unsolved");
 });
 
-test("Progress.01, Progress.03 solved puzzles and the open puzzle are kept over a reload", async ({ page }) => {
+test("Progress.01, Progress.03, Progress.06 solved puzzles and the open puzzle are kept over a reload", async ({ page }) => {
   await start(page);
   await build(page, PUZZLES[0]);
   await openPuzzle(page, 4);
   await page.reload();
   await expect(page.locator("#counter")).toHaveText("Puzzle 4 of 13");
   await expect(page.getByRole("button", { name: "Puzzle 1: Water, solved" })).toBeVisible();
-  expect(await storedProgress(page)).toEqual({ puzzles: { water: "solved" }, current: "hydrogen-cyanide" });
+  expect(await storedProgress(page)).toEqual({
+    puzzles: { water: "solved" }, current: "hydrogen-cyanide",
+    boards: { water: { bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] } },
+  });
 });
 
 test("Progress.01, Progress.03 wrong data is left out, and Puzzle 1 opens when the open one is unknown", async ({ page }) => {

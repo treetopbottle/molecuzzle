@@ -34,7 +34,7 @@ test("Progress.05 a shown solution is still unsolved after a reload", async ({ p
   await expect(page.locator("#score")).toHaveText("Solved 0 of 13");
 });
 
-test("Progress.03, Progress.05 what is stored is a Progress", async ({ page }) => {
+test("Progress.03, Progress.05, Progress.06 what is stored is a Progress", async ({ page }) => {
   await start(page);
   await openPuzzle(page, 2);
   await clickBond(page, "1,1", "2,1");
@@ -43,15 +43,29 @@ test("Progress.03, Progress.05 what is stored is a Progress", async ({ page }) =
   await openPuzzle(page, 1);
   await build(page, PUZZLES[0]);
   const stored = await storedProgress(page);
-  expect(stored.boards).toEqual({ ammonia: { bonds: [[0, 1, 1]], revealed: false, undo: [[]] } });
+  expect(stored.boards).toEqual({
+    ammonia: { bonds: [[0, 1, 1]], revealed: false, undo: [[]] },
+    water: { bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [] },
+  });
   expect(schemaErrors("progress.schema.json", stored)).toEqual([]);
 });
 
-test("Progress.05 a solved Puzzle opens again with no Bonds", async ({ page }) => {
+test("Progress.06 a solved Puzzle opens again solved, until it is reset", async ({ page }) => {
   await start(page);
   await build(page, PUZZLES[0]);
+  await openPuzzle(page, 2);
+  await page.reload();
+  await openPuzzle(page, 1);
+  await expect(status(page)).toHaveText("✓ Solved! It's Water.");
+  await expect(bond(page, "1,1", "1,2")).toHaveAccessibleName("H 1,1 to O 1,2: single bond");
+  await expect(bond(page, "1,2", "2,2")).toHaveAccessibleName("O 1,2 to H 2,2: single bond");
+  await expect(page.getByRole("button", { name: "Undo" })).toBeDisabled();
+
+  page.once("dialog", dialog => dialog.accept());
+  await page.getByRole("button", { name: "Reset" }).click();
   await openPuzzle(page, 2);
   await openPuzzle(page, 1);
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
+  expect(await storedProgress(page)).toEqual({ puzzles: { water: "solved" }, current: "water" });
 });

@@ -41,8 +41,9 @@ test("First day", async ({ page }) => {
   await build(page, PUZZLES[10]);
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
 
-  // The next day, in the same browser, the game opens where Noor left off.
+  // The next day, in the same browser, the game opens where Noor left off, still showing Glycine.
   await page.reload();
   await expect(page.locator("#counter")).toHaveText("Puzzle 11 of 13");
+  await expect(status(page)).toHaveText("✓ Solved! It's Glycine.");
   await expect(page.locator("#score")).toHaveText("Solved 4 of 13");
 });
