@@ -184,9 +184,9 @@ export const PUZZLES = [
   {
     id: "cysteine", name: "Cysteine", formula: "C3H7NO2S",
     fact: "Cysteine has a sulfur atom: bridges between the sulfur atoms of two cysteines hold the shape of hair and nails.",
-    rows: 4, cols: 4,
-    atoms: [["H",0,0],["H",0,1],["H",0,2],["H",0,3],["N",1,0],["C",1,1],["C",1,2],["S",1,3],["H",2,0],["H",2,2],["O",3,0],["C",3,1],["O",3,2],["H",3,3]],
-    solution: [[0,4,1],[1,5,1],[2,6,1],[3,7,1],[4,5,1],[4,8,1],[5,6,1],[5,11,1],[6,7,1],[6,9,1],[10,11,2],[11,12,1],[12,13,1]],
+    rows: 5, cols: 4,
+    atoms: [["H",0,2],["H",0,3],["H",1,0],["C",1,2],["S",1,3],["H",2,0],["N",2,1],["C",2,2],["H",2,3],["H",3,1],["H",3,3],["O",4,0],["C",4,2],["O",4,3]],
+    solution: [[0,3,1],[1,4,1],[2,3,1],[3,4,1],[3,7,1],[5,6,1],[6,7,1],[6,9,1],[7,8,1],[7,12,1],[10,13,1],[11,12,2],[12,13,1]],
   },
   {
     id: "threonine", name: "Threonine", formula: "C4H9NO3",
