@@ -51,6 +51,7 @@ flowchart TD
   solver --> elements
   solver --> grid
   gen --> grid
+  gen --> elements
   gen --> solver
 ```
 

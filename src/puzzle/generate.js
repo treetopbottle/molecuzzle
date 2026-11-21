@@ -3,10 +3,13 @@
 // are not for the Player.
 import { candidateBonds, crossings } from "./grid.js";
 import { solve } from "./solver.js";
+import { ELEMENTS } from "./elements.js";
 
 /**
  * Bonds are written between labelled Atoms, e.g. "H1-O1 O1-H2": the label's
- * letters are the Element, `-` `=` `#` a single, double and triple Bond.
+ * letters are the Element, `-` `=` `#` a single, double and triple Bond;
+ * a Bond that doesn't read so, or names an Element the game doesn't have,
+ * throws "can't read <bond>".
  * Returns the best of `tries` random layouts of at most maxRows by maxCols
  * whose only solution is this Molecule, as { rows, cols, atoms, solution }
  * of a Puzzle, the Atoms in reading order; or null if no try has exactly one
@@ -17,15 +20,16 @@ export function findLayout(text, { tries = 20000, maxRows = 5, maxCols = 6, seed
   const random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
   const pick = list => list[Math.floor(random() * list.length)];
 
+  const element = l => l.replace(/\d+$/, "");
   const labels = [], bonds = [];
   for (const token of text.trim().split(/\s+/)) {
     const m = token.match(/^([A-Za-z]+\d*)([-=#])([A-Za-z]+\d*)$/);
     if (!m) throw new Error(`can't read ${token}`);
     const [, x, op, y] = m;
+    if (![x, y].every(l => Object.hasOwn(ELEMENTS, element(l)))) throw new Error(`can't read ${token}`);
     for (const l of [x, y]) if (!labels.includes(l)) labels.push(l);
     bonds.push({ a: labels.indexOf(x), b: labels.indexOf(y), order: { "-": 1, "=": 2, "#": 3 }[op] });
   }
-  const element = l => l.replace(/\d+$/, "");
   const neighbours = labels.map((_, i) => bonds.filter(e => e.a === i || e.b === i));
 
   function layout() {
