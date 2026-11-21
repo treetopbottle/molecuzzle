@@ -32,3 +32,11 @@ Commits reviewed: 8dc1370 (step 2, tests and code; it has no rule ids), range f3
 1. **should fix**: tests/unit/puzzle/generate-script.test.js:9-15. No test pins the script's comment for a layout with only one-letter symbols. The Generate.01 water test checks only `rows`, `atoms` and `solution`, so a mutation of `scripts/generate.js:34` to `p.padEnd(2)` passes every test. That mutation draws one-letter layouts with points three apart. The Design says "Boards with only one-letter symbols are drawn as now", so the comment lines of the water layout (or another one-letter layout) should be checked too.
 2. **note**: tests/unit/puzzle/generate-script.test.js:18. The plan's step 2 asks for the comment for "H1-Cl1" with an empty point. The test uses chloromethane, "C1-H1 C1-H2 C1-H3 C1-Cl1", on 3×3. That is a reasonable change: H-Cl alone would most likely be laid out without an empty point. It still meets the plan's intent, a two-letter symbol and an empty point.
 3. **note**: tests/unit/draw.test.js:36-49. The two-letter case is tested only solved: Chloroform has no Dotted line, no line crossing an empty point, and no two-letter Atom at the left end of a line. The code draws Dotted lines and Bonds the same way, and Glycine covers crossing an empty point in the one-letter case, so this is no gap today. An unsolved Chloroform in the test would pin the Dotted lines at no cost.
+
+## Outcome
+
+1. Fixed in da824a3: the script's comment for a one-letter layout (methanol) is pinned; `padEnd(2)` now fails it.
+2. Kept: chloromethane has the empty point that H-Cl wouldn't, as the finding says.
+3. Fixed in da824a3: Chloroform is drawn with no Bonds too.
+
+Only tests changed, and they pass, so there is no second review.
