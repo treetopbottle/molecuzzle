@@ -1,12 +1,16 @@
 # Architecture
 
-How the files in `src/` fit together, one section per component ([decision 0011](decisions.md#0011)). The overview of the components, and how `browser.js` and `app.js` wire them together, is in the [README](../README.md#how-src-fits-together).
+This file describes how the files in `src/` fit together. It is split by component ([decision 0011](decisions.md#0011)) with the addition of Glue that ties it all together.
 
-Each diagram shows the files of one component; an arrow is an import. What happens at runtime (callbacks, the page loading files, the browser's storage) is in the text.
+Each diagram shows the files of one component; an arrow is an import. Arrows are annotated with what happens at runtime (callbacks, the page loading files, the browser's storage).
+
+## Glue
+
+`index.html` is the page and loads `style.css` and `browser.js`; nothing imports them.
 
 ## UI
 
-`ui.js` owns the page: it draws the Board, the panel and the list of Puzzles, words every status and reason, and calls the handlers `app.js` gives it when the Player does something. It reads the game `app.js` hands it, without importing the Puzzle. `index.html` is the page and loads `style.css` and `browser.js`; nothing imports them.
+`ui.js` owns all the interface components on the webpage and when the Player does something it calls the handlers provided by `app.js`.
 
 ```mermaid
 flowchart TD
@@ -27,7 +31,7 @@ flowchart TD
 
 ## Puzzle
 
-The Puzzles and the rules, with no DOM. `game.js` keeps the Bonds of a Board and gives its status and the reasons; the rules produce no text for the Player.
+The Puzzles and the rules. `game.js` keeps the Bonds of a Board and gives its status and the reasons.
 
 `solver.js` and `generate.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts, and the tests use the solver to check the Puzzles in `puzzles.js`.
 
@@ -50,4 +54,4 @@ flowchart TD
 
 ## Storage
 
-One file, so no diagram: `progress.js` loads and updates the Progress in the storage it is given, `localStorage` in the game, and works without one, keeping nothing.
+One file, so no diagram: `progress.js` loads and updates the Progress in the storage it is given. `localStorage` is used at the moment.
