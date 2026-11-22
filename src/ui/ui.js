@@ -13,6 +13,7 @@ function renderCounts(line, { used, budget, few, many }) {
   const part = (text, label, warn = false) => {
     const span = line.ownerDocument.createElement("span");
     span.textContent = text;
+    span.setAttribute("role", "img");
     span.setAttribute("aria-label", label);
     span.classList.toggle("warn", warn);
     return span;

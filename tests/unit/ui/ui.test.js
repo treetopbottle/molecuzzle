@@ -134,6 +134,7 @@ test("Board.05 the counts line: the Bonds used of the budget, and the Atoms with
   expect(line().querySelector(".warn").textContent).toBe("Bonds 6 of 4");
   expect([...line().querySelectorAll("[aria-label]")].map(e => e.getAttribute("aria-label")))
     .toEqual(["Bonds used, of the budget: 6 of 4", "Atoms with too few bonds: 0", "Atoms with too many bonds: 3"]);
+  expect([...line().querySelectorAll("[aria-label]")].every(e => e.getAttribute("role") === "img")).toBe(true);
   expect(line().getAttribute("role")).toBeNull(); // the status line is the page's one status
 });
 

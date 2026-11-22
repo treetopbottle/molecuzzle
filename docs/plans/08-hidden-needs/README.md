@@ -45,7 +45,7 @@ Interfaces that change:
 2. **Atoms show no needs.** `[DONE]` ([review](review-step-2.md)) Board.02, Board.04.
    - (a) Tests: `board.test.js` (no badge, no `.ok` after C═O, the names of the Board.04 example, hydrogens still don't pulse, `:90`), and the end-to-end tests that name Atoms or look for the glow: `puzzle.spec.js:24-28`, `bonding.spec.js`, `screenshots.spec.js:72-73`.
    - (b) Implementation: `board.js` and the Atom rules of `style.css`. Remake every screenshot that changes and look at each against ui.md: no badge or glow, Glucose too.
-3. **The counts line.** Board.05, Page.01, and the narrative.
+3. **The counts line.** `[DONE]` ([review](review-step-3.md)) Board.05, Page.01, and the narrative.
    - (a) Tests: `ui.test.js` (the line of the Board.05 example, the `warn` on the first span when over, an `aria-label` each, the same line when solved), `app.test.js` (`counts` in the view), `narrative.spec.js` as the narrative now reads, and the screenshot tests.
    - (b) Implementation: `app.js`, `index.html`, `ui.js`, `style.css`. Remake the screenshots that change, on a desktop and on a phone, Citric acid too.
 4. **The rules in the panel.** Panel.04.
