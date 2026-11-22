@@ -18,7 +18,7 @@ Each diagram shows the files of one component; an arrow is an import. Arrows are
 flowchart TD
   uijs["<code>ui.js</code><br/>owns the page"]
   board["<code>board.js</code><br/>the Board in SVG"]
-  panel["<code>panel.js</code><br/>the open Puzzle and the rules"]
+  panel["<code>panel.js</code><br/>the open Puzzle, the rules and the key"]
   list["<code>puzzle-list.js</code><br/>the list of Puzzles"]
   messages["<code>messages.js</code><br/>the texts for the Player"]
   looks["<code>elements.js</code><br/>how Elements look"]
@@ -33,7 +33,7 @@ flowchart TD
 
 ## Puzzle
 
-The Puzzles and the rules. `game.js` keeps the Bonds of a Board and gives its status and the reasons.
+The Puzzles and the rules. `game.js` keeps the Bonds of a Board and gives its status, its counts and budget, and the reasons.
 
 `solver.js`, `generate.js`, `difficulty.js` and `removed.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts and `difficulty.js` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.js`, and `removed.js`, the Puzzles taken out of the game, to keep them out; the tests check the layouts in both.
 
