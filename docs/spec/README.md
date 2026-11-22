@@ -16,7 +16,7 @@ A general narrative is used to describe a typical usage flow, see [narratives.md
 
 In scope: Puzzles on a Grid, where the Player fills in the Bonds so every Atom has exactly its valence ([decision 0001](../decisions.md#0001)), with every hydrogen bonded to its Atom from the start, drawn beside it ([decision 0023](../decisions.md#0023)), and each Puzzle has exactly one solution ([decision 0008](../decisions.md#0008)); seeing a solution; Progress kept in the browser ([decision 0005](../decisions.md#0005)).
 
-Left out: building freely without a Grid, recognising other Molecules (Isomers), charges and ions, Elements other than H, C, N, O, S and the halogens F, Cl, Br and I, stereochemistry, 3D shapes, and saving Progress anywhere but the browser. Other puzzle modes are in `prototypes/`, outside this spec.
+Left out: building freely without a Grid, recognising other Molecules (Isomers), charges and ions, Elements other than H, C, N, O, S and the halogens F, Cl, Br and I (the game knows them, but no Puzzle uses them and the key leaves them out), stereochemistry, 3D shapes, and saving Progress anywhere but the browser. Other puzzle modes are in `prototypes/`, outside this spec.
 
 ## Examples
 
