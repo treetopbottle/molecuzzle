@@ -29,9 +29,10 @@ function renderCounts(line, { used, budget, few, many }) {
  * @param {{ onChange(k: number, dir: number): void, onOpen(index: number): void,
  *   onUndo(): void, onReset(): void, onSolve(): void }} handlers
  *   onSolve and onReset come only after the Player confirms.
- * @param {{ confirm?: (question: string) => boolean }} [options]
+ * @param {{ confirm?: (question: string) => boolean, elements?: {symbol: string, valence: number}[] }} [options]
+ *   elements: each Element's number of bonds, for the key of the panel, in its order.
  */
-export function createUi(doc, handlers, { confirm = question => doc.defaultView.confirm(question) } = {}) {
+export function createUi(doc, handlers, { confirm = question => doc.defaultView.confirm(question), elements = [] } = {}) {
   const $ = id => doc.getElementById(id);
   let game, board, toastTimer;
 
@@ -61,7 +62,7 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
   function render(view) {
     const { puzzles, index, progress, status } = view;
     board.render();
-    renderPanel($("info"), view);
+    renderPanel($("info"), { ...view, elements });
     renderCounts($("counts"), view.counts);
     const line = $("status");
     line.textContent = statusText(status, puzzles[index]);

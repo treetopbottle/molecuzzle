@@ -2,6 +2,7 @@
 // mystery molecule or its name, formula and fact, and the rules. ‹, › and
 // "Next puzzle →" carry data-open, the index of the Puzzle they open: whoever
 // owns the page listens for clicks on them.
+import { ELEMENTS as LOOKS } from "./elements.js";
 
 const RULES = [
   "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
@@ -12,9 +13,42 @@ const RULES = [
   "All atoms join into one molecule. There is exactly one solution.",
 ];
 
+const SVGNS = "http://www.w3.org/2000/svg";
+const KEY = 52, KEY_R = 12, STICK = 12; // the size of a key figure, its ball and its sticks
+
+/** One figure of the key: the Element's ball, as many sticks round it as its number of bonds, and the number. */
+function keyFigure(doc, { symbol, valence }) {
+  const look = LOOKS[symbol], c = KEY / 2;
+  const svg = doc.createElementNS(SVGNS, "svg");
+  svg.setAttribute("viewBox", `0 0 ${KEY} ${KEY}`);
+  svg.setAttribute("width", KEY);
+  svg.setAttribute("height", KEY);
+  svg.setAttribute("aria-hidden", "true");
+  const add = (tag, attrs) => {
+    const e = doc.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    svg.appendChild(e);
+    return e;
+  };
+  for (let i = 0; i < valence; i++) { // evenly round the ball, from the top, clockwise
+    const a = (i * 2 * Math.PI) / valence, dx = Math.sin(a), dy = -Math.cos(a);
+    add("line", { class: "stick", x1: c + dx * KEY_R, y1: c + dy * KEY_R, x2: c + dx * (KEY_R + STICK), y2: c + dy * (KEY_R + STICK) });
+  }
+  add("circle", { cx: c, cy: c, r: KEY_R, fill: look.color, stroke: look.stroke });
+  add("text", { class: "sym", x: c, y: c + .5, "text-anchor": "middle", "dominant-baseline": "central", fill: look.text }).textContent = symbol;
+  const figure = doc.createElement("figure");
+  figure.setAttribute("role", "img");
+  figure.setAttribute("aria-label", `${look.name}: ${valence} bond${valence > 1 ? "s" : ""}`);
+  const number = doc.createElement("figcaption");
+  number.className = "valence";
+  number.textContent = String(valence);
+  figure.append(svg, number);
+  return figure;
+}
+
 const BADGES = { solved: "✓ Solved" };
 
-function build(panel) {
+function build(panel, elements) {
   const doc = panel.ownerDocument;
   panel.innerHTML = `
     <nav class="puzzle-nav" aria-label="Puzzle">
@@ -36,6 +70,10 @@ function build(panel) {
     li.textContent = rule;
     return li;
   }));
+  const key = doc.createElement("div");
+  key.className = "key";
+  key.append(...elements.map(e => keyFigure(doc, e)));
+  panel.querySelectorAll(".rules li")[3].append(key); // the rule on valence
 }
 
 /**
@@ -43,10 +81,10 @@ function build(panel) {
  * focused button keeps its focus.
  * @param {HTMLElement} panel
  * @param {{ puzzles: {id:string,name:string,formula:string,fact:string}[], index: number,
- *   progress: {puzzles: Record<string,string>}, done: boolean }} view
+ *   progress: {puzzles: Record<string,string>}, done: boolean, elements: {symbol: string, valence: number}[] }} view
  */
-export function renderPanel(panel, { puzzles, index, progress, done }) {
-  if (!panel.querySelector("nav")) build(panel);
+export function renderPanel(panel, { puzzles, index, progress, done, elements = [] }) {
+  if (!panel.querySelector("nav")) build(panel, elements);
   const $ = id => panel.querySelector(`#${id}`);
   const puzzle = puzzles[index], last = index === puzzles.length - 1;
   const opens = (button, i, can) => { button.disabled = !can; button.dataset.open = String(i); };
