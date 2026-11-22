@@ -42,7 +42,7 @@ export const PUZZLES = [
   },
   {
     id: "cyclohexene", name: "Cyclohexene", formula: "C6H10",
-    fact: "Shaken with orange bromine water, cyclohexene turns it clear: the classic test for a carbon–carbon double bond.",
+    fact: "Shaken with orange bromine water, cyclohexene turns it colourless: the classic test for a carbon–carbon double bond.",
     rows: 3, cols: 2,
     atoms: [["C",0,0,2],["C",0,1,2],["C",1,0,2],["C",1,1,2],["C",2,0,1],["C",2,1,1]],
     solution: [[0,1,1],[0,2,1],[1,3,1],[2,4,1],[3,5,1],[4,5,2]],
@@ -56,7 +56,7 @@ export const PUZZLES = [
   },
   {
     id: "cyclohexanol", name: "Cyclohexanol", formula: "C6H12O",
-    fact: "Most cyclohexanol is turned into adipic acid, one of the two building blocks of nylon 6,6.",
+    fact: "Cyclohexanol is turned into adipic acid, one of the two building blocks of nylon 6,6.",
     rows: 4, cols: 2,
     atoms: [["C",0,0,2],["C",0,1,2],["C",1,0,2],["C",1,1,2],["C",2,0,2],["C",2,1,1],["O",3,1,1]],
     solution: [[0,1,1],[0,2,1],[1,3,1],[2,4,1],[3,5,1],[4,5,1],[5,6,1]],

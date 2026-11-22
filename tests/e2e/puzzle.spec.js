@@ -71,6 +71,7 @@ test("Progress.01, Progress.03, Progress.06 solved puzzles and the open puzzle a
   await page.reload();
   await expect(page.locator("#counter")).toHaveText("Puzzle 2 of 15");
   await expect(page.getByRole("button", { name: "Puzzle 1: Acetonitrile, solved" })).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("Click a dotted line between two atoms to bond them.");
   expect(await storedProgress(page)).toEqual({
     puzzles: { acetonitrile: "solved" }, current: "acetic-acid",
     boards: { acetonitrile: { bonds: [[0, 1, 1], [1, 2, 3]], revealed: false, undo: [] } },

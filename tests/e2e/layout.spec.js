@@ -18,11 +18,12 @@ test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page, is
   await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("C 1,1 to C 2,1: single bond");
 });
 
-for (const [number, name] of [[14, "Glucose's, the widest"], [15, "Citric acid's, the tallest"]])
+for (const [number, name, board] of [[14, "Glucose's, the widest", "Board, 3 by 5"], [15, "Citric acid's, the tallest", "Board, 6 by 3"]])
   test(`Layout.01, Puzzle.04 on a phone, the largest Grids fit: ${name}, with no sideways scroll, and the Board and its status line fit the screen`, async ({ page, isMobile }) => {
     test.skip(!isMobile, "phone only");
     await start(page);
     await openPuzzle(page, number);
+    await expect(page.getByRole("group", { name: board })).toBeVisible();
     const { width, height } = page.viewportSize();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     const stage = await page.locator(".stage").boundingBox();
