@@ -32,6 +32,11 @@ p { margin: 0; }
 .legend { color: var(--muted); font-size: 14px; }
 .rules { margin: 0; padding-left: 20px; font-size: 14px; }
 .rules li { margin: 4px 0; }
+.key { display: flex; flex-wrap: wrap; gap: 2px 8px; margin: 6px 0 2px -20px; }
+.key figure { display: inline-flex; align-items: center; gap: 2px; margin: 0; }
+.key .stick { stroke: var(--bond); stroke-width: 3; stroke-linecap: round; }
+.key .sym { font-size: 11px; font-weight: 700; }
+.key .valence { font-size: 14px; font-weight: 700; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .puzzle-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; white-space: nowrap; }
 .puzzle-nav button { padding: 4px 12px; }
@@ -40,9 +45,11 @@ p { margin: 0; }
 .puzzle-list { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .puzzle-list button { min-width: 44px; padding: 6px 8px; font-size: 14px; }
 .puzzle-list button[aria-current] { border-color: var(--accent-2); box-shadow: 0 0 0 1px var(--accent-2); }
-#status { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
-#status.good { border-color: rgba(60,224,180,.6); color: #b9f7e4; }
-#status.warn { border-color: rgba(255,179,71,.5); color: #ffe0b3; }
+#note { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
+#note.good { border-color: rgba(60,224,180,.6); color: #b9f7e4; }
+#note.warn { border-color: rgba(255,179,71,.5); color: #ffe0b3; }
+#counts { margin-top: 4px; font-size: 14px; }
+#counts .warn { color: var(--warn); }
 #toast { position: fixed; top: 64px; left: 50%; transform: translate(-50%, -10px); background: #2a3550; border: 1px solid #3d4b72; padding: 8px 14px; border-radius: 99px; opacity: 0; transition: .2s; pointer-events: none; }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
@@ -55,16 +62,12 @@ p { margin: 0; }
 .edge:hover .vis, .edge:focus-visible .vis { stroke: #fff; }
 .edge:focus-visible .hit { fill: rgba(125,211,255,.14); }
 .atom { pointer-events: none; }
-.atom .body { stroke-width: 2; transition: filter .2s; }
+.atom .body { stroke-width: 2; }
 .atom .shine { fill: #fff; opacity: .22; }
 .atom .sym { font-weight: 700; font-size: 16px; }
 .atom .fixed { stroke: rgba(201,211,230,.55); stroke-width: 1.6; }
 .atom .hydrogen circle { stroke-width: 1.2; }
 .atom .hydrogen text { font-size: 9px; font-weight: 700; }
-.atom.ok .body { filter: drop-shadow(0 0 5px rgba(60,224,180,.8)); }
-.atom .badge circle { fill: var(--warn); stroke: #3a2600; }
-.atom .badge text { font-size: 11px; font-weight: 700; fill: #3a2600; }
-.atom.ok .badge { display: none; }
 .pulse .atom .body { animation: pulse .55s ease-in-out 3; transform-box: fill-box; transform-origin: center; }
 @keyframes pulse { 50% { transform: scale(1.2); } }
 @media (prefers-reduced-motion: reduce) { .pulse .atom .body { animation: none; } }
@@ -80,7 +83,10 @@ p { margin: 0; }
 <main>
   <section>
     <div class="stage"><svg id="board"></svg></div>
-    <div id="status" role="status"></div>
+    <div id="note">
+      <div id="status" role="status"></div>
+      <div id="counts"></div>
+    </div>
   </section>
   <aside class="panel">
     <div id="info" class="info"></div>
@@ -192,6 +198,7 @@ p { margin: 0; }
         index,
         progress,
         status,
+        counts: game.counts(),
         done: game.done(),
         canUndo: game.canUndo,
         hasBonds: game.order.some(Boolean)
@@ -422,7 +429,6 @@ p { margin: 0; }
         if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
         o[k] = n;
       }
-      if (atoms.some((_, i) => bondCount(i, o) > room(i))) return null;
       if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
       return o;
     }
@@ -438,10 +444,17 @@ p { margin: 0; }
       }
     }
     const remaining = (i) => room(i) - bondCount(i, order);
+    const budget = atoms.reduce((t, _, i) => t + room(i), 0) / 2;
+    const counts = () => ({
+      used: order.reduce((t, n) => t + n, 0),
+      budget,
+      few: atoms.filter((_, i) => remaining(i) > 0).length,
+      many: atoms.filter((_, i) => remaining(i) < 0).length
+    });
     function status() {
-      const open = atoms.filter((_, i) => remaining(i) > 0).length;
+      const { few, many } = counts();
       if (!order.some(Boolean)) return { kind: "empty" };
-      if (open) return { kind: "open", open };
+      if (few || many) return { kind: "open", few, many };
       if (!connected(atoms.length, bonds, order)) return { kind: "pieces" };
       return { kind: revealed ? "revealed" : "solved" };
     }
@@ -457,11 +470,7 @@ p { margin: 0; }
       if (done()) return { changed: false };
       const e = bonds[k], cur = order[k];
       let next = cur + dir;
-      if (dir > 0 && cur === 0) {
-        const full = [e.a, e.b].find((i) => remaining(i) === 0);
-        if (full !== void 0) return { changed: false, reason: "full", atom: full };
-      }
-      if (dir > 0 && (next > MAX_ORDER || next - cur > Math.min(remaining(e.a), remaining(e.b)))) next = 0;
+      if (dir > 0 && next > MAX_ORDER) next = 0;
       if (next < 0 || next === cur) return { changed: false };
       if (cur === 0 && bonds.some((f, j) => order[j] && crosses(atoms, e, f)))
         return { changed: false, reason: "crossing" };
@@ -509,6 +518,8 @@ p { margin: 0; }
         return history.length > 0;
       },
       remaining,
+      budget,
+      counts,
       status,
       done,
       change,
@@ -599,10 +610,7 @@ p { margin: 0; }
       el("circle", { class: "shine", r: E.r * 0.42, cx: -E.r * 0.32, cy: -E.r * 0.36 }, g);
       const t = el("text", { class: "sym", "text-anchor": "middle", "dominant-baseline": "central", fill: E.text, y: 1 }, g);
       t.textContent = a.el;
-      const badge = el("g", { class: "badge", transform: `translate(${E.r * 0.78},${-E.r * 0.78})` }, g);
-      el("circle", { r: 9 }, badge);
-      const count = el("text", { "text-anchor": "middle", "dominant-baseline": "central", y: 0.5 }, badge);
-      return { g, count };
+      return { g };
     });
     function render() {
       const order = game.order;
@@ -618,11 +626,9 @@ p { margin: 0; }
         g.setAttribute("aria-label", `${A.el} ${place(A)} to ${B.el} ${place(B)}: ${ORDER_NAMES[o]}`);
       });
       atoms.forEach((a, i) => {
-        const left = game.remaining(i), { g, count } = atomEls[i];
-        g.classList.toggle("ok", left === 0);
-        count.textContent = left;
+        const { g } = atomEls[i];
         const hydrogens = a.h ? `, with ${a.h} hydrogen${a.h > 1 ? "s" : ""}` : "";
-        g.setAttribute("aria-label", `${ELEMENTS2[a.el].name} ${place(a)}${hydrogens}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
+        g.setAttribute("aria-label", `${ELEMENTS2[a.el].name} ${place(a)}${hydrogens}`);
       });
       const solved = game.status().kind === "solved";
       svg.classList.toggle("solved", solved);
@@ -639,11 +645,44 @@ p { margin: 0; }
     "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
     "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
     "Bonds can't cross.",
-    "Each atom needs exactly its number of bonds: C\xA04, N\xA03, O and S\xA02, F, Cl, Br and I\xA01. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs.",
+    "Each atom needs exactly its number of bonds, as in the key below. Its small hydrogens are already bonded and count.",
+    "Under the board are the bonds you use, of the bonds the solution has. You may use more, but then it isn't solved.",
     "All atoms join into one molecule. There is exactly one solution."
   ];
+  var SVGNS2 = "http://www.w3.org/2000/svg";
+  var KEY = 52;
+  var KEY_R = 12;
+  var STICK = 12;
+  function keyFigure(doc, { symbol, valence }) {
+    const look = ELEMENTS2[symbol], c = KEY / 2;
+    const svg = doc.createElementNS(SVGNS2, "svg");
+    svg.setAttribute("viewBox", `0 0 ${KEY} ${KEY}`);
+    svg.setAttribute("width", KEY);
+    svg.setAttribute("height", KEY);
+    svg.setAttribute("aria-hidden", "true");
+    const add = (tag, attrs) => {
+      const e = doc.createElementNS(SVGNS2, tag);
+      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      svg.appendChild(e);
+      return e;
+    };
+    for (let i = 0; i < valence; i++) {
+      const a = i * 2 * Math.PI / valence, dx = Math.sin(a), dy = -Math.cos(a);
+      add("line", { class: "stick", x1: c + dx * KEY_R, y1: c + dy * KEY_R, x2: c + dx * (KEY_R + STICK), y2: c + dy * (KEY_R + STICK) });
+    }
+    add("circle", { cx: c, cy: c, r: KEY_R, fill: look.color, stroke: look.stroke });
+    add("text", { class: "sym", x: c, y: c + 0.5, "text-anchor": "middle", "dominant-baseline": "central", fill: look.text }).textContent = symbol;
+    const figure = doc.createElement("figure");
+    figure.setAttribute("role", "img");
+    figure.setAttribute("aria-label", `${look.name}: ${valence} bond${valence > 1 ? "s" : ""}`);
+    const number = doc.createElement("figcaption");
+    number.className = "valence";
+    number.textContent = String(valence);
+    figure.append(svg, number);
+    return figure;
+  }
   var BADGES = { solved: "\u2713 Solved" };
-  function build(panel) {
+  function build(panel, elements) {
     const doc = panel.ownerDocument;
     panel.innerHTML = `
     <nav class="puzzle-nav" aria-label="Puzzle">
@@ -665,9 +704,13 @@ p { margin: 0; }
       li.textContent = rule;
       return li;
     }));
+    const key = doc.createElement("div");
+    key.className = "key";
+    key.append(...elements.map((e) => keyFigure(doc, e)));
+    panel.querySelectorAll(".rules li")[RULES.findIndex((r) => r.startsWith("Each atom needs"))].append(key);
   }
-  function renderPanel(panel, { puzzles, index, progress, done }) {
-    if (!panel.querySelector("nav")) build(panel);
+  function renderPanel(panel, { puzzles, index, progress, done, elements = [] }) {
+    if (!panel.querySelector("nav")) build(panel, elements);
     const $ = (id) => panel.querySelector(`#${id}`);
     const puzzle = puzzles[index], last = index === puzzles.length - 1;
     const opens = (button, i, can) => {
@@ -721,7 +764,7 @@ p { margin: 0; }
       case "empty":
         return "Click a dotted line between two atoms to bond them.";
       case "open":
-        return `${status.open} atom${status.open > 1 ? "s" : ""} still need${status.open > 1 ? "" : "s"} bonds.`;
+        return "Not every atom has the right number of bonds yet.";
       case "pieces":
         return "Every atom has its bonds, but they form more than one molecule. Everything must join up.";
       case "solved":
@@ -730,10 +773,8 @@ p { margin: 0; }
         return `Here is ${puzzle.name}. Reset and build it yourself to mark it solved.`;
     }
   }
-  function reasonText(result, atoms) {
+  function reasonText(result) {
     switch (result.reason) {
-      case "full":
-        return `${ELEMENTS2[atoms[result.atom].el].name} already has all its bonds.`;
       case "crossing":
         return "Bonds can't cross.";
       default:
@@ -743,7 +784,15 @@ p { margin: 0; }
 
   // src/ui/ui.js
   var STATUS_CLASS = { solved: "good", revealed: "good", pieces: "warn" };
-  function createUi(doc, handlers, { confirm = (question) => doc.defaultView.confirm(question) } = {}) {
+  function renderCounts(line, { used, budget }) {
+    const span = line.ownerDocument.createElement("span");
+    span.textContent = `Bonds ${used} of ${budget}`;
+    span.setAttribute("role", "img");
+    span.setAttribute("aria-label", `Bonds used, of the budget: ${used} of ${budget}`);
+    span.classList.toggle("warn", used > budget);
+    line.replaceChildren(span);
+  }
+  function createUi(doc, handlers, { confirm = (question) => doc.defaultView.confirm(question), elements = [] } = {}) {
     const $ = (id) => doc.getElementById(id);
     let game, board, toastTimer;
     $("info").addEventListener("click", (e) => {
@@ -770,10 +819,10 @@ p { margin: 0; }
     function render(view) {
       const { puzzles, index, progress, status } = view;
       board.render();
-      renderPanel($("info"), view);
-      const line = $("status");
-      line.textContent = statusText(status, puzzles[index]);
-      line.className = STATUS_CLASS[status.kind] ?? "";
+      renderPanel($("info"), { ...view, elements });
+      renderCounts($("counts"), view.counts);
+      $("status").textContent = statusText(status, puzzles[index]);
+      $("note").className = STATUS_CLASS[status.kind] ?? "";
       $("btnUndo").disabled = !view.canUndo;
       $("btnReset").disabled = !view.hasBonds && !view.canUndo;
       const solved = puzzles.filter((p) => progress.puzzles[p.id] === "solved").length;
@@ -781,7 +830,7 @@ p { margin: 0; }
       renderPuzzleList($("puzzles"), puzzles, progress, index, handlers.onOpen);
     }
     function say(result) {
-      const text = reasonText(result, game.atoms);
+      const text = reasonText(result);
       if (!text) return;
       const toast = $("toast");
       toast.textContent = text;
@@ -793,12 +842,13 @@ p { margin: 0; }
   }
 
   // src/browser.js
+  var KEY2 = ["C", "N", "O", "S", "F", "Cl", "Br", "I"].map((symbol) => ({ symbol, valence: ELEMENTS[symbol].valence }));
   var storage;
   try {
     storage = window.localStorage;
   } catch {
   }
-  startApp({ puzzles: PUZZLES, createGame, store: createProgressStore(storage), createUi: (handlers) => createUi(document, handlers) });
+  startApp({ puzzles: PUZZLES, createGame, store: createProgressStore(storage), createUi: (handlers) => createUi(document, handlers, { elements: KEY2 }) });
 })();
 </script>
 </body>
