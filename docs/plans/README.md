@@ -12,6 +12,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 | [05: Larger and harder Puzzles](05-larger-puzzles/README.md) | Done (2026-11-21) |
 | [06: Puzzles in order of difficulty, and fewer easy ones](06-difficulty/README.md) | Done (2026-11-21) |
 | [07: Hydrogens on their Atoms, and Puzzles with loops](07-hydrogens-on-atoms/README.md) | Done (2026-11-22) |
+| [08: Atoms don't show what they need, and a budget of Bonds](08-hidden-needs/README.md) | Draft |
 
 ## Backlog
 
@@ -25,6 +26,7 @@ Contains features, slices or small tasks to work on, in order of importance.
 - Puzzles with F, Cl, Br or I, which have none since plan 07: Molecules whose loops don't close on the one-Bond halogens ([decision 0024](../decisions.md#0024)). Biotin has an S in its ring.
 - A difficulty from a solver that plays like a Player: the Dotted lines its obvious moves leave open ([decision 0024](../decisions.md#0024)). Plan 07 chose its Puzzles with such a script, not kept; in the game's tests it could keep a new Puzzle from being solved by the obvious moves alone.
 - Puzzles whose layouts have Dotted lines that cross, so that the rule that Bonds can't cross ([Bond.05](../spec/puzzle.md#bond)) comes up in the game again: none of plan 07's has one ([decision 0024](../decisions.md#0024)).
+- A hint that marks the Atoms with too few or too many Bonds, for [decision 0025](../decisions.md#0025): limited per Puzzle (3?), shown on its button, with a mark in Progress for a Puzzle solved with hints.
 - Moving between Dotted lines with the arrow keys, instead of only Tab.
 - Clicking the open Puzzle in the Puzzles list opens it again, which stops the pulse of a Puzzle just solved; it could do nothing (review of step 2 of plan 03).
 - The buttons of the Puzzles list keep one width: a solved one, "11 ✓", is wider, so the buttons after it in its row are out of line with the rows above and below (review of step 4 of plan 04).
