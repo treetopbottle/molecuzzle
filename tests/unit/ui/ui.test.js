@@ -110,7 +110,7 @@ test("Panel.01, Panel.03 ‹, › and Next puzzle → open their Puzzle", () => 
 });
 
 test("Panel.01, List.02 a shown solution leaves the Puzzle unsolved", () => {
-  const { ui, game } = show(7); // 1,4-Benzoquinone
+  const { ui, game } = show(6); // 1,4-Benzoquinone
   game.showSolution();
   ui.render(view(7, game));
   expect(document.querySelector("nav").textContent).toContain("Unsolved");

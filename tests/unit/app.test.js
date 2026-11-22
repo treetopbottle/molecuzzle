@@ -25,7 +25,7 @@ function start(stored = { puzzles: {}, current: null }) {
 }
 
 test("Progress.01 it opens the stored Puzzle, or Puzzle 1 if that is missing or unknown", () => {
-  expect(start({ puzzles: {}, current: "1-4-benzoquinone" }).ui.view().index).toBe(7);
+  expect(start({ puzzles: {}, current: "1-4-benzoquinone" }).ui.view().index).toBe(6);
   expect(start({ puzzles: {}, current: "1-4-benzoquinone" }).ui.game().puzzle.id).toBe("1-4-benzoquinone");
   expect(start({ puzzles: {}, current: null }).ui.view().index).toBe(0);
   expect(start({ puzzles: {}, current: "no-such-puzzle" }).ui.view().index).toBe(0);

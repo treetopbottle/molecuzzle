@@ -13,9 +13,9 @@ test("Puzzle.08 Glycerol, with 6 Atoms and 7 Dotted lines, has 7 − 6 + 1 = 2 l
   expect([puzzle("glycerol").atoms.length, dottedLines(puzzle("glycerol"))]).toEqual([6, { dotted: 7, loops: 2 }]);
 });
 
-test("Puzzle.05 Morpholine, a ring, has 2 loops, though its solution leaves only 1 Dotted line empty: difficulty 7 + 2 × 2 = 11", () => {
+test("Puzzle.05 Morpholine, a ring, has 2 loops, but its solution leaves only 1 Dotted line empty, and that is what counts: difficulty 7 + 2 × 1 = 9", () => {
   const morpholine = puzzle("morpholine");
   expect(dottedLines(morpholine)).toEqual({ dotted: 7, loops: 2 });
   expect(morpholine.solution).toHaveLength(6);
-  expect(difficulty(morpholine)).toBe(11);
+  expect(difficulty(morpholine)).toBe(9);
 });

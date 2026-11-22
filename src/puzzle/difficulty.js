@@ -1,7 +1,6 @@
-// How hard a Puzzle is: its Dotted lines, plus twice its loops, as each loop
-// is a choice: which of its lines stays empty, or, round a ring, that none
-// does (decision 0024). For the tests and the generator; the game doesn't
-// use it.
+// How hard a Puzzle is: its Dotted lines, plus twice those its solution
+// leaves empty, as each is a Bond to rule out (decisions 0021, 0024). For the
+// tests and the generator; the game doesn't use it.
 import { candidateBonds } from "./grid.js";
 
 /**
@@ -14,8 +13,8 @@ export function dottedLines({ atoms }) {
   return { dotted, loops: dotted - atoms.length + 1 };
 }
 
-/** @param {{ atoms: [string, number, number, number?][] }} puzzle */
+/** @param {{ atoms: [string, number, number, number?][], solution: unknown[] }} puzzle */
 export function difficulty(puzzle) {
-  const { dotted, loops } = dottedLines(puzzle);
-  return dotted + 2 * loops;
+  const { dotted } = dottedLines(puzzle);
+  return dotted + 2 * (dotted - puzzle.solution.length);
 }

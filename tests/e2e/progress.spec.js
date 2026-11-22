@@ -24,7 +24,7 @@ test("Progress.05 a Puzzle in progress, Undo included, is kept after the browser
 
 test("Progress.05 a shown solution is still unsolved after a reload", async ({ page }) => {
   await start(page);
-  await openPuzzle(page, 8);
+  await openPuzzle(page, 7);
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
   await page.reload();

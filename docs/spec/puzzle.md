@@ -10,7 +10,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with a bond count over its valence minus its hydrogens (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
-- Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number of its loops: its Dotted lines minus its Atoms plus 1. Each Dotted line is a connection to look at, and each loop a choice: which of its lines stays empty, or, round a ring, that none does ([decision 0024](../decisions.md#0024)) (Puzzle.05)
+- Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number of those its solution leaves empty. Each Dotted line is a connection to look at, and each empty one a Bond to rule out; a ring that is only traced leaves none empty, so it isn't a choice ([decision 0021](../decisions.md#0021)) (Puzzle.05)
 - Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)). Each is a [Puzzle](schemas.md#puzzle) with exactly one solution, as Puzzle.01, Puzzle.04 and Puzzle.07 ask, but not in the game's order, and with any number of loops; Ammonia and Water are one Atom each, with no room for a Bond and an empty solution ([decision 0023](../decisions.md#0023)) (Puzzle.06)
 - Hydrogens: an Atom has a number of hydrogens bonded to it from the start. They aren't Atoms on the Grid, and no change touches them ([decision 0023](../decisions.md#0023)) (Puzzle.07)
 - Loops: every Puzzle after the first three has at least 2 loops ([decision 0024](../decisions.md#0024)) (Puzzle.08)
@@ -20,18 +20,18 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 | 1 | Acetonitrile | C₂H₃N | 2 |
 | 2 | Acetic acid | C₂H₄O₂ | 3 |
 | 3 | Glycine | C₂H₅NO₂ | 7 |
-| 4 | Glycerol | C₃H₈O₃ | 11 |
-| 5 | Morpholine | C₄H₉NO | 11 |
-| 6 | Cyclohexene | C₆H₁₀ | 11 |
-| 7 | Serine | C₃H₇NO₃ | 12 |
-| 8 | 1,4-Benzoquinone | C₆H₄O₂ | 13 |
+| 4 | Morpholine | C₄H₉NO | 9 |
+| 5 | Cyclohexene | C₆H₁₀ | 9 |
+| 6 | Glycerol | C₃H₈O₃ | 11 |
+| 7 | 1,4-Benzoquinone | C₆H₄O₂ | 11 |
+| 8 | Serine | C₃H₇NO₃ | 12 |
 | 9 | Malic acid | C₄H₆O₅ | 17 |
 | 10 | Tartaric acid | C₄H₆O₆ | 21 |
 | 11 | Glutamic acid | C₅H₉NO₄ | 21 |
-| 12 | Glucose | C₆H₁₂O₆ | 26 |
+| 12 | Glucose | C₆H₁₂O₆ | 24 |
 | 13 | Citric acid | C₆H₈O₇ | 27 |
-| 14 | N-Acetylglucosamine | C₈H₁₅NO₆ | 35 |
-| 15 | Biotin | C₁₀H₁₆N₂O₃S | 36 |
+| 14 | Biotin | C₁₀H₁₆N₂O₃S | 32 |
+| 15 | N-Acetylglucosamine | C₈H₁₅NO₆ | 33 |
 
 Removed Puzzles, which aren't added again, and why, in the layout each had when it was removed:
 
@@ -87,16 +87,17 @@ And its one solution is
 Example (Puzzle.04):
 
 ```
-Given Puzzle 12, Glucose, Puzzle 13, Citric acid, and Puzzle 14, N-Acetylglucosamine
+Given Puzzle 12, Glucose, Puzzle 13, Citric acid, and Puzzle 15, N-Acetylglucosamine
 Then their Grids have 3 rows and 5 columns, 6 rows and 3 columns, and 5 rows and 5 columns
 ```
 
 Example (Puzzle.05):
 
 ```
-Given Puzzle 3, Glycine, with 5 Atoms and 5 Dotted lines
-Then it has 5 − 5 + 1 = 1 loop
-And its difficulty is 5 + 2 × 1 = 7
+Given Puzzle 3, Glycine, with 5 Dotted lines, of which its solution leaves 1 empty
+Then its difficulty is 5 + 2 × 1 = 7
+Given Puzzle 4, Morpholine, a ring with 7 Dotted lines, of which its solution leaves 1 empty
+Then its difficulty is 7 + 2 × 1 = 9
 ```
 
 Example (Puzzle.06):
@@ -117,7 +118,7 @@ Then its Atoms are an O with no hydrogens, a C with 3, a C with none and an O wi
 Example (Puzzle.08):
 
 ```
-Given Puzzle 4, Glycerol, with 6 Atoms and 7 Dotted lines
+Given Puzzle 6, Glycerol, with 6 Atoms and 7 Dotted lines
 Then it has 7 − 6 + 1 = 2 loops
 ```
 
@@ -321,7 +322,7 @@ Then the status is open, with 3 Atoms
 Example (Check.03):
 
 ```
-Given Puzzle 4, Glycerol
+Given Puzzle 6, Glycerol
 When OH─OH is built apart from the rest
   OH──CH₂
   ·   │
@@ -347,7 +348,7 @@ Then the status is solved
 Example (Help.01, Help.02):
 
 ```
-Given Puzzle 7, Serine
+Given Puzzle 8, Serine
 When the solution is shown
 Then the status is revealed
 When it is reset and Serine is built

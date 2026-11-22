@@ -23,7 +23,7 @@ What the Player does and what the rules are.
 - [0021: Puzzles are in order of difficulty](#0021)
 - [0022: Removed Puzzles are kept, and not added again](#0022)
 - [0023: Hydrogens are drawn on their Atom, not placed on the Grid](#0023)
-- [0024: Puzzles have loops, and difficulty counts them](#0024)
+- [0024: Puzzles have loops](#0024)
 
 ### Technical
 
@@ -256,12 +256,13 @@ A batch of larger Puzzles is made harder by the Dotted lines its solution leaves
 <a id="0021"></a>
 ## 0021: Puzzles are in order of difficulty
 
-Accepted (2026-11-21). Partly superseded by [0024](#0024), which counts loops in place of empty Dotted lines.
+Accepted (2026-11-21). [0024](#0024) counted loops in place of empty Dotted lines; that is undone (2026-11-22, below).
 
 Every Puzzle has a difficulty, its Dotted lines plus twice those its solution leaves empty ([Puzzle.05](spec/puzzle.md#puzzle)), and the list is in that order, easiest first. A new Puzzle goes where its difficulty puts it, after those of the same difficulty, and the Puzzles after it move up a number.
 
 - **Why:** the list is a path from easy to hard ([0003](#0003)), so its order should follow one measure, not when a Puzzle was added. Each Dotted line is a connection the Player looks at; an empty one is also a Bond to rule out, and that reasoning is what makes a Puzzle hard, so it counts twice. Both are counted from the Puzzle, with no judgement, and the generator prints the difficulty of a layout it finds.
 - **Cost:** adding a Puzzle renumbers those after it, and the examples, tests and screenshots that name them. Progress is by id ([schemas](spec/schemas.md#progress)), so Players keep it, but a Player's next unsolved Puzzle can turn up among solved ones. The measure doesn't see how a Bond's order follows from its neighbours, so Puzzles of the same difficulty can feel different, and a tie goes to the Puzzle that was there first.
+- **Since 0024:** the difficulty is the Dotted lines plus twice those the solution leaves empty again. Counting loops counted a Molecule's own ring as a choice though the Player only traces it: Cyclohexanol and Cyclohexane-1,4-dione, one empty Dotted line each, were found too easy in play at 12 and 13, level with Serine and Benzoquinone. Counted by empty lines they are 10 and 11, and Morpholine and Cyclohexene drop to 9, so they now come before Glycerol; Biotin, 32, comes before N-Acetylglucosamine, 33. Puzzle.08, at least 2 loops, stays.
 - **Alternatives:** new Puzzles at the end, easiest first per batch ([0018](#0018)): stable numbers, but a hard batch is followed by an easy one, and "easiest" was a judgement. Empty Dotted lines alone: a larger Board with as few left empty isn't easier. A difficulty from the solver, such as the steps a Player needs: nearer to how hard a Puzzle feels, but new code and a measure to tune. Showing the difficulty to the Player: not asked for yet.
 
 <a id="0022"></a>
@@ -287,12 +288,12 @@ Every hydrogen is bonded to its Atom from the start. It isn't an Atom on the Gri
 - **Alternatives:** keep every H on the Grid ([0002](#0002)) and make better layouts: a lot of generator work for hydrogens that still teach nothing. Write CH₃ on the ball: compact, but it reads as a formula, not as Atoms. Show only a number of hydrogens: less to draw, but the Bonds they make aren't seen. Carry over the solved marks of the four Puzzles whose ids stay, Acetic acid, Glycine, Glycerol and Serine: their layouts changed, so the ✓ would be on a Board the Player never built, and code to read the old key would stay for four marks.
 
 <a id="0024"></a>
-## 0024: Puzzles have loops, and difficulty counts them
+## 0024: Puzzles have loops
 
-Accepted (2026-11-21)
+Accepted (2026-11-21). Its count of loops in the difficulty is undone by [0021](#0021) (2026-11-22): the difficulty counts empty Dotted lines again.
 
-A loop of Dotted lines is a choice; without one, every Dotted line has to be a Bond to join the Atoms up, and only the Bond orders are left to find. So every Puzzle after a tutorial of three has at least 2 loops ([Puzzle.08](spec/puzzle.md#puzzle)), and a Puzzle's difficulty is its Dotted lines plus twice its loops ([Puzzle.05](spec/puzzle.md#puzzle)): its Dotted lines minus its Atoms plus 1.
+A loop of Dotted lines is a choice; without one, every Dotted line has to be a Bond to join the Atoms up, and only the Bond orders are left to find. So every Puzzle after a tutorial of three has at least 2 loops ([Puzzle.08](spec/puzzle.md#puzzle)), and a Puzzle's difficulty was its Dotted lines plus twice its loops: its Dotted lines minus its Atoms plus 1.
 
 - **Why:** the Player in the prototype found the Puzzles with loops, such as citric acid, the good ones, and the ones without them a matter of connecting everything and filling in what is left. Counting loops rather than empty Dotted lines also counts the choice round a ring, where no line stays empty but each could have; for a Molecule with no ring the two are the same. The tutorial teaches single, double and triple Bonds and the first loop.
 - **Cost:** a loop that closes on an Atom with one Bond to give, such as CH₃, OH or F, is decided at once, so loops alone don't make a Puzzle hard: Threonine and Valine have 3, and in the layouts tried the obvious moves solve them. Those moves are what a Player sees without trying anything: two Atoms with one Bond each never bond; a Bond is at most what the smaller of its Atoms needs, and at most triple; each line of an Atom takes at least what the Atom needs minus what its other lines can still give, and at most what it needs minus what they must give; and a Bond rules out the lines it crosses. Whether they solve a Puzzle is checked with a script while a batch is made, not by a test, and such Puzzles are left out. That leaves the halogens with no Puzzle for now, as the Molecules tried close their loops on them, and S too, as its one candidate, Cysteine, is Serine's layout. No ring of 3 Atoms fits the Grid, as three Atoms can't each share a row or a column with both others; rings of 4, 5 and 6 can, as a Dotted line may span empty points. No Puzzle chosen has Dotted lines that cross, so for now Bonds that cross ([Bond.05](spec/puzzle.md#bond)) don't come up in the game; the rule, its message and the panel's rule on it stay, for later Puzzles whose layouts have such lines (in the backlog).
-- **Alternatives:** empty Dotted lines, as before ([0021](#0021)): the same for most Molecules, but blind to rings. A difficulty from a solver that plays like a Player, the lines its obvious moves leave open: nearer to how hard a Puzzle feels, but new code and a measure to tune; the script used to choose this set does a simple version. Loops of 1: more Puzzles fit, but many with a single loop closed on a CH₃.
+- **Alternatives:** empty Dotted lines, as before ([0021](#0021)): the same for most Molecules, but blind to rings; chosen again after play, as a ring that is only traced isn't a choice. A difficulty from a solver that plays like a Player, the lines its obvious moves leave open: nearer to how hard a Puzzle feels, but new code and a measure to tune; the script used to choose this set does a simple version. Loops of 1: more Puzzles fit, but many with a single loop closed on a CH₃.

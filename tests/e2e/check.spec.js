@@ -13,7 +13,7 @@ test("Messages.01 the status line says what is left to do: Acetic acid", async (
 });
 
 test("Messages.01 every Atom complete, but in two pieces, in orange: Glycerol with OH─OH apart", async ({ page }) => {
-  await openPuzzle(page, 4);
+  await openPuzzle(page, 6);
   await clickBond(page, "1,1", "1,2");
   await clickBond(page, "1,2", "2,2");
   await clickBond(page, "2,1", "2,2", { times: 2 });
@@ -66,12 +66,12 @@ test("Messages.01 the status line is green when solved and when revealed", async
 test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
   await openPuzzle(page, 15);
   await build(page, PUZZLES[14]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Biotin.");
+  await expect(status(page)).toHaveText("✓ Solved! It's N-Acetylglucosamine.");
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
 test("Input.04, Messages.01, Panel.01, List.01, List.02 Show solution asks first, then shows the molecule, still unsolved", async ({ page }) => {
-  await openPuzzle(page, 8);
+  await openPuzzle(page, 7);
   page.once("dialog", dialog => dialog.dismiss());
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
@@ -82,7 +82,7 @@ test("Input.04, Messages.01, Panel.01, List.01, List.02 Show solution asks first
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(status(page)).toHaveText("Here is 1,4-Benzoquinone. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
-  await expect(page.getByRole("button", { name: "Puzzle 8", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Puzzle 7", exact: true })).toBeVisible();
   await expect(page.locator("#score")).toHaveText("Solved 0 of 15");
 });
 
@@ -96,13 +96,13 @@ test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it s
 });
 
 test("Help.01, Help.02, Messages.01, Panel.01 Serine: the solution shown, then Reset, and building it marks it solved", async ({ page }) => {
-  await openPuzzle(page, 7);
+  await openPuzzle(page, 8);
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(status(page)).toHaveText("Here is Serine. Reset and build it yourself to mark it solved.");
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Reset" }).click();
-  await build(page, PUZZLES[6]);
+  await build(page, PUZZLES[7]);
   await expect(status(page)).toHaveText("✓ Solved! It's Serine.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
 });

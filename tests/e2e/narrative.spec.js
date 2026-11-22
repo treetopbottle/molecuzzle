@@ -35,7 +35,7 @@ test("First day", async ({ page }) => {
   await expect(status(page)).toHaveText("✓ Solved! It's Acetic acid.");
 
   // On Serine, a second Bond on an OH isn't allowed.
-  await openPuzzle(page, 7);
+  await openPuzzle(page, 8);
   await clickBond(page, "1,2", "2,2");
   await clickBond(page, "1,1", "1,2");
   await expect(page.getByRole("alert")).toHaveText("Oxygen already has all its bonds.");
@@ -46,12 +46,12 @@ test("First day", async ({ page }) => {
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Reset" }).click();
-  await build(page, PUZZLES[6]);
+  await build(page, PUZZLES[7]);
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
 
-  // The next day, in the same browser, the game opens on Puzzle 7, still showing Serine.
+  // The next day, in the same browser, the game opens on Puzzle 8, still showing Serine.
   await page.reload();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 7 of 15");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 8 of 15");
   await expect(status(page)).toHaveText("✓ Solved! It's Serine.");
   await expect(page.locator("#score")).toHaveText("Solved 3 of 15");
 });

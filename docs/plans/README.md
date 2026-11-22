@@ -23,7 +23,6 @@ Contains features, slices or small tasks to work on, in order of importance.
 - Show each Puzzle's difficulty to the Player, e.g. in the panel or the list ([decision 0021](../decisions.md#0021)); left out of plan 06.
 - A test that no Puzzle's layout is another's, or nearly so, turned, flipped or with other symbols of the same need, valence minus hydrogens ([decisions 0020 and 0022](../decisions.md#0022)): with the look-alikes removed, it needs no exceptions.
 - Puzzles with F, Cl, Br or I, which have none since plan 07: Molecules whose loops don't close on the one-Bond halogens ([decision 0024](../decisions.md#0024)). Biotin has an S in its ring.
-- A difficulty that doesn't count a Molecule's own ring as a choice: Cyclohexanol and Cyclohexane-1,4-dione, one empty Dotted line each, were found too easy in play at difficulty 12 and 13, though the measure counts their ring as a loop ([decision 0024](../decisions.md#0024)).
 - A difficulty from a solver that plays like a Player: the Dotted lines its obvious moves leave open ([decision 0024](../decisions.md#0024)). Plan 07 chose its Puzzles with such a script, not kept; in the game's tests it could keep a new Puzzle from being solved by the obvious moves alone.
 - Puzzles whose layouts have Dotted lines that cross, so that the rule that Bonds can't cross ([Bond.05](../spec/puzzle.md#bond)) comes up in the game again: none of plan 07's has one ([decision 0024](../decisions.md#0024)).
 - Moving between Dotted lines with the arrow keys, instead of only Tab.
