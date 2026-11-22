@@ -8,6 +8,22 @@ import { statusText, reasonText } from "./messages.js";
 
 const STATUS_CLASS = { solved: "good", revealed: "good", pieces: "warn" };
 
+/** The counts line of Board.05: the Bonds used of the budget, and the Atoms with too few and too many. */
+function renderCounts(line, { used, budget, few, many }) {
+  const part = (text, label, warn = false) => {
+    const span = line.ownerDocument.createElement("span");
+    span.textContent = text;
+    span.setAttribute("aria-label", label);
+    span.classList.toggle("warn", warn);
+    return span;
+  };
+  const sep = () => line.ownerDocument.createTextNode(" · ");
+  line.replaceChildren(
+    part(`Bonds ${used} of ${budget}`, `Bonds used, of the budget: ${used} of ${budget}`, used > budget), sep(),
+    part(`Too few: ${few}`, `Atoms with too few bonds: ${few}`), sep(),
+    part(`Too many: ${many}`, `Atoms with too many bonds: ${many}`));
+}
+
 /**
  * @param {Document} doc
  * @param {{ onChange(k: number, dir: number): void, onOpen(index: number): void,
@@ -40,12 +56,13 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
 
   /**
    * @param {{ puzzles: object[], index: number, progress: {puzzles: Record<string,string>},
-   *   status: {kind: string}, done: boolean, canUndo: boolean, hasBonds: boolean }} view
+   *   status: {kind: string}, counts: {used: number, budget: number, few: number, many: number}, done: boolean, canUndo: boolean, hasBonds: boolean }} view
    */
   function render(view) {
     const { puzzles, index, progress, status } = view;
     board.render();
     renderPanel($("info"), view);
+    renderCounts($("counts"), view.counts);
     const line = $("status");
     line.textContent = statusText(status, puzzles[index]);
     line.className = STATUS_CLASS[status.kind] ?? "";

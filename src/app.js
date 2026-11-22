@@ -53,7 +53,7 @@ export function startApp({ puzzles, createGame, store, createUi }) {
     if (status.kind === "solved" && progress.puzzles[puzzle.id] !== "solved")
       progress = store.update(p => markSolved(p, puzzle.id));
     ui.render({
-      puzzles, index, progress, status,
+      puzzles, index, progress, status, counts: game.counts(),
       done: game.done(), canUndo: game.canUndo, hasBonds: game.order.some(Boolean),
     });
   }

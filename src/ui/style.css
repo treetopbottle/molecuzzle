@@ -32,6 +32,8 @@ p { margin: 0; }
 .puzzle-list { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .puzzle-list button { min-width: 44px; padding: 6px 8px; font-size: 14px; }
 .puzzle-list button[aria-current] { border-color: var(--accent-2); box-shadow: 0 0 0 1px var(--accent-2); }
+#counts { margin-top: 12px; padding: 0 4px; font-size: 14px; color: var(--muted); }
+#counts .warn { color: var(--warn); }
 #status { background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 12px; }
 #status.good { border-color: rgba(60,224,180,.6); color: #b9f7e4; }
 #status.warn { border-color: rgba(255,179,71,.5); color: #ffe0b3; }
