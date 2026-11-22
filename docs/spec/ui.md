@@ -8,7 +8,7 @@ The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a
 
 ### Page
 
-- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it; and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
+- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the counts line ([Board.05](#board)) and the status line below it; and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
 
 Example (Page.01), Puzzle 1 at the start, and Puzzle 3 solved:
 
@@ -29,10 +29,10 @@ Example (Layout.01), on a phone:
 
 ### Board
 
-- Drawing: each Atom is a ball with its Element's symbol: O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red and I violet. Its hydrogens ([Puzzle.07](puzzle.md#puzzle)) are small white balls with an H, each on a short thin line from the Atom, on the diagonals below it and then the one above it on the left, where no Dotted line runs; they can't be clicked, and don't glow or pulse with their Atom. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
+- Drawing: each Atom is a ball with its Element's symbol: O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red and I violet. Its hydrogens ([Puzzle.07](puzzle.md#puzzle)) are small white balls with an H, each on a short thin line from the Atom, on the diagonals below it and then the one above it on the left, where no Dotted line runs; they can't be clicked, and don't pulse with their Atom. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
 - Hidden: an Atom doesn't show what it needs ([Valence.01](puzzle.md#valence)): it has no badge, and it doesn't glow when it is complete ([Valence.02](puzzle.md#valence)); the Player counts its Bonds and hydrogens against the key of [Panel.05](#panel) ([decision 0025](../decisions.md#0025)) (Board.02)
 - Solved: when the Player solves the Puzzle ([Check.04](puzzle.md#check)), the Atoms pulse, unless the browser asks for reduced motion; a Puzzle that opens solved ([Progress.06](storage.md#progress)) doesn't pulse (Board.03)
-- Counts: under the Board, above the status line, a line with "Bonds <used> of <budget>" ([Valence.03](puzzle.md#valence), [Puzzle.09](puzzle.md#puzzle)), "Too few: <f>" and "Too many: <m>", the numbers of Atoms with too few and with too many Bonds, named "Bonds used, of the budget", "Atoms with too few bonds" and "Atoms with too many bonds"; the Bonds are orange while the Player uses more than the budget, and the line is the same when the Puzzle is solved (Board.05)
+- Counts: under the Board, above the status line, a line of three parts separated by " · " in the text: "Bonds <used> of <budget>" ([Valence.03](puzzle.md#valence), [Puzzle.09](puzzle.md#puzzle)), "Too few: <f>" and "Too many: <m>", the numbers of Atoms with too few and with too many Bonds, named "Bonds used, of the budget", "Atoms with too few bonds" and "Atoms with too many bonds"; the whole first part is orange while the Player uses more than the budget, and the line is the same when the Puzzle is solved (Board.05)
 - Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>", with the Element's name (Oxygen, Nitrogen, Carbon, Sulfur, Fluorine, Chlorine, Bromine, Iodine), and ", with <h> hydrogen(s)" after the place if it has any, and no word on what it needs; each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
 
 Example (Board.01, Board.02, Board.05), Puzzle 2, Acetic acid, with C═O:
@@ -61,7 +61,7 @@ Then the line is "Bonds 0 of 4 · Too few: 4 · Too many: 0"
 When O≡C and C─OH are made
 Then it is "Bonds 4 of 4 · Too few: 1 · Too many: 1"
 When C─OH is made a double Bond, and CH₃─C is made
-Then it is "Bonds 6 of 4 · Too few: 0 · Too many: 3", the 6 in orange
+Then it is "Bonds 6 of 4 · Too few: 0 · Too many: 3", "Bonds 6 of 4" in orange
 ```
 
 ### Input

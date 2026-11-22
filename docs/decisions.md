@@ -48,7 +48,7 @@ How changes are checked and shared.
 <a id="0001"></a>
 ## 0001: A simplified valence model
 
-Accepted (2026-11-10). Its Why on the badge is superseded by [0025](#0025); the valence model stays.
+Accepted (2026-11-10). Partly superseded by [0025](#0025): its Why on the badge; the valence model stays.
 
 Each Element has one valence, the number of Bonds it needs; there are no charges, ions or lone pairs.
 

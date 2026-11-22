@@ -221,7 +221,7 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 - Stronger: stronger on a Bond makes it single to double, double to triple (Bond.02)
 - Wrap: stronger on a triple Bond removes it, whatever its Atoms have (Bond.03)
 - Over: an Atom can have more Bonds than it needs, and the Player can use more Bonds than the budget ([Puzzle.09](#puzzle)); then the Puzzle isn't solved ([Check.04](#check)) (Bond.04)
-- No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing`, the only reason a Bond isn't made (Bond.05)
+- No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing`, the only reason given when a Bond isn't made (Bond.05)
 - Weaker: weaker on a Bond makes it single to none, double to single, triple to double; on a Dotted line it does nothing (Bond.06)
 - Undo restores the Bonds as they were before the last change, up to 100 changes back in this Puzzle, since it was last reset or solved: with each change past 100, the oldest is forgotten. With nothing to undo it does nothing (Bond.08)
 - Reset removes every Bond and the undo history; with neither, it does nothing ([decision 0015](../decisions.md#0015)) (Bond.09)
@@ -242,8 +242,8 @@ Example (Bond.04):
 Given Puzzle 3, Glycine, with a Bond OH 1,1 to C 2,1
 When the Dotted line OH 1,1 to NH₂ 1,2 is made stronger
 Then there is a single Bond OH 1,1 to NH₂ 1,2, and OH needs −1
-When it is made stronger twice more
-Then it is a triple Bond, and then no Bond
+When it is made stronger three more times
+Then it is a double Bond, a triple Bond, and then no Bond
 ```
 
 Example (Bond.05), on the Grid of the Grid.02 example:

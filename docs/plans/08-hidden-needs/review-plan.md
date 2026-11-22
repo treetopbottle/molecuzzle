@@ -15,3 +15,17 @@ Commits reviewed: d40096d (spec, decision 0025, README entity) and 262c1b8 (plan
 9. **note:** Board.05 is ambiguous on what is orange, and on the " · " separators.
 10. **note:** steps 3 and 4 are large; split Board.02/04 from Board.05, and Panel.04 from Panel.05.
 11. **note:** `check.spec.js:12` and `puzzle.spec.js:24-28` are not named; they fall under "each step also changes the end-to-end tests".
+
+## Outcome
+
+1. Fixed: step 1 now holds the texts, with the tests named; the narrative's old status test goes with it.
+2. Fixed: the narrative test is in step 3, with the counts line.
+3. Fixed: `createUi` gets `elements` from `browser.js`; `counts` is in the view; the Design says the valences are written once.
+4. Fixed: Page.01 and Board.01 in `ui.md`, and the tests are named in step 2.
+5. Fixed: the Design says only the Atom's rules go; `#badge` stays.
+6. Fixed: step 6 is only the status, and `architecture.md` if it needs it.
+7. Fixed: the Bond.04 example, and "the only reason given" in Bond.05.
+8. Fixed: decision 0001 says `Partly superseded by 0025`.
+9. Fixed: the whole first part is orange; the separators are text.
+10. Fixed: steps 2 and 3 split Board.02/04 from Board.05, and steps 4 and 5 Panel.04 from Panel.05.
+11. Kept: those tests fall under the closing line of the steps, and step 1 and 2 name them now.
