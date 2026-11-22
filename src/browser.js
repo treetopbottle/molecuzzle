@@ -8,7 +8,7 @@ import { createProgressStore } from "./storage/progress.js";
 import { createUi } from "./ui/ui.js";
 
 // The Elements of the key in the panel, in its order: each with the number of Bonds it needs.
-const KEY = ["C", "N", "O", "S", "F", "Cl", "Br", "I"].map(symbol => ({ symbol, valence: ELEMENTS[symbol].valence }));
+const KEY = ["C", "N", "O", "S"].map(symbol => ({ symbol, valence: ELEMENTS[symbol].valence }));
 
 let storage;
 try { storage = window.localStorage; } catch { /* blocked: play without saving */ }
