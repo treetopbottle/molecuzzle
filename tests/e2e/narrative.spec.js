@@ -12,9 +12,9 @@ test("First day", async ({ page }) => {
   await expect(page.getByRole("group", { name: "Board, 3 by 1" })).toMatchAriaSnapshot(`
     - 'button "C 1,1 to C 2,1: no bond"'
     - 'button "C 2,1 to N 3,1: no bond"'
-    - 'img "Carbon 1,1, with 3 hydrogens: needs 1 more bond"'
-    - 'img "Carbon 2,1: needs 4 more bonds"'
-    - 'img "Nitrogen 3,1: needs 3 more bonds"'
+    - 'img "Carbon 1,1, with 3 hydrogens"'
+    - 'img "Carbon 2,1"'
+    - 'img "Nitrogen 3,1"'
   `);
   await expect(page.locator("#board .hydrogen")).toHaveCount(3);
 
@@ -23,7 +23,7 @@ test("First day", async ({ page }) => {
   await expect(status(page)).toHaveText("Not every atom has exactly its bonds yet.");
   await clickBond(page, "2,1", "3,1", { times: 3 });
   await expect(status(page)).toHaveText("✓ Solved! It's Acetonitrile.");
-  await expect(page.locator("#board .atom.ok")).toHaveCount(3);
+  await expect(page.locator("#board .atom.ok")).toHaveCount(0); // no glow
   await expect(page.getByText(PUZZLES[0].fact)).toBeVisible();
 
   // Next puzzle brings Acetic acid: the line between C and O takes two clicks.

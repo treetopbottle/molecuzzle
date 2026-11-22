@@ -48,14 +48,14 @@ describe("Board", () => {
     expect(inHue(260, 300)(color("I"))).toBe(true);
   });
 
-  test("Board.01, Board.04 names the Board, each Atom with its hydrogens and what it needs, and each dotted line", () => {
+  test("Board.01, Board.04 names the Board, each Atom with its hydrogens and no word on what it needs, and each dotted line", () => {
     createBoard(svg, createGame(aceticAcid), { onChange() {} });
     expect(svg.getAttribute("aria-label")).toBe("Board, 3 by 2");
     expect(labels(".atom")).toEqual([
-      "Oxygen 1,2: needs 2 more bonds",
-      "Carbon 2,1, with 3 hydrogens: needs 1 more bond",
-      "Carbon 2,2: needs 4 more bonds",
-      "Oxygen 3,2, with 1 hydrogen: needs 1 more bond",
+      "Oxygen 1,2",
+      "Carbon 2,1, with 3 hydrogens",
+      "Carbon 2,2",
+      "Oxygen 3,2, with 1 hydrogen",
     ]);
     expect(labels(".edge")).toEqual([
       "O 1,2 to C 2,2: no bond",
@@ -87,7 +87,7 @@ describe("Board", () => {
       expect(hue(rgb(ball.getAttribute("fill")))).toBeNull();
       expect(lightness(rgb(ball.getAttribute("fill")))).toBeGreaterThan(0.85);
       expect(h.querySelector("text").textContent).toBe("H");
-      expect(ball.classList.contains("body")).toBe(false); // it doesn't glow or pulse with its Atom
+      expect(ball.classList.contains("body")).toBe(false); // it doesn't pulse with its Atom
       expect(atom.querySelectorAll(".fixed")).toHaveLength(atom.querySelectorAll(".hydrogen").length);
     }
     expect(svg.querySelectorAll(".atom .fixed")).toHaveLength(4);
@@ -115,10 +115,10 @@ describe("Board", () => {
     click(game, "1,2", "2,2", 2);
     board.render();
     expect(labels(".atom")).toEqual([
-      "Oxygen 1,2: complete",
-      "Carbon 2,1, with 3 hydrogens: needs 1 more bond",
-      "Carbon 2,2: needs 2 more bonds",
-      "Oxygen 3,2, with 1 hydrogen: needs 1 more bond",
+      "Oxygen 1,2",
+      "Carbon 2,1, with 3 hydrogens",
+      "Carbon 2,2",
+      "Oxygen 3,2, with 1 hydrogen",
     ]);
     expect(labels(".edge")).toEqual([
       "O 1,2 to C 2,2: double bond",
@@ -140,7 +140,7 @@ describe("Board", () => {
     expect(bond.getAttribute("role")).toBe("button");
   });
 
-  test("Board.01, Board.02, Board.04 render shows Bonds, what Atoms still need, and complete Atoms", () => {
+  test("Board.01, Board.02, Board.04 render shows Bonds, and no badge or glow on an Atom, complete or not", () => {
     const game = createGame(aceticAcid);
     const board = createBoard(svg, game, { onChange() {} });
     game.change(0, 1);
@@ -148,9 +148,10 @@ describe("Board", () => {
     board.render();
     expect(edge("O 1,2 to C 2,2").getAttribute("aria-label")).toBe("O 1,2 to C 2,2: double bond");
     expect(edge("O 1,2 to C 2,2").querySelectorAll(".vis")).toHaveLength(2);
-    expect(labels(".atom")[0]).toBe("Oxygen 1,2: complete");
-    expect(svg.querySelectorAll(".atom.ok")).toHaveLength(1);
-    expect(svg.querySelectorAll(".atom .badge text")[2].textContent).toBe("2");
+    expect(labels(".atom")[0]).toBe("Oxygen 1,2"); // complete, and not said
+    expect(svg.querySelectorAll(".atom.ok")).toHaveLength(0);
+    expect(svg.querySelectorAll(".atom .badge")).toHaveLength(0);
+    expect(svg.querySelectorAll(".atom .body")).toHaveLength(4); // the pulse of Board.03 stays
   });
 
   const classes = () => ["solved", "pulse"].filter(c => svg.classList.contains(c));

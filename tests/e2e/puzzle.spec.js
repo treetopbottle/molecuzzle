@@ -21,11 +21,11 @@ test("Board.04, Panel.01, Panel.02 a puzzle starts with no Bonds and its name hi
     - 'button "N 1,2 to C 2,2: no bond"'
     - 'button "C 2,1 to C 2,2: no bond"'
     - 'button "C 2,1 to O 3,1: no bond"'
-    - 'img "Oxygen 1,1, with 1 hydrogen: needs 1 more bond"'
-    - 'img "Nitrogen 1,2, with 2 hydrogens: needs 1 more bond"'
-    - 'img "Carbon 2,1: needs 4 more bonds"'
-    - 'img "Carbon 2,2, with 2 hydrogens: needs 2 more bonds"'
-    - 'img "Oxygen 3,1: needs 2 more bonds"'
+    - 'img "Oxygen 1,1, with 1 hydrogen"'
+    - 'img "Nitrogen 1,2, with 2 hydrogens"'
+    - 'img "Carbon 2,1"'
+    - 'img "Carbon 2,2, with 2 hydrogens"'
+    - 'img "Oxygen 3,1"'
   `);
 });
 

@@ -88,10 +88,12 @@ test("Input.02, Input.03 Reset removes every Bond and the undo history", async (
   await expect(bond(page, "2,2", "3,2")).toHaveAccessibleName("C 2,2 to O 3,2: no bond");
 });
 
-test("Board.02, Board.04 Atoms show what they still need, with their hydrogens, and glow when complete", async ({ page }) => {
+test("Board.02, Board.04 Atoms are named with their hydrogens, and show nothing of what they need, also when complete", async ({ page }) => {
   await openPuzzle(page, 2); // Acetic acid
   await clickBond(page, "1,2", "2,2", { times: 2 });
-  await expect(page.getByRole("img", { name: "Carbon 2,2: needs 2 more bonds" })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Carbon 2,1, with 3 hydrogens: needs 1 more bond" })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Oxygen 1,2: complete" })).toHaveClass(/\bok\b/);
+  await expect(page.getByRole("img", { name: "Carbon 2,2", exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Carbon 2,1, with 3 hydrogens", exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Oxygen 1,2", exact: true })).not.toHaveClass(/\bok\b/);
+  await expect(page.locator("#board .atom .badge")).toHaveCount(0);
+  await expect(page.locator("#board .atom.ok")).toHaveCount(0);
 });
