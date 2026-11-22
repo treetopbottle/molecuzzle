@@ -73,7 +73,7 @@ function build(panel, elements) {
   const key = doc.createElement("div");
   key.className = "key";
   key.append(...elements.map(e => keyFigure(doc, e)));
-  panel.querySelectorAll(".rules li")[3].append(key); // the rule on valence
+  panel.querySelectorAll(".rules li")[RULES.findIndex(r => r.startsWith("Each atom needs"))].append(key); // the rule on valence
 }
 
 /**

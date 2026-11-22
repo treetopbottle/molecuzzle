@@ -1,6 +1,6 @@
 # 08: Atoms don't show what they need, and a budget of Bonds
 
-Status: Active
+Status: Done (2026-11-22)
 
 The Puzzles are too easy because every Atom shows how many Bonds it still needs and refuses more. Now an Atom shows nothing of that, any Atom can get too many Bonds, and a Puzzle has a budget, the Bonds of its solution. Under the Board a line counts the Bonds used against the budget, and the Atoms with too few and with too many Bonds; going over only means the Puzzle isn't solved. A key in the panel shows each Element's number of Bonds, so the Player can look it up ([decision 0025](../../decisions.md#0025)). A hint that marks which Atoms is left for later.
 
@@ -48,12 +48,12 @@ Interfaces that change:
 3. **The counts line.** `[DONE]` ([review](review-step-3.md)) Board.05, Page.01, and the narrative.
    - (a) Tests: `ui.test.js` (the line of the Board.05 example, the `warn` on the first span when over, an `aria-label` each, the same line when solved), `app.test.js` (`counts` in the view), `narrative.spec.js` as the narrative now reads, and the screenshot tests.
    - (b) Implementation: `app.js`, `index.html`, `ui.js`, `style.css`. Remake the screenshots that change, on a desktop and on a phone, Citric acid too.
-4. **The rules in the panel.** Panel.04.
+4. **The rules in the panel.** `[DONE]` ([review](review-step-4.md)) Panel.04.
    - (a) Tests: `panel.test.js` for the two rule texts, replacing `:79`, and the screenshots that show the panel.
    - (b) Implementation: the texts in `panel.js`. Remake `panel-mystery.png` and the `page-*.png` that change.
-5. **The key.** Panel.05.
+5. **The key.** `[DONE]` ([review](review-step-5.md)) Panel.05.
    - (a) Tests: `panel.test.js` (the key has C, N, O, S, F, Cl, Br and I, each named "<Element>: <n> bond(s)", with as many sticks as bonds, inside the rule on valence), `ui.test.js` (`elements` reaches the panel), `phone.spec.js` (it fits a phone, no sideways scrolling), and the screenshots.
    - (b) Implementation: `panel.js`, `ui.js`, `browser.js`, `style.css`. Remake the screenshots that change and look at each.
-6. **Finish.** No rule ids. `Status: Done` in the plan and the table; `docs/architecture.md` only if its text on `game.js` (the status and the reasons) or the panel is no longer right. The hint is in the backlog already.
+6. **Finish.** `[DONE]` No rule ids. `Status: Done` in the plan and the table; `docs/architecture.md` only if its text on `game.js` (the status and the reasons) or the panel is no longer right. The hint is in the backlog already.
 
 Each step also changes the end-to-end tests its change breaks, so `npm run check` passes after it; the screenshots are remade in the step that changes them.
