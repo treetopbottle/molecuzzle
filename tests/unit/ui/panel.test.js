@@ -12,7 +12,7 @@ beforeEach(() => {
 });
 
 // What the Glue gives: each Element's number of Bonds, in the order of the key.
-const elements = Object.entries({ C: 4, N: 3, O: 2, S: 2, F: 1, Cl: 1, Br: 1, I: 1 }).map(([symbol, valence]) => ({ symbol, valence }));
+const elements = Object.entries({ C: 4, N: 3, O: 2, S: 2 }).map(([symbol, valence]) => ({ symbol, valence }));
 const view = (index, { solved = [], done = false } = {}) => ({
   puzzles, index, done, elements,
   progress: { puzzles: Object.fromEntries(solved.map(id => [id, "solved"])), current: puzzles[index].id },
@@ -91,13 +91,12 @@ test("Panel.05 the key, in the rule on valence: each Element as a ball with as m
   const key = panel.querySelectorAll("ol > li:nth-child(4) figure");
   expect([...key].map(f => f.getAttribute("aria-label"))).toEqual([
     "Carbon: 4 bonds", "Nitrogen: 3 bonds", "Oxygen: 2 bonds", "Sulfur: 2 bonds",
-    "Fluorine: 1 bond", "Chlorine: 1 bond", "Bromine: 1 bond", "Iodine: 1 bond",
   ]);
-  expect([...key].map(f => f.querySelectorAll(".stick").length)).toEqual([4, 3, 2, 2, 1, 1, 1, 1]);
-  expect([...key].map(f => f.querySelector(".sym").textContent)).toEqual(["C", "N", "O", "S", "F", "Cl", "Br", "I"]);
-  expect([...key].map(f => f.querySelector(".valence").textContent)).toEqual(["4", "3", "2", "2", "1", "1", "1", "1"]);
+  expect([...key].map(f => f.querySelectorAll(".stick").length)).toEqual([4, 3, 2, 2]);
+  expect([...key].map(f => f.querySelector(".sym").textContent)).toEqual(["C", "N", "O", "S"]);
+  expect([...key].map(f => f.querySelector(".valence").textContent)).toEqual(["4", "3", "2", "2"]);
   expect([...key].every(f => f.getAttribute("role") === "img")).toBe(true);
-  expect(panel.querySelectorAll("figure")).toHaveLength(8); // only in that rule
+  expect(panel.querySelectorAll("figure")).toHaveLength(4); // only in that rule
 });
 
 test("Panel.05 the key is drawn once, and stays when the panel is rendered again", () => {
@@ -105,5 +104,5 @@ test("Panel.05 the key is drawn once, and stays when the panel is rendered again
   const first = panel.querySelector("figure");
   renderPanel(panel, view(1));
   expect(panel.querySelector("figure")).toBe(first);
-  expect(panel.querySelectorAll("figure")).toHaveLength(8);
+  expect(panel.querySelectorAll("figure")).toHaveLength(4);
 });

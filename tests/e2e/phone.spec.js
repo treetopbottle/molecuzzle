@@ -11,9 +11,9 @@ test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page }) 
 test("Panel.05 the key shows every Element's number of bonds, and fits a phone with no sideways scroll", async ({ page }) => {
   await start(page);
   const key = page.locator("#info figure");
-  await expect(key).toHaveCount(8);
+  await expect(key).toHaveCount(4);
   await expect(page.getByRole("img", { name: "Carbon: 4 bonds" })).toBeVisible();
-  await expect(page.getByRole("img", { name: "Iodine: 1 bond" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Sulfur: 2 bonds" })).toBeVisible();
   const { width } = page.viewportSize();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   const box = await key.last().boundingBox();
