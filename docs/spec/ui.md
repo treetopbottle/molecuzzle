@@ -136,7 +136,7 @@ Then the message is "Bonds can't cross."
 - Mystery: under the heading "Mystery molecule", until the Board is solved or shows the solution, the panel shows "?" and "Bond every atom to find out what it is." (Panel.02)
 - Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on the last) (Panel.03)
 - Rules: the panel lists the rules of the game, as in the screenshots; the one on valence points to the key: "Each atom needs exactly its number of bonds, as in the key below. Its small hydrogens are already bonded and count.", and a rule after it on the counts: "Under the board are the bonds you use, of the bonds the solution has, and the atoms with too few or too many. You may use more, but then it isn't solved." (Panel.04)
-- Key: after the rule on valence, a key of the Elements, C, N, O, S, F, Cl, Br and I, each as a ball drawn as on the Board with its symbol, and as many short sticks round it as its number of bonds, 4, 3, 2, 2, 1, 1, 1 and 1, with that number beside it, named "<Element>: <n> bonds" ([Valence table](puzzle.md#board)); it wraps on a phone (Panel.05)
+- Key: after the rule on valence, a key of the Elements, C, N, O, S, F, Cl, Br and I, each as a ball drawn as on the Board with its symbol, and as many short sticks round it as its number of bonds, 4, 3, 2, 2, 1, 1, 1 and 1, with that number beside it, named "<Element>: <n> bond(s)" ([table of valences](puzzle.md#board)); it gets its numbers from the Glue, and the sticks are as many as that number; it wraps on a phone (Panel.05)
 
 Example (Panel.01, Panel.02, Panel.04, Panel.05), Puzzle 2, unsolved:
 

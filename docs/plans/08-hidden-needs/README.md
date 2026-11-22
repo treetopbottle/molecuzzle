@@ -33,7 +33,7 @@ Interfaces that change:
 - `ui/board.js`: no Atom badge (`.atom .badge`) and no `.ok` in the Atoms; the name of an Atom is "<Element> <place>[, with <h> hydrogen(s)]". `style.css` loses only the Atom's rules, `.atom.ok .body`, `.atom .badge circle`, `.atom .badge text` and `.atom.ok .badge`. `#badge` and `.puzzle-nav .badge`, the Solved/Unsolved pill of the panel, stay.
 - `ui/index.html` and `ui/ui.js`: a `#counts` element between the Board and `#status`, filled by `render` from `view.counts`: three spans, "Bonds <used> of <budget>", "Too few: <few>" and "Too many: <many>", with " · " between them as text and an `aria-label` each; the first has the class `warn` when `used > budget`.
 - `ui/ui.js`, `ui/panel.js` and `browser.js`: the key needs each Element's valence, which the UI may not import from the puzzle component ([decision 0011](../../decisions.md#0011)). `browser.js` passes `elements: [{ symbol, valence }]`, from `puzzle/elements.js`, in the options of `createUi(doc, handlers, { confirm, elements })`, and `createUi` hands it to `renderPanel`. `app.js` and `startApp` don't change for it. The valences are then written once for the key and the rules, where [decision 0011](../../decisions.md#0011) had them twice.
-- `ui/panel.js`: the texts of the rules, and the key: inside the list item of the rule on valence, an inline SVG per Element of C, N, O, S, F, Cl, Br, I: the ball and symbol as in `ui/elements.js`, round it as many short sticks as the valence, evenly spaced from the top and clockwise, and the number beside it, in a `figure` named "<Element>: <n> bonds" (`role="img"`).
+- `ui/panel.js`: the texts of the rules, and the key: inside the list item of the rule on valence, an inline SVG per Element of C, N, O, S, F, Cl, Br, I: the ball and symbol as in `ui/elements.js`, round it as many short sticks as the valence, evenly spaced from the top and clockwise, and the number beside it, in a `figure` named "<Element>: <n> bond(s)" (`role="img"`).
 
 [Decision 0025](../../decisions.md#0025) is the choice that wasn't obvious: before it, `full` and the badge of each Atom were the Player's only help.
 
@@ -52,7 +52,7 @@ Interfaces that change:
    - (a) Tests: `panel.test.js` for the two rule texts, replacing `:79`, and the screenshots that show the panel.
    - (b) Implementation: the texts in `panel.js`. Remake `panel-mystery.png` and the `page-*.png` that change.
 5. **The key.** Panel.05.
-   - (a) Tests: `panel.test.js` (the key has C, N, O, S, F, Cl, Br and I, each named "<Element>: <n> bonds", with as many sticks as bonds), `ui.test.js` (`elements` reaches the panel), `phone.spec.js` (it fits a phone, no sideways scrolling), and the screenshots.
+   - (a) Tests: `panel.test.js` (the key has C, N, O, S, F, Cl, Br and I, each named "<Element>: <n> bond(s)", with as many sticks as bonds, inside the rule on valence), `ui.test.js` (`elements` reaches the panel), `phone.spec.js` (it fits a phone, no sideways scrolling), and the screenshots.
    - (b) Implementation: `panel.js`, `ui.js`, `browser.js`, `style.css`. Remake the screenshots that change and look at each.
 6. **Finish.** No rule ids. `Status: Done` in the plan and the table; `docs/architecture.md` only if its text on `game.js` (the status and the reasons) or the panel is no longer right. The hint is in the backlog already.
 
