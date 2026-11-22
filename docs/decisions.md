@@ -202,7 +202,7 @@ Progress keeps, for every Puzzle in progress, its Bonds, whether the solution wa
 <a id="0016"></a>
 ## 0016: Progress keeps its key while it only gains fields
 
-Accepted (2026-11-21). Partly superseded by [0017](#0017): the key also stays when a field holds more entries, as long as older builds still read each entry right. The key it named was `molecuzzle-v2`; [0023](#0023) changed the meaning of the Boards, so Progress moved to `molecuzzle-v3`.
+Accepted (2026-11-21). Partly superseded by [0017](#0017): the key also stays when a field holds more entries, as long as older builds still read each entry right. The key it named was `molecuzzle-v2`; [0023](#0023) changed the meaning of the Boards, so Progress moved to `molecuzzle-v3`. The next release moved it to `molecuzzle-v4`, so that solved Puzzles are not remembered.
 
 Progress stays under its key when a change only adds an optional field to it, as `boards` did ([0015](#0015)). Only a field that changes its meaning or format gets a new key.
 

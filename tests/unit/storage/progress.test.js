@@ -27,15 +27,15 @@ describe("Progress", () => {
     expect(load(storage)).toEqual({ puzzles: { acetonitrile: "solved" }, current: "acetic-acid" });
   });
 
-  test("Progress.03 kept under the key molecuzzle-v3", () => {
+  test("Progress.03 kept under the key molecuzzle-v4", () => {
     const storage = memoryStorage();
     createProgressStore(storage).update(progress => markSolved(progress, "acetonitrile"));
-    expect(STORAGE_KEY).toBe("molecuzzle-v3");
-    expect(Object.keys(storage.data)).toEqual(["molecuzzle-v3"]);
+    expect(STORAGE_KEY).toBe("molecuzzle-v4");
+    expect(Object.keys(storage.data)).toEqual(["molecuzzle-v4"]);
   });
 
-  test("Progress.03 what is stored under molecuzzle-v2, for the Puzzles with their hydrogens on the Grid, isn't read", () => {
-    const storage = memoryStorage({ "molecuzzle-v2": '{"puzzles":{"water":"solved"},"current":"glycine","boards":{"glycine":{"bonds":[[0,1,1]],"revealed":false,"undo":[[]]}}}' });
+  test("Progress.03 what is stored under molecuzzle-v3, the Progress of the previous release, isn't read", () => {
+    const storage = memoryStorage({ "molecuzzle-v3": '{"puzzles":{"water":"solved"},"current":"glycine","boards":{"glycine":{"bonds":[[0,1,1]],"revealed":false,"undo":[[]]}}}' });
     expect(load(storage)).toEqual({ puzzles: {}, current: null });
   });
 
