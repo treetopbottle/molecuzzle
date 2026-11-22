@@ -126,3 +126,12 @@ Commits reviewed: 7b2e8d0 (tests: rules, Board, storage and Glue), 53b2bcb (test
 6. **note**: `tests/e2e/puzzle.spec.js:67`. The Progress.01 example says "Puzzle 2 is open, with no Bonds", but the test checks only the counter, the solved button and what is stored. This was already so before this step.
 
 No must-fix findings.
+
+## Outcome
+
+1. Fixed in 90b4a18: "Cyclohexanol is turned into adipic acid, one of the two building blocks of nylon 6,6."
+2. Fixed in 90b4a18: "turns it colourless".
+3. Fixed in 90b4a18: each phone test checks its Board's name, "Board, 3 by 5" and "Board, 6 by 3".
+4. Kept: the Board and its status line fit at 1280×800, and Layout.01 allows the page to scroll up and down by a few pixels.
+5. Kept: a screenshot of Glucose at 390×844, taken by hand and not kept, shows each small H readable, if small; the hydrogens can't be tapped.
+6. Fixed in 90b4a18: the test checks that Puzzle 2 opens with no Bonds, by its status line.
