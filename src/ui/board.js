@@ -7,7 +7,7 @@ export const CELL = 84, PAD = 46, SCALE = 1.25, HIT = 22;
 const ORDER_NAMES = ["no bond", "single bond", "double bond", "triple bond"];
 const OFFSETS = [[], [0], [-4.5, 4.5], [-8, 0, 8]];
 // Where an Atom's hydrogens go: on the diagonals below-left, below-right and
-// above-left, where no Dotted line runs; the badge keeps the top right.
+// above-left, where no Dotted line runs.
 const HYDROGENS = [[-1, 1], [1, 1], [-1, -1]], H_R = 8.5, H_AT = 28;
 
 function el(tag, attrs, parent) {
@@ -72,10 +72,7 @@ export function createBoard(svg, game, { onChange }) {
     el("circle", { class: "shine", r: E.r * .42, cx: -E.r * .32, cy: -E.r * .36 }, g);
     const t = el("text", { class: "sym", "text-anchor": "middle", "dominant-baseline": "central", fill: E.text, y: 1 }, g);
     t.textContent = a.el;
-    const badge = el("g", { class: "badge", transform: `translate(${E.r * .78},${-E.r * .78})` }, g);
-    el("circle", { r: 9 }, badge);
-    const count = el("text", { "text-anchor": "middle", "dominant-baseline": "central", y: .5 }, badge);
-    return { g, count };
+    return { g };
   });
 
   function render() {
@@ -92,11 +89,9 @@ export function createBoard(svg, game, { onChange }) {
       g.setAttribute("aria-label", `${A.el} ${place(A)} to ${B.el} ${place(B)}: ${ORDER_NAMES[o]}`);
     });
     atoms.forEach((a, i) => {
-      const left = game.remaining(i), { g, count } = atomEls[i];
-      g.classList.toggle("ok", left === 0);
-      count.textContent = left;
+      const { g } = atomEls[i];
       const hydrogens = a.h ? `, with ${a.h} hydrogen${a.h > 1 ? "s" : ""}` : "";
-      g.setAttribute("aria-label", `${ELEMENTS[a.el].name} ${place(a)}${hydrogens}: ${left ? `needs ${left} more bond${left > 1 ? "s" : ""}` : "complete"}`);
+      g.setAttribute("aria-label", `${ELEMENTS[a.el].name} ${place(a)}${hydrogens}`);
     });
     const solved = game.status().kind === "solved";
     svg.classList.toggle("solved", solved);

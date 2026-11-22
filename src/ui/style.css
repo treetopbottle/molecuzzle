@@ -47,16 +47,12 @@ p { margin: 0; }
 .edge:hover .vis, .edge:focus-visible .vis { stroke: #fff; }
 .edge:focus-visible .hit { fill: rgba(125,211,255,.14); }
 .atom { pointer-events: none; }
-.atom .body { stroke-width: 2; transition: filter .2s; }
+.atom .body { stroke-width: 2; }
 .atom .shine { fill: #fff; opacity: .22; }
 .atom .sym { font-weight: 700; font-size: 16px; }
 .atom .fixed { stroke: rgba(201,211,230,.55); stroke-width: 1.6; }
 .atom .hydrogen circle { stroke-width: 1.2; }
 .atom .hydrogen text { font-size: 9px; font-weight: 700; }
-.atom.ok .body { filter: drop-shadow(0 0 5px rgba(60,224,180,.8)); }
-.atom .badge circle { fill: var(--warn); stroke: #3a2600; }
-.atom .badge text { font-size: 11px; font-weight: 700; fill: #3a2600; }
-.atom.ok .badge { display: none; }
 .pulse .atom .body { animation: pulse .55s ease-in-out 3; transform-box: fill-box; transform-origin: center; }
 @keyframes pulse { 50% { transform: scale(1.2); } }
 @media (prefers-reduced-motion: reduce) { .pulse .atom .body { animation: none; } }
