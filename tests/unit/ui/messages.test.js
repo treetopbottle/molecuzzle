@@ -13,9 +13,8 @@ test("Messages.01 the status line says the text of each status", () => {
 });
 
 test("Messages.02 a Bond that isn't made says why: only that Bonds can't cross", () => {
-  const atoms = ["H", "O", "N", "C"].map(el => ({ el, r: 0, c: 0 }));
-  expect(reasonText({ changed: false, reason: "full", atom: 1 }, atoms)).toBeNull();
-  expect(reasonText({ changed: false, reason: "crossing" }, atoms)).toBe("Bonds can't cross.");
-  expect(reasonText({ changed: false }, atoms)).toBeNull();
-  expect(reasonText({ changed: true }, atoms)).toBeNull();
+  expect(reasonText({ changed: false, reason: "full", atom: 1 })).toBeNull();
+  expect(reasonText({ changed: false, reason: "crossing" })).toBe("Bonds can't cross.");
+  expect(reasonText({ changed: false })).toBeNull();
+  expect(reasonText({ changed: true })).toBeNull();
 });

@@ -58,7 +58,7 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
 
   /** Shows for a moment why a change made no Bond, if it has a reason. */
   function say(result) {
-    const text = reasonText(result, game.atoms);
+    const text = reasonText(result);
     if (!text) return;
     const toast = $("toast");
     toast.textContent = text;

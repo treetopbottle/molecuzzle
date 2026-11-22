@@ -13,7 +13,7 @@ export function statusText(status, puzzle) {
 }
 
 /** Why a Bond wasn't made, for a result of game.change(), or null if there is no reason to give. */
-export function reasonText(result, atoms) {
+export function reasonText(result) {
   switch (result.reason) {
     case "crossing": return "Bonds can't cross.";
     default: return null;
