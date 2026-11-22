@@ -299,7 +299,7 @@ Then the Board is [[0, 1, 1]]
 
 - Needs: each Atom needs its Element's valence, in the table above, minus its hydrogens ([Puzzle.07](#puzzle)), minus its bond count; below 0 it has too many Bonds (Valence.01)
 - Complete: an Atom that needs none is complete (Valence.02)
-- Count: the Atoms with too few Bonds, those that need more than 0, and the Atoms with too many, those that need less than 0; and the Bonds used, the sum of all bond counts halved, that is the sum of the orders of the Bonds (Valence.03)
+- Count: the Atoms with too few Bonds, those that need more than 0, and the Atoms with too many, those that need less than 0; and the Bonds used, the sum of all bond counts halved, that is the sum of the orders of the Bonds; the UI shows only the Bonds used ([decision 0025](../decisions.md#0025)) (Valence.03)
 
 Example:
 
