@@ -63,3 +63,17 @@ Commits reviewed: the work of plan 07 up to d66838b ("docs: move the leftovers o
 9. **note**: `docs/decisions.md:261`, `:264` (0021) and `docs/spec/puzzle.md:9`. A tie goes to "the Puzzle that was there first", or "after those of the same difficulty". Neither says how new Puzzles of one batch with the same difficulty are ordered among themselves: Morpholine and Cyclohexene at 11, Cyclohexane-1,4-dione and 1,4-Benzoquinone at 13, Tartaric and Glutamic acid at 21. The order follows the plan's table, which is fine, but nothing makes it a rule. 0018 had "easiest first among themselves".
 
 No must-fix findings.
+
+## Outcome
+
+1. Fixed in 167e058: 0020's note says "the same valence" now means the same need, valence minus hydrogens, with Morpholine and 1,4-Dioxane; the backlog item says the same.
+2. Fixed in 167e058: 0023's Alternatives give the solved marks of the four ids that stay, and why they don't carry over.
+3. Fixed in 167e058: 0024's Cost says no Puzzle has crossing lines, and that the rule, its message and the panel's rule stay for later Puzzles; a backlog item asks for such Puzzles.
+4. Fixed in 167e058: 0019 has a note on what is from before 0023 and 0024, and what still holds.
+5. Fixed in 167e058: 0022's note says why a Molecule removed for its layout stays barred, and how one is added again.
+6. Fixed in 167e058: 0022's note says its Cost's numbers are from before plan 07.
+7. Fixed in 167e058: 0024 says "in the layouts tried", as the spec does.
+8. Fixed in 167e058: "The key it named".
+9. Kept: within one batch, Puzzles of the same difficulty follow the plan's table, which is reviewed with the plan; a rule for it can come with the next batch that needs one.
+
+Only docs changed.

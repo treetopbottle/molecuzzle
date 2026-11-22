@@ -30,3 +30,7 @@ Commits reviewed: 90b4a18 ("fix: Cyclohexanol's and Cyclohexene's facts say only
 1. **note**: `docs/plans/07-hydrogens-on-atoms/README.md:83`. dac0d47 marked step 7 `[DONE]` linking only `review-step-7.md`, before this second review. Step 1 links both of its reviews, "[review](review-step-1.md), [2](review-step-1-2.md)". Step 7 should link this one too once it is written.
 
 No must-fix or should-fix findings.
+
+## Outcome
+
+1. Fixed in the commit that adds this Outcome: step 7 links both of its reviews.

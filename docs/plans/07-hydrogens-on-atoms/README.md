@@ -1,6 +1,6 @@
 # 07: Hydrogens on their Atoms, and Puzzles with loops
 
-Status: Active
+Status: Done (2026-11-22), with a [review of the decisions](review-decisions.md)
 
 The hydrogens leave the Grid: each Atom has its hydrogens bonded from the start, drawn small beside it, and needs its valence minus them in Bonds to other Atoms ([decision 0023](../../decisions.md#0023)). The Board is then the Molecule's skeleton, and the Puzzles are chosen for their loops of Dotted lines, the choices a Player has to make; the difficulty counts them ([decision 0024](../../decisions.md#0024)). Fifteen Puzzles, from Acetonitrile to Citric acid, most of them rings or acids; sixteen of today's twenty are removed, too easy without their hydrogens. The prototype `prototypes/implicit-hydrogens.html` tried it first.
 
@@ -87,6 +87,6 @@ The candidates left out whose reason depends on their layout, with the Bonds tri
 6. **Progress under a new key.** `[DONE]` ([review](review-step-6.md)) Progress.03.
    - (a) Tests: in `tests/unit/storage/progress.test.js`, the key is `molecuzzle-v3`, and what is stored under `molecuzzle-v2` isn't read.
    - (b) Implementation: `STORAGE_KEY`.
-7. **The new Puzzles.** `[DONE]` ([review](review-step-7.md)) Puzzle.01, Puzzle.04, Puzzle.05, Puzzle.06, Puzzle.07, Puzzle.08, and the examples in Scope.
+7. **The new Puzzles.** `[DONE]` ([review](review-step-7.md), [2](review-step-7-2.md)) Puzzle.01, Puzzle.04, Puzzle.05, Puzzle.06, Puzzle.07, Puzzle.08, and the examples in Scope.
    - (a) Tests, in three commits. First the unit tests of the rules, the storage and the Glue on the new Puzzles, as the spec's examples now are (`game.test.js`, `app.test.js`, `ui.test.js`, `board.test.js`, `draw.test.js`, `difficulty.test.js`, with the made-up Puzzles of steps 1, 2, 4 and 5 now read from `puzzles.js` and its Water test gone, the Bond.03 example on Acetonitrile, and the Progress.03 example in `progress.test.js`); the Grid.02 and Bond.05 examples on the made-up Grid. Then `puzzles.test.js` (the table, the hydrogens of the formula, carried to the solver, Puzzle.04, Puzzle.07, Puzzle.08) and `removed.test.js` (the 24, by id and formula only). Then the end-to-end tests, the narrative and the screenshot tests (`board-glucose.png` in place of `board-halothane.png`).
    - (b) Implementation: `puzzles.js`, `removed.js` and the Puzzle schema. Remake every screenshot that changes, all but `actions.png`, and look at each against ui.md: the hydrogens, which don't glow or pulse, the badge and the glow on the new Boards, and Glucose and Citric acid on a phone. The step is large but mechanical; its review checks the examples one by one.
