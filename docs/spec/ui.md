@@ -30,26 +30,38 @@ Example (Layout.01), on a phone:
 ### Board
 
 - Drawing: each Atom is a ball with its Element's symbol: O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red and I violet. Its hydrogens ([Puzzle.07](puzzle.md#puzzle)) are small white balls with an H, each on a short thin line from the Atom, on the diagonals below it and then the one above it on the left, where no Dotted line runs; they can't be clicked, and don't glow or pulse with their Atom. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
-- Needs: each Atom that needs Bonds ([Valence.01](puzzle.md#valence)) shows an orange badge with how many; a complete Atom ([Valence.02](puzzle.md#valence)) glows and has no badge (Board.02)
+- Hidden: an Atom doesn't show what it needs ([Valence.01](puzzle.md#valence)): it has no badge, and it doesn't glow when it is complete ([Valence.02](puzzle.md#valence)); the Player counts its Bonds and hydrogens against the key of [Panel.05](#panel) ([decision 0025](../decisions.md#0025)) (Board.02)
 - Solved: when the Player solves the Puzzle ([Check.04](puzzle.md#check)), the Atoms pulse, unless the browser asks for reduced motion; a Puzzle that opens solved ([Progress.06](storage.md#progress)) doesn't pulse (Board.03)
-- Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>: needs <n> more bond(s)" or "<Element> <place>: complete", with the Element's name (Oxygen, Nitrogen, Carbon, Sulfur, Fluorine, Chlorine, Bromine, Iodine), and ", with <h> hydrogen(s)" after the place if it has any; each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
+- Counts: under the Board, above the status line, a line with "Bonds <used> of <budget>" ([Valence.03](puzzle.md#valence), [Puzzle.09](puzzle.md#puzzle)), "Too few: <f>" and "Too many: <m>", the numbers of Atoms with too few and with too many Bonds, named "Bonds used, of the budget", "Atoms with too few bonds" and "Atoms with too many bonds"; the Bonds are orange while the Player uses more than the budget, and the line is the same when the Puzzle is solved (Board.05)
+- Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>", with the Element's name (Oxygen, Nitrogen, Carbon, Sulfur, Fluorine, Chlorine, Bromine, Iodine), and ", with <h> hydrogen(s)" after the place if it has any, and no word on what it needs; each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
 
-Example (Board.01, Board.02), Puzzle 2, Acetic acid, with C═O:
+Example (Board.01, Board.02, Board.05), Puzzle 2, Acetic acid, with C═O:
 
 ![The Board of Acetic acid with a double Bond from C to O](screenshots/board.png)
 
-Example (Board.01, Board.02), Puzzle 12, Glucose, with no Bonds:
+Example (Board.01, Board.02, Board.05), Puzzle 12, Glucose, with no Bonds:
 
 ![The Board of Glucose, its C and O Atoms with their hydrogens](screenshots/board-glucose.png)
 
-Example (Board.04):
+Example (Board.02, Board.04):
 
 ```
 Given Puzzle 2, Acetic acid, with C═O
-Then the Atoms are "Oxygen 1,2: complete", "Carbon 2,1, with 3 hydrogens: needs 1 more bond",
-  "Carbon 2,2: needs 2 more bonds" and "Oxygen 3,2, with 1 hydrogen: needs 1 more bond"
+Then the Atoms are "Oxygen 1,2", "Carbon 2,1, with 3 hydrogens", "Carbon 2,2" and "Oxygen 3,2, with 1 hydrogen"
+And no Atom has a badge or glows
 And the Dotted lines and Bonds are "O 1,2 to C 2,2: double bond", "C 2,1 to C 2,2: no bond"
   and "C 2,2 to O 3,2: no bond"
+```
+
+Example (Board.05), Puzzle 2, Acetic acid, budget 4:
+
+```
+Given no Bonds
+Then the line is "Bonds 0 of 4 · Too few: 4 · Too many: 0"
+When O≡C and C─OH are made
+Then it is "Bonds 4 of 4 · Too few: 1 · Too many: 1"
+When C─OH is made a double Bond, and CH₃─C is made
+Then it is "Bonds 6 of 4 · Too few: 0 · Too many: 3", the 6 in orange
 ```
 
 ### Input
@@ -89,12 +101,12 @@ Example (Input.03), with Bonds and something to undo:
 ### Messages
 
 - Status: after every change, the status line below the Board says, for each status ([Check](puzzle.md#check), [Help](puzzle.md#help)), the text in the table below; solved and revealed in green, pieces in orange (Messages.01)
-- No Bond: when a Bond isn't made, a message shows for a moment: "<Element> already has all its bonds." for `full` ([Bond.04](puzzle.md#bond)), with the Element's name, and "Bonds can't cross." for `crossing` ([Bond.05](puzzle.md#bond)) (Messages.02)
+- No Bond: when a Bond isn't made, a message shows for a moment: "Bonds can't cross." for `crossing` ([Bond.05](puzzle.md#bond)) (Messages.02)
 
 | Status | Text |
 |---|---|
 | empty | Click a dotted line between two atoms to bond them. |
-| open | <N> atom(s) still need(s) bonds. |
+| open | Not every atom has exactly its bonds yet. |
 | pieces | Every atom has its bonds, but they form more than one molecule. Everything must join up. |
 | solved | ✓ Solved! It's <name>. |
 | revealed | Here is <name>. Reset and build it yourself to mark it solved. |
@@ -105,15 +117,15 @@ Example (Messages.01):
 Given Puzzle 2, Acetic acid, with no Bonds
 Then the status line is "Click a dotted line between two atoms to bond them."
 When the Player bonds CH₃ 2,1 to C 2,2
-Then it is "3 atoms still need bonds."
+Then it is "Not every atom has exactly its bonds yet."
 ```
 
 Example (Messages.02):
 
 ```
-Given Puzzle 3, Glycine, with a Bond OH 1,1 to C 2,1
-When the Player clicks the Dotted line OH 1,1 to NH₂ 1,2
-Then the message is "Oxygen already has all its bonds."
+Given the Grid of the Grid.02 example, a made-up one, with a Bond CH₂ 2,1 to CH₂ 2,3
+When the Player clicks the Dotted line O 1,2 to O 3,2
+Then the message is "Bonds can't cross."
 ```
 
 ## Panel
@@ -123,9 +135,10 @@ Then the message is "Oxygen already has all its bonds."
 - Puzzle: "Puzzle <n> of <N>" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on the last. Next to it, "Unsolved" or "✓ Solved" (Panel.01)
 - Mystery: under the heading "Mystery molecule", until the Board is solved or shows the solution, the panel shows "?" and "Bond every atom to find out what it is." (Panel.02)
 - Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on the last) (Panel.03)
-- Rules: the panel lists the rules of the game, as in the screenshots; the one on valence names every Element's, each symbol on one line with its number: "Each atom needs exactly its number of bonds: C 4, N 3, O and S 2, F, Cl, Br and I 1. Its small hydrogens are already bonded and count; the orange badge shows how many it still needs." (Panel.04)
+- Rules: the panel lists the rules of the game, as in the screenshots; the one on valence points to the key: "Each atom needs exactly its number of bonds, as in the key below. Its small hydrogens are already bonded and count.", and a rule after it on the counts: "Under the board are the bonds you use, of the bonds the solution has, and the atoms with too few or too many. You may use more, but then it isn't solved." (Panel.04)
+- Key: after the rule on valence, a key of the Elements, C, N, O, S, F, Cl, Br and I, each as a ball drawn as on the Board with its symbol, and as many short sticks round it as its number of bonds, 4, 3, 2, 2, 1, 1, 1 and 1, with that number beside it, named "<Element>: <n> bonds" ([Valence table](puzzle.md#board)); it wraps on a phone (Panel.05)
 
-Example (Panel.01, Panel.02, Panel.04), Puzzle 2, unsolved:
+Example (Panel.01, Panel.02, Panel.04, Panel.05), Puzzle 2, unsolved:
 
 ![The panel of Puzzle 2, a mystery molecule](screenshots/panel-mystery.png)
 

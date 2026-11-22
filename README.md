@@ -27,6 +27,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
 - Grid: the rows and columns of points the Atoms of a Puzzle sit on; Glycine's Grid of 3 rows and 2 columns
 - Dotted line: where a Bond can go, from an Atom to the nearest Atom in the same row or column; the dotted line from OH 1,1 to NH₂ 1,2 in Glycine
 - Board: a Puzzle being played, with the Bonds the Player has made; Acetic acid with only C═O
+- Budget: the number of Bonds the solution of a Puzzle makes, a double Bond counting 2; the Player may use more, but then the Puzzle isn't solved; Acetic acid, 4
 - Bond: a link along a Dotted line between two Atoms, single, double or triple; the C=O double Bond in Acetic acid
 - Progress: which Puzzles are solved, the open Puzzle, and the Boards of Puzzles in progress or solved; stored in the browser
 

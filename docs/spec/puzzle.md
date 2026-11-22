@@ -8,12 +8,13 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 - Puzzles: there are 15, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and a new Puzzle after those of the same difficulty ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms and hydrogens of its formula, each Atom at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
-- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with a bond count over its valence minus its hydrogens (Puzzle.03)
+- Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, or Bonds that cross; an Atom with more Bonds than it needs is fine ([decision 0025](../decisions.md#0025)) (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
 - Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number of those its solution leaves empty. Each Dotted line is a connection to look at, and each empty one a Bond to rule out; a ring that is only traced leaves none empty, so it isn't a choice ([decision 0021](../decisions.md#0021)) (Puzzle.05)
 - Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)). Each is a [Puzzle](schemas.md#puzzle) with exactly one solution, as Puzzle.01, Puzzle.04 and Puzzle.07 ask, but not in the game's order, and with any number of loops; Ammonia and Water are one Atom each, with no room for a Bond and an empty solution ([decision 0023](../decisions.md#0023)) (Puzzle.06)
 - Hydrogens: an Atom has a number of hydrogens bonded to it from the start. They aren't Atoms on the Grid, and no change touches them ([decision 0023](../decisions.md#0023)) (Puzzle.07)
 - Loops: every Puzzle after the first three has at least 2 loops ([decision 0024](../decisions.md#0024)) (Puzzle.08)
+- Budget: a Puzzle's budget is the number of Bonds its solution makes, a double Bond counting 2 and a triple 3: half of what its Atoms need together. It isn't stored, and it is not a limit: the Player can use more ([decision 0025](../decisions.md#0025)) (Puzzle.09)
 
 | # | Molecule | Formula | Difficulty |
 |---|---|---|---|
@@ -140,6 +141,13 @@ Given the Board [[0, 2, 1]] instead, which isn't on a Dotted line
 Then it starts with no Bonds, and nothing to undo
 ```
 
+Example (Puzzle.09):
+
+```
+Given Puzzle 2, Acetic acid, whose solution is C═O, CH₃─C and C─OH
+Then its budget is 2 + 1 + 1 = 4, half of 2 + 1 + 4 + 1 = 8, what its Atoms need
+```
+
 Example (Generate.01):
 
 ```
@@ -172,7 +180,7 @@ Then it stops with "can't read CH3-Xx"
 | N | 3 |
 | C | 4 |
 
-H is only ever a hydrogen on an Atom ([Puzzle.07](#puzzle)). An Atom's bond count is the sum of its Bonds: single 1, double 2, triple 3. It has room for its valence, minus its hydrogens, minus its bond count: what it still needs ([Valence.01](#valence)).
+H is only ever a hydrogen on an Atom ([Puzzle.07](#puzzle)). An Atom's bond count is the sum of its Bonds: single 1, double 2, triple 3. It needs its valence, minus its hydrogens, minus its bond count, which is below 0 when it has too many ([Valence.01](#valence)).
 
 ### Grid
 
@@ -211,9 +219,9 @@ A change makes a Dotted line or Bond one stronger or one weaker.
 
 - Bond: stronger on a Dotted line bonds its Atoms with a single Bond (Bond.01)
 - Stronger: stronger on a Bond makes it single to double, double to triple (Bond.02)
-- Wrap: stronger on a triple Bond, or on a Bond one of whose Atoms has no room, removes it (Bond.03)
-- Full: stronger on a Dotted line where an Atom has no room makes no Bond; the reason is `full`, with that Atom (Bond.04)
-- No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing` (Bond.05)
+- Wrap: stronger on a triple Bond removes it, whatever its Atoms have (Bond.03)
+- Over: an Atom can have more Bonds than it needs, and the Player can use more Bonds than the budget ([Puzzle.09](#puzzle)); then the Puzzle isn't solved ([Check.04](#check)) (Bond.04)
+- No crossing: stronger on a Dotted line that crosses a Bond makes no Bond; the reason is `crossing`, the only reason a Bond isn't made (Bond.05)
 - Weaker: weaker on a Bond makes it single to none, double to single, triple to double; on a Dotted line it does nothing (Bond.06)
 - Undo restores the Bonds as they were before the last change, up to 100 changes back in this Puzzle, since it was last reset or solved: with each change past 100, the oldest is forgotten. With nothing to undo it does nothing (Bond.08)
 - Reset removes every Bond and the undo history; with neither, it does nothing ([decision 0015](../decisions.md#0015)) (Bond.09)
@@ -233,7 +241,9 @@ Example (Bond.04):
 ```
 Given Puzzle 3, Glycine, with a Bond OH 1,1 to C 2,1
 When the Dotted line OH 1,1 to NH₂ 1,2 is made stronger
-Then no Bond is made, and the reason is full, with OH 1,1
+Then there is a single Bond OH 1,1 to NH₂ 1,2, and OH needs −1
+When it is made stronger twice more
+Then it is a triple Bond, and then no Bond
 ```
 
 Example (Bond.05), on the Grid of the Grid.02 example:
@@ -287,8 +297,9 @@ Then the Board is [[0, 1, 1]]
 
 ### Valence
 
-- Needs: each Atom needs its Element's valence, in the table above, minus its hydrogens ([Puzzle.07](#puzzle)), minus its bond count (Valence.01)
+- Needs: each Atom needs its Element's valence, in the table above, minus its hydrogens ([Puzzle.07](#puzzle)), minus its bond count; below 0 it has too many Bonds (Valence.01)
 - Complete: an Atom that needs none is complete (Valence.02)
+- Count: the Atoms with too few Bonds, those that need more than 0, and the Atoms with too many, those that need less than 0; and the Bonds used, the sum of all bond counts halved, that is the sum of the orders of the Bonds (Valence.03)
 
 Example:
 
@@ -299,6 +310,16 @@ When C═O is made
 Then C needs 2, and O is complete
 ```
 
+Example (Valence.03), Puzzle 2, Acetic acid, with a budget of 4 ([Puzzle.09](#puzzle)):
+
+```
+Given Puzzle 2, Acetic acid, with no Bonds
+Then 4 Atoms have too few Bonds, none has too many, and 0 Bonds are used
+When O≡C and C─OH are made
+Then O needs −1, CH₃ needs 1, and C and OH are complete
+And 1 Atom has too few Bonds, 1 has too many, and 4 Bonds are used, as many as the budget, and it isn't solved
+```
+
 ## Checking
 
 ### Check
@@ -306,9 +327,9 @@ Then C needs 2, and O is complete
 After every change to the Bonds, the status is the first that applies:
 
 - Empty: no Bonds (Check.01)
-- Open: some Atoms need Bonds, with how many Atoms (Check.02)
+- Open: some Atom has too few Bonds or too many ([Valence.03](#valence)), with how many of each (Check.02)
 - Pieces: every Atom complete, but in more than one piece (Check.03)
-- Solved: every Atom complete, in one piece; the Puzzle is solved (Check.04)
+- Solved: every Atom complete, in one piece; the Puzzle is solved, and so the Bonds used are the budget ([Puzzle.09](#puzzle)) (Check.04)
 
 Example (Check.01, Check.02):
 
@@ -316,7 +337,7 @@ Example (Check.01, Check.02):
 Given Puzzle 2, Acetic acid, with no Bonds
 Then the status is empty
 When CH₃ 2,1 to C 2,2 is bonded
-Then the status is open, with 3 Atoms
+Then the status is open, with 3 Atoms with too few Bonds and none with too many
 ```
 
 Example (Check.03):

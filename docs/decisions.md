@@ -24,6 +24,7 @@ What the Player does and what the rules are.
 - [0022: Removed Puzzles are kept, and not added again](#0022)
 - [0023: Hydrogens are drawn on their Atom, not placed on the Grid](#0023)
 - [0024: Puzzles have loops](#0024)
+- [0025: Atoms don't show what they need, and may have too many Bonds](#0025)
 
 ### Technical
 
@@ -47,7 +48,7 @@ How changes are checked and shared.
 <a id="0001"></a>
 ## 0001: A simplified valence model
 
-Accepted (2026-11-10)
+Accepted (2026-11-10). Its Why on the badge is superseded by [0025](#0025); the valence model stays.
 
 Each Element has one valence, the number of Bonds it needs; there are no charges, ions or lone pairs.
 
@@ -297,3 +298,14 @@ A loop of Dotted lines is a choice; without one, every Dotted line has to be a B
 - **Why:** the Player in the prototype found the Puzzles with loops, such as citric acid, the good ones, and the ones without them a matter of connecting everything and filling in what is left. Counting loops rather than empty Dotted lines also counts the choice round a ring, where no line stays empty but each could have; for a Molecule with no ring the two are the same. The tutorial teaches single, double and triple Bonds and the first loop.
 - **Cost:** a loop that closes on an Atom with one Bond to give, such as CH₃, OH or F, is decided at once, so loops alone don't make a Puzzle hard: Threonine and Valine have 3, and in the layouts tried the obvious moves solve them. Those moves are what a Player sees without trying anything: two Atoms with one Bond each never bond; a Bond is at most what the smaller of its Atoms needs, and at most triple; each line of an Atom takes at least what the Atom needs minus what its other lines can still give, and at most what it needs minus what they must give; and a Bond rules out the lines it crosses. Whether they solve a Puzzle is checked with a script while a batch is made, not by a test, and such Puzzles are left out. That leaves the halogens with no Puzzle for now, as the Molecules tried close their loops on them, and S too, as its one candidate, Cysteine, is Serine's layout. No ring of 3 Atoms fits the Grid, as three Atoms can't each share a row or a column with both others; rings of 4, 5 and 6 can, as a Dotted line may span empty points. No Puzzle chosen has Dotted lines that cross, so for now Bonds that cross ([Bond.05](spec/puzzle.md#bond)) don't come up in the game; the rule, its message and the panel's rule on it stay, for later Puzzles whose layouts have such lines (in the backlog).
 - **Alternatives:** empty Dotted lines, as before ([0021](#0021)): the same for most Molecules, but blind to rings; chosen again after play, as a ring that is only traced isn't a choice. A difficulty from a solver that plays like a Player, the lines its obvious moves leave open: nearer to how hard a Puzzle feels, but new code and a measure to tune; the script used to choose this set does a simple version. Loops of 1: more Puzzles fit, but many with a single loop closed on a CH₃.
+
+<a id="0025"></a>
+## 0025: Atoms don't show what they need, and may have too many Bonds
+
+Accepted (2026-11-22)
+
+An Atom shows no badge and doesn't glow when it is complete, and a Bond can be made on an Atom that has all its Bonds, so it has too many. A Puzzle has a budget, the Bonds of its solution, shown with the numbers of Atoms with too few and with too many Bonds; going over it only means the Puzzle isn't solved ([Board.02](spec/ui.md#board), [Board.05](spec/ui.md#board), [Bond.04](spec/puzzle.md#bond), [Puzzle.09](spec/puzzle.md#puzzle)). A key in the panel shows each Element's number of Bonds ([Panel.05](spec/ui.md#panel)).
+
+- **Why:** with a badge on every Atom and a refusal where one is full, the Player never had to count: the Puzzle was nearly always solved by following the badges, and Players found the Puzzles too easy. Now the Player counts hydrogens and Bonds, and has to try: an extra Bond where it is surely needed, before the one that isn't is taken away. Letting the Player go over, instead of refusing, allows that, and cycling a Bond up past a triple to none removes one that was too strong. The counts give a check without telling which Atoms; the key makes the number of Bonds an Element needs easy to find.
+- **Cost:** the Player gets less help, for the Puzzles that were meant as a tutorial too (the first three are easy enough). The counts still say how many Atoms are wrong, so they cut the search; a hint that marks which Atoms is the next step (backlog). A screen reader hears no more of an Atom than its place and hydrogens, and the counts. Nothing stops a Board of nonsense, such as every Dotted line a triple Bond; it is just not solved. Solving doesn't change, so [Puzzle.01](spec/puzzle.md#puzzle) and the solutions, the difficulty, and Progress, with its solved marks and its Boards, stay as they are; a Board saved before is still one that can be on the Grid.
+- **Alternatives:** keep the badges and only add the budget: the Player still follows the badges. A hard limit at the budget, no Bond made past it: the Player can't add before removing, and the counts would be the same as the badges when one runs out. A hint button that marks the Atoms, limited per Puzzle: left for later, as it undoes much of this. The budget as the way to win: it follows from every Atom having exactly its Bonds, so it adds no rule.
