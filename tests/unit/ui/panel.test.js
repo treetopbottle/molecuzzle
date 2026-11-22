@@ -81,7 +81,7 @@ test("Panel.04 the rules of the game, the one on valence pointing to the key, an
     "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
     "Bonds can't cross.",
     "Each atom needs exactly its number of bonds, as in the key below. Its small hydrogens are already bonded and count.",
-    "Under the board are the bonds you use, of the bonds the solution has, and the atoms with too few or too many. You may use more, but then it isn't solved.",
+    "Under the board are the bonds you use, of the bonds the solution has, You may use more, but then it isn't solved.",
     "All atoms join into one molecule. There is exactly one solution.",
   ]);
 });

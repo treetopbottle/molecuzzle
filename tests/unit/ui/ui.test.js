@@ -117,24 +117,25 @@ test("Panel.05 createUi gives the Elements it was made with to the key", () => {
   expect([...document.querySelectorAll("#info figure")].map(f => f.getAttribute("aria-label"))).toEqual(["Carbon: 4 bonds", "Oxygen: 2 bonds"]);
 });
 
-test("Board.05 the counts line: the Bonds used of the budget, and the Atoms with too few and with too many", () => {
+test("Board.05 the counts line: the Bonds used of the budget, and nothing on which Atoms are right", () => {
   const { ui, game } = show(1, {}); // Acetic acid, budget 4
   const line = () => document.getElementById("counts");
   const render = () => ui.render(view(1, game));
   const make = (k, times) => { for (let n = 0; n < times; n++) game.change(k, 1); render(); };
   const bond = (a, b) => game.bonds.findIndex(e => e.a === a && e.b === b); // O 0, CH₃ 1, C 2, OH 3
-  expect(line().textContent).toBe("Bonds 0 of 4 · Too few: 4 · Too many: 0");
+  expect(line().textContent).toBe("Bonds 0 of 4");
   make(bond(0, 2), 3); // O≡C
   make(bond(2, 3), 1); // C─OH
-  expect(line().textContent).toBe("Bonds 4 of 4 · Too few: 1 · Too many: 1");
+  expect(line().textContent).toBe("Bonds 4 of 4");
   expect(line().querySelector(".warn")).toBeNull();
   make(bond(2, 3), 1); // C═OH
   make(bond(1, 2), 1); // CH₃─C
-  expect(line().textContent).toBe("Bonds 6 of 4 · Too few: 0 · Too many: 3");
+  expect(line().textContent).toBe("Bonds 6 of 4");
   expect(line().querySelector(".warn").textContent).toBe("Bonds 6 of 4");
-  expect([...line().querySelectorAll("[aria-label]")].map(e => e.getAttribute("aria-label")))
-    .toEqual(["Bonds used, of the budget: 6 of 4", "Atoms with too few bonds: 0", "Atoms with too many bonds: 3"]);
-  expect([...line().querySelectorAll("[aria-label]")].every(e => e.getAttribute("role") === "img")).toBe(true);
+  const parts = [...line().querySelectorAll("[aria-label]")];
+  expect(parts.map(e => e.getAttribute("aria-label"))).toEqual(["Bonds used, of the budget: 6 of 4"]);
+  expect(parts.every(e => e.getAttribute("role") === "img")).toBe(true);
+  expect(line().textContent).not.toMatch(/few|many/i); // it doesn't say whether a Bond is right
   expect(line().getAttribute("role")).toBeNull(); // the status line is the page's one status
 });
 
@@ -145,7 +146,7 @@ test("Board.05 the line is the same when the Puzzle is solved", () => {
   game.showSolution();
   ui.render(view(1, game));
   expect(game.status().kind).toBe("revealed");
-  expect(document.getElementById("counts").textContent).toBe("Bonds 4 of 4 · Too few: 0 · Too many: 0");
+  expect(document.getElementById("counts").textContent).toBe("Bonds 4 of 4");
   expect(document.querySelector("#counts .warn")).toBeNull();
 });
 
