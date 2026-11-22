@@ -5,7 +5,7 @@
 export function statusText(status, puzzle) {
   switch (status.kind) {
     case "empty": return "Click a dotted line between two atoms to bond them.";
-    case "open": return "Not every atom has exactly its bonds yet.";
+    case "open": return "Not every atom has the right number of bonds yet.";
     case "pieces": return "Every atom has its bonds, but they form more than one molecule. Everything must join up.";
     case "solved": return `✓ Solved! It's ${puzzle.name}.`;
     case "revealed": return `Here is ${puzzle.name}. Reset and build it yourself to mark it solved.`;

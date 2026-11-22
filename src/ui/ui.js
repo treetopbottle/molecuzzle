@@ -58,9 +58,8 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
     board.render();
     renderPanel($("info"), { ...view, elements });
     renderCounts($("counts"), view.counts);
-    const line = $("status");
-    line.textContent = statusText(status, puzzles[index]);
-    line.className = STATUS_CLASS[status.kind] ?? "";
+    $("status").textContent = statusText(status, puzzles[index]);
+    $("note").className = STATUS_CLASS[status.kind] ?? "";
     $("btnUndo").disabled = !view.canUndo;
     $("btnReset").disabled = !view.hasBonds && !view.canUndo;
     const solved = puzzles.filter(p => progress.puzzles[p.id] === "solved").length;
