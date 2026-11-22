@@ -20,6 +20,10 @@ svg { max-width: 100%; height: auto; display: block; touch-action: manipulation;
 h1 { margin: 0; font-size: 24px; }
 p { margin: 0; }
 .info { display: contents; }
+.panel > *, .info > * { order: 4; } /* the Puzzle nav and the mystery molecule's title, then the actions, then the rest, so the actions stay in view on a phone */
+.info > .puzzle-nav { order: 1; }
+.info > .mystery { order: 2; }
+.panel > .actions { order: 3; }
 .eyebrow { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
 .legend { color: var(--muted); font-size: 14px; }
 .rules { margin: 0; padding-left: 20px; font-size: 14px; }

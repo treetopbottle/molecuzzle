@@ -8,7 +8,7 @@ The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a
 
 ### Page
 
-- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it and, in the same box, the counts line ([Board.05](#board)); and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
+- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it and, in the same box, the counts line ([Board.05](#board)); and the panel, with the open Puzzle number, the mystery molecule heading and its title, the actions, its formula or "Bond every atom to find out what it is.", the rules and the Puzzles list, in that order, so the actions are in view on a phone (Page.01)
 
 Example (Page.01), Puzzle 1 at the start, and Puzzle 3 solved:
 

@@ -57,11 +57,11 @@ function build(panel, elements) {
       <button id="next" aria-label="Next puzzle">›</button>
       <span id="badge" class="badge"></span>
     </nav>
-    <div>
+    <div class="mystery">
       <div class="eyebrow">Mystery molecule</div>
       <h1 id="title"></h1>
-      <div id="formula" class="legend"></div>
     </div>
+    <div id="formula" class="legend"></div>
     <p id="fact" class="legend" hidden></p>
     <button id="nextPuzzle" class="primary" hidden>Next puzzle →</button>
     <ol class="rules"></ol>`;
