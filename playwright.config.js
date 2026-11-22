@@ -17,8 +17,8 @@ export default defineConfig({
   reporter: process.env.CI ? "dot" : "list",
   use: { launchOptions, trace: "retain-on-failure" },
   projects: [
-    { name: "desktop", testIgnore: /screenshots\.spec\.js/, use: { viewport: { width: 1280, height: 800 } } },
-    { name: "phone", testMatch: /layout\.spec\.js/, use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
+    { name: "desktop", testIgnore: /(screenshots|phone)\.spec\.js/, use: { viewport: { width: 1280, height: 800 } } },
+    { name: "phone", testMatch: /(layout|phone)\.spec\.js/, use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
     ...(screenshots ? [{
       name: "screenshots",
       testMatch: /screenshots\.spec\.js/,
