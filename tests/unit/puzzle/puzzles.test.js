@@ -8,6 +8,17 @@ import { schemaErrors } from "../../helpers/schemas.js";
 import { atomCount, formulaCount } from "../../helpers/formula.js";
 
 describe("Puzzle.01 the puzzles", () => {
+  test("Puzzle.09 each budget is the Bonds of its solution, and half of what its Atoms need", () => {
+    const budgets = PUZZLES.map(p => {
+      const game = createGame(p), needs = game.atoms.reduce((t, _, i) => t + game.remaining(i), 0);
+      expect(game.budget).toBe(p.solution.reduce((t, [, , n]) => t + n, 0));
+      expect(game.budget * 2).toBe(needs);
+      return game.budget;
+    });
+    expect(budgets[1]).toBe(4); // Acetic acid
+    expect(budgets).toHaveLength(15);
+  });
+
   test("Puzzle.05 are the 15 of the spec's table, with their difficulty, in order of difficulty", () => {
     expect(PUZZLES.map(p => `${p.name} ${p.formula} ${difficulty(p)}`)).toEqual([
       "Acetonitrile C2H3N 2",

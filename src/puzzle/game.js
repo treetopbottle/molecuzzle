@@ -33,7 +33,6 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
       if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
       o[k] = n;
     }
-    if (atoms.some((_, i) => bondCount(i, o) > room(i))) return null;
     if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
     return o;
   }
@@ -50,12 +49,22 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
     }
   }
 
+  /** What an Atom still needs: below 0 when it has too many Bonds. */
   const remaining = i => room(i) - bondCount(i, order);
+  // The Bonds of the solution: half of what the Atoms need together (Puzzle.09).
+  const budget = atoms.reduce((t, _, i) => t + room(i), 0) / 2;
+
+  /** The Bonds used, the budget, and the Atoms with too few and with too many Bonds (Valence.03). */
+  const counts = () => ({
+    used: order.reduce((t, n) => t + n, 0), budget,
+    few: atoms.filter((_, i) => remaining(i) > 0).length,
+    many: atoms.filter((_, i) => remaining(i) < 0).length,
+  });
 
   function status() {
-    const open = atoms.filter((_, i) => remaining(i) > 0).length;
+    const { few, many } = counts();
     if (!order.some(Boolean)) return { kind: "empty" };
-    if (open) return { kind: "open", open };
+    if (few || many) return { kind: "open", few, many };
     if (!connected(atoms.length, bonds, order)) return { kind: "pieces" };
     return { kind: revealed ? "revealed" : "solved" };
   }
@@ -70,21 +79,16 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
   }
 
   /**
-   * Makes candidate Bond k one stronger (dir +1) or weaker (dir -1).
-   * Stronger past a triple Bond, or past what either Atom has room for,
-   * removes it. When a Bond can't be made, the reason is "full", with the
-   * Atom that has no room, or "crossing"; other changes that change nothing
-   * have no reason.
+   * Makes candidate Bond k one stronger (dir +1) or weaker (dir -1). Stronger
+   * past a triple Bond removes it, whatever its Atoms have. When a Bond can't
+   * be made, the reason is "crossing"; other changes that change nothing have
+   * no reason.
    */
   function change(k, dir) {
     if (done()) return { changed: false };
     const e = bonds[k], cur = order[k];
     let next = cur + dir;
-    if (dir > 0 && cur === 0) {
-      const full = [e.a, e.b].find(i => remaining(i) === 0);
-      if (full !== undefined) return { changed: false, reason: "full", atom: full };
-    }
-    if (dir > 0 && (next > MAX_ORDER || next - cur > Math.min(remaining(e.a), remaining(e.b)))) next = 0;
+    if (dir > 0 && next > MAX_ORDER) next = 0;
     if (next < 0 || next === cur) return { changed: false };
     if (cur === 0 && bonds.some((f, j) => order[j] && crosses(atoms, e, f)))
       return { changed: false, reason: "crossing" };
@@ -141,6 +145,6 @@ export function createGame(puzzle, { bonds: left, revealed: shown = false, undo:
     puzzle, atoms, bonds,
     get order() { return [...order]; },
     get canUndo() { return history.length > 0; },
-    remaining, status, done, change, undo, reset, showSolution, board, saved,
+    remaining, budget, counts, status, done, change, undo, reset, showSolution, board, saved,
   };
 }
