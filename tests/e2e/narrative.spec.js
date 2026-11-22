@@ -20,7 +20,7 @@ test("First day", async ({ page }) => {
 
   // The top dotted line, then three clicks for a triple Bond, and it is Acetonitrile.
   await clickBond(page, "1,1", "2,1");
-  await expect(status(page)).toHaveText("2 atoms still need bonds.");
+  await expect(status(page)).toHaveText("Not every atom has exactly its bonds yet.");
   await clickBond(page, "2,1", "3,1", { times: 3 });
   await expect(status(page)).toHaveText("✓ Solved! It's Acetonitrile.");
   await expect(page.locator("#board .atom.ok")).toHaveCount(3);
@@ -34,11 +34,11 @@ test("First day", async ({ page }) => {
   await clickBond(page, "2,2", "3,2");
   await expect(status(page)).toHaveText("✓ Solved! It's Acetic acid.");
 
-  // On Serine, a second Bond on an OH isn't allowed.
+  // On Serine, an OH can be bonded twice, which gives it one bond too many.
   await openPuzzle(page, 8);
   await clickBond(page, "1,2", "2,2");
   await clickBond(page, "1,1", "1,2");
-  await expect(page.getByRole("alert")).toHaveText("Oxygen already has all its bonds.");
+  await expect(page.getByRole("alert")).toHaveText("");
 
   // Stuck, Noor looks at the solution, resets, and builds Serine alone.
   page.once("dialog", dialog => dialog.accept());

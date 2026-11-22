@@ -80,7 +80,6 @@ N
   test.each([
     ["a Bond that isn't on a Dotted line, Acetonitrile's [[0, 2, 1]]", "acetonitrile", [[0, 2, 1]], [[]]],
     ["a pair of Atoms bonded twice", "acetonitrile", [[0, 1, 1], [0, 1, 1]], [[]]],
-    ["an Atom with a bond count over its valence minus its hydrogens, CH₃═C", "acetic-acid", [[1, 2, 2]], [[]]],
     ["such a Board in the undo history", "acetonitrile", [[0, 1, 1]], [[], [[0, 2, 1]]]],
   ])("Puzzle.03 with %s, it starts with no Bonds, nothing to undo and the solution not shown", (_, id, bonds, undo) => {
     const game = createGame(puzzle(id), { bonds, revealed: true, undo });
@@ -113,6 +112,13 @@ describe("Hydrogens", () => {
     expect(needs()).toEqual([2, 1, 4, 1]);
   });
 
+  test("Puzzle.03 a Board with an Atom that has too many Bonds, CH₃═C, starts where it was left", () => {
+    const game = createGame(puzzle("acetic-acid"), { bonds: [[1, 2, 2]], revealed: false, undo: [[]] });
+    expect(game.board()).toEqual([[1, 2, 2]]);
+    expect(game.canUndo).toBe(true);
+    expect(game.counts()).toEqual({ used: 2, budget: 4, few: 3, many: 1 });
+  });
+
   test("Puzzle.03 a Board whose Atoms have room for their Bonds next to their hydrogens starts where it was left", () => {
     const game = createGame(puzzle("acetic-acid"), { bonds: [[1, 2, 1]], revealed: false, undo: [[]] }); // CH₃─C
     expect(game.board()).toEqual([[1, 2, 1]]);
@@ -131,23 +137,28 @@ describe("Bond", () => {
     expect(drawn).toEqual(["│", "║", "⦀", "·"]);
   });
 
-  test("Bond.03 stronger on a Bond one of whose Atoms has no room removes it: CH₃─C in Acetic acid", () => {
+  test("Bond.03 stronger on a Bond whose Atoms have no room goes on to a double and a triple Bond, and only then removes it: CH₃─C in Acetic acid", () => {
     const game = createGame(puzzle("acetic-acid"));
-    click(game, "2,1", "2,2", 2);
-    expect(game.order.some(Boolean)).toBe(false);
+    const orders = [];
+    for (let n = 0; n < 4; n++) { click(game, "2,1", "2,2"); orders.push(game.order.reduce((t, o) => t + o, 0)); }
+    expect(orders).toEqual([1, 2, 3, 0]);
   });
 
-  test("Bond.04 Glycine, with OH 1,1 to C 2,1: stronger on OH 1,1 to NH₂ 1,2 makes no Bond, with the reason full and OH 1,1", () => {
+  test("Bond.04 Glycine, with OH 1,1 to C 2,1: stronger on OH 1,1 to NH₂ 1,2 makes a Bond, and OH needs −1; three more make it double, triple and none", () => {
     const game = createGame(puzzle("glycine"));
     click(game, "1,1", "2,1");
-    expect(click(game, "1,1", "1,2")).toEqual({ changed: false, reason: "full", atom: 0 });
+    expect(click(game, "1,1", "1,2")).toEqual({ changed: true });
+    expect(game.remaining(0)).toBe(-1);
     expect(draw(game)).toBe(`
-OH··NH₂
+OH──NH₂
 │   ·
 C···CH₂
 ·
 O
 `);
+    const orders = [];
+    for (let n = 0; n < 3; n++) { click(game, "1,1", "1,2"); orders.push(game.order[game.bonds.findIndex(e => e.a === 0 && e.b === 1)]); }
+    expect(orders).toEqual([2, 3, 0]);
   });
 
   test("Bond.05 on the Grid of the Grid.02 example, with CH₂ 2,1 to CH₂ 2,3: stronger on O 1,2 to O 3,2 makes no Bond, with the reason crossing", () => {
@@ -257,6 +268,18 @@ CH₃─C
 });
 
 describe("Valence", () => {
+  test("Valence.03 Acetic acid, budget 4: no Bonds are 4 Atoms with too few; O≡C and C─OH are 1 too few, 1 too many and 4 used; more Bonds are over the budget", () => {
+    const game = createGame(puzzle("acetic-acid"));
+    expect(game.counts()).toEqual({ used: 0, budget: 4, few: 4, many: 0 });
+    click(game, "1,2", "2,2", 3);
+    click(game, "2,2", "3,2");
+    expect(game.atoms.map((_, i) => game.remaining(i))).toEqual([-1, 1, 0, 0]);
+    expect(game.counts()).toEqual({ used: 4, budget: 4, few: 1, many: 1 });
+    click(game, "2,2", "3,2");
+    click(game, "2,1", "2,2");
+    expect(game.counts()).toEqual({ used: 6, budget: 4, few: 0, many: 3 });
+  });
+
   test("Valence.01 each Element needs the Bonds of the table of valences", () => {
     const valences = Object.fromEntries(Object.entries(ELEMENTS).map(([el, e]) => [el, e.valence]));
     expect(valences).toEqual({ H: 1, F: 1, Cl: 1, Br: 1, I: 1, O: 2, S: 2, N: 3, C: 4 });
@@ -276,11 +299,19 @@ describe("Valence", () => {
 });
 
 describe("Check", () => {
+  test("Check.04 at the budget, Acetic acid isn't solved while an Atom has too many Bonds: O≡C and C─OH", () => {
+    const game = createGame(puzzle("acetic-acid"));
+    click(game, "1,2", "2,2", 3);
+    click(game, "2,2", "3,2");
+    expect(game.counts()).toEqual({ used: 4, budget: 4, few: 1, many: 1 });
+    expect(game.status()).toEqual({ kind: "open", few: 1, many: 1 });
+  });
+
   test("Check.01, Check.02 Acetic acid: empty with no Bonds; open, with 3 Atoms, after CH₃ 2,1 to C 2,2", () => {
     const game = createGame(puzzle("acetic-acid"));
     expect(game.status()).toEqual({ kind: "empty" });
     click(game, "2,1", "2,2");
-    expect(game.status()).toEqual({ kind: "open", open: 3 });
+    expect(game.status()).toEqual({ kind: "open", few: 3, many: 0 });
   });
 
   test("Check.03 Glycerol, with OH─OH built apart from the rest: pieces", () => {
@@ -378,7 +409,7 @@ C···OH
 ·
 O
 `);
-    expect(game.status()).toEqual({ kind: "open", open: 6 });
+    expect(game.status()).toEqual({ kind: "open", few: 6, many: 0 });
   });
 
   test("Help.02 once the Board has no Bonds again, building it counts as solved", () => {

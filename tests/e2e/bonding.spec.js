@@ -16,12 +16,12 @@ test("Input.01 clicking makes a Bond, then stronger, then removes it", async ({ 
   }
 });
 
-test("Messages.02 an Atom with all its bonds says so: Glycine's OH 1,1, bonded to C 2,1", async ({ page }) => {
+test("Bond.04, Messages.02 an Atom can have too many bonds, with no message: Glycine's OH 1,1, bonded to C 2,1 and to N 1,2", async ({ page }) => {
   await openPuzzle(page, 3);
   await clickBond(page, "1,1", "2,1");
   await clickBond(page, "1,1", "1,2");
-  await expect(page.getByRole("alert")).toHaveText("Oxygen already has all its bonds.");
-  await expect(bond(page, "1,1", "1,2")).toHaveAccessibleName("O 1,1 to N 1,2: no bond");
+  await expect(page.getByRole("alert")).toHaveText("");
+  await expect(bond(page, "1,1", "1,2")).toHaveAccessibleName("O 1,1 to N 1,2: single bond");
 });
 
 test("Input.01 right-click makes a Bond one weaker, and does nothing to a dotted line", async ({ page }) => {

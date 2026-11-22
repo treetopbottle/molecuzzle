@@ -90,13 +90,23 @@ test("Input.05 Reset asks first, and only after OK calls onReset", () => {
 });
 
 test("Messages.02 say words why a Bond isn't made, and says nothing without a reason", () => {
-  const { ui } = show(2); // Glycine
+  // The Grid of the Grid.02 example, which isn't a Puzzle's: its two Dotted lines cross.
+  const crossing = {
+    id: "crossing", name: "Crossing", formula: "C2H4O2", fact: "Not a Puzzle.", rows: 3, cols: 3,
+    atoms: [["O", 0, 1, 0], ["C", 1, 0, 2], ["C", 1, 2, 2], ["O", 2, 1, 0]], solution: [],
+  };
+  const ui = createUi(document, handlers, { confirm: () => true });
+  const game = createGame(crossing);
+  ui.open(game);
   const message = () => document.querySelector('[role="alert"]');
+  game.change(game.bonds.findIndex(e => e.horizontal), 1); // CH₂ 2,1 to CH₂ 2,3
   ui.say({ changed: false });
   ui.say({ changed: true });
   expect(message().textContent).toBe("");
-  ui.say({ changed: false, reason: "full", atom: 0 }); // OH 1,1
-  expect(message().textContent).toBe("Oxygen already has all its bonds.");
+  ui.say(game.change(game.bonds.findIndex(e => !e.horizontal), 1)); // O 1,2 to O 3,2
+  expect(message().textContent).toBe("Bonds can't cross.");
+  ui.say({ changed: false, reason: "full", atom: 0 });
+  expect(message().textContent).toBe("Bonds can't cross."); // no reason to give: the message stays as it was
 });
 
 test("Panel.01, Panel.03 ‹, › and Next puzzle → open their Puzzle", () => {

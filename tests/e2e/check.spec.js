@@ -9,7 +9,7 @@ test("Messages.01 the status line says what is left to do: Acetic acid", async (
   await openPuzzle(page, 2);
   await expect(status(page)).toHaveText("Click a dotted line between two atoms to bond them.");
   await clickBond(page, "2,1", "2,2");
-  await expect(status(page)).toHaveText("3 atoms still need bonds.");
+  await expect(status(page)).toHaveText("Not every atom has exactly its bonds yet.");
 });
 
 test("Messages.01 every Atom complete, but in two pieces, in orange: Glycerol with OH─OH apart", async ({ page }) => {
