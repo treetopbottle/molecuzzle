@@ -21,8 +21,10 @@ test("First day", async ({ page }) => {
   // The top dotted line, then three clicks for a triple Bond, and it is Acetonitrile.
   await clickBond(page, "1,1", "2,1");
   await expect(status(page)).toHaveText("Not every atom has exactly its bonds yet.");
+  await expect(page.locator("#counts")).toHaveText("Bonds 1 of 4 · Too few: 2 · Too many: 0");
   await clickBond(page, "2,1", "3,1", { times: 3 });
   await expect(status(page)).toHaveText("✓ Solved! It's Acetonitrile.");
+  await expect(page.locator("#counts")).toHaveText("Bonds 4 of 4 · Too few: 0 · Too many: 0");
   await expect(page.locator("#board .atom.ok")).toHaveCount(0); // no glow
   await expect(page.getByText(PUZZLES[0].fact)).toBeVisible();
 
@@ -39,6 +41,7 @@ test("First day", async ({ page }) => {
   await clickBond(page, "1,2", "2,2");
   await clickBond(page, "1,1", "1,2");
   await expect(page.getByRole("alert")).toHaveText("");
+  await expect(page.locator("#counts")).toContainText("Too many: 1");
 
   // Stuck, Noor looks at the solution, resets, and builds Serine alone.
   page.once("dialog", dialog => dialog.accept());

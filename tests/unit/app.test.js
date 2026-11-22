@@ -64,6 +64,7 @@ test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, 
   ui.handlers.onChange(1, 1); // CH₃─C
   expect(ui.said.at(-1)).toEqual({ changed: true });
   expect(ui.view()).toMatchObject({ status: { kind: "open", few: 3, many: 0 }, canUndo: true, hasBonds: true });
+  expect(ui.view().counts).toEqual({ used: 1, budget: 4, few: 3, many: 0 }); // Board.05
   ui.handlers.onUndo();
   expect(ui.view()).toMatchObject({ status: { kind: "empty" }, canUndo: false, hasBonds: false });
   ui.handlers.onSolve();

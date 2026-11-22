@@ -88,6 +88,20 @@ test("Input.02, Input.03 Reset removes every Bond and the undo history", async (
   await expect(bond(page, "2,2", "3,2")).toHaveAccessibleName("C 2,2 to O 3,2: no bond");
 });
 
+test("Board.05 the line under the Board counts the Bonds used of the budget, and the Atoms with too few and too many: Acetic acid", async ({ page }) => {
+  await openPuzzle(page, 2);
+  const counts = page.locator("#counts");
+  await expect(counts).toHaveText("Bonds 0 of 4 · Too few: 4 · Too many: 0");
+  await clickBond(page, "1,2", "2,2", { times: 3 }); // O≡C
+  await clickBond(page, "2,2", "3,2");               // C─OH
+  await expect(counts).toHaveText("Bonds 4 of 4 · Too few: 1 · Too many: 1");
+  await clickBond(page, "2,2", "3,2");               // C═OH
+  await clickBond(page, "2,1", "2,2");               // CH₃─C
+  await expect(counts).toHaveText("Bonds 6 of 4 · Too few: 0 · Too many: 3");
+  await expect(counts.locator(".warn")).toHaveText("Bonds 6 of 4");
+  await expect(page.getByLabel("Atoms with too many bonds: 3")).toBeVisible();
+});
+
 test("Board.02, Board.04 Atoms are named with their hydrogens, and show nothing of what they need, also when complete", async ({ page }) => {
   await openPuzzle(page, 2); // Acetic acid
   await clickBond(page, "1,2", "2,2", { times: 2 });

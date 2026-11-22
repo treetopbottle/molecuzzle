@@ -20,7 +20,7 @@ beforeEach(() => {
 
 const view = (index, game, progress = { puzzles: {}, current: PUZZLES[index].id }) => ({
   puzzles: PUZZLES, index, progress,
-  status: game.status(), done: game.done(), canUndo: game.canUndo, hasBonds: game.order.some(Boolean),
+  status: game.status(), counts: game.counts(), done: game.done(), canUndo: game.canUndo, hasBonds: game.order.some(Boolean),
 });
 function show(index, { progress, confirm } = {}) {
   const ui = createUi(document, handlers, { confirm: confirm ?? (() => true) });
@@ -107,6 +107,37 @@ test("Messages.02 say words why a Bond isn't made, and says nothing without a re
   expect(message().textContent).toBe("Bonds can't cross.");
   ui.say({ changed: false, reason: "full", atom: 0 });
   expect(message().textContent).toBe("Bonds can't cross."); // no reason to give: the message stays as it was
+});
+
+test("Board.05 the counts line: the Bonds used of the budget, and the Atoms with too few and with too many", () => {
+  const { ui, game } = show(1, {}); // Acetic acid, budget 4
+  const line = () => document.getElementById("counts");
+  const render = () => ui.render(view(1, game));
+  const make = (k, times) => { for (let n = 0; n < times; n++) game.change(k, 1); render(); };
+  const bond = (a, b) => game.bonds.findIndex(e => e.a === a && e.b === b); // O 0, CH₃ 1, C 2, OH 3
+  expect(line().textContent).toBe("Bonds 0 of 4 · Too few: 4 · Too many: 0");
+  make(bond(0, 2), 3); // O≡C
+  make(bond(2, 3), 1); // C─OH
+  expect(line().textContent).toBe("Bonds 4 of 4 · Too few: 1 · Too many: 1");
+  expect(line().querySelector(".warn")).toBeNull();
+  make(bond(2, 3), 1); // C═OH
+  make(bond(1, 2), 1); // CH₃─C
+  expect(line().textContent).toBe("Bonds 6 of 4 · Too few: 0 · Too many: 3");
+  expect(line().querySelector(".warn").textContent).toBe("Bonds 6 of 4");
+  expect([...line().querySelectorAll("[aria-label]")].map(e => e.getAttribute("aria-label")))
+    .toEqual(["Bonds used, of the budget: 6 of 4", "Atoms with too few bonds: 0", "Atoms with too many bonds: 3"]);
+  expect(line().getAttribute("role")).toBeNull(); // the status line is the page's one status
+});
+
+test("Board.05 the line is the same when the Puzzle is solved", () => {
+  const game = createGame(PUZZLES[1]);
+  const ui = createUi(document, handlers, { confirm: () => true });
+  ui.open(game);
+  game.showSolution();
+  ui.render(view(1, game));
+  expect(game.status().kind).toBe("revealed");
+  expect(document.getElementById("counts").textContent).toBe("Bonds 4 of 4 · Too few: 0 · Too many: 0");
+  expect(document.querySelector("#counts .warn")).toBeNull();
 });
 
 test("Panel.01, Panel.03 ‹, › and Next puzzle → open their Puzzle", () => {
