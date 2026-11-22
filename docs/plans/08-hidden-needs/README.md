@@ -1,6 +1,6 @@
 # 08: Atoms don't show what they need, and a budget of Bonds
 
-Status: Draft
+Status: Active
 
 The Puzzles are too easy because every Atom shows how many Bonds it still needs and refuses more. Now an Atom shows nothing of that, any Atom can get too many Bonds, and a Puzzle has a budget, the Bonds of its solution. Under the Board a line counts the Bonds used against the budget, and the Atoms with too few and with too many Bonds; going over only means the Puzzle isn't solved. A key in the panel shows each Element's number of Bonds, so the Player can look it up ([decision 0025](../../decisions.md#0025)). A hint that marks which Atoms is left for later.
 
