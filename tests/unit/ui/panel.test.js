@@ -11,8 +11,10 @@ beforeEach(() => {
   panel = document.getElementById("panel");
 });
 
+// What the Glue gives: each Element's number of Bonds, in the order of the key.
+const elements = Object.entries({ C: 4, N: 3, O: 2, S: 2, F: 1, Cl: 1, Br: 1, I: 1 }).map(([symbol, valence]) => ({ symbol, valence }));
 const view = (index, { solved = [], done = false } = {}) => ({
-  puzzles, index, done,
+  puzzles, index, done, elements,
   progress: { puzzles: Object.fromEntries(solved.map(id => [id, "solved"])), current: puzzles[index].id },
 });
 const button = name => panel.querySelector(`button[aria-label="${name}"]`) ?? [...panel.querySelectorAll("button")].find(b => b.textContent === name);
@@ -82,4 +84,26 @@ test("Panel.04 the rules of the game, the one on valence pointing to the key, an
     "Under the board are the bonds you use, of the bonds the solution has, and the atoms with too few or too many. You may use more, but then it isn't solved.",
     "All atoms join into one molecule. There is exactly one solution.",
   ]);
+});
+
+test("Panel.05 the key, in the rule on valence: each Element as a ball with as many sticks as bonds, and the number", () => {
+  renderPanel(panel, view(0));
+  const key = panel.querySelectorAll("ol > li:nth-child(4) figure");
+  expect([...key].map(f => f.getAttribute("aria-label"))).toEqual([
+    "Carbon: 4 bonds", "Nitrogen: 3 bonds", "Oxygen: 2 bonds", "Sulfur: 2 bonds",
+    "Fluorine: 1 bond", "Chlorine: 1 bond", "Bromine: 1 bond", "Iodine: 1 bond",
+  ]);
+  expect([...key].map(f => f.querySelectorAll(".stick").length)).toEqual([4, 3, 2, 2, 1, 1, 1, 1]);
+  expect([...key].map(f => f.querySelector(".sym").textContent)).toEqual(["C", "N", "O", "S", "F", "Cl", "Br", "I"]);
+  expect([...key].map(f => f.querySelector(".valence").textContent)).toEqual(["4", "3", "2", "2", "1", "1", "1", "1"]);
+  expect([...key].every(f => f.getAttribute("role") === "img")).toBe(true);
+  expect(panel.querySelectorAll("figure")).toHaveLength(8); // only in that rule
+});
+
+test("Panel.05 the key is drawn once, and stays when the panel is rendered again", () => {
+  renderPanel(panel, view(0));
+  const first = panel.querySelector("figure");
+  renderPanel(panel, view(1));
+  expect(panel.querySelector("figure")).toBe(first);
+  expect(panel.querySelectorAll("figure")).toHaveLength(8);
 });

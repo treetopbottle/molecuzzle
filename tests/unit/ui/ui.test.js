@@ -109,6 +109,14 @@ test("Messages.02 say words why a Bond isn't made, and says nothing without a re
   expect(message().textContent).toBe("Bonds can't cross."); // no reason to give: the message stays as it was
 });
 
+test("Panel.05 createUi gives the Elements it was made with to the key", () => {
+  const ui = createUi(document, handlers, { confirm: () => true, elements: [{ symbol: "C", valence: 4 }, { symbol: "O", valence: 2 }] });
+  const game = createGame(PUZZLES[1]);
+  ui.open(game);
+  ui.render(view(1, game));
+  expect([...document.querySelectorAll("#info figure")].map(f => f.getAttribute("aria-label"))).toEqual(["Carbon: 4 bonds", "Oxygen: 2 bonds"]);
+});
+
 test("Board.05 the counts line: the Bonds used of the budget, and the Atoms with too few and with too many", () => {
   const { ui, game } = show(1, {}); // Acetic acid, budget 4
   const line = () => document.getElementById("counts");

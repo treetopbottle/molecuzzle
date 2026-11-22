@@ -8,6 +8,18 @@ test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page }) 
   await expect(bond(page, "1,1", "2,1")).toHaveAccessibleName("C 1,1 to C 2,1: single bond");
 });
 
+test("Panel.05 the key shows every Element's number of bonds, and fits a phone with no sideways scroll", async ({ page }) => {
+  await start(page);
+  const key = page.locator("#info figure");
+  await expect(key).toHaveCount(8);
+  await expect(page.getByRole("img", { name: "Carbon: 4 bonds" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Iodine: 1 bond" })).toBeVisible();
+  const { width } = page.viewportSize();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  const box = await key.last().boundingBox();
+  expect(box.x + box.width).toBeLessThanOrEqual(width);
+});
+
 for (const [number, name, board] of [[12, "Glucose's, the widest", "Board, 3 by 5"], [13, "Citric acid's, the tallest", "Board, 6 by 3"], [15, "N-Acetylglucosamine's, the largest", "Board, 5 by 5"]])
   test(`Layout.01, Puzzle.04 on a phone, the largest Grids fit: ${name}, with no sideways scroll, and the Board, its counts and its status line fit the screen`, async ({ page }) => {
     await start(page);
