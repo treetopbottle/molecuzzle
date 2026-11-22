@@ -173,4 +173,18 @@ export const REMOVED = [
     atoms: [["C",0,0,3],["O",0,2,0],["C",1,0,1],["C",1,1,1],["C",1,2,0],["C",2,0,3],["N",2,1,2],["O",2,2,1]],
     solution: [[0,2,1],[1,4,2],[2,3,1],[2,5,1],[3,4,1],[3,6,1],[4,7,1]],
   },
+  {
+    id: "cyclohexanol", name: "Cyclohexanol", formula: "C6H12O",
+    fact: "Cyclohexanol is turned into adipic acid, one of the two building blocks of nylon 6,6.",
+    rows: 4, cols: 2,
+    atoms: [["C",0,0,2],["C",0,1,2],["C",1,0,2],["C",1,1,2],["C",2,0,2],["C",2,1,1],["O",3,1,1]],
+    solution: [[0,1,1],[0,2,1],[1,3,1],[2,4,1],[3,5,1],[4,5,1],[5,6,1]],
+  },
+  {
+    id: "cyclohexane-1-4-dione", name: "Cyclohexane-1,4-dione", formula: "C6H8O2",
+    fact: "Cyclohexane-1,4-dione is benzoquinone with hydrogens in place of its two C=C double bonds.",
+    rows: 5, cols: 2,
+    atoms: [["O",0,1,0],["C",1,0,2],["C",1,1,0],["C",2,0,2],["C",2,1,2],["C",3,0,0],["C",3,1,2],["O",4,0,0]],
+    solution: [[0,2,2],[1,2,1],[1,3,1],[2,4,1],[3,5,1],[4,6,1],[5,6,1],[5,7,2]],
+  },
 ];

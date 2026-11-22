@@ -27,7 +27,7 @@ test.describe("at 1280×800", () => {
 
   test("Board.01, Board.02 Glucose with no Bonds", async ({ page }) => {
     await start(page);
-    await openPuzzle(page, 14);
+    await openPuzzle(page, 12);
     await expect(page.locator(".stage")).toHaveScreenshot("board-glucose.png");
   });
 

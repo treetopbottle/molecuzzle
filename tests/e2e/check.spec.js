@@ -66,7 +66,7 @@ test("Messages.01 the status line is green when solved and when revealed", async
 test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
   await openPuzzle(page, 15);
   await build(page, PUZZLES[14]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Citric acid.");
+  await expect(status(page)).toHaveText("✓ Solved! It's Biotin.");
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
@@ -80,17 +80,17 @@ test("Input.04, Messages.01, Panel.01, List.01, List.02 Show solution asks first
     dialog.accept();
   });
   await page.getByRole("button", { name: "Show solution" }).click();
-  await expect(status(page)).toHaveText("Here is Cyclohexanol. Reset and build it yourself to mark it solved.");
+  await expect(status(page)).toHaveText("Here is 1,4-Benzoquinone. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.getByRole("button", { name: "Puzzle 8", exact: true })).toBeVisible();
   await expect(page.locator("#score")).toHaveText("Solved 0 of 15");
 });
 
 test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it solved", async ({ page }) => {
-  await start(page, { puzzles: { cyclohexanol: "solved" }, current: "cyclohexanol" });
+  await start(page, { puzzles: { "1-4-benzoquinone": "solved" }, current: "1-4-benzoquinone" });
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
-  await expect(status(page)).toHaveText("Here is Cyclohexanol. Reset and build it yourself to mark it solved.");
+  await expect(status(page)).toHaveText("Here is 1,4-Benzoquinone. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
   await expect(page.locator("#score")).toHaveText("Solved 1 of 15");
 });

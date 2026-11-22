@@ -28,7 +28,7 @@ test("Progress.05 a shown solution is still unsolved after a reload", async ({ p
   page.once("dialog", dialog => dialog.accept());
   await page.getByRole("button", { name: "Show solution" }).click();
   await page.reload();
-  await expect(status(page)).toHaveText("Here is Cyclohexanol. Reset and build it yourself to mark it solved.");
+  await expect(status(page)).toHaveText("Here is 1,4-Benzoquinone. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.locator("#score")).toHaveText("Solved 0 of 15");
 });

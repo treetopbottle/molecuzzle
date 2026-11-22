@@ -24,14 +24,14 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 | 5 | Morpholine | C₄H₉NO | 11 |
 | 6 | Cyclohexene | C₆H₁₀ | 11 |
 | 7 | Serine | C₃H₇NO₃ | 12 |
-| 8 | Cyclohexanol | C₆H₁₂O | 12 |
-| 9 | Cyclohexane-1,4-dione | C₆H₈O₂ | 13 |
-| 10 | 1,4-Benzoquinone | C₆H₄O₂ | 13 |
-| 11 | Malic acid | C₄H₆O₅ | 17 |
-| 12 | Tartaric acid | C₄H₆O₆ | 21 |
-| 13 | Glutamic acid | C₅H₉NO₄ | 21 |
-| 14 | Glucose | C₆H₁₂O₆ | 26 |
-| 15 | Citric acid | C₆H₈O₇ | 27 |
+| 8 | 1,4-Benzoquinone | C₆H₄O₂ | 13 |
+| 9 | Malic acid | C₄H₆O₅ | 17 |
+| 10 | Tartaric acid | C₄H₆O₆ | 21 |
+| 11 | Glutamic acid | C₅H₉NO₄ | 21 |
+| 12 | Glucose | C₆H₁₂O₆ | 26 |
+| 13 | Citric acid | C₆H₈O₇ | 27 |
+| 14 | N-Acetylglucosamine | C₈H₁₅NO₆ | 35 |
+| 15 | Biotin | C₁₀H₁₆N₂O₃S | 36 |
 
 Removed Puzzles, which aren't added again, and why, in the layout each had when it was removed:
 
@@ -61,6 +61,8 @@ Removed Puzzles, which aren't added again, and why, in the layout each had when 
 | Cysteine | C₃H₇NO₂S | Serine's layout, with S for O |
 | Threonine | C₄H₉NO₃ | Its loops close on CH₃ and OH; in the layout tried, the obvious moves leave nothing to choose |
 | Valine | C₅H₁₁NO₂ | Its loops close on its two CH₃; in the layout tried, the obvious moves leave nothing to choose |
+| Cyclohexanol | C₆H₁₂O | A plain ring of single Bonds on a narrow ladder, with one empty Dotted line: the Player traces the ring, with nothing to rule out; found too easy in play |
+| Cyclohexane-1,4-dione | C₆H₈O₂ | The same ring, with two C═O at its ends, each on a single Dotted line; found too easy in play |
 
 The Grids, solutions and facts are in `src/puzzle/puzzles.js`.
 
@@ -85,8 +87,8 @@ And its one solution is
 Example (Puzzle.04):
 
 ```
-Given Puzzle 14, Glucose, and Puzzle 15, Citric acid
-Then their Grids have 3 rows and 5 columns, and 6 rows and 3 columns
+Given Puzzle 12, Glucose, Puzzle 13, Citric acid, and Puzzle 14, N-Acetylglucosamine
+Then their Grids have 3 rows and 5 columns, 6 rows and 3 columns, and 5 rows and 5 columns
 ```
 
 Example (Puzzle.05):

@@ -17,14 +17,14 @@ describe("Puzzle.01 the puzzles", () => {
       "Morpholine C4H9NO 11",
       "Cyclohexene C6H10 11",
       "Serine C3H7NO3 12",
-      "Cyclohexanol C6H12O 12",
-      "Cyclohexane-1,4-dione C6H8O2 13",
       "1,4-Benzoquinone C6H4O2 13",
       "Malic acid C4H6O5 17",
       "Tartaric acid C4H6O6 21",
       "Glutamic acid C5H9NO4 21",
       "Glucose C6H12O6 26",
       "Citric acid C6H8O7 27",
+      "N-Acetylglucosamine C8H15NO6 35",
+      "Biotin C10H16N2O3S 36",
     ]);
     const scores = PUZZLES.map(difficulty);
     expect(scores).toEqual([...scores].sort((a, b) => a - b));
@@ -60,10 +60,11 @@ describe("Puzzle.01 the puzzles", () => {
     });
   });
 
-  test("Puzzle.04 Glucose and Citric acid have Grids of 3 rows and 5 columns, and 6 rows and 3 columns", () => {
-    const [glucose, citric] = [PUZZLES[13], PUZZLES[14]];
+  test("Puzzle.04 Glucose, Citric acid and N-Acetylglucosamine have Grids of 3 rows and 5 columns, 6 rows and 3 columns, and 5 rows and 5 columns", () => {
+    const [glucose, citric, glcnac] = [PUZZLES[11], PUZZLES[12], PUZZLES[13]];
     expect([glucose.name, glucose.rows, glucose.cols]).toEqual(["Glucose", 3, 5]);
     expect([citric.name, citric.rows, citric.cols]).toEqual(["Citric acid", 6, 3]);
+    expect([glcnac.name, glcnac.rows, glcnac.cols]).toEqual(["N-Acetylglucosamine", 5, 5]);
   });
 
   test("Puzzle.07 Acetic acid's Atoms are an O with no hydrogens, a C with 3, a C with none and an O with 1", () => {

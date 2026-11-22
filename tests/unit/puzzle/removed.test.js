@@ -11,7 +11,7 @@ import { atomCount, formulaCount } from "../../helpers/formula.js";
 const atomsOf = formula => JSON.stringify(Object.entries(formulaCount(formula)).sort(([a], [b]) => a.localeCompare(b)));
 
 describe("Puzzle.06 the removed Puzzles", () => {
-  test("are the 24 of the spec's table", () => {
+  test("are the 26 of the spec's table", () => {
     expect(REMOVED.map(p => `${p.name} ${p.formula}`)).toEqual([
       "Ammonia NH3",
       "Carbon disulfide CS2",
@@ -37,8 +37,10 @@ describe("Puzzle.06 the removed Puzzles", () => {
       "Cysteine C3H7NO2S",
       "Threonine C4H9NO3",
       "Valine C5H11NO2",
+      "Cyclohexanol C6H12O",
+      "Cyclohexane-1,4-dione C6H8O2",
     ]);
-    expect(new Set(REMOVED.map(p => p.id)).size).toBe(24);
+    expect(new Set(REMOVED.map(p => p.id)).size).toBe(26);
   });
 
   test("no Puzzle has the id of a removed one, or a formula with the same Atoms: no Puzzle is ammonia, or NH3", () => {

@@ -38,7 +38,7 @@ Example (Board.01, Board.02), Puzzle 2, Acetic acid, with C═O:
 
 ![The Board of Acetic acid with a double Bond from C to O](screenshots/board.png)
 
-Example (Board.01, Board.02), Puzzle 14, Glucose, with no Bonds:
+Example (Board.01, Board.02), Puzzle 12, Glucose, with no Bonds:
 
 ![The Board of Glucose, its C and O Atoms with their hydrogens](screenshots/board-glucose.png)
 
