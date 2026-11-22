@@ -6,7 +6,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 
 ### Puzzle
 
-- Puzzles: there are 15, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and a new Puzzle after those of the same difficulty ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms and hydrogens of its formula, each Atom at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
+- Puzzles: there are 20, in the order of the table below: by difficulty ([Puzzle.05](#puzzle)), easiest first, and a new Puzzle after those of the same difficulty ([decision 0021](../decisions.md#0021)). Each is a [Puzzle](schemas.md#puzzle), gives exactly the Atoms and hydrogens of its formula, each Atom at its own point on the Grid, and has exactly one solution, its `solution` ([decision 0008](../decisions.md#0008)) (Puzzle.01)
 - Start: a Puzzle starts with no Bonds (Puzzle.02)
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, or Bonds that cross; an Atom with more Bonds than it needs is fine ([decision 0025](../decisions.md#0025)) (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
@@ -33,6 +33,11 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 | 13 | Citric acid | C₆H₈O₇ | 27 |
 | 14 | Biotin | C₁₀H₁₆N₂O₃S | 32 |
 | 15 | N-Acetylglucosamine | C₈H₁₅NO₆ | 33 |
+| 16 | Cystine | C₆H₁₂N₂O₄S₂ | 34 |
+| 17 | Pantothenic acid | C₉H₁₇NO₅ | 35 |
+| 18 | Tetraglycine | C₈H₁₄N₄O₅ | 43 |
+| 19 | N-Acetylneuraminic acid | C₁₁H₁₉NO₉ | 51 |
+| 20 | Glutathione | C₁₀H₁₇N₃O₆S | 52 |
 
 Removed Puzzles, which aren't added again, and why, in the layout each had when it was removed:
 
@@ -88,8 +93,8 @@ And its one solution is
 Example (Puzzle.04):
 
 ```
-Given Puzzle 12, Glucose, Puzzle 13, Citric acid, and Puzzle 15, N-Acetylglucosamine
-Then their Grids have 3 rows and 5 columns, 6 rows and 3 columns, and 5 rows and 5 columns
+Given Puzzle 12, Glucose, Puzzle 13, Citric acid, Puzzle 15, N-Acetylglucosamine, and Puzzle 19, N-Acetylneuraminic acid
+Then their Grids have 3 rows and 5 columns, 6 rows and 3 columns, 5 rows and 5 columns, and 6 rows and 5 columns
 ```
 
 Example (Puzzle.05):
