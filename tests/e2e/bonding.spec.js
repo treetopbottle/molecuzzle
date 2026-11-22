@@ -92,7 +92,10 @@ test("Board.05 the line under the Board counts the Bonds used of the budget, and
   await openPuzzle(page, 2);
   const counts = page.locator("#counts");
   await expect(counts).toHaveText("Bonds 0 of 4");
-  await expect(counts).toHaveCSS("text-align", "center");
+  await expect(counts).toHaveCSS("text-align", "start");
+  await expect(page.locator("#note #counts")).toBeVisible(); // in the box of the status line
+  const [status, line] = [await page.getByRole("status").boundingBox(), await counts.boundingBox()];
+  expect(line.y).toBeGreaterThanOrEqual(status.y + status.height); // below its text
   await clickBond(page, "1,2", "2,2", { times: 3 }); // O≡C
   await clickBond(page, "2,2", "3,2");               // C─OH
   await expect(counts).toHaveText("Bonds 4 of 4");

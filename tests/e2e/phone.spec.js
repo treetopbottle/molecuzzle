@@ -21,14 +21,14 @@ test("Panel.05 the key shows every Element's number of bonds, and fits a phone w
 });
 
 for (const [number, name, board] of [[12, "Glucose's, the widest", "Board, 3 by 5"], [13, "Citric acid's, the tallest", "Board, 6 by 3"], [15, "N-Acetylglucosamine's, the largest", "Board, 5 by 5"]])
-  test(`Layout.01, Puzzle.04 on a phone, the largest Grids fit: ${name}, with no sideways scroll, and the Board, its counts and its status line fit the screen`, async ({ page }) => {
+  test(`Layout.01, Puzzle.04 on a phone, the largest Grids fit: ${name}, with no sideways scroll, and the Board, its status line and its counts fit the screen`, async ({ page }) => {
     await start(page);
     await openPuzzle(page, number);
     await expect(page.getByRole("group", { name: board })).toBeVisible();
     const { width, height } = page.viewportSize();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     const stage = await page.locator(".stage").boundingBox();
-    const status = await page.getByRole("status").boundingBox();
-    expect((await page.locator("#counts").boundingBox()).y).toBeLessThan(status.y);
-    expect(status.y + status.height - stage.y).toBeLessThanOrEqual(height);
+    const status = await page.getByRole("status").boundingBox(), counts = await page.locator("#counts").boundingBox();
+    expect(counts.y).toBeGreaterThanOrEqual(status.y + status.height);
+    expect(counts.y + counts.height - stage.y).toBeLessThanOrEqual(height);
   });

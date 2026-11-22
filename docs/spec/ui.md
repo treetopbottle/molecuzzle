@@ -8,7 +8,7 @@ The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a
 
 ### Page
 
-- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the counts line ([Board.05](#board)) and the status line below it; and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
+- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it and, in the same box, the counts line ([Board.05](#board)); and the panel, with the open Puzzle, the rules, the actions and the Puzzles list (Page.01)
 
 Example (Page.01), Puzzle 1 at the start, and Puzzle 3 solved:
 
@@ -32,7 +32,7 @@ Example (Layout.01), on a phone:
 - Drawing: each Atom is a ball with its Element's symbol: O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red and I violet. Its hydrogens ([Puzzle.07](puzzle.md#puzzle)) are small white balls with an H, each on a short thin line from the Atom, on the diagonals below it and then the one above it on the left, where no Dotted line runs; they can't be clicked, and don't pulse with their Atom. A Dotted line is drawn dotted; a single, double and triple Bond as one, two and three lines (Board.01)
 - Hidden: an Atom doesn't show what it needs ([Valence.01](puzzle.md#valence)): it has no badge, and it doesn't glow when it is complete ([Valence.02](puzzle.md#valence)); the Player counts its Bonds and hydrogens against the key of [Panel.05](#panel) ([decision 0025](../decisions.md#0025)) (Board.02)
 - Solved: when the Player solves the Puzzle ([Check.04](puzzle.md#check)), the Atoms pulse, unless the browser asks for reduced motion; a Puzzle that opens solved ([Progress.06](storage.md#progress)) doesn't pulse (Board.03)
-- Counts: under the Board, above the status line, a line "Bonds <used> of <budget>" ([Valence.03](puzzle.md#valence), [Puzzle.09](puzzle.md#puzzle)), a `role="img"` named "Bonds used, of the budget: <used> of <budget>", centred under the Board; it is orange while the Player uses more than the budget, and the same when the Puzzle is solved. The numbers of Atoms with too few or too many Bonds are not shown: they would change with every Bond and say at once whether it is right ([decision 0025](../decisions.md#0025)) (Board.05)
+- Counts: under the Board, in the box of the status line and below its text, left aligned, a line "Bonds <used> of <budget>" ([Valence.03](puzzle.md#valence), [Puzzle.09](puzzle.md#puzzle)), a `role="img"` named "Bonds used, of the budget: <used> of <budget>"; it takes the colour of the status line, but is orange while the Player uses more than the budget, and is the same when the Puzzle is solved. The numbers of Atoms with too few or too many Bonds are not shown: they would change with every Bond and say at once whether it is right ([decision 0025](../decisions.md#0025)) (Board.05)
 - Names: the Board is "Board, <rows> by <cols>"; each Atom "<Element> <place>", with the Element's name (Oxygen, Nitrogen, Carbon, Sulfur, Fluorine, Chlorine, Bromine, Iodine), and ", with <h> hydrogen(s)" after the place if it has any, and no word on what it needs; each Dotted line and Bond "<symbol> <place> to <symbol> <place>: <no, single, double or triple> bond" (Board.04)
 
 Example (Board.01, Board.02, Board.05), Puzzle 2, Acetic acid, with C═O:
@@ -106,7 +106,7 @@ Example (Input.03), with Bonds and something to undo:
 | Status | Text |
 |---|---|
 | empty | Click a dotted line between two atoms to bond them. |
-| open | Not every atom has exactly its bonds yet. |
+| open | Not every atom has the right number of bonds yet. |
 | pieces | Every atom has its bonds, but they form more than one molecule. Everything must join up. |
 | solved | ✓ Solved! It's <name>. |
 | revealed | Here is <name>. Reset and build it yourself to mark it solved. |
@@ -117,7 +117,7 @@ Example (Messages.01):
 Given Puzzle 2, Acetic acid, with no Bonds
 Then the status line is "Click a dotted line between two atoms to bond them."
 When the Player bonds CH₃ 2,1 to C 2,2
-Then it is "Not every atom has exactly its bonds yet."
+Then it is "Not every atom has the right number of bonds yet."
 ```
 
 Example (Messages.02):

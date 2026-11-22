@@ -20,7 +20,7 @@ test("First day", async ({ page }) => {
 
   // The top dotted line, then three clicks for a triple Bond, and it is Acetonitrile.
   await clickBond(page, "1,1", "2,1");
-  await expect(status(page)).toHaveText("Not every atom has exactly its bonds yet.");
+  await expect(status(page)).toHaveText("Not every atom has the right number of bonds yet.");
   await expect(page.locator("#counts")).toHaveText("Bonds 1 of 4");
   await clickBond(page, "2,1", "3,1", { times: 3 });
   await expect(status(page)).toHaveText("✓ Solved! It's Acetonitrile.");

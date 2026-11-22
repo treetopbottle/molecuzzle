@@ -4,8 +4,8 @@ import { statusText, reasonText } from "../../../src/ui/messages.js";
 test("Messages.01 the status line says the text of each status", () => {
   const glycine = { name: "Glycine" }, serine = { name: "Serine" };
   expect(statusText({ kind: "empty" }, glycine)).toBe("Click a dotted line between two atoms to bond them.");
-  expect(statusText({ kind: "open", few: 3, many: 0 }, glycine)).toBe("Not every atom has exactly its bonds yet.");
-  expect(statusText({ kind: "open", few: 0, many: 1 }, glycine)).toBe("Not every atom has exactly its bonds yet.");
+  expect(statusText({ kind: "open", few: 3, many: 0 }, glycine)).toBe("Not every atom has the right number of bonds yet.");
+  expect(statusText({ kind: "open", few: 0, many: 1 }, glycine)).toBe("Not every atom has the right number of bonds yet.");
   expect(statusText({ kind: "pieces" }, glycine))
     .toBe("Every atom has its bonds, but they form more than one molecule. Everything must join up.");
   expect(statusText({ kind: "solved" }, glycine)).toBe("✓ Solved! It's Glycine.");
