@@ -5,14 +5,7 @@ import { solve } from "../../../src/puzzle/solver.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { difficulty, dottedLines } from "../../../src/puzzle/difficulty.js";
 import { schemaErrors } from "../../helpers/schemas.js";
-
-const formulaCount = f => Object.fromEntries([...f.matchAll(/([A-Z][a-z]?)(\d*)/g)].map(([, el, n]) => [el, Number(n || 1)]));
-/** A Puzzle's Atoms and their hydrogens, counted per Element, as in a formula. */
-const atomCount = p => p.atoms.reduce((m, [el, , , h]) => {
-  m[el] = (m[el] ?? 0) + 1;
-  if (h) m.H = (m.H ?? 0) + h;
-  return m;
-}, {});
+import { atomCount, formulaCount } from "../../helpers/formula.js";
 
 describe("Puzzle.01 the puzzles", () => {
   test("Puzzle.05 are the 15 of the spec's table, with their difficulty, in order of difficulty", () => {

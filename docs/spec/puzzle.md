@@ -11,7 +11,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, Bonds that cross, or an Atom with a bond count over its valence minus its hydrogens (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
 - Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number of its loops: its Dotted lines minus its Atoms plus 1. Each Dotted line is a connection to look at, and each loop a choice: which of its lines stays empty, or, round a ring, that none does ([decision 0024](../decisions.md#0024)) (Puzzle.05)
-- Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and, as they were, in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)) (Puzzle.06)
+- Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)). Each is a [Puzzle](schemas.md#puzzle) with exactly one solution, as Puzzle.01, Puzzle.04 and Puzzle.07 ask, but not in the game's order, and with any number of loops; Ammonia and Water are one Atom each, with no room for a Bond and an empty solution ([decision 0023](../decisions.md#0023)) (Puzzle.06)
 - Hydrogens: an Atom has a number of hydrogens bonded to it from the start. They aren't Atoms on the Grid, and no change touches them ([decision 0023](../decisions.md#0023)) (Puzzle.07)
 - Loops: every Puzzle after the first three has at least 2 loops ([decision 0024](../decisions.md#0024)) (Puzzle.08)
 
@@ -33,7 +33,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 | 14 | Glucose | C₆H₁₂O₆ | 26 |
 | 15 | Citric acid | C₆H₈O₇ | 27 |
 
-Removed Puzzles, which aren't added again:
+Removed Puzzles, which aren't added again, and why, in the layout each had when it was removed:
 
 | Molecule | Formula | Why |
 |---|---|---|
@@ -102,6 +102,7 @@ Example (Puzzle.06):
 ```
 Given Ammonia, NH₃, is removed
 Then no Puzzle has the id ammonia or the formula NH3
+And Ammonia's Grid is 1 by 1, with one N with 3 hydrogens, and its solution has no Bonds
 ```
 
 Example (Puzzle.07):
