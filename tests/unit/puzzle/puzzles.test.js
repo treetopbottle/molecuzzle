@@ -16,10 +16,10 @@ describe("Puzzle.01 the puzzles", () => {
       return game.budget;
     });
     expect(budgets[1]).toBe(4); // Acetic acid
-    expect(budgets).toHaveLength(15);
+    expect(budgets).toHaveLength(20);
   });
 
-  test("Puzzle.05 are the 15 of the spec's table, with their difficulty, in order of difficulty", () => {
+  test("Puzzle.05 are the 20 of the spec's table, with their difficulty, in order of difficulty", () => {
     expect(PUZZLES.map(p => `${p.name} ${p.formula} ${difficulty(p)}`)).toEqual([
       "Acetonitrile C2H3N 2",
       "Acetic acid C2H4O2 3",
@@ -36,6 +36,11 @@ describe("Puzzle.01 the puzzles", () => {
       "Citric acid C6H8O7 27",
       "Biotin C10H16N2O3S 32",
       "N-Acetylglucosamine C8H15NO6 33",
+      "Cystine C6H12N2O4S2 34",
+      "Pantothenic acid C9H17NO5 35",
+      "Tetraglycine C8H14N4O5 43",
+      "N-Acetylneuraminic acid C11H19NO9 51",
+      "Glutathione C10H17N3O6S 52",
     ]);
     const scores = PUZZLES.map(difficulty);
     expect(scores).toEqual([...scores].sort((a, b) => a - b));
@@ -71,11 +76,12 @@ describe("Puzzle.01 the puzzles", () => {
     });
   });
 
-  test("Puzzle.04 Glucose, Citric acid and N-Acetylglucosamine have Grids of 3 rows and 5 columns, 6 rows and 3 columns, and 5 rows and 5 columns", () => {
-    const [glucose, citric, glcnac] = [PUZZLES[11], PUZZLES[12], PUZZLES[14]];
+  test("Puzzle.04 Glucose, Citric acid, N-Acetylglucosamine and N-Acetylneuraminic acid have Grids of 3 rows and 5 columns, 6 rows and 3 columns, 5 rows and 5 columns, and 6 rows and 5 columns", () => {
+    const [glucose, citric, glcnac, neuraminic] = [PUZZLES[11], PUZZLES[12], PUZZLES[14], PUZZLES[18]];
     expect([glucose.name, glucose.rows, glucose.cols]).toEqual(["Glucose", 3, 5]);
     expect([citric.name, citric.rows, citric.cols]).toEqual(["Citric acid", 6, 3]);
     expect([glcnac.name, glcnac.rows, glcnac.cols]).toEqual(["N-Acetylglucosamine", 5, 5]);
+    expect([neuraminic.name, neuraminic.rows, neuraminic.cols]).toEqual(["N-Acetylneuraminic acid", 6, 5]);
   });
 
   test("Puzzle.07 Acetic acid's Atoms are an O with no hydrogens, a C with 3, a C with none and an O with 1", () => {

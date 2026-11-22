@@ -165,7 +165,7 @@ test("Panel.01, List.02 a shown solution leaves the Puzzle unsolved", () => {
   game.showSolution();
   ui.render(view(7, game));
   expect(document.querySelector("nav").textContent).toContain("Unsolved");
-  expect(document.querySelector("header").textContent).toContain("Solved 0 of 15");
+  expect(document.querySelector("header").textContent).toContain("Solved 0 of 20");
 });
 
 test("List.01, List.02 a button per Puzzle opens it, and the header shows the score", () => {
@@ -173,9 +173,9 @@ test("List.01, List.02 a button per Puzzle opens it, and the header shows the sc
   const list = document.querySelector('[aria-label="Puzzles"]');
   expect([...list.querySelectorAll("button")].slice(0, 3).map(b => b.getAttribute("aria-label")))
     .toEqual(["Puzzle 1: Acetonitrile, solved", "Puzzle 2", "Puzzle 3"]);
-  expect(list.querySelectorAll("button")).toHaveLength(15);
+  expect(list.querySelectorAll("button")).toHaveLength(20);
   expect(list.querySelector('[aria-current="true"]').getAttribute("aria-label")).toBe("Puzzle 3");
-  expect(document.querySelector("header").textContent).toContain("Solved 1 of 15");
+  expect(document.querySelector("header").textContent).toContain("Solved 1 of 20");
   button("Puzzle 13").click();
   expect(handlers.onOpen).toHaveBeenCalledWith(12);
 });

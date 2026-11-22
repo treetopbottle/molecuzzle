@@ -30,7 +30,7 @@ test("Progress.05 a shown solution is still unsolved after a reload", async ({ p
   await page.reload();
   await expect(status(page)).toHaveText("Here is 1,4-Benzoquinone. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
-  await expect(page.locator("#score")).toHaveText("Solved 0 of 15");
+  await expect(page.locator("#score")).toHaveText("Solved 0 of 20");
 });
 
 test("Progress.03, Progress.05, Progress.06 what is stored is a Progress", async ({ page }) => {

@@ -8,7 +8,7 @@ test("Board.04, Panel.01, Panel.02 a puzzle starts with no Bonds and its name hi
     - complementary:
       - navigation "Puzzle":
         - button "Previous puzzle"
-        - text: Puzzle 3 of 15
+        - text: Puzzle 3 of 20
         - button "Next puzzle"
         - text: Unsolved
       - text: Mystery molecule
@@ -31,16 +31,16 @@ test("Board.04, Panel.01, Panel.02 a puzzle starts with no Bonds and its name hi
 
 test("Panel.01, List.01 any puzzle opens from the list, or with previous and next", async ({ page }) => {
   await start(page);
-  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 15");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 20");
   await expect(page.getByRole("button", { name: "Previous puzzle" })).toBeDisabled();
   await page.getByRole("button", { name: "Next puzzle" }).click();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 2 of 15");
-  await openPuzzle(page, 15);
-  await expect(page.locator("#counter")).toHaveText("Puzzle 15 of 15");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 2 of 20");
+  await openPuzzle(page, 20);
+  await expect(page.locator("#counter")).toHaveText("Puzzle 20 of 20");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.getByRole("button", { name: "Next puzzle" })).toBeDisabled();
   await page.getByRole("button", { name: "Previous puzzle" }).click();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 14 of 15");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 19 of 20");
 });
 
 test("Panel.01, List.01, List.02 the list and the badge show what is solved", async ({ page }) => {
@@ -55,9 +55,9 @@ test("Panel.01, List.01, List.02 the list and the badge show what is solved", as
   `);
   await expect(page.getByRole("button", { name: "Puzzle 3", exact: true })).toHaveAttribute("aria-current", "true");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 15");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 20");
   await page.getByRole("button", { name: "Puzzle 13", exact: true }).click();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 13 of 15");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 13 of 20");
   await openPuzzle(page, 1);
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
   await openPuzzle(page, 2);
@@ -69,7 +69,7 @@ test("Progress.01, Progress.03, Progress.06 solved puzzles and the open puzzle a
   await build(page, PUZZLES[0]);
   await openPuzzle(page, 2);
   await page.reload();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 2 of 15");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 2 of 20");
   await expect(page.getByRole("button", { name: "Puzzle 1: Acetonitrile, solved" })).toBeVisible();
   await expect(page.getByRole("status")).toHaveText("Click a dotted line between two atoms to bond them.");
   expect(await storedProgress(page)).toEqual({
@@ -80,10 +80,10 @@ test("Progress.01, Progress.03, Progress.06 solved puzzles and the open puzzle a
 
 test("Progress.01, Progress.03 wrong data is left out, and Puzzle 1 opens when the open one is unknown", async ({ page }) => {
   await start(page, { puzzles: { acetonitrile: "solved", glycine: "seen" }, current: 7 });
-  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 15");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 20");
   await expect(page.getByRole("button", { name: "Puzzle 1: Acetonitrile, solved" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Puzzle 3", exact: true })).toBeVisible();
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 15");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 20");
 });
 
 test("Progress.04 the only request the page makes is for the page itself", async ({ page }) => {
