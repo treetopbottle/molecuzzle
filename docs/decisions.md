@@ -132,7 +132,7 @@ Accepted (2026-11-11)
 A solver (`src/puzzle/solver.js`) counts the solutions of a Grid; a test checks each Puzzle has exactly one, and that it is the one Show solution shows. Any Board where every Atom is complete and all join up is then that solution, so the game doesn't compare Molecules.
 
 - **Why:** a logic puzzle needs one answer to reason towards; with it, the game never has to match the Board against a Molecule.
-- **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions.
+- **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions. So has any even ring whose Bonds can each move one place round it, a double Bond to the next Bond, while every Atom keeps its count and all stay joined: a purine such as adenine or guanine, or a β-lactam fused to a second ring, as in penicillin (found while making plan 09).
 - **Alternatives:** accept any valid Board and name it: back to matching Molecules, and Puzzles with many answers.
 
 <a id="0009"></a>
@@ -317,10 +317,10 @@ An Atom shows no badge and doesn't glow when it is complete, and a Bond can be m
 
 Accepted (2026-11-24)
 
-`scripts/generate.js` places one Atom at a time, the one with the most Bonds to Atoms already placed, at a point in line with each of them with nothing between, inside the Grid, and goes back to the Atom before when one has no place ([Generate.03](spec/puzzle.md#generate)).
+The search for layouts, `findLayout`, places each Atom in line with its partners already placed, inside the Grid, and goes back when one has no place ([Generate.03](spec/puzzle.md#generate)).
 
 - **Why:** it placed the Atoms as a tree, each next to one partner, so a ring closed only if its last Atom happened to land in line with its first, and the layout had to fit 6 by 5 only once it was done. For Molecules with two rings or more, such as Caffeine and Sucrose, it found no layout in 400,000 tries; most tries ran into a dead end or grew too large. Placed in line and inside the Grid, every try that finishes closes its rings and fits, and Sucrose has layouts in 2,000 tries.
-- **Cost:** the same arguments give other layouts than before, so the examples of [Generate.01](spec/puzzle.md#generate) change; the Puzzles keep their layouts, which are data. A try takes longer, about 10 ms for 20 Atoms. Some Molecules have two solutions in any layout, so they can't be Puzzles ([decision 0008](#0008)): those whose Bonds can swap round an even ring, a double Bond moving to the next Bond in turn, while every Atom keeps its count and all stay joined, such as a benzene ring (its two Kekulé structures), a purine such as adenine or guanine, or a β-lactam fused to a second ring, as in penicillin.
+- **Cost:** the same arguments give other layouts than before, so the examples of [Generate.01](spec/puzzle.md#generate) change; the Puzzles keep their layouts, which are data. A try takes about 10 ms for 20 Atoms, far longer than before, so the default is 2,000 tries instead of 20,000: about 1 s for Caffeine, and half a minute for a Molecule of 25 Atoms on 6 by 5. Fewer tries can miss a smaller or emptier layout that more would find.
 - **Alternatives:** more tries of the old search: 400,000 found none. Layouts made by hand: slow, and nothing checks that the best one is kept. A Grid with more neighbours, such as the hex grid in the backlog: rings fit more easily, but every Puzzle's layout has to change.
 
 <a id="0027"></a>
