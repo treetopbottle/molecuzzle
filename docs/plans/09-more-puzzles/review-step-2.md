@@ -9,3 +9,11 @@ Commits reviewed: 072e0d0 (tests and spec) and 6389bf6 (`src/puzzle/puzzles.js` 
 3. **note**, `src/puzzle/puzzles.js:143` (Streptozotocin): "this glucose with an N═O on it" is loose, as the N═O is on a methylnitrosourea in place of the OH at carbon 2; at 195 characters it is also the longest fact.
 4. **note**, `src/puzzle/puzzles.js:206` (Mugineic acid): barley sends out mugineic acid itself; most other grasses mainly send out 2'-deoxymugineic acid.
 5. **note**, `docs/spec/puzzle.md:103-108` and `tests/e2e/phone.spec.js:23`: the phone test, tagged Puzzle.04, also opens Prostaglandin E2, which the Puzzle.04 example doesn't name.
+
+## Outcome
+
+1. Fixed (1679120): with a phosphate added, it is one of the four building blocks of RNA.
+2. Fixed (1679120): pain and swelling at an injury, a fever in an infection, and the enzyme that starts making it.
+3. Fixed (1679120): "this sugar", taken in as if it were glucose; 176 characters.
+4. Fixed (1679120): only barley.
+5. Kept: the test is also Layout.01's, and the plan asks for it; the Puzzle.04 example names Grids of each shape, and 6 by 5 already has N-Acetylneuraminic acid.
