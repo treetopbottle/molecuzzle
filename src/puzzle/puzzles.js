@@ -126,7 +126,7 @@ export const PUZZLES = [
   },
   {
     id: "uridine", name: "Uridine", formula: "C9H12N2O6",
-    fact: "One of the four building blocks of RNA: the base uracil on the sugar ribose. In DNA, thymine takes uracil's place.",
+    fact: "The base uracil on the sugar ribose; with a phosphate added, it is one of the four building blocks of RNA. In DNA, thymine takes uracil's place.",
     rows: 5, cols: 5,
     atoms: [["C",0,0,2],["O",0,1,1],["O",0,2,0],["C",0,3,0],["N",0,4,1],["C",1,0,1],["O",1,2,0],["C",1,3,1],["C",2,3,1],["C",3,0,1],["C",3,1,1],["C",3,2,1],["N",3,3,0],["C",3,4,0],["O",4,0,1],["O",4,1,1],["O",4,4,0]],
     solution: [[0,1,1],[0,5,1],[2,3,2],[3,4,1],[3,7,1],[4,13,1],[5,6,1],[5,9,1],[6,11,1],[7,8,2],[8,12,1],[9,10,1],[9,14,1],[10,11,1],[10,15,1],[11,12,1],[12,13,1],[13,16,2]],
@@ -140,7 +140,7 @@ export const PUZZLES = [
   },
   {
     id: "streptozotocin", name: "Streptozotocin", formula: "C8H15N3O7",
-    fact: "A soil bacterium makes this glucose with an N═O on it. The insulin-making cells of the pancreas take it in as if it were sugar, and it destroys them, so it is used against tumours of those cells.",
+    fact: "A soil bacterium makes this sugar. The insulin-making cells of the pancreas take it in as if it were glucose, and it destroys them, so it is used against tumours of those cells.",
     rows: 6, cols: 5,
     atoms: [["O",0,0,1],["C",0,1,1],["O",0,2,0],["C",0,3,1],["C",0,4,2],["C",1,1,1],["C",1,2,1],["C",1,3,1],["O",2,2,1],["O",2,3,1],["O",2,4,1],["N",4,1,1],["C",4,2,3],["O",5,0,0],["C",5,1,0],["N",5,2,0],["N",5,3,0],["O",5,4,0]],
     solution: [[0,1,1],[1,2,1],[1,5,1],[2,3,1],[3,4,1],[3,7,1],[4,10,1],[5,6,1],[5,11,1],[6,7,1],[6,8,1],[7,9,1],[11,14,1],[12,15,1],[13,14,2],[14,15,1],[15,16,1],[16,17,2]],
@@ -203,14 +203,14 @@ export const PUZZLES = [
   },
   {
     id: "mugineic-acid", name: "Mugineic acid", formula: "C12H20N2O8",
-    fact: "Barley and other grasses send it out from their roots to grab iron in the soil, and take it back in with the iron held inside.",
+    fact: "Barley sends it out from its roots to grab iron in the soil, and takes it back in with the iron held inside.",
     rows: 6, cols: 5,
     atoms: [["O",0,0,0],["C",0,1,0],["C",0,3,1],["C",0,4,2],["O",1,0,1],["O",1,1,1],["O",1,3,1],["C",1,4,2],["C",2,0,0],["O",2,1,0],["O",2,3,1],["N",2,4,1],["C",3,1,2],["C",3,3,1],["C",3,4,1],["C",4,0,1],["N",4,1,0],["O",4,3,1],["C",4,4,0],["C",5,0,2],["C",5,1,2],["O",5,4,0]],
     solution: [[0,1,2],[1,2,1],[1,5,1],[2,3,1],[2,6,1],[3,7,1],[4,8,1],[7,11,1],[8,9,2],[8,15,1],[10,13,1],[11,14,1],[12,13,1],[12,16,1],[13,14,1],[14,18,1],[15,16,1],[15,19,1],[16,20,1],[17,18,1],[18,21,2],[19,20,1]],
   },
   {
     id: "prostaglandin-e2", name: "Prostaglandin E2", formula: "C20H32O5",
-    fact: "A signal your body makes at an injury and in a fever, causing pain and swelling; aspirin and ibuprofen block the enzyme that makes it.",
+    fact: "A signal your body makes at an injury, where it brings pain and swelling, and in an infection, where it raises a fever; aspirin and ibuprofen block the enzyme that starts making it.",
     rows: 6, cols: 5,
     atoms: [["C",0,2,1],["C",0,3,1],["O",0,4,1],["C",1,0,2],["C",1,1,2],["C",1,2,1],["C",1,3,1],["C",1,4,1],["C",2,0,2],["C",2,1,2],["O",2,2,1],["C",2,4,2],["O",3,0,0],["C",3,1,3],["C",3,2,2],["C",3,3,1],["C",3,4,0],["C",4,0,0],["O",4,1,1],["C",4,2,2],["C",4,3,1],["O",4,4,0],["C",5,0,2],["C",5,2,2],["C",5,3,1]],
     solution: [[0,1,2],[0,5,1],[1,6,1],[2,7,1],[3,4,1],[3,8,1],[4,5,1],[5,10,1],[6,7,1],[6,15,1],[7,11,1],[8,9,1],[9,13,1],[11,16,1],[12,17,2],[14,15,1],[14,19,1],[15,16,1],[16,21,2],[17,18,1],[17,22,1],[19,20,1],[20,24,2],[22,23,1],[23,24,1]],

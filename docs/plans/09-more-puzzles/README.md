@@ -73,16 +73,16 @@ Their ids and facts (Panel.03):
 
 | Molecule | Id | Fact |
 |---|---|---|
-| Uridine | `uridine` | One of the four building blocks of RNA: the base uracil on the sugar ribose. In DNA, thymine takes uracil's place. |
+| Uridine | `uridine` | The base uracil on the sugar ribose; with a phosphate added, it is one of the four building blocks of RNA. In DNA, thymine takes uracil's place. |
 | Carnosine | `carnosine` | β-Alanine and histidine joined together. Muscles are full of it, and during a sprint it soaks up the acid that builds up in them. |
-| Streptozotocin | `streptozotocin` | A soil bacterium makes this glucose with an N═O on it. The insulin-making cells of the pancreas take it in as if it were sugar, and it destroys them, so it is used against tumours of those cells. |
+| Streptozotocin | `streptozotocin` | A soil bacterium makes this sugar. The insulin-making cells of the pancreas take it in as if it were glucose, and it destroys them, so it is used against tumours of those cells. |
 | Abscisic acid | `abscisic-acid` | A plant hormone: in a drought it closes the pores of the leaves to save water, and it keeps seeds from sprouting too early. |
 | Retinol | `retinol` | Retinol is vitamin A. Your eyes turn it into retinal, which changes shape when light hits it: the first step of seeing. |
 | Domoic acid | `domoic-acid` | Made by algae, it builds up in shellfish. In 1987 mussels with it poisoned over a hundred people in Canada, and some never got their memory back. |
 | Sucrose | `sucrose` | Table sugar: a glucose and a fructose joined by an oxygen. It comes from sugar cane and sugar beet. |
 | Picrocrocin | `picrocrocin` | It gives saffron its bitter taste; as saffron dries, it breaks down into safranal, which gives saffron its smell. |
-| Mugineic acid | `mugineic-acid` | Barley and other grasses send it out from their roots to grab iron in the soil, and take it back in with the iron held inside. |
-| Prostaglandin E2 | `prostaglandin-e2` | A signal your body makes at an injury and in a fever, causing pain and swelling; aspirin and ibuprofen block the enzyme that makes it. |
+| Mugineic acid | `mugineic-acid` | Barley sends it out from its roots to grab iron in the soil, and takes it back in with the iron held inside. |
+| Prostaglandin E2 | `prostaglandin-e2` | A signal your body makes at an injury, where it brings pain and swelling, and in an infection, where it raises a fever; aspirin and ibuprofen block the enzyme that starts making it. |
 
 Left out after trying: Caffeine (21) and Captopril (29), too easy; Kainic acid (33), Domoic acid's ring; KDO and Nicotianamine, near N-Acetylneuraminic acid and Mugineic acid; and those with two solutions in every layout tried, or no layout in 6 by 5 in 6,000 tries: Tryptophan, Melatonin, Aspartame, Penicillin G and F, Thienamycin, Meropenem, Adenosine, Guanosine, Indigo, Thalidomide, Salicin, Arbutin, Resveratrol, Riboflavin, Biopterin, Gly-Pro-Hyp, Aucubin, Testosterone, Chlorogenic acid, Capsaicin, S-Adenosylhomocysteine and Biocytin.
 
