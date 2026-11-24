@@ -1,5 +1,5 @@
-// The panel: the open Puzzle between ‹ and ›, whether it is solved, the
-// mystery molecule or its name, formula and fact, and the rules. ‹, › and
+// The panel: the open Puzzle between ‹ and ›, whether it is solved, its
+// difficulty, the mystery molecule or its name, formula and fact, and the rules. ‹, › and
 // "Next puzzle →" carry data-open, the index of the Puzzle they open: whoever
 // owns the page listens for clicks on them.
 import { ELEMENTS as LOOKS } from "./elements.js";
@@ -57,6 +57,7 @@ function build(panel, elements) {
       <button id="next" aria-label="Next puzzle">›</button>
       <span id="badge" class="badge"></span>
     </nav>
+    <p id="difficulty" class="legend"></p>
     <div class="mystery">
       <div class="eyebrow">Mystery molecule</div>
       <h1 id="title"></h1>
@@ -81,15 +82,17 @@ function build(panel, elements) {
  * focused button keeps its focus.
  * @param {HTMLElement} panel
  * @param {{ puzzles: {id:string,name:string,formula:string,fact:string}[], index: number,
- *   progress: {puzzles: Record<string,string>}, done: boolean, elements: {symbol: string, valence: number}[] }} view
+ *   progress: {puzzles: Record<string,string>}, done: boolean, difficulty: number,
+ *   elements: {symbol: string, valence: number}[] }} view
  */
-export function renderPanel(panel, { puzzles, index, progress, done, elements = [] }) {
+export function renderPanel(panel, { puzzles, index, progress, done, difficulty, elements = [] }) {
   if (!panel.querySelector("nav")) build(panel, elements);
   const $ = id => panel.querySelector(`#${id}`);
   const puzzle = puzzles[index], last = index === puzzles.length - 1;
   const opens = (button, i, can) => { button.disabled = !can; button.dataset.open = String(i); };
 
   $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
+  $("difficulty").textContent = `Difficulty ${difficulty}`;
   opens($("prev"), index - 1, index > 0);
   opens($("next"), index + 1, !last);
   const state = progress.puzzles[puzzle.id];

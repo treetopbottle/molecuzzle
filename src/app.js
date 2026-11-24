@@ -1,6 +1,7 @@
 // Wires the Puzzles, the open game, Progress and the UI. No DOM:
 // browser.js makes the dependencies and passes them in.
 import { markSolved } from "./storage/progress.js";
+import { difficulty } from "./puzzle/difficulty.js";
 
 /**
  * @param {{ puzzles: object[], createGame: Function,
@@ -53,7 +54,7 @@ export function startApp({ puzzles, createGame, store, createUi }) {
     if (status.kind === "solved" && progress.puzzles[puzzle.id] !== "solved")
       progress = store.update(p => markSolved(p, puzzle.id));
     ui.render({
-      puzzles, index, progress, status, counts: game.counts(),
+      puzzles, index, progress, status, counts: game.counts(), difficulty: difficulty(puzzle),
       done: game.done(), canUndo: game.canUndo, hasBonds: game.order.some(Boolean),
     });
   }

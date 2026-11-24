@@ -1,6 +1,6 @@
 // How hard a Puzzle is: its Dotted lines, plus twice those its solution
-// leaves empty, as each is a Bond to rule out (decisions 0021, 0024). For the
-// tests and the generator; the game doesn't use it.
+// leaves empty, as each is a Bond to rule out (decisions 0021, 0024). The
+// panel shows it (decision 0027); the tests and the generator use it too.
 import { candidateBonds } from "./grid.js";
 
 /**

@@ -51,7 +51,8 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
 
   /**
    * @param {{ puzzles: object[], index: number, progress: {puzzles: Record<string,string>},
-   *   status: {kind: string}, counts: {used: number, budget: number}, done: boolean, canUndo: boolean, hasBonds: boolean }} view
+   *   status: {kind: string}, counts: {used: number, budget: number}, difficulty: number,
+   *   done: boolean, canUndo: boolean, hasBonds: boolean }} view
    */
   function render(view) {
     const { puzzles, index, progress, status } = view;
