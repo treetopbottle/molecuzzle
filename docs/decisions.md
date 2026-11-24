@@ -25,6 +25,7 @@ What the Player does and what the rules are.
 - [0023: Hydrogens are drawn on their Atom, not placed on the Grid](#0023)
 - [0024: Puzzles have loops](#0024)
 - [0025: Atoms don't show what they need, and may have too many Bonds](#0025)
+- [0027: The panel shows the open Puzzle's difficulty, as a number](#0027)
 
 ### Technical
 
@@ -35,6 +36,7 @@ How the code and its data are built.
 - [0011: Three components, wired in one place](#0011)
 - [0012: Schemas as JSON files, checked by the tests](#0012)
 - [0016: Progress keeps its key while it only gains fields](#0016)
+- [0026: The generator places Atoms in line with their partners, and backs up](#0026)
 
 ### Testing and publishing
 
@@ -257,7 +259,7 @@ A batch of larger Puzzles is made harder by the Dotted lines its solution leaves
 <a id="0021"></a>
 ## 0021: Puzzles are in order of difficulty
 
-Accepted (2026-11-21). [0024](#0024) counted loops in place of empty Dotted lines; that is undone (2026-11-22, below).
+Accepted (2026-11-21). [0024](#0024) counted loops in place of empty Dotted lines; that is undone (2026-11-22, below). Since [0027](#0027) the panel shows the difficulty.
 
 Every Puzzle has a difficulty, its Dotted lines plus twice those its solution leaves empty ([Puzzle.05](spec/puzzle.md#puzzle)), and the list is in that order, easiest first. A new Puzzle goes where its difficulty puts it, after those of the same difficulty, and the Puzzles after it move up a number.
 
@@ -309,3 +311,25 @@ An Atom shows no badge and doesn't glow when it is complete, and a Bond can be m
 - **Why:** with a badge on every Atom and a refusal where one is full, the Player never had to count: the Puzzle was nearly always solved by following the badges, and Players found the Puzzles too easy. Now the Player counts hydrogens and Bonds, and has to try: an extra Bond where it is surely needed, before the one that isn't is taken away. Letting the Player go over, instead of refusing, allows that, and cycling a Bond up past a triple to none removes one that was too strong. The key makes the number of Bonds an Element needs easy to find.
 - **Cost:** the Player gets less help, for the Puzzles that were meant as a tutorial too (the first three are easy enough). The Bonds used of the budget are the one number left, and it says little: Bonds used equal to the budget is not solved. A first version also showed the numbers of Atoms with too few and with too many Bonds; those changed with every Bond and told at once whether it was right, so they are gone, and the rules and the status keep them ([Valence.03](spec/puzzle.md#valence), [Check.02](spec/puzzle.md#check)) for a hint that marks which Atoms (backlog). A screen reader hears no more of an Atom than its place and hydrogens, and the Bonds used. Nothing stops a Board of nonsense, such as every Dotted line a triple Bond; it is just not solved. Solving doesn't change, so [Puzzle.01](spec/puzzle.md#puzzle) and the solutions, the difficulty, and Progress, with its solved marks and its Boards, stay as they are; a Board saved before is still one that can be on the Grid.
 - **Alternatives:** keep the badges and only add the budget: the Player still follows the badges. A hard limit at the budget, no Bond made past it: the Player can't add before removing, and its count would be the same as the badges when one runs out. A hint button that marks the Atoms, limited per Puzzle: left for later, as it undoes much of this. The budget as the way to win: it follows from every Atom having exactly its Bonds, so it adds no rule.
+
+<a id="0026"></a>
+## 0026: The generator places Atoms in line with their partners, and backs up
+
+Accepted (2026-11-24)
+
+`scripts/generate.js` places one Atom at a time, the one with the most Bonds to Atoms already placed, at a point in line with each of them with nothing between, inside the Grid, and goes back to the Atom before when one has no place ([Generate.03](spec/puzzle.md#generate)).
+
+- **Why:** it placed the Atoms as a tree, each next to one partner, so a ring closed only if its last Atom happened to land in line with its first, and the layout had to fit 6 by 5 only once it was done. For Molecules with two rings or more, such as Caffeine and Sucrose, it found no layout in 400,000 tries; most tries ran into a dead end or grew too large. Placed in line and inside the Grid, every try that finishes closes its rings and fits, and Sucrose has layouts in 2,000 tries.
+- **Cost:** the same arguments give other layouts than before, so the examples of [Generate.01](spec/puzzle.md#generate) change; the Puzzles keep their layouts, which are data. A try takes longer, about 10 ms for 20 Atoms. Some Molecules have two solutions in any layout, so they can't be Puzzles ([decision 0008](#0008)): those whose Bonds can swap round an even ring, a double Bond moving to the next Bond in turn, while every Atom keeps its count and all stay joined, such as a benzene ring (its two Kekulé structures), a purine such as adenine or guanine, or a β-lactam fused to a second ring, as in penicillin.
+- **Alternatives:** more tries of the old search: 400,000 found none. Layouts made by hand: slow, and nothing checks that the best one is kept. A Grid with more neighbours, such as the hex grid in the backlog: rings fit more easily, but every Puzzle's layout has to change.
+
+<a id="0027"></a>
+## 0027: The panel shows the open Puzzle's difficulty, as a number
+
+Accepted (2026-11-24)
+
+Under "Puzzle <n> of <N>" the panel shows "Difficulty <d>", the open Puzzle's difficulty ([Puzzle.05](spec/puzzle.md#puzzle), [Panel.01](spec/ui.md#panel)).
+
+- **Why:** the Player asked to see it, to know how hard a Puzzle is before starting it. The number is the one the list is ordered by, so it rises along the list, and it needs no scale or names to keep up to date as Puzzles are added. The panel has the open Puzzle already; the Player chose it over the list.
+- **Cost:** the number has no unit, and its meaning, Dotted lines plus twice the empty ones, isn't explained on the page; a Player sees only that larger is harder. Two Puzzles of about the same number can still feel different ([0021](#0021)'s cost). The list doesn't show it, so to compare Puzzles the Player opens them.
+- **Alternatives:** in the list, on each button: compare at a glance, but wider buttons on a phone. Words or stars, such as Easy, Medium and Hard: easier to read, but bands to choose and move as harder Puzzles come. Only the number in the list, "Puzzle 18 of 30": nothing to add, but it says nothing of how much harder one is than the one before.

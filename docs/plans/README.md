@@ -13,6 +13,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 | [06: Puzzles in order of difficulty, and fewer easy ones](06-difficulty/README.md) | Done (2026-11-21) |
 | [07: Hydrogens on their Atoms, and Puzzles with loops](07-hydrogens-on-atoms/README.md) | Done (2026-11-22) |
 | [08: Atoms don't show what they need, and a budget of Bonds](08-hidden-needs/README.md) | Done (2026-11-22) |
+| [09: Ten more Puzzles, and the difficulty in the panel](09-more-puzzles/README.md) | Draft |
 
 ## Backlog
 
@@ -21,7 +22,6 @@ Contains features, slices or small tasks to work on, in order of importance.
 - Deploy the puzzle that is build from the `main` branch to a production environment, GitHub Pages is only for testing.
 - A hex grid, with Atoms in the cell centres, or diagonals on the square grid: up to 6 (or 8) neighbours instead of 4, so Atoms with 5 or 6 Bonds fit, such as P in PCl₅ and S in SF₆. Diagonals cross in every square; the hex grid doesn't, but every Puzzle's layout has to be generated again.
 - A more complicated valence model: formal charges, and Elements with more than one valence (S 2, 4 or 6; P 3 or 5), for Molecules such as carbon monoxide (⁻C≡O⁺), nitro groups and nitric acid. Each Atom still shows the one number of Bonds it needs (N⁺ needs 4, O⁻ needs 1), so Puzzles stay logic with one solution; letting the Player choose an Atom's valence would leave few Grids with exactly one solution. Goes against [decision 0001](../decisions.md#0001).
-- Show each Puzzle's difficulty to the Player, e.g. in the panel or the list ([decision 0021](../decisions.md#0021)); left out of plan 06.
 - A test that no Puzzle's layout is another's, or nearly so, turned, flipped or with other symbols of the same need, valence minus hydrogens ([decisions 0020 and 0022](../decisions.md#0022)): with the look-alikes removed, it needs no exceptions.
 - Puzzles with F, Cl, Br or I, which have none since plan 07: Molecules whose loops don't close on the one-Bond halogens ([decision 0024](../decisions.md#0024)). Biotin has an S in its ring.
 - A difficulty from a solver that plays like a Player: the Dotted lines its obvious moves leave open ([decision 0024](../decisions.md#0024)). Plan 07 chose its Puzzles with such a script, not kept; in the game's tests it could keep a new Puzzle from being solved by the obvious moves alone.
