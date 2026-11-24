@@ -31,7 +31,7 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
     - complementary:
       - navigation "Puzzle":
         - button "Previous puzzle"
-        - text: Puzzle 3 of 20
+        - text: Puzzle 3 of 30
         - button "Next puzzle"
         - text: ✓ Solved
       - text: Mystery molecule
@@ -45,9 +45,9 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
       - paragraph: Glycine is the simplest amino acid, one of the building blocks of proteins. Traces have even been found in samples from comets.
       - button "Next puzzle →"
   `);
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 20");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 30");
   await page.getByRole("button", { name: "Next puzzle →" }).click();
-  await expect(page.locator("#counter")).toHaveText("Puzzle 4 of 20");
+  await expect(page.locator("#counter")).toHaveText("Puzzle 4 of 30");
 });
 
 test("Messages.01 the status line is green when solved and when revealed", async ({ page }) => {
@@ -64,9 +64,9 @@ test("Messages.01 the status line is green when solved and when revealed", async
 });
 
 test("Panel.03 the last puzzle has no Next puzzle button", async ({ page }) => {
-  await openPuzzle(page, 20);
-  await build(page, PUZZLES[19]);
-  await expect(status(page)).toHaveText("✓ Solved! It's Glutathione.");
+  await openPuzzle(page, 30);
+  await build(page, PUZZLES[29]);
+  await expect(status(page)).toHaveText("✓ Solved! It's Prostaglandin E2.");
   await expect(page.getByRole("button", { name: "Next puzzle →" })).toBeHidden();
 });
 
@@ -83,7 +83,7 @@ test("Input.04, Messages.01, Panel.01, List.01, List.02 Show solution asks first
   await expect(status(page)).toHaveText("Here is 1,4-Benzoquinone. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.getByRole("button", { name: "Puzzle 7", exact: true })).toBeVisible();
-  await expect(page.locator("#score")).toHaveText("Solved 0 of 20");
+  await expect(page.locator("#score")).toHaveText("Solved 0 of 30");
 });
 
 test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it solved", async ({ page }) => {
@@ -92,7 +92,7 @@ test("Messages.01, Panel.01, List.02 Show solution on a solved puzzle keeps it s
   await page.getByRole("button", { name: "Show solution" }).click();
   await expect(status(page)).toHaveText("Here is 1,4-Benzoquinone. Reset and build it yourself to mark it solved.");
   await expect(page.locator("#badge")).toHaveText("✓ Solved");
-  await expect(page.locator("#score")).toHaveText("Solved 1 of 20");
+  await expect(page.locator("#score")).toHaveText("Solved 1 of 30");
 });
 
 test("Help.01, Help.02, Messages.01, Panel.01 Serine: the solution shown, then Reset, and building it marks it solved", async ({ page }) => {

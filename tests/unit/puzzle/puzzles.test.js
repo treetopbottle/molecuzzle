@@ -16,10 +16,10 @@ describe("Puzzle.01 the puzzles", () => {
       return game.budget;
     });
     expect(budgets[1]).toBe(4); // Acetic acid
-    expect(budgets).toHaveLength(20);
+    expect(budgets).toHaveLength(30);
   });
 
-  test("Puzzle.05 are the 20 of the spec's table, with their difficulty, in order of difficulty", () => {
+  test("Puzzle.05 are the 30 of the spec's table, with their difficulty, in order of difficulty", () => {
     expect(PUZZLES.map(p => `${p.name} ${p.formula} ${difficulty(p)}`)).toEqual([
       "Acetonitrile C2H3N 2",
       "Acetic acid C2H4O2 3",
@@ -38,9 +38,19 @@ describe("Puzzle.01 the puzzles", () => {
       "N-Acetylglucosamine C8H15NO6 33",
       "Cystine C6H12N2O4S2 34",
       "Pantothenic acid C9H17NO5 35",
+      "Uridine C9H12N2O6 36",
+      "Carnosine C9H14N4O3 37",
+      "Streptozotocin C8H15N3O7 42",
       "Tetraglycine C8H14N4O5 43",
+      "Abscisic acid C15H20O4 43",
       "N-Acetylneuraminic acid C11H19NO9 51",
+      "Retinol C20H30O 51",
       "Glutathione C10H17N3O6S 52",
+      "Domoic acid C15H21NO6 55",
+      "Sucrose C12H22O11 57",
+      "Picrocrocin C16H26O7 57",
+      "Mugineic acid C12H20N2O8 58",
+      "Prostaglandin E2 C20H32O5 67",
     ]);
     const scores = PUZZLES.map(difficulty);
     expect(scores).toEqual([...scores].sort((a, b) => a - b));
@@ -77,7 +87,7 @@ describe("Puzzle.01 the puzzles", () => {
   });
 
   test("Puzzle.04 Glucose, Citric acid, N-Acetylglucosamine and N-Acetylneuraminic acid have Grids of 3 rows and 5 columns, 6 rows and 3 columns, 5 rows and 5 columns, and 6 rows and 5 columns", () => {
-    const [glucose, citric, glcnac, neuraminic] = [PUZZLES[11], PUZZLES[12], PUZZLES[14], PUZZLES[18]];
+    const [glucose, citric, glcnac, neuraminic] = [PUZZLES[11], PUZZLES[12], PUZZLES[14], PUZZLES[22]];
     expect([glucose.name, glucose.rows, glucose.cols]).toEqual(["Glucose", 3, 5]);
     expect([citric.name, citric.rows, citric.cols]).toEqual(["Citric acid", 6, 3]);
     expect([glcnac.name, glcnac.rows, glcnac.cols]).toEqual(["N-Acetylglucosamine", 5, 5]);
