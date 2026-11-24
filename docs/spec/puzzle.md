@@ -132,6 +132,7 @@ Then it has 7 − 6 + 1 = 2 loops
 
 - Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order, and its difficulty ([Puzzle.05](#puzzle)); the same arguments print the same layout (Generate.01)
 - None: if it can't read a Bond, or a Bond has an Atom whose Element is H or isn't in the [table of valences](#board), or whose hydrogens leave it no room for a Bond, it stops with "can't read <bond>", and if no try has exactly one solution, these Bonds, with "no unique layout found": so also for Bonds that don't give each Atom its valence (Generate.02)
+- Rings: as it places each Atom in line with its partners already placed, inside the Grid, and goes back when one has no place, it finds layouts of Molecules with several rings, which Atoms placed as a tree rarely close ([decision 0026](../decisions.md#0026)) (Generate.03)
 
 Bonds are written between labelled Atoms, `-` `=` `#` a single, double and triple Bond. A label is the Atom as in a formula, its Element and then its hydrogens, such as `C`, `CH3`, `OH` or `NH2`; Atoms with the same label are told apart by `:` and a name after it, such as `CH2:a` and `CH2:b`.
 
@@ -157,7 +158,14 @@ Example (Generate.01):
 
 ```
 Given the Bonds "CH3-C C#N", 2000 tries, at most 3 by 3, seed 1
-Then it prints rows: 3, cols: 1, atoms: [["C",0,0,3],["C",1,0,0],["N",2,0,0]], solution: [[0,1,1],[1,2,3]] and difficulty 2
+Then it prints rows: 1, cols: 3, atoms: [["N",0,0,0],["C",0,1,0],["C",0,2,3]], solution: [[0,1,3],[1,2,1]] and difficulty 2
+```
+
+Example (Generate.03):
+
+```
+Given Caffeine's Bonds "N:1-C:2 C:2=O:2 C:2-N:3 N:3-C:4 C:4=C:5 C:5-C:6 C:6=O:6 C:6-N:1 C:4-N:9 N:9=CH:8 CH:8-N:7 N:7-C:5 N:1-CH3:a N:3-CH3:b N:7-CH3:c", 200 tries, seed 1
+Then it prints a layout of at most 6 by 5 whose one solution is these Bonds
 ```
 
 Example (Generate.02):

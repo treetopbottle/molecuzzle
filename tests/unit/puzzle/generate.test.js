@@ -1,12 +1,27 @@
 import { expect, test } from "vitest";
 import { findLayout } from "../../../src/puzzle/generate.js";
+import { candidateBonds } from "../../../src/puzzle/grid.js";
+import { solve } from "../../../src/puzzle/solver.js";
 
 test("Generate.01 finds the layout of Acetonitrile on which it is the only solution, its Atoms with their hydrogens", () => {
   expect(findLayout("CH3-C C#N", { tries: 2000, maxRows: 3, maxCols: 3, seed: 1 })).toEqual({
-    rows: 3, cols: 1,
-    atoms: [["C", 0, 0, 3], ["C", 1, 0, 0], ["N", 2, 0, 0]],
-    solution: [[0, 1, 1], [1, 2, 3]],
+    rows: 1, cols: 3,
+    atoms: [["N", 0, 0, 0], ["C", 0, 1, 0], ["C", 0, 2, 3]],
+    solution: [[0, 1, 3], [1, 2, 1]],
   });
+});
+
+test("Generate.03 finds a layout of Caffeine, with its two rings, in 200 tries: at most 6 by 5, and its one solution is these Bonds", () => {
+  const layout = findLayout("N:1-C:2 C:2=O:2 C:2-N:3 N:3-C:4 C:4=C:5 C:5-C:6 C:6=O:6 C:6-N:1 C:4-N:9 N:9=CH:8 CH:8-N:7 N:7-C:5 N:1-CH3:a N:3-CH3:b N:7-CH3:c", { tries: 200, seed: 1 });
+  expect(layout).not.toBeNull();
+  expect(layout.rows).toBeLessThanOrEqual(6);
+  expect(layout.cols).toBeLessThanOrEqual(5);
+  const atoms = layout.atoms.map(([el, r, c, h]) => ({ el, r, c, h }));
+  const bonds = candidateBonds(atoms), solutions = solve(atoms, 2);
+  expect(solutions).toHaveLength(1);
+  const made = bonds.flatMap((e, k) => (solutions[0][k] ? [[e.a, e.b, solutions[0][k]].join()] : []));
+  expect(made.sort()).toEqual(layout.solution.map(String).sort());
+  expect(atoms.map(a => a.el + a.h).sort()).toEqual(["C0", "C0", "C0", "C0", "C1", "C3", "C3", "C3", "N0", "N0", "N0", "N0", "O0", "O0"]);
 });
 
 test("Generate.01 Atoms with the same label are told apart by a name after `:`", () => {
