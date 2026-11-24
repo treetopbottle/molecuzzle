@@ -11,3 +11,13 @@ Commits reviewed: 2374002 (tests), 7c7ee48 (implementation) and 803ffd3 (the scr
 5. **note**, `tests/unit/puzzle/generate.test.js:14-25`, `docs/spec/puzzle.md:164-169`: Generate.03's example says "it prints", but only `findLayout` is tested under its id; the default-size script test runs Caffeine through the script.
 6. **note**, `src/puzzle/generate.js:15`: the JSDoc line with "(2000 if left out)" is much longer than those around it.
 7. **note**, `docs/plans/09-more-puzzles/README.md:93`: the reviewer couldn't check that each of the ten prints its layout; step 2 should confirm each Grid and difficulty against the table before it adds them.
+
+## Outcome
+
+1. Fixed (892ca17): `pick` is gone.
+2. Fixed (892ca17): the check is gone; a direction stops at a taken point.
+3. Fixed (892ca17): the taken points are a `Set`.
+4. Kept: as before the step; it is in the backlog already, for `scripts/generate.js`.
+5. Kept: the script test of the default size runs Caffeine through the script; `findLayout` is what prints.
+6. Fixed (892ca17): the JSDoc is rewrapped.
+7. Checked: each of the ten prints its layout and difficulty as in the table, through `scripts/generate.js`, after 892ca17 too.
