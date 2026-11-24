@@ -5,6 +5,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createUi } from "../../../src/ui/ui.js";
 import { createGame } from "../../../src/puzzle/game.js";
+import { difficulty } from "../../../src/puzzle/difficulty.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 
 // The page's body, from index.html, without its script.
@@ -19,7 +20,7 @@ beforeEach(() => {
 });
 
 const view = (index, game, progress = { puzzles: {}, current: PUZZLES[index].id }) => ({
-  puzzles: PUZZLES, index, progress,
+  puzzles: PUZZLES, index, progress, difficulty: difficulty(PUZZLES[index]),
   status: game.status(), counts: game.counts(), done: game.done(), canUndo: game.canUndo, hasBonds: game.order.some(Boolean),
 });
 function show(index, { progress, confirm } = {}) {

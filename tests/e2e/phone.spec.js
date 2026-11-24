@@ -20,7 +20,7 @@ test("Panel.05 the key shows every Element's number of bonds, and fits a phone w
   expect(box.x + box.width).toBeLessThanOrEqual(width);
 });
 
-test("Page.01 on a phone, the actions end within the screen, under the mystery molecule's title", async ({ page }) => {
+test("Page.01 on a phone, the actions end within the screen", async ({ page }) => {
   await start(page);
   const actions = await page.locator(".actions").boundingBox();
   expect(actions.y + actions.height).toBeLessThanOrEqual(page.viewportSize().height);
