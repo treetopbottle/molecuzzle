@@ -34,6 +34,7 @@ test("Board.03, Messages.01, Panel.01, Panel.03, List.02, Progress.01 building t
         - text: Puzzle 3 of 30
         - button "Next puzzle"
         - text: ✓ Solved
+      - paragraph: Difficulty 7
       - text: Mystery molecule
       - heading "Glycine" [level=1]
       - text: C

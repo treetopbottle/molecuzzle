@@ -11,6 +11,7 @@ test("Board.04, Panel.01, Panel.02 a puzzle starts with no Bonds and its name hi
         - text: Puzzle 3 of 30
         - button "Next puzzle"
         - text: Unsolved
+      - paragraph: Difficulty 7
       - text: Mystery molecule
       - heading "?" [level=1]
       - text: Bond every atom to find out what it is.
@@ -33,10 +34,12 @@ test("Panel.01, List.01 any puzzle opens from the list, or with previous and nex
   await start(page);
   await expect(page.locator("#counter")).toHaveText("Puzzle 1 of 30");
   await expect(page.getByRole("button", { name: "Previous puzzle" })).toBeDisabled();
+  await expect(page.locator("#difficulty")).toHaveText("Difficulty 2");
   await page.getByRole("button", { name: "Next puzzle" }).click();
   await expect(page.locator("#counter")).toHaveText("Puzzle 2 of 30");
   await openPuzzle(page, 30);
   await expect(page.locator("#counter")).toHaveText("Puzzle 30 of 30");
+  await expect(page.locator("#difficulty")).toHaveText("Difficulty 67");
   await expect(page.locator("#badge")).toHaveText("Unsolved");
   await expect(page.getByRole("button", { name: "Next puzzle" })).toBeDisabled();
   await page.getByRole("button", { name: "Previous puzzle" }).click();

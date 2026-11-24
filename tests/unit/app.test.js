@@ -31,6 +31,13 @@ test("Progress.01 it opens the stored Puzzle, or Puzzle 1 if that is missing or 
   expect(start({ puzzles: {}, current: "no-such-puzzle" }).ui.view().index).toBe(0);
 });
 
+test("Panel.01 the view has the open Puzzle's difficulty", () => {
+  const { ui } = start();
+  expect(ui.view().difficulty).toBe(2); // Acetonitrile
+  ui.handlers.onOpen(29);
+  expect(ui.view().difficulty).toBe(67); // Prostaglandin E2
+});
+
 test("Progress.01 the open Puzzle is saved", () => {
   const { store, ui } = start();
   expect(store.saved.current).toBe("acetonitrile");

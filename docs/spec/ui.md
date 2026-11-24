@@ -8,7 +8,7 @@ The screenshots show how the page looks at 1280×800, or 390×844 for a phone; a
 
 ### Page
 
-- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it and, in the same box, the counts line ([Board.05](#board)); and the panel, with the open Puzzle number, the mystery molecule heading and its title, the actions, its formula or "Bond every atom to find out what it is.", the rules and the Puzzles list, in that order, so the actions are in view on a phone (Page.01)
+- Parts: a header with "Molecuzzle" and "Solved <k> of <N>", N the number of Puzzles ([Puzzle.01](puzzle.md#puzzle)); the Board, with the status line below it and, in the same box, the counts line ([Board.05](#board)); and the panel, with the open Puzzle number, its difficulty, the mystery molecule heading and its title, the actions, its formula or "Bond every atom to find out what it is.", the rules and the Puzzles list, in that order, so the actions are in view on a phone (Page.01)
 
 Example (Page.01), Puzzle 1 at the start, and Puzzle 3 solved:
 
@@ -132,7 +132,7 @@ Then the message is "Bonds can't cross."
 
 ### Panel
 
-- Puzzle: "Puzzle <n> of <N>" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on the last. Next to it, "Unsolved" or "✓ Solved" (Panel.01)
+- Puzzle: "Puzzle <n> of <N>" between ‹ and ›, which open the previous and next Puzzle; ‹ is disabled on Puzzle 1 and › on the last. Next to it, "Unsolved" or "✓ Solved". Under it, "Difficulty <d>", the open Puzzle's difficulty ([Puzzle.05](puzzle.md#puzzle), [decision 0027](../decisions.md#0027)) (Panel.01)
 - Mystery: under the heading "Mystery molecule", until the Board is solved or shows the solution, the panel shows "?" and "Bond every atom to find out what it is." (Panel.02)
 - Named: once it is, in their place the Molecule's name and its formula with subscripts, and below them its fact and "Next puzzle →", which opens the next Puzzle (not on the last) (Panel.03)
 - Rules: the panel lists the rules of the game, as in the screenshots; the one on valence points to the key: "Each atom needs exactly its number of bonds, as in the key below. Its small hydrogens are already bonded and count.", and a rule after it on the counts: "Under the board are the bonds you use, of the bonds the solution has. You may use more, but then it isn't solved." (Panel.04)
@@ -150,9 +150,9 @@ Example (Panel.01):
 
 ```
 Given Puzzle 1 is open
-Then ‹ is disabled
+Then ‹ is disabled, and "Difficulty 2" shows
 When the Player clicks › and then opens Puzzle 30
-Then "Puzzle 30 of 30" and "Unsolved" show, and › is disabled
+Then "Puzzle 30 of 30", "Difficulty 67" and "Unsolved" show, and › is disabled
 ```
 
 ### List

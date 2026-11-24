@@ -13,8 +13,8 @@ beforeEach(() => {
 
 // What the Glue gives: each Element's number of Bonds, in the order of the key.
 const elements = Object.entries({ C: 4, N: 3, O: 2, S: 2 }).map(([symbol, valence]) => ({ symbol, valence }));
-const view = (index, { solved = [], done = false } = {}) => ({
-  puzzles, index, done, elements,
+const view = (index, { solved = [], done = false, difficulty = 7 } = {}) => ({
+  puzzles, index, done, elements, difficulty,
   progress: { puzzles: Object.fromEntries(solved.map(id => [id, "solved"])), current: puzzles[index].id },
 });
 const button = name => panel.querySelector(`button[aria-label="${name}"]`) ?? [...panel.querySelectorAll("button")].find(b => b.textContent === name);
@@ -37,6 +37,16 @@ test("Panel.01 the open Puzzle between ‹ and ›, ‹ disabled on Puzzle 1 and
   expect(button("Previous puzzle").disabled).toBe(false);
   expect(button("Previous puzzle").dataset.open).toBe("11");
   expect(button("Next puzzle").disabled).toBe(true);
+});
+
+test("Panel.01 under the nav, the open Puzzle's difficulty, changed in place", () => {
+  renderPanel(panel, view(0, { difficulty: 2 }));
+  const shown = panel.querySelector("nav").nextElementSibling;
+  expect(shown.tagName).toBe("P");
+  expect(shown.textContent).toBe("Difficulty 2");
+  renderPanel(panel, view(12, { difficulty: 67 }));
+  expect(panel.querySelector("nav").nextElementSibling).toBe(shown);
+  expect(shown.textContent).toBe("Difficulty 67");
 });
 
 test("Panel.01 a solved Puzzle says so next to it", () => {

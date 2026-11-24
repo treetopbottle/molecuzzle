@@ -20,6 +20,12 @@ test("Panel.05 the key shows every Element's number of bonds, and fits a phone w
   expect(box.x + box.width).toBeLessThanOrEqual(width);
 });
 
+test("Page.01 on a phone, the actions end within the screen, under the mystery molecule's title", async ({ page }) => {
+  await start(page);
+  const actions = await page.locator(".actions").boundingBox();
+  expect(actions.y + actions.height).toBeLessThanOrEqual(page.viewportSize().height);
+});
+
 for (const [number, name, board] of [[12, "Glucose's, the widest", "Board, 3 by 5"], [13, "Citric acid's, the tallest", "Board, 6 by 3"], [15, "N-Acetylglucosamine's", "Board, 5 by 5"], [23, "N-Acetylneuraminic acid's", "Board, 6 by 5"], [30, "Prostaglandin E2's, with the most Atoms", "Board, 6 by 5"]])
   test(`Layout.01, Puzzle.04 on a phone, the largest Grids fit: ${name}, with no sideways scroll, and the Board, its status line and its counts fit the screen`, async ({ page }) => {
     await start(page);
