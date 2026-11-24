@@ -12,16 +12,15 @@ import { ELEMENTS } from "./elements.js";
  * (CH2:a, CH2:b); `-` `=` `#` are a single, double and triple Bond. A Bond
  * that doesn't read so, names an Element the game doesn't have or H, or an
  * Atom whose hydrogens leave it no room for a Bond, throws "can't read <bond>".
- * Returns the best of `tries` random layouts (2000 if left out) of at most maxRows by maxCols
- * (6 by 5 if left out, as every Puzzle's Grid)
- * whose only solution is this Molecule, with these Bonds, as { rows, cols, atoms, solution }
+ * Returns the best of `tries` random layouts (2000 if left out) of at most
+ * maxRows by maxCols (6 by 5 if left out, as every Puzzle's Grid) whose only
+ * solution is this Molecule, with these Bonds, as { rows, cols, atoms, solution }
  * of a Puzzle, the Atoms in reading order with their hydrogens; or null if
  * no try has exactly one solution. The same arguments give the same layout.
  */
 export function findLayout(text, { tries = 2000, maxRows = 6, maxCols = 5, seed = 1 } = {}) {
   let s = seed >>> 0 || 1;
   const random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
-  const pick = list => list[Math.floor(random() * list.length)];
 
   /** A label's Element and hydrogens, or null if it isn't a label of an Atom with room for a Bond. */
   function atom(label) {
@@ -55,10 +54,10 @@ export function findLayout(text, { tries = 2000, maxRows = 6, maxCols = 5, seed 
   // Atom or Bond between, inside the Grid; back to the Atom before when one
   // has no place (decision 0026).
   function layout() {
-    const pos = new Map(), cells = new Map(); // point "r,c" -> "atom" | "segment"
+    const pos = new Map(), taken = new Set(); // the points "r,c" of the Atoms and their Bonds
     let r0 = 0, r1 = 0, c0 = 0, c1 = 0, budget = 3000;
     const root = Math.floor(random() * labels.length);
-    pos.set(root, [0, 0]); cells.set("0,0", "atom");
+    pos.set(root, [0, 0]); taken.add("0,0");
 
     function place() {
       if (pos.size === labels.length) return true;
@@ -77,12 +76,12 @@ export function findLayout(text, { tries = 2000, maxRows = 6, maxCols = 5, seed 
       for (const [dr, dc] of [[0, 1], [0, -1], [1, 0], [-1, 0]])
         for (let len = 1; len <= 3; len++) {
           const at = [r + dr * len, c + dc * len], end = at.join();
-          if (cells.has(end) || between(at, [r, c]).some(q => cells.has(q))) break;
+          if (taken.has(end)) break; // and every point further on
           if (Math.max(r1, at[0]) - Math.min(r0, at[0]) >= maxRows || Math.max(c1, at[1]) - Math.min(c0, at[1]) >= maxCols) continue;
           const path = [];
           const fits = partners.every(w => {
             const points = between(at, pos.get(w));
-            if (!points || points.some(q => cells.has(q) || path.includes(q))) return false;
+            if (!points || points.some(q => taken.has(q) || path.includes(q))) return false;
             path.push(...points);
             return true;
           });
@@ -91,13 +90,13 @@ export function findLayout(text, { tries = 2000, maxRows = 6, maxCols = 5, seed 
       options.sort((x, y) => y.weight - x.weight); // nearer points first, more often
       for (const { at, end, path } of options) {
         const box = [r0, r1, c0, c1];
-        pos.set(v, at); cells.set(end, "atom");
-        for (const q of path) cells.set(q, "segment");
+        pos.set(v, at); taken.add(end);
+        for (const q of path) taken.add(q);
         r0 = Math.min(r0, at[0]); r1 = Math.max(r1, at[0]); c0 = Math.min(c0, at[1]); c1 = Math.max(c1, at[1]);
         if (place()) return true;
         [r0, r1, c0, c1] = box;
-        pos.delete(v); cells.delete(end);
-        for (const q of path) cells.delete(q);
+        pos.delete(v); taken.delete(end);
+        for (const q of path) taken.delete(q);
         if (budget < 0) return false;
       }
       return false;
