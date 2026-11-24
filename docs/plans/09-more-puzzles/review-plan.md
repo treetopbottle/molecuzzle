@@ -16,3 +16,18 @@ Commits reviewed: e45b487 (docs: plan 09, ten more Puzzles and the difficulty in
 10. **note**, `docs/plans/09-more-puzzles/README.md:78`: "`phone.spec.js` if the panel's top no longer fits" has no criterion; say what decides it, or add the check.
 11. **note**, `docs/plans/09-more-puzzles/README.md:29`, `:72`: the ids and facts of the ten, and the Bonds of the Caffeine example, aren't in the plan.
 12. **note**, `docs/plans/09-more-puzzles/README.md:37-65`: checked by hand, each of the ten rows matches its Bonds (formula, valences, Atoms, loops, difficulty); the order follows decision 0021; five are in 34 to 52 and five harder; no new formula is a removed one's. The other references to "of 20", Puzzles 19 and 20, `PUZZLES[18]` and `PUZZLES[19]`, and the six screenshots, are accounted for.
+
+## Outcome
+
+1. Fixed (e7e6b7f): step 2 names `phone.spec.js`, with N-Acetylneuraminic acid as Puzzle 23 and Prostaglandin E2 added as the one with the most Atoms.
+2. Fixed (e7e6b7f): the difficulty is a `<p>`, and step 3 puts `paragraph: Difficulty 7` into both ARIA snapshots.
+3. Fixed (e7e6b7f): the Design gives the search in the order it draws its random numbers; a port was checked to give the ten layouts and the outputs of step 1, which step 1 now writes out, and the plan says to stop if step 1's port gives another.
+4. Fixed (e7e6b7f): the default tries go to 2000, with the times in the Design and decision 0026's Cost; the default-size test uses Caffeine, 1 s.
+5. Fixed (e7e6b7f): step 1 gives Generate.03's wording, a result with its reason; decision 0026 names `findLayout`.
+6. Fixed (e7e6b7f): the even rings that swap are in decision 0008's cost, and the plan cites it.
+7. Fixed (e7e6b7f): 0026 states only the choice. 0027 keeps its one sentence of what, as the other decisions do.
+8. Fixed (e7e6b7f): `architecture.md`'s line on `generate.js` stays.
+9. Fixed (e7e6b7f): the JSDoc and the comment in `style.css` are named.
+10. Fixed (e7e6b7f): `phone.spec.js` checks that the actions end within the screen on Puzzle 1.
+11. Fixed (e7e6b7f): the ids and facts are in the plan, and Caffeine's Bonds in step 1.
+12. Kept: no change asked.

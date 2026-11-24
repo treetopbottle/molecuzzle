@@ -1,6 +1,6 @@
 # 09: Ten more Puzzles, and the difficulty in the panel
 
-Status: Draft
+Status: Active
 
 The Player asked for five more Puzzles as hard as Puzzles 16 to 20 (difficulty 34 to 52), five harder ones, and to see each Puzzle's difficulty. The generator can't make them as it is: it places the Atoms as a tree and closes a ring only by luck, so for Molecules with two rings or more, such as Sucrose, it finds nothing in 400,000 tries. It now places one Atom at a time, in line with the Atoms it is bonded to, and goes back when one has no place ([decision 0026](../../decisions.md#0026)). With it, ten Puzzles of difficulty 36 to 67 go into the list by difficulty, which then has 30, and the panel shows "Difficulty <d>" under "Puzzle <n> of <N>" ([decision 0027](../../decisions.md#0027)).
 
