@@ -13,7 +13,7 @@ The bond grid game, its tests and the move to the GAAD template's latest layout 
 | [06: Puzzles in order of difficulty, and fewer easy ones](06-difficulty/README.md) | Done (2026-11-21) |
 | [07: Hydrogens on their Atoms, and Puzzles with loops](07-hydrogens-on-atoms/README.md) | Done (2026-11-22) |
 | [08: Atoms don't show what they need, and a budget of Bonds](08-hidden-needs/README.md) | Done (2026-11-22) |
-| [09: Ten more Puzzles, and the difficulty in the panel](09-more-puzzles/README.md) | Active |
+| [09: Ten more Puzzles, and the difficulty in the panel](09-more-puzzles/README.md) | Done (2026-11-24) |
 
 ## Backlog
 

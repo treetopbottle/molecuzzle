@@ -1,6 +1,6 @@
 # 09: Ten more Puzzles, and the difficulty in the panel
 
-Status: Active
+Status: Done (2026-11-24), with a [review of the decisions](review-decisions.md)
 
 The Player asked for five more Puzzles as hard as Puzzles 16 to 20 (difficulty 34 to 52), five harder ones, and to see each Puzzle's difficulty. The generator can't make them as it is: it places the Atoms as a tree and closes a ring only by luck, so for Molecules with two rings or more, such as Sucrose, it finds nothing in 400,000 tries. It now places one Atom at a time, in line with the Atoms it is bonded to, and goes back when one has no place ([decision 0026](../../decisions.md#0026)). With it, ten Puzzles of difficulty 36 to 67 go into the list by difficulty, which then has 30, and the panel shows "Difficulty <d>" under "Puzzle <n> of <N>" ([decision 0027](../../decisions.md#0027)).
 
@@ -97,6 +97,6 @@ Left out after trying: Caffeine (21) and Captopril (29), too easy; Kainic acid (
 3. **The difficulty in the panel.** `[DONE]` ([review](review-step-3.md)) Panel.01, Page.01; [decision 0027](../../decisions.md#0027).
    - (a) Tests: `tests/unit/app.test.js` (the view's `difficulty` is the open Puzzle's, 2 for Acetonitrile, and changes when another opens), `tests/unit/ui/panel.test.js` ("Difficulty 2" right after the nav; it changes in place), `tests/e2e/puzzle.spec.js` (the Panel.01 example: Puzzle 30 shows "Difficulty 67"), the ARIA snapshots of the panel in `puzzle.spec.js` and `check.spec.js`, which get `paragraph: Difficulty 7` after the navigation (Page.01's order), `phone.spec.js` (Page.01: on Puzzle 1, the actions end within the 844 px of the screen), and the screenshot tests.
    - (b) Implementation: `app.js`, `panel.js`, `style.css`, the comment in `difficulty.js`, `docs/architecture.md`. Remake the screenshots that show the panel, on a computer and a phone, and look at each.
-4. **Finish.** No rule ids. The spec is written in steps 1 to 3, and the decisions with this plan; check they still say what was done. `Status: Done` in the plan and the table.
+4. **Finish.** `[DONE]` No rule ids. The spec is written in steps 1 to 3, and the decisions with this plan; check they still say what was done. `Status: Done` in the plan and the table.
 
 Each step writes its spec changes first, in its (a) commit, and changes the end-to-end tests its change breaks, so `npm run check` passes after it.

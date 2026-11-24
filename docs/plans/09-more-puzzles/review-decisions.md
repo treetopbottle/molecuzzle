@@ -13,3 +13,15 @@ Commits reviewed: e45b487 and e7e6b7f, which change `docs/decisions.md` (0026 an
 7. **note**, `docs/decisions.md:262`, `:269` (0021): its Alternatives still end "Showing the difficulty to the Player: not asked for yet"; the status note could say 0027 takes it up.
 8. **note**, `docs/decisions.md:301` (0024, Cost), from before plan 09: "and S too, as its one candidate, Cysteine, is Serine's layout" is out of date since Biotin, Cystine and Glutathione.
 9. **note**, `docs/plans/README.md`: nothing else in the backlog is obsolete or missing; the two `scripts/generate.js` items still hold.
+
+## Outcome
+
+1. Fixed (6195f3d): 0024's status says S has Puzzles and some Puzzles have Dotted lines that cross (Biotin, N-Acetylneuraminic acid, Glutathione, and eight of plan 09's ten); the backlog item is gone.
+2. Fixed (6195f3d): 0008 says one stronger and one weaker in turn, down to no Bond.
+3. Fixed (6195f3d): 0019's status names 0026, the nine Puzzles on 6 by 5, and what still waits for the hex grid.
+4. Fixed (6195f3d): 0026's timings are those measured while making plan 09's Puzzles.
+5. Fixed (6195f3d): 0027's Cost names the room on a phone and that a new measure would change the numbers.
+6. Fixed (6195f3d): "never falls along the list", and "Only its number".
+7. Fixed (6195f3d): 0021's status says 0027 takes up the last of its Alternatives.
+8. Fixed (6195f3d), with 1.
+9. Kept: no change asked.
