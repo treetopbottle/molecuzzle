@@ -132,7 +132,7 @@ Accepted (2026-11-11)
 A solver (`src/puzzle/solver.js`) counts the solutions of a Grid; a test checks each Puzzle has exactly one, and that it is the one Show solution shows. Any Board where every Atom is complete and all join up is then that solution, so the game doesn't compare Molecules.
 
 - **Why:** a logic puzzle needs one answer to reason towards; with it, the game never has to match the Board against a Molecule.
-- **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions. So has any even ring whose Bonds can each move one place round it, a double Bond to the next Bond, while every Atom keeps its count and all stay joined: a purine such as adenine or guanine, or a β-lactam fused to a second ring, as in penicillin (found while making plan 09).
+- **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions. So has any even ring whose Bonds can be made one stronger and one weaker in turn, down to no Bond, while every Atom keeps its count and all stay joined: a purine such as adenine or guanine, or a β-lactam fused to a second ring, as in penicillin (found while making plan 09).
 - **Alternatives:** accept any valid Board and name it: back to matching Molecules, and Puzzles with many answers.
 
 <a id="0009"></a>
@@ -237,7 +237,7 @@ New Puzzles are added after the last one, easiest first among themselves, instea
 <a id="0019"></a>
 ## 0019: Grids of at most 6 rows by 5 columns
 
-Accepted (2026-11-21). Its reasons are partly from before [0023](#0023) and [0024](#0024): with the hydrogens on their Atoms, Grids are smaller, and Puzzles grow harder by their loops, not by empty Dotted lines. Valine, its example, is removed; Citric acid's 6 by 3 and Glucose's 3 by 5 now come nearest the limit, and the hex grid of its cost is in the backlog. The limit and the sizes on the screen still hold.
+Accepted (2026-11-21). Its reasons are partly from before [0023](#0023) and [0024](#0024): with the hydrogens on their Atoms, Grids are smaller, and Puzzles grow harder by their loops, not by empty Dotted lines. Valine, its example, is removed; Citric acid's 6 by 3 and Glucose's 3 by 5 now come nearest the limit, and the hex grid of its cost is in the backlog. The limit and the sizes on the screen still hold. Since [0026](#0026) Molecules of up to 25 Atoms have layouts on 6 by 5, and nine Puzzles use all of it, such as N-Acetylneuraminic acid and Prostaglandin E2; what still waits for the hex grid is the Molecules with no layout there.
 
 No Puzzle's Grid is wider than 5 columns or taller than 6 rows, and the generator looks for no larger ones unless it is told to.
 
@@ -259,7 +259,7 @@ A batch of larger Puzzles is made harder by the Dotted lines its solution leaves
 <a id="0021"></a>
 ## 0021: Puzzles are in order of difficulty
 
-Accepted (2026-11-21). [0024](#0024) counted loops in place of empty Dotted lines; that is undone (2026-11-22, below). Since [0027](#0027) the panel shows the difficulty.
+Accepted (2026-11-21). [0024](#0024) counted loops in place of empty Dotted lines; that is undone (2026-11-22, below). Since [0027](#0027) the panel shows the difficulty, the last of its Alternatives.
 
 Every Puzzle has a difficulty, its Dotted lines plus twice those its solution leaves empty ([Puzzle.05](spec/puzzle.md#puzzle)), and the list is in that order, easiest first. A new Puzzle goes where its difficulty puts it, after those of the same difficulty, and the Puzzles after it move up a number.
 
@@ -293,7 +293,7 @@ Every hydrogen is bonded to its Atom from the start. It isn't an Atom on the Gri
 <a id="0024"></a>
 ## 0024: Puzzles have loops
 
-Accepted (2026-11-21). Its count of loops in the difficulty is undone by [0021](#0021) (2026-11-22): the difficulty counts empty Dotted lines again.
+Accepted (2026-11-21). Its count of loops in the difficulty is undone by [0021](#0021) (2026-11-22): the difficulty counts empty Dotted lines again. Its Cost is out of date on two points: S has Puzzles, such as Biotin, Cystine and Glutathione; and some Puzzles have Dotted lines that cross, Biotin, N-Acetylneuraminic acid and Glutathione, and since plan 09 eight of its ten, so Bonds that cross come up in the game.
 
 A loop of Dotted lines is a choice; without one, every Dotted line has to be a Bond to join the Atoms up, and only the Bond orders are left to find. So every Puzzle after a tutorial of three has at least 2 loops ([Puzzle.08](spec/puzzle.md#puzzle)), and a Puzzle's difficulty was its Dotted lines plus twice its loops: its Dotted lines minus its Atoms plus 1.
 
@@ -320,7 +320,7 @@ Accepted (2026-11-24)
 The search for layouts, `findLayout`, places each Atom in line with its partners already placed, inside the Grid, and goes back when one has no place ([Generate.03](spec/puzzle.md#generate)).
 
 - **Why:** it placed the Atoms as a tree, each next to one partner, so a ring closed only if its last Atom happened to land in line with its first, and the layout had to fit 6 by 5 only once it was done. For Molecules with two rings or more, such as Caffeine and Sucrose, it found no layout in 400,000 tries; most tries ran into a dead end or grew too large. Placed in line and inside the Grid, every try that finishes closes its rings and fits, and Sucrose has layouts in 2,000 tries.
-- **Cost:** the same arguments give other layouts than before, so the examples of [Generate.01](spec/puzzle.md#generate) change; the Puzzles keep their layouts, which are data. A try takes about 10 ms for 20 Atoms, far longer than before, so the default is 2,000 tries instead of 20,000: about 1 s for Caffeine, and half a minute for a Molecule of 25 Atoms on 6 by 5. Fewer tries can miss a smaller or emptier layout that more would find.
+- **Cost:** the same arguments give other layouts than before, so the examples of [Generate.01](spec/puzzle.md#generate) change; the Puzzles keep their layouts, which are data. A try takes far longer than before, more the more Atoms, so the default is 2,000 tries instead of 20,000: measured while making plan 09, about half a second for Caffeine, 14 Atoms, and 5 to 30 s for its Puzzles of 16 to 25 Atoms. Fewer tries can miss a smaller or emptier layout that more would find.
 - **Alternatives:** more tries of the old search: 400,000 found none. Layouts made by hand: slow, and nothing checks that the best one is kept. A Grid with more neighbours, such as the hex grid in the backlog: rings fit more easily, but every Puzzle's layout has to change.
 
 <a id="0027"></a>
@@ -330,6 +330,6 @@ Accepted (2026-11-24)
 
 Under "Puzzle <n> of <N>" the panel shows "Difficulty <d>", the open Puzzle's difficulty ([Puzzle.05](spec/puzzle.md#puzzle), [Panel.01](spec/ui.md#panel)).
 
-- **Why:** the Player asked to see it, to know how hard a Puzzle is before starting it. The number is the one the list is ordered by, so it rises along the list, and it needs no scale or names to keep up to date as Puzzles are added. The panel has the open Puzzle already; the Player chose it over the list.
-- **Cost:** the number has no unit, and its meaning, Dotted lines plus twice the empty ones, isn't explained on the page; a Player sees only that larger is harder. Two Puzzles of about the same number can still feel different ([0021](#0021)'s cost). The list doesn't show it, so to compare Puzzles the Player opens them.
-- **Alternatives:** in the list, on each button: compare at a glance, but wider buttons on a phone. Words or stars, such as Easy, Medium and Hard: easier to read, but bands to choose and move as harder Puzzles come. Only the number in the list, "Puzzle 18 of 30": nothing to add, but it says nothing of how much harder one is than the one before.
+- **Why:** the Player asked to see it, to know how hard a Puzzle is before starting it. The number is the one the list is ordered by, so it never falls along the list, and it needs no scale or names to keep up to date as Puzzles are added. The panel has the open Puzzle already; the Player chose it over the list.
+- **Cost:** the number has no unit, and its meaning, Dotted lines plus twice the empty ones, isn't explained on the page; a Player sees only that larger is harder. Two Puzzles of about the same number can still feel different ([0021](#0021)'s cost). The list doesn't show it, so to compare Puzzles the Player opens them. The line takes room at the top of the panel, which pushes the actions down on a phone; they still end well within the screen. A new measure of difficulty, such as one from a solver (backlog), would change the numbers Players have seen.
+- **Alternatives:** in the list, on each button: compare at a glance, but wider buttons on a phone. Words or stars, such as Easy, Medium and Hard: easier to read, but bands to choose and move as harder Puzzles come. Only its number, "Puzzle 18 of 30": nothing to add, but it says nothing of how much harder one is than the one before.

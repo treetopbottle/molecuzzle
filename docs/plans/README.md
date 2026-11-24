@@ -25,7 +25,6 @@ Contains features, slices or small tasks to work on, in order of importance.
 - A test that no Puzzle's layout is another's, or nearly so, turned, flipped or with other symbols of the same need, valence minus hydrogens ([decisions 0020 and 0022](../decisions.md#0022)): with the look-alikes removed, it needs no exceptions.
 - Puzzles with F, Cl, Br or I, which have none since plan 07: Molecules whose loops don't close on the one-Bond halogens ([decision 0024](../decisions.md#0024)). Biotin has an S in its ring.
 - A difficulty from a solver that plays like a Player: the Dotted lines its obvious moves leave open ([decision 0024](../decisions.md#0024)). Plan 07 chose its Puzzles with such a script, not kept; in the game's tests it could keep a new Puzzle from being solved by the obvious moves alone.
-- Puzzles whose layouts have Dotted lines that cross, so that the rule that Bonds can't cross ([Bond.05](../spec/puzzle.md#bond)) comes up in the game again: none of plan 07's has one ([decision 0024](../decisions.md#0024)).
 - A hint that marks the Atoms with too few or too many Bonds, for [decision 0025](../decisions.md#0025): limited per Puzzle (3?), shown on its button, with a mark in Progress for a Puzzle solved with hints.
 - Moving between Dotted lines with the arrow keys, instead of only Tab.
 - Clicking the open Puzzle in the Puzzles list opens it again, which stops the pulse of a Puzzle just solved; it could do nothing (review of step 2 of plan 03).
