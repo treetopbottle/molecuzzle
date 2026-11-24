@@ -12,13 +12,13 @@ import { ELEMENTS } from "./elements.js";
  * (CH2:a, CH2:b); `-` `=` `#` are a single, double and triple Bond. A Bond
  * that doesn't read so, names an Element the game doesn't have or H, or an
  * Atom whose hydrogens leave it no room for a Bond, throws "can't read <bond>".
- * Returns the best of `tries` random layouts of at most maxRows by maxCols
+ * Returns the best of `tries` random layouts (2000 if left out) of at most maxRows by maxCols
  * (6 by 5 if left out, as every Puzzle's Grid)
  * whose only solution is this Molecule, with these Bonds, as { rows, cols, atoms, solution }
  * of a Puzzle, the Atoms in reading order with their hydrogens; or null if
  * no try has exactly one solution. The same arguments give the same layout.
  */
-export function findLayout(text, { tries = 20000, maxRows = 6, maxCols = 5, seed = 1 } = {}) {
+export function findLayout(text, { tries = 2000, maxRows = 6, maxCols = 5, seed = 1 } = {}) {
   let s = seed >>> 0 || 1;
   const random = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
   const pick = list => list[Math.floor(random() * list.length)];
@@ -42,40 +42,70 @@ export function findLayout(text, { tries = 20000, maxRows = 6, maxCols = 5, seed
   const kinds = labels.map(atom);
   const neighbours = labels.map((_, i) => bonds.filter(e => e.a === i || e.b === i));
 
+  const other = (e, x) => (e.a === x ? e.b : e.a);
+  /** The points strictly between two points, or null if they aren't in a row or a column. */
+  function between([r, c], [wr, wc]) {
+    if (wr !== r && wc !== c) return null;
+    const n = Math.abs(wr - r) + Math.abs(wc - c), sr = Math.sign(wr - r), sc = Math.sign(wc - c), out = [];
+    for (let t = 1; t < n; t++) out.push(`${r + sr * t},${c + sc * t}`);
+    return out;
+  }
+
+  // One Atom at a time, in line with every partner already placed, with no
+  // Atom or Bond between, inside the Grid; back to the Atom before when one
+  // has no place (decision 0026).
   function layout() {
-    const pos = new Map(), cells = new Map(); // cell "r,c" -> "atom" | "segment"
+    const pos = new Map(), cells = new Map(); // point "r,c" -> "atom" | "segment"
+    let r0 = 0, r1 = 0, c0 = 0, c1 = 0, budget = 3000;
     const root = Math.floor(random() * labels.length);
     pos.set(root, [0, 0]); cells.set("0,0", "atom");
-    const stack = [root];
-    while (stack.length) {
-      const u = stack.splice(Math.floor(random() * stack.length), 1)[0];
-      for (const e of neighbours[u]) {
-        const v = e.a === u ? e.b : e.a;
-        if (pos.has(v)) continue;
-        const [r, c] = pos.get(u);
-        const options = [];
-        for (const [dr, dc] of [[0, 1], [0, -1], [1, 0], [-1, 0]])
-          for (let len = 1; len <= 3; len++) {
-            const path = [];
-            for (let t = 1; t < len; t++) path.push(`${r + dr * t},${c + dc * t}`);
-            const end = `${r + dr * len},${c + dc * len}`;
-            if (cells.has(end) || path.some(p => cells.has(p))) break;
-            options.push({ end: [r + dr * len, c + dc * len], path, weight: len === 1 ? 3 : 1 });
-          }
-        if (!options.length) return null;
-        const weighted = options.flatMap(o => Array(o.weight).fill(o));
-        const o = pick(weighted);
-        pos.set(v, o.end); cells.set(o.end.join(), "atom");
-        for (const p of o.path) cells.set(p, "segment");
-        stack.push(v);
+
+    function place() {
+      if (pos.size === labels.length) return true;
+      if (--budget < 0) return false;
+      // Next, an unplaced Atom with the most Bonds to placed ones, a random one of those.
+      let v = -1, most = 0, ties = 0;
+      for (let x = 0; x < labels.length; x++) {
+        if (pos.has(x)) continue;
+        const n = neighbours[x].filter(e => pos.has(other(e, x))).length;
+        if (n > most) { v = x; most = n; ties = 1; }
+        else if (n === most && n > 0 && random() < 1 / ++ties) v = x;
       }
+      const partners = neighbours[v].map(e => other(e, v)).filter(w => pos.has(w));
+      const [r, c] = pos.get(partners[0]);
+      const options = [];
+      for (const [dr, dc] of [[0, 1], [0, -1], [1, 0], [-1, 0]])
+        for (let len = 1; len <= 3; len++) {
+          const at = [r + dr * len, c + dc * len], end = at.join();
+          if (cells.has(end) || between(at, [r, c]).some(q => cells.has(q))) break;
+          if (Math.max(r1, at[0]) - Math.min(r0, at[0]) >= maxRows || Math.max(c1, at[1]) - Math.min(c0, at[1]) >= maxCols) continue;
+          const path = [];
+          const fits = partners.every(w => {
+            const points = between(at, pos.get(w));
+            if (!points || points.some(q => cells.has(q) || path.includes(q))) return false;
+            path.push(...points);
+            return true;
+          });
+          if (fits) options.push({ at, end, path, weight: (len === 1 ? 3 : 1) * random() });
+        }
+      options.sort((x, y) => y.weight - x.weight); // nearer points first, more often
+      for (const { at, end, path } of options) {
+        const box = [r0, r1, c0, c1];
+        pos.set(v, at); cells.set(end, "atom");
+        for (const q of path) cells.set(q, "segment");
+        r0 = Math.min(r0, at[0]); r1 = Math.max(r1, at[0]); c0 = Math.min(c0, at[1]); c1 = Math.max(c1, at[1]);
+        if (place()) return true;
+        [r0, r1, c0, c1] = box;
+        pos.delete(v); cells.delete(end);
+        for (const q of path) cells.delete(q);
+        if (budget < 0) return false;
+      }
+      return false;
     }
-    const rs = [...pos.values()].map(p => p[0]), cs = [...pos.values()].map(p => p[1]);
-    const r0 = Math.min(...rs), c0 = Math.min(...cs);
-    const rows = Math.max(...rs) - r0 + 1, cols = Math.max(...cs) - c0 + 1;
-    if (rows > maxRows || cols > maxCols) return null;
+
+    if (!place()) return null;
     const atoms = labels.map((_, i) => ({ ...kinds[i], r: pos.get(i)[0] - r0, c: pos.get(i)[1] - c0 }));
-    return { atoms, rows, cols };
+    return { atoms, rows: r1 - r0 + 1, cols: c1 - c0 + 1 };
   }
 
   function check(p) {
