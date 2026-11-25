@@ -28,8 +28,8 @@ svg { max-width: 100%; height: auto; display: block; touch-action: manipulation;
 h1 { margin: 0; font-size: 24px; }
 p { margin: 0; }
 .info { display: contents; }
-.panel > *, .info > * { order: 4; } /* the Puzzle nav and the mystery molecule's title, then the actions, then the rest, so the actions stay in view on a phone */
-.info > .puzzle-nav { order: 1; }
+.panel > *, .info > * { order: 4; } /* the Puzzle nav, its difficulty and the mystery molecule's title, then the actions, then the rest, so the actions stay in view on a phone */
+.info > .puzzle-nav, .info > #difficulty { order: 1; }
 .info > .mystery { order: 2; }
 .panel > .actions { order: 3; }
 .eyebrow { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
@@ -152,6 +152,53 @@ p { margin: 0; }
     return { ...progress, puzzles: { ...progress.puzzles, [id]: "solved" } };
   }
 
+  // src/puzzle/grid.js
+  function candidateBonds(atoms) {
+    const bonds = [];
+    atoms.forEach((a, i) => {
+      let right = -1, down = -1;
+      atoms.forEach((b, j) => {
+        if (b.r === a.r && b.c > a.c && (right < 0 || b.c < atoms[right].c)) right = j;
+        if (b.c === a.c && b.r > a.r && (down < 0 || b.r < atoms[down].r)) down = j;
+      });
+      if (right >= 0) bonds.push({ a: i, b: right, horizontal: true });
+      if (down >= 0) bonds.push({ a: i, b: down, horizontal: false });
+    });
+    return bonds;
+  }
+  function crosses(atoms, e, f) {
+    if (e.horizontal === f.horizontal) return false;
+    const h = e.horizontal ? e : f, v = e.horizontal ? f : e;
+    const r = atoms[h.a].r, c = atoms[v.a].c;
+    return c > atoms[h.a].c && c < atoms[h.b].c && r > atoms[v.a].r && r < atoms[v.b].r;
+  }
+  function connected(atomCount, bonds, order) {
+    if (atomCount === 0) return true;
+    const seen = /* @__PURE__ */ new Set([0]), queue = [0];
+    while (queue.length) {
+      const u = queue.pop();
+      bonds.forEach((e, k) => {
+        if (!order[k] || e.a !== u && e.b !== u) return;
+        const v = e.a === u ? e.b : e.a;
+        if (!seen.has(v)) {
+          seen.add(v);
+          queue.push(v);
+        }
+      });
+    }
+    return seen.size === atomCount;
+  }
+
+  // src/puzzle/difficulty.js
+  function dottedLines({ atoms }) {
+    const dotted = candidateBonds(atoms.map(([el2, r, c]) => ({ el: el2, r, c }))).length;
+    return { dotted, loops: dotted - atoms.length + 1 };
+  }
+  function difficulty(puzzle) {
+    const { dotted } = dottedLines(puzzle);
+    return dotted + 2 * (dotted - puzzle.solution.length);
+  }
+
   // src/app.js
   function startApp({ puzzles, createGame: createGame2, store, createUi: createUi2 }) {
     let progress = store.load();
@@ -203,6 +250,7 @@ p { margin: 0; }
         progress,
         status,
         counts: game.counts(),
+        difficulty: difficulty(puzzle),
         done: game.done(),
         canUndo: game.canUndo,
         hasBonds: game.order.some(Boolean)
@@ -384,6 +432,36 @@ p { margin: 0; }
       solution: [[0, 3, 2], [1, 2, 1], [2, 3, 1], [2, 6, 1], [3, 4, 1], [4, 8, 1], [5, 6, 1], [5, 11, 1], [6, 7, 1], [6, 9, 1], [8, 14, 1], [10, 13, 2], [12, 13, 1], [13, 14, 1]]
     },
     {
+      id: "uridine",
+      name: "Uridine",
+      formula: "C9H12N2O6",
+      fact: "The base uracil on the sugar ribose; with a phosphate added, it is one of the four building blocks of RNA. In DNA, thymine takes uracil's place.",
+      rows: 5,
+      cols: 5,
+      atoms: [["C", 0, 0, 2], ["O", 0, 1, 1], ["O", 0, 2, 0], ["C", 0, 3, 0], ["N", 0, 4, 1], ["C", 1, 0, 1], ["O", 1, 2, 0], ["C", 1, 3, 1], ["C", 2, 3, 1], ["C", 3, 0, 1], ["C", 3, 1, 1], ["C", 3, 2, 1], ["N", 3, 3, 0], ["C", 3, 4, 0], ["O", 4, 0, 1], ["O", 4, 1, 1], ["O", 4, 4, 0]],
+      solution: [[0, 1, 1], [0, 5, 1], [2, 3, 2], [3, 4, 1], [3, 7, 1], [4, 13, 1], [5, 6, 1], [5, 9, 1], [6, 11, 1], [7, 8, 2], [8, 12, 1], [9, 10, 1], [9, 14, 1], [10, 11, 1], [10, 15, 1], [11, 12, 1], [12, 13, 1], [13, 16, 2]]
+    },
+    {
+      id: "carnosine",
+      name: "Carnosine",
+      formula: "C9H14N4O3",
+      fact: "\u03B2-Alanine and histidine joined together. Muscles are full of it, and during a sprint it soaks up the acid that builds up in them.",
+      rows: 4,
+      cols: 5,
+      atoms: [["C", 0, 0, 1], ["N", 0, 1, 1], ["O", 0, 2, 0], ["C", 0, 3, 0], ["C", 0, 4, 2], ["C", 1, 1, 1], ["N", 1, 3, 1], ["C", 1, 4, 2], ["N", 2, 0, 0], ["C", 2, 1, 0], ["C", 2, 2, 2], ["C", 2, 3, 1], ["N", 2, 4, 2], ["O", 3, 2, 1], ["C", 3, 3, 0], ["O", 3, 4, 0]],
+      solution: [[0, 1, 1], [0, 8, 2], [1, 5, 1], [2, 3, 2], [3, 4, 1], [3, 6, 1], [4, 7, 1], [5, 9, 2], [6, 11, 1], [7, 12, 1], [8, 9, 1], [9, 10, 1], [10, 11, 1], [11, 14, 1], [13, 14, 1], [14, 15, 2]]
+    },
+    {
+      id: "streptozotocin",
+      name: "Streptozotocin",
+      formula: "C8H15N3O7",
+      fact: "A soil bacterium makes this sugar. The insulin-making cells of the pancreas take it in as if it were glucose, and it destroys them, so it is used against tumours of those cells.",
+      rows: 6,
+      cols: 5,
+      atoms: [["O", 0, 0, 1], ["C", 0, 1, 1], ["O", 0, 2, 0], ["C", 0, 3, 1], ["C", 0, 4, 2], ["C", 1, 1, 1], ["C", 1, 2, 1], ["C", 1, 3, 1], ["O", 2, 2, 1], ["O", 2, 3, 1], ["O", 2, 4, 1], ["N", 4, 1, 1], ["C", 4, 2, 3], ["O", 5, 0, 0], ["C", 5, 1, 0], ["N", 5, 2, 0], ["N", 5, 3, 0], ["O", 5, 4, 0]],
+      solution: [[0, 1, 1], [1, 2, 1], [1, 5, 1], [2, 3, 1], [3, 4, 1], [3, 7, 1], [4, 10, 1], [5, 6, 1], [5, 11, 1], [6, 7, 1], [6, 8, 1], [7, 9, 1], [11, 14, 1], [12, 15, 1], [13, 14, 2], [14, 15, 1], [15, 16, 1], [16, 17, 2]]
+    },
+    {
       id: "tetraglycine",
       name: "Tetraglycine",
       formula: "C8H14N4O5",
@@ -392,6 +470,16 @@ p { margin: 0; }
       cols: 4,
       atoms: [["N", 0, 0, 2], ["C", 0, 1, 2], ["C", 0, 2, 0], ["O", 0, 3, 0], ["C", 1, 1, 2], ["N", 1, 2, 1], ["O", 1, 3, 0], ["O", 2, 0, 0], ["C", 2, 1, 0], ["C", 2, 2, 2], ["C", 2, 3, 0], ["N", 3, 1, 1], ["N", 3, 2, 1], ["O", 3, 3, 1], ["C", 4, 1, 2], ["C", 4, 2, 0], ["O", 4, 3, 0]],
       solution: [[0, 1, 1], [1, 2, 1], [2, 3, 2], [2, 5, 1], [4, 5, 1], [4, 8, 1], [6, 10, 2], [7, 8, 2], [8, 11, 1], [9, 10, 1], [9, 12, 1], [10, 13, 1], [11, 14, 1], [12, 15, 1], [14, 15, 1], [15, 16, 2]]
+    },
+    {
+      id: "abscisic-acid",
+      name: "Abscisic acid",
+      formula: "C15H20O4",
+      fact: "A plant hormone: in a drought it closes the pores of the leaves to save water, and it keeps seeds from sprouting too early.",
+      rows: 6,
+      cols: 5,
+      atoms: [["C", 0, 0, 1], ["C", 0, 1, 0], ["C", 0, 4, 1], ["C", 1, 1, 3], ["C", 1, 2, 3], ["O", 1, 3, 1], ["C", 2, 1, 3], ["C", 2, 2, 0], ["C", 2, 3, 0], ["C", 2, 4, 1], ["C", 3, 0, 0], ["O", 3, 1, 0], ["C", 3, 3, 0], ["C", 3, 4, 3], ["O", 4, 0, 1], ["C", 4, 3, 1], ["C", 5, 2, 2], ["C", 5, 3, 0], ["O", 5, 4, 0]],
+      solution: [[0, 1, 2], [0, 10, 1], [1, 2, 1], [1, 3, 1], [2, 9, 2], [4, 7, 1], [5, 8, 1], [6, 7, 1], [7, 8, 1], [7, 16, 1], [8, 9, 1], [8, 12, 1], [10, 11, 2], [10, 14, 1], [12, 13, 1], [12, 15, 2], [15, 17, 1], [16, 17, 1], [17, 18, 2]]
     },
     {
       id: "n-acetylneuraminic-acid",
@@ -404,6 +492,16 @@ p { margin: 0; }
       solution: [[0, 5, 1], [1, 6, 1], [2, 3, 1], [3, 4, 1], [3, 9, 1], [4, 5, 1], [5, 6, 1], [5, 7, 1], [6, 11, 2], [7, 10, 1], [8, 9, 1], [8, 12, 1], [9, 10, 1], [10, 15, 1], [12, 13, 1], [12, 17, 2], [14, 18, 1], [15, 16, 1], [15, 19, 1], [18, 19, 1], [19, 20, 1]]
     },
     {
+      id: "retinol",
+      name: "Retinol",
+      formula: "C20H30O",
+      fact: "Retinol is vitamin A. Your eyes turn it into retinal, which changes shape when light hits it: the first step of seeing.",
+      rows: 6,
+      cols: 5,
+      atoms: [["C", 0, 0, 1], ["C", 0, 1, 1], ["C", 0, 2, 1], ["C", 0, 3, 0], ["C", 0, 4, 1], ["C", 1, 0, 0], ["C", 1, 1, 1], ["C", 1, 3, 3], ["C", 1, 4, 2], ["C", 2, 1, 1], ["C", 2, 2, 3], ["C", 3, 1, 0], ["C", 3, 2, 0], ["C", 3, 3, 2], ["O", 3, 4, 1], ["C", 4, 0, 3], ["C", 4, 2, 3], ["C", 5, 0, 3], ["C", 5, 1, 0], ["C", 5, 2, 2], ["C", 5, 3, 2]],
+      solution: [[0, 1, 1], [0, 5, 2], [1, 2, 2], [2, 3, 1], [3, 4, 2], [3, 7, 1], [4, 8, 1], [5, 6, 1], [5, 15, 1], [6, 9, 2], [8, 14, 1], [9, 11, 1], [10, 12, 1], [11, 12, 1], [11, 18, 2], [12, 13, 1], [12, 16, 1], [13, 20, 1], [17, 18, 1], [18, 19, 1], [19, 20, 1]]
+    },
+    {
       id: "glutathione",
       name: "Glutathione",
       formula: "C10H17N3O6S",
@@ -412,6 +510,56 @@ p { margin: 0; }
       cols: 5,
       atoms: [["C", 0, 0, 2], ["C", 0, 1, 2], ["C", 0, 2, 1], ["C", 0, 3, 0], ["O", 0, 4, 0], ["N", 1, 2, 2], ["O", 1, 3, 1], ["C", 2, 0, 0], ["N", 2, 1, 1], ["C", 2, 3, 1], ["C", 2, 4, 2], ["O", 3, 0, 0], ["C", 3, 1, 2], ["N", 3, 2, 1], ["C", 3, 3, 0], ["S", 3, 4, 1], ["O", 4, 0, 0], ["C", 4, 1, 0], ["O", 4, 2, 1], ["O", 4, 3, 0]],
       solution: [[0, 1, 1], [0, 7, 1], [1, 2, 1], [2, 3, 1], [2, 5, 1], [3, 4, 2], [3, 6, 1], [7, 8, 1], [7, 11, 2], [8, 9, 1], [9, 10, 1], [9, 14, 1], [10, 15, 1], [12, 13, 1], [12, 17, 1], [13, 14, 1], [14, 19, 2], [16, 17, 2], [17, 18, 1]]
+    },
+    {
+      id: "domoic-acid",
+      name: "Domoic acid",
+      formula: "C15H21NO6",
+      fact: "Made by algae, it builds up in shellfish. In 1987 mussels with it poisoned over a hundred people in Canada, and some never got their memory back.",
+      rows: 6,
+      cols: 5,
+      atoms: [["O", 0, 2, 0], ["C", 0, 3, 0], ["O", 0, 4, 1], ["C", 1, 0, 2], ["N", 1, 1, 1], ["C", 1, 3, 1], ["C", 2, 0, 1], ["C", 2, 3, 1], ["C", 2, 4, 2], ["C", 3, 0, 0], ["C", 3, 1, 3], ["O", 3, 2, 0], ["C", 4, 0, 1], ["O", 4, 1, 1], ["C", 4, 2, 0], ["O", 4, 3, 1], ["C", 4, 4, 0], ["C", 5, 0, 1], ["C", 5, 1, 1], ["C", 5, 2, 1], ["C", 5, 3, 3], ["O", 5, 4, 0]],
+      solution: [[0, 1, 2], [1, 2, 1], [1, 5, 1], [3, 4, 1], [3, 6, 1], [4, 5, 1], [5, 7, 1], [6, 7, 1], [6, 9, 1], [7, 8, 1], [8, 16, 1], [9, 10, 1], [9, 12, 2], [11, 14, 2], [12, 17, 1], [13, 14, 1], [14, 19, 1], [15, 16, 1], [16, 21, 2], [17, 18, 2], [18, 19, 1], [19, 20, 1]]
+    },
+    {
+      id: "sucrose",
+      name: "Sucrose",
+      formula: "C12H22O11",
+      fact: "Table sugar: a glucose and a fructose joined by an oxygen. It comes from sugar cane and sugar beet.",
+      rows: 6,
+      cols: 5,
+      atoms: [["O", 0, 0, 1], ["O", 0, 1, 1], ["C", 0, 2, 2], ["O", 0, 3, 1], ["C", 1, 0, 1], ["C", 1, 1, 1], ["C", 1, 2, 0], ["O", 1, 3, 0], ["C", 2, 0, 1], ["O", 2, 2, 0], ["O", 2, 4, 1], ["C", 3, 0, 2], ["O", 3, 1, 1], ["O", 3, 2, 0], ["C", 3, 3, 1], ["C", 3, 4, 1], ["C", 4, 1, 2], ["C", 4, 2, 1], ["C", 4, 3, 1], ["C", 4, 4, 1], ["O", 5, 1, 1], ["O", 5, 3, 1], ["O", 5, 4, 1]],
+      solution: [[0, 4, 1], [1, 5, 1], [2, 3, 1], [2, 6, 1], [4, 5, 1], [4, 8, 1], [5, 6, 1], [6, 7, 1], [6, 9, 1], [7, 14, 1], [8, 9, 1], [8, 11, 1], [10, 15, 1], [11, 12, 1], [13, 14, 1], [13, 17, 1], [14, 15, 1], [15, 19, 1], [16, 17, 1], [16, 20, 1], [17, 18, 1], [18, 19, 1], [18, 21, 1], [19, 22, 1]]
+    },
+    {
+      id: "picrocrocin",
+      name: "Picrocrocin",
+      formula: "C16H26O7",
+      fact: "It gives saffron its bitter taste; as saffron dries, it breaks down into safranal, which gives saffron its smell.",
+      rows: 6,
+      cols: 5,
+      atoms: [["C", 0, 0, 3], ["O", 0, 1, 0], ["C", 0, 2, 1], ["C", 0, 3, 3], ["C", 1, 0, 0], ["C", 1, 2, 0], ["C", 1, 3, 0], ["C", 1, 4, 3], ["C", 2, 0, 2], ["C", 2, 1, 1], ["C", 2, 3, 2], ["O", 3, 1, 0], ["C", 3, 2, 1], ["C", 3, 3, 1], ["O", 3, 4, 1], ["O", 4, 2, 0], ["C", 4, 3, 1], ["O", 4, 4, 1], ["O", 5, 0, 1], ["C", 5, 1, 2], ["C", 5, 2, 1], ["C", 5, 3, 1], ["O", 5, 4, 1]],
+      solution: [[0, 4, 1], [1, 2, 2], [2, 5, 1], [3, 6, 1], [4, 5, 2], [4, 8, 1], [5, 6, 1], [6, 7, 1], [6, 10, 1], [8, 9, 1], [9, 10, 1], [9, 11, 1], [11, 12, 1], [12, 13, 1], [12, 15, 1], [13, 14, 1], [13, 16, 1], [15, 20, 1], [16, 17, 1], [16, 21, 1], [18, 19, 1], [19, 20, 1], [20, 21, 1], [21, 22, 1]]
+    },
+    {
+      id: "mugineic-acid",
+      name: "Mugineic acid",
+      formula: "C12H20N2O8",
+      fact: "Barley sends it out from its roots to grab iron in the soil, and takes it back in with the iron held inside.",
+      rows: 6,
+      cols: 5,
+      atoms: [["O", 0, 0, 0], ["C", 0, 1, 0], ["C", 0, 3, 1], ["C", 0, 4, 2], ["O", 1, 0, 1], ["O", 1, 1, 1], ["O", 1, 3, 1], ["C", 1, 4, 2], ["C", 2, 0, 0], ["O", 2, 1, 0], ["O", 2, 3, 1], ["N", 2, 4, 1], ["C", 3, 1, 2], ["C", 3, 3, 1], ["C", 3, 4, 1], ["C", 4, 0, 1], ["N", 4, 1, 0], ["O", 4, 3, 1], ["C", 4, 4, 0], ["C", 5, 0, 2], ["C", 5, 1, 2], ["O", 5, 4, 0]],
+      solution: [[0, 1, 2], [1, 2, 1], [1, 5, 1], [2, 3, 1], [2, 6, 1], [3, 7, 1], [4, 8, 1], [7, 11, 1], [8, 9, 2], [8, 15, 1], [10, 13, 1], [11, 14, 1], [12, 13, 1], [12, 16, 1], [13, 14, 1], [14, 18, 1], [15, 16, 1], [15, 19, 1], [16, 20, 1], [17, 18, 1], [18, 21, 2], [19, 20, 1]]
+    },
+    {
+      id: "prostaglandin-e2",
+      name: "Prostaglandin E2",
+      formula: "C20H32O5",
+      fact: "A signal your body makes at an injury, where it brings pain and swelling, and in an infection, where it raises a fever; aspirin and ibuprofen block the enzyme that starts making it.",
+      rows: 6,
+      cols: 5,
+      atoms: [["C", 0, 2, 1], ["C", 0, 3, 1], ["O", 0, 4, 1], ["C", 1, 0, 2], ["C", 1, 1, 2], ["C", 1, 2, 1], ["C", 1, 3, 1], ["C", 1, 4, 1], ["C", 2, 0, 2], ["C", 2, 1, 2], ["O", 2, 2, 1], ["C", 2, 4, 2], ["O", 3, 0, 0], ["C", 3, 1, 3], ["C", 3, 2, 2], ["C", 3, 3, 1], ["C", 3, 4, 0], ["C", 4, 0, 0], ["O", 4, 1, 1], ["C", 4, 2, 2], ["C", 4, 3, 1], ["O", 4, 4, 0], ["C", 5, 0, 2], ["C", 5, 2, 2], ["C", 5, 3, 1]],
+      solution: [[0, 1, 2], [0, 5, 1], [1, 6, 1], [2, 7, 1], [3, 4, 1], [3, 8, 1], [4, 5, 1], [5, 10, 1], [6, 7, 1], [6, 15, 1], [7, 11, 1], [8, 9, 1], [9, 13, 1], [11, 16, 1], [12, 17, 2], [14, 15, 1], [14, 19, 1], [15, 16, 1], [16, 21, 2], [17, 18, 1], [17, 22, 1], [19, 20, 1], [20, 24, 2], [22, 23, 1], [23, 24, 1]]
     }
   ];
 
@@ -428,43 +576,6 @@ p { margin: 0; }
     I: { valence: 1 }
   };
   var MAX_ORDER = 3;
-
-  // src/puzzle/grid.js
-  function candidateBonds(atoms) {
-    const bonds = [];
-    atoms.forEach((a, i) => {
-      let right = -1, down = -1;
-      atoms.forEach((b, j) => {
-        if (b.r === a.r && b.c > a.c && (right < 0 || b.c < atoms[right].c)) right = j;
-        if (b.c === a.c && b.r > a.r && (down < 0 || b.r < atoms[down].r)) down = j;
-      });
-      if (right >= 0) bonds.push({ a: i, b: right, horizontal: true });
-      if (down >= 0) bonds.push({ a: i, b: down, horizontal: false });
-    });
-    return bonds;
-  }
-  function crosses(atoms, e, f) {
-    if (e.horizontal === f.horizontal) return false;
-    const h = e.horizontal ? e : f, v = e.horizontal ? f : e;
-    const r = atoms[h.a].r, c = atoms[v.a].c;
-    return c > atoms[h.a].c && c < atoms[h.b].c && r > atoms[v.a].r && r < atoms[v.b].r;
-  }
-  function connected(atomCount, bonds, order) {
-    if (atomCount === 0) return true;
-    const seen = /* @__PURE__ */ new Set([0]), queue = [0];
-    while (queue.length) {
-      const u = queue.pop();
-      bonds.forEach((e, k) => {
-        if (!order[k] || e.a !== u && e.b !== u) return;
-        const v = e.a === u ? e.b : e.a;
-        if (!seen.has(v)) {
-          seen.add(v);
-          queue.push(v);
-        }
-      });
-    }
-    return seen.size === atomCount;
-  }
 
   // src/puzzle/game.js
   var UNDO_LIMIT = 100;
@@ -745,6 +856,7 @@ p { margin: 0; }
       <button id="next" aria-label="Next puzzle">\u203A</button>
       <span id="badge" class="badge"></span>
     </nav>
+    <p id="difficulty" class="legend"></p>
     <div class="mystery">
       <div class="eyebrow">Mystery molecule</div>
       <h1 id="title"></h1>
@@ -763,7 +875,7 @@ p { margin: 0; }
     key.append(...elements.map((e) => keyFigure(doc, e)));
     panel.querySelectorAll(".rules li")[RULES.findIndex((r) => r.startsWith("Each atom needs"))].append(key);
   }
-  function renderPanel(panel, { puzzles, index, progress, done, elements = [] }) {
+  function renderPanel(panel, { puzzles, index, progress, done, difficulty: difficulty2, elements = [] }) {
     if (!panel.querySelector("nav")) build(panel, elements);
     const $ = (id) => panel.querySelector(`#${id}`);
     const puzzle = puzzles[index], last = index === puzzles.length - 1;
@@ -772,6 +884,7 @@ p { margin: 0; }
       button.dataset.open = String(i);
     };
     $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
+    $("difficulty").textContent = `Difficulty ${difficulty2}`;
     opens($("prev"), index - 1, index > 0);
     opens($("next"), index + 1, !last);
     const state = progress.puzzles[puzzle.id];
