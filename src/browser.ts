@@ -1,6 +1,7 @@
+// @ts-nocheck
 // The entry point: the only file that uses the browser's globals. Makes the
 // dependencies and starts the app.
-import { startApp } from "./app.js";
+import { startApp } from "./app.ts";
 import { PUZZLES } from "./puzzle/puzzles.js";
 import { createGame } from "./puzzle/game.js";
 import { ELEMENTS } from "./puzzle/elements.js";

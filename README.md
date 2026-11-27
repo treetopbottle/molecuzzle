@@ -34,7 +34,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
 ## Where things are
 
 - [CONTRIBUTING.md](CONTRIBUTING.md): the working agreement
-- `src/`: the code, as ES modules: the components `puzzle/`, `storage/` and `ui/`, wired together by `browser.js` and `app.js`; see below
+- `src/`: the code, as ES modules: the components `puzzle/`, `storage/` and `ui/`, wired together by `browser.ts` and `app.ts`; see below
 - `scripts/`: the build, publishing to GitHub Pages, the screenshot tests and finding layouts for new Puzzles
 - `tests/`: `unit/`, `e2e/`, `helpers/`
 - `prototypes/`: try-outs of other puzzle modes, outside the spec
@@ -46,11 +46,11 @@ Domain entities, capitalized, each with an example the spec can reuse:
 
 ### How `src/` fits together
 
-The three components ([decision 0011](docs/decisions.md#0011)) and the Glue, `browser.js` and `app.js`, which wires them together and is not a component: it adds nothing of its own. An arrow is an import: the components don't import each other, only the Glue imports them. The files of each component are in [docs/architecture.md](docs/architecture.md).
+The three components ([decision 0011](docs/decisions.md#0011)) and the Glue, `browser.ts` and `app.ts`, which wires them together and is not a component: it adds nothing of its own. An arrow is an import: the components don't import each other, only the Glue imports them. The files of each component are in [docs/architecture.md](docs/architecture.md).
 
 ```mermaid
 flowchart TD
-  glue["Glue<br/><code>src/app.js</code>, <code>src/browser.js</code>"]
+  glue["Glue<br/><code>src/app.ts</code>, <code>src/browser.ts</code>"]
   ui["UI<br/><code>src/ui/</code>"]
   puzzle["Puzzle<br/><code>src/puzzle/</code><br/>puzzles and the rules"]
   storage["Storage<br/><code>src/storage/</code>"]

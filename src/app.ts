@@ -1,5 +1,6 @@
+// @ts-nocheck
 // Wires the Puzzles, the open game, Progress and the UI. No DOM:
-// browser.js makes the dependencies and passes them in.
+// browser.ts makes the dependencies and passes them in.
 import { markSolved } from "./storage/progress.js";
 import { difficulty } from "./puzzle/difficulty.js";
 

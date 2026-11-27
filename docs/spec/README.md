@@ -8,7 +8,7 @@ The features are in one file per component ([decision 0011](../decisions.md#0011
 - [storage.md](storage.md): what is kept in the browser, where, how and who can read it
 - [ui.md](ui.md): what the Player sees and does, with screenshots
 
-`src/app.js` wires them into the game; what it does is in the features it wires, such as [Progress.01](storage.md#progress), so it has no features of its own. Each feature lists its rules. A rule has an id, `<Feature>.<NN>`, unique over all files, and an example. Each rule is tested by a unit, component or end-to-end test whose name starts with its id.
+`src/app.ts` wires them into the game; what it does is in the features it wires, such as [Progress.01](storage.md#progress), so it has no features of its own. Each feature lists its rules. A rule has an id, `<Feature>.<NN>`, unique over all files, and an example. Each rule is tested by a unit, component or end-to-end test whose name starts with its id.
 
 A general narrative is used to describe a typical usage flow, see [narratives.md](./narratives.md).
 

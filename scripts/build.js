@@ -1,5 +1,5 @@
 // Builds dist/index.html: src/ui/index.html with src/ui/style.css and the
-// JavaScript bundled from src/browser.js inlined, so the game is one file
+// JavaScript bundled from src/browser.ts inlined, so the game is one file
 // that opens from disk.
 import { build } from "esbuild";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
@@ -10,7 +10,7 @@ const src = path => new URL(`src/${path}`, root);
 const [html, css, js] = await Promise.all([
   readFile(src("ui/index.html"), "utf8"),
   readFile(src("ui/style.css"), "utf8"),
-  build({ entryPoints: [src("browser.js").pathname], bundle: true, format: "iife", write: false, target: "es2020" })
+  build({ entryPoints: [src("browser.ts").pathname], bundle: true, format: "iife", write: false, target: "es2020" })
     .then(r => r.outputFiles[0].text),
 ]);
 
@@ -19,7 +19,7 @@ const replace = (text, find, by) => {
   return text.replace(find, () => by);
 };
 let out = replace(html, '<link rel="stylesheet" href="style.css">', `<style>\n${css}</style>`);
-out = replace(out, '<script type="module" src="browser.js"></script>', `<script>\n${js.replaceAll("</script", "<\\/script")}</script>`);
+out = replace(out, '<script type="module" src="browser.ts"></script>', `<script>\n${js.replaceAll("</script", "<\\/script")}</script>`);
 
 await mkdir(new URL("dist/", root), { recursive: true });
 await writeFile(new URL("dist/index.html", root), out);

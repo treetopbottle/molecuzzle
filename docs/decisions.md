@@ -120,7 +120,7 @@ The code is plain JavaScript in ES modules in `src/`; `npm run build` bundles th
 
 Accepted (2026-11-11)
 
-Puzzle, Storage, the UI (in happy-dom) and the wiring in `src/app.js` (with fakes) are tested with Vitest; the built page with Playwright in Chromium, at 1280×800 and, for layout, 390×844. Expected results are inline snapshots: the Board drawn as text (`tests/helpers/draw.js`) and accessibility snapshots of the page. A test's name starts with the rule ids it covers.
+Puzzle, Storage, the UI (in happy-dom) and the wiring in `src/app.ts` (with fakes) are tested with Vitest; the built page with Playwright in Chromium, at 1280×800 and, for layout, 390×844. Expected results are inline snapshots: the Board drawn as text (`tests/helpers/draw.js`) and accessibility snapshots of the page. A test's name starts with the rule ids it covers.
 
 - **Why:** inline snapshots read like the spec's examples; testing the page through roles and names also keeps the Board usable with a screen reader and keys.
 - **Cost:** two test runners; Playwright needs a Chromium download or `CHROMIUM_PATH`.
@@ -164,11 +164,11 @@ The Pages workflow doesn't run the tests: every branch that builds is published.
 
 Accepted (2026-11-15). Since [0028](#0028), the Element symbols are also written out in `puzzle/api.ts`, and `tsc` checks in the Glue that the UI has a look for each of the Puzzle's; the valences and the undo limit stay copies that nothing checks.
 
-The code is three components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser) and UI (`src/ui/`: the page, what it shows and what the Player does). A component imports only from itself. `src/browser.js` and `src/app.js` are not a component: they import the components and wire them together, handing each what it needs from the others as arguments, and add nothing of their own, so they have no spec: what they do is in the features they wire. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component.
+The code is three components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser) and UI (`src/ui/`: the page, what it shows and what the Player does). A component imports only from itself. `src/browser.ts` and `src/app.ts` are not a component: they import the components and wire them together, handing each what it needs from the others as arguments, and add nothing of their own, so they have no spec: what they do is in the features they wire. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component.
 
-- **Why:** each component can be read, specified and tested on its own, and replaced: `app.js` gets the storage and the Puzzles passed in, so tests can pass their own.
+- **Why:** each component can be read, specified and tested on its own, and replaced: `app.ts` gets the storage and the Puzzles passed in, so tests can pass their own.
 - **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know. What two components both need is written in each: the Element symbols in the Puzzle's and the UI's `elements.js` and in the Puzzle schema, the valences in `puzzle/elements.js` and in the rule the panel shows (since plan 08 the key of the panel gets them from the Glue, so only the rule's text is a copy), and the undo limit in `game.js`, `progress.js` and the Progress schema. A new Element means changing all of those, and the spec.
-- **Alternatives:** the flat `src/` as it was: fewer files, but the boundaries were only in comments, and `app.js` mixed wiring with the panel's DOM. A framework or a container for dependency injection: more than the page needs ([0006](#0006)). The wiring as a fourth component: but it adds nothing and has no spec.
+- **Alternatives:** the flat `src/` as it was: fewer files, but the boundaries were only in comments, and the wiring was mixed with the panel's DOM. A framework or a container for dependency injection: more than the page needs ([0006](#0006)). The wiring as a fourth component: but it adds nothing and has no spec.
 
 <a id="0012"></a>
 ## 0012: Schemas as JSON files, checked by the tests

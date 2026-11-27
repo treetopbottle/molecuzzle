@@ -6,13 +6,13 @@ Each diagram shows the files of one component; an arrow is an import. Arrows are
 
 ## Glue
 
-`browser.js` is the only file using the browser's globals: it makes the dependencies and starts `app.js`, which wires the components together.
+`browser.ts` is the only file using the browser's globals: it makes the dependencies and starts `app.ts`, which wires the components together.
 
 ## UI
 
-`index.html` is the page and loads `style.css` and the Glue's `browser.js`; nothing imports them.
+`index.html` is the page and loads `style.css` and the Glue's `browser.ts`; nothing imports them.
 
-`ui.js` owns all the interface components on the webpage and when the Player does something it calls the handlers provided by `app.js`.
+`ui.js` owns all the interface components on the webpage and when the Player does something it calls the handlers provided by `app.ts`.
 
 ```mermaid
 flowchart TD
@@ -35,7 +35,7 @@ flowchart TD
 
 The Puzzles and the rules. `game.js` keeps the Bonds of a Board and gives its status, its counts and budget, and the reasons.
 
-`solver.js`, `generate.js` and `removed.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts and `difficulty.js` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.js`, and `removed.js`, the Puzzles taken out of the game, to keep them out; the tests check the layouts in both. The Glue's `app.js` uses `difficulty.js` too, for the difficulty the panel shows.
+`solver.js`, `generate.js` and `removed.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts and `difficulty.js` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.js`, and `removed.js`, the Puzzles taken out of the game, to keep them out; the tests check the layouts in both. The Glue's `app.ts` uses `difficulty.js` too, for the difficulty the panel shows.
 
 ```mermaid
 flowchart TD
