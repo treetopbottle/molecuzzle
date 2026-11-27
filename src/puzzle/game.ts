@@ -9,10 +9,11 @@ export const UNDO_LIMIT = 100;
 
 /**
  * A Puzzle being played. It starts with no Bonds, or where it was left:
- * { bonds, revealed, undo } as saved() gave them. If that Board, or one in
- * its history, can't be on the Grid, it starts with no Bonds, nothing to
- * undo and the solution not shown. A solved Board starts with nothing to
- * undo, since solving ends the undo history.
+ * { bonds, revealed, undo } as saved() gave them, of the shape the schema
+ * says, as Storage checks it. If that Board, or one in its history, can't be
+ * on the Grid, it starts with no Bonds, nothing to undo and the solution not
+ * shown. A solved Board starts with nothing to undo, since solving ends the
+ * undo history.
  */
 export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = false, undo: past = [] }: Partial<Saved> = {}): Game {
   // An Atom's hydrogens are bonded from the start (Puzzle.07).
