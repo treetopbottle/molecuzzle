@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { test, expect } from "@playwright/test";
 import { start, openPuzzle, clickBond, build, status, colors, isGreen, isOrange, PUZZLES } from "./helpers.ts";
 

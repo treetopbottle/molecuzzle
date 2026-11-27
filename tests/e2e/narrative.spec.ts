@@ -1,4 +1,3 @@
-// @ts-nocheck
 // The "First day" narrative from docs/spec/narratives.md, end to end.
 import { test, expect } from "@playwright/test";
 import { start, openPuzzle, clickBond, build, status, bond, PUZZLES } from "./helpers.ts";

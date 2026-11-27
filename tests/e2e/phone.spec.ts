@@ -1,7 +1,6 @@
-// @ts-nocheck
-// Run only by the phone project (playwright.config.js): touch and the small screen.
+// Run only by the phone project (playwright.config.ts): touch and the small screen.
 import { test, expect } from "@playwright/test";
-import { start, clickBond, bond, openPuzzle } from "./helpers.ts";
+import { start, clickBond, bond, box, openPuzzle, viewport } from "./helpers.ts";
 
 test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page }) => {
   await start(page);
@@ -15,27 +14,27 @@ test("Panel.05 the key shows every Element's number of bonds, and fits a phone w
   await expect(key).toHaveCount(4);
   await expect(page.getByRole("img", { name: "Carbon: 4 bonds" })).toBeVisible();
   await expect(page.getByRole("img", { name: "Sulfur: 2 bonds" })).toBeVisible();
-  const { width } = page.viewportSize();
+  const { width } = viewport(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-  const box = await key.last().boundingBox();
-  expect(box.x + box.width).toBeLessThanOrEqual(width);
+  const last = await box(key.last());
+  expect(last.x + last.width).toBeLessThanOrEqual(width);
 });
 
 test("Page.01 on a phone, the actions end within the screen", async ({ page }) => {
   await start(page);
-  const actions = await page.locator(".actions").boundingBox();
-  expect(actions.y + actions.height).toBeLessThanOrEqual(page.viewportSize().height);
+  const actions = await box(page.locator(".actions"));
+  expect(actions.y + actions.height).toBeLessThanOrEqual(viewport(page).height);
 });
 
-for (const [number, name, board] of [[12, "Glucose's, the widest", "Board, 3 by 5"], [13, "Citric acid's, the tallest", "Board, 6 by 3"], [15, "N-Acetylglucosamine's", "Board, 5 by 5"], [23, "N-Acetylneuraminic acid's", "Board, 6 by 5"], [30, "Prostaglandin E2's, with the most Atoms", "Board, 6 by 5"]])
+for (const [number, name, board] of [[12, "Glucose's, the widest", "Board, 3 by 5"], [13, "Citric acid's, the tallest", "Board, 6 by 3"], [15, "N-Acetylglucosamine's", "Board, 5 by 5"], [23, "N-Acetylneuraminic acid's", "Board, 6 by 5"], [30, "Prostaglandin E2's, with the most Atoms", "Board, 6 by 5"]] as const)
   test(`Layout.01, Puzzle.04 on a phone, the largest Grids fit: ${name}, with no sideways scroll, and the Board, its status line and its counts fit the screen`, async ({ page }) => {
     await start(page);
     await openPuzzle(page, number);
     await expect(page.getByRole("group", { name: board })).toBeVisible();
-    const { width, height } = page.viewportSize();
+    const { width, height } = viewport(page);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-    const stage = await page.locator(".stage").boundingBox();
-    const status = await page.getByRole("status").boundingBox(), counts = await page.locator("#counts").boundingBox();
+    const stage = await box(page.locator(".stage"));
+    const status = await box(page.getByRole("status")), counts = await box(page.locator("#counts"));
     expect(counts.y).toBeGreaterThanOrEqual(status.y + status.height);
     expect(counts.y + counts.height - stage.y).toBeLessThanOrEqual(height);
   });

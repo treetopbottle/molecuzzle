@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { defineConfig } from "@playwright/test";
 
 // Uses Playwright's own Chromium (npx playwright install chromium), or the

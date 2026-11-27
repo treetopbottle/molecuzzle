@@ -1,4 +1,3 @@
-// @ts-nocheck
 // The screenshots of docs/spec/ui.md, compared pixel for pixel. Only
 // scripts/screenshots.sh runs these, in Playwright's image (decision 0013).
 import { test, expect } from "@playwright/test";

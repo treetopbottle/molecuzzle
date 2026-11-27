@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { test, expect } from "@playwright/test";
 import { start, openPuzzle, build, PUZZLES, storedProgress, GAME_URL } from "./helpers.ts";
 
@@ -91,7 +90,7 @@ test("Progress.01, Progress.03 wrong data is left out, and Puzzle 1 opens when t
 });
 
 test("Progress.04 the only request the page makes is for the page itself", async ({ page }) => {
-  const requests = [];
+  const requests: string[] = [];
   page.on("request", request => requests.push(request.url()));
   await start(page);
   await build(page, PUZZLES[0]);

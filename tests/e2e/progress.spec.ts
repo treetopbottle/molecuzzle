@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { test, expect } from "@playwright/test";
 import { start, openPuzzle, clickBond, bond, build, status, storedProgress, PUZZLES } from "./helpers.ts";
 import { schemaErrors } from "../helpers/schemas.ts";
