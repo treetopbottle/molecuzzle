@@ -14,3 +14,8 @@ Type-check probes: removing the top-level `isObject(data)`, `state === "solved"`
 2. **note**, `src/storage/progress.ts:7`, `:8`: the guards are sound only when they return true; a type predicate narrows on false too (`isIndex(-1)` would say "not a number"). Every call passes `unknown` or `any`, so a false result narrows nothing. In the true direction no guard claims more than it checks.
 
 Checked with no finding: both renames recorded (99%), with `git log --follow` past them; the move commit's edits; no casts, `!`, `@ts-` lines or explicit `any`; `createProgressStore` returns a checked `Store`, and `markSolved` is typed; the test's diff adds only types; the commit messages.
+
+## Outcome
+
+1. Fixed with this outcome: Scope and the Design name `progress.ts`.
+2. Kept: every guard is called on `unknown` or `any`, where a false result narrows nothing.
