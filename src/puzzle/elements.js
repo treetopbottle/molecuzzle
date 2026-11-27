@@ -1,4 +1,7 @@
 // The Elements a puzzle can use, with the number of Bonds each needs.
+/** @import { ElementSymbol } from "./api.ts" */
+
+/** @type {Record<ElementSymbol, { valence: number }>} */
 export const ELEMENTS = {
   H: { valence: 1 },
   C: { valence: 4 },

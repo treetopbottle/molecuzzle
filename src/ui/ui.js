@@ -20,7 +20,7 @@ function renderCounts(line, { used, budget }) {
 
 /**
  * @param {Document} doc
- * @param {{ onChange(k: number, dir: number): void, onOpen(index: number): void,
+ * @param {{ onChange(k: number, dir: 1 | -1): void, onOpen(index: number): void,
  *   onUndo(): void, onReset(): void, onSolve(): void }} handlers
  *   onSolve and onReset come only after the Player confirms.
  * @param {{ confirm?: (question: string) => boolean, elements?: {symbol: string, valence: number}[] }} [options]

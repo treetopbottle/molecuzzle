@@ -4,6 +4,9 @@
 // to it from the start; the solution lists [atom, atom, Bond order].
 // Layouts come from scripts/generate.js; tests check each has exactly this
 // one solution.
+/** @import { Puzzle } from "./api.ts" */
+
+/** @type {Puzzle[]} */
 export const PUZZLES = [
   {
     id: "acetonitrile", name: "Acetonitrile", formula: "C2H3N",

@@ -1,16 +1,15 @@
 // Wires the Puzzles, the open game, Progress and the UI. No DOM:
 // browser.ts makes the dependencies and passes them in.
 import { markSolved, type Progress, type Store } from "./storage/api.ts";
-import { difficulty } from "./puzzle/difficulty.js";
-import type { createGame } from "./puzzle/game.js";
+import { difficulty, type CreateGame, type Game, type Puzzle } from "./puzzle/api.ts";
 import type { createUi } from "./ui/ui.js";
 
 type Handlers = Parameters<typeof createUi>[1];
 
 /** What the Glue is given: the Puzzles, and each component's part. */
 export interface AppDeps {
-  puzzles: Parameters<typeof createGame>[0][];
-  createGame: typeof createGame;
+  puzzles: Puzzle[];
+  createGame: CreateGame;
   store: Store;
   createUi: (handlers: Handlers) => ReturnType<typeof createUi>;
 }
@@ -18,7 +17,7 @@ export interface AppDeps {
 export function startApp({ puzzles, createGame, store, createUi }: AppDeps): void {
   let progress = store.load();
   let index = Math.max(0, puzzles.findIndex(p => p.id === progress.current));
-  let game: ReturnType<typeof createGame>;
+  let game: Game;
 
   const ui = createUi({
     onChange(k, dir) {

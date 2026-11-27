@@ -1,6 +1,7 @@
 // The state of one puzzle being played: Bond orders, undo history and its
 // status. No DOM, and no text for the Player: the UI words the statuses and
 // reasons.
+/** @import { Game, Puzzle, Saved } from "./api.ts" */
 import { ELEMENTS, MAX_ORDER } from "./elements.js";
 import { candidateBonds, crosses, connected } from "./grid.js";
 
@@ -12,8 +13,9 @@ export const UNDO_LIMIT = 100;
  * its history, can't be on the Grid, it starts with no Bonds, nothing to
  * undo and the solution not shown. A solved Board starts with nothing to
  * undo, since solving ends the undo history.
- * @param {any} puzzle
- * @param {{ bonds?: number[][], revealed?: boolean, undo?: number[][][] }} [saved]
+ * @param {Puzzle} puzzle
+ * @param {Partial<Saved>} [saved]
+ * @returns {Game}
  */
 export function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
   // An Atom's hydrogens are bonded from the start (Puzzle.07); a missing count is none.
