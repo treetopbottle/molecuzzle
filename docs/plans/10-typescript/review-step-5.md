@@ -21,3 +21,13 @@ Probes of the import test, files added to `src/ui/` in the worktree naming a pat
 7. **note**, `tests/unit/imports.test.js:45-46`: a component's file may name only files in exactly its own directory, so a subfolder of a component would be rejected. None has one, and the Design says "that folder".
 
 Checked with no finding: the files the test reads and its Glue rules match the Design; paths are normalized, and one leaving `src/` is rejected; `architecture.md`'s lines for each `api.ts`, `AppDeps` and its checks match the code, `LookSymbol` included; the UI's other edges and the Puzzle's diagram match the code; the README's line and its link; the plan's Design line; the commit messages.
+
+## Outcome
+
+1. Fixed in 4acbd07: the bindings are matched as a type, braces, a namespace or a default, so a comment in the braces can hold anything but `}`; a fixed text with such an import is found.
+2. Fixed in 4acbd07.
+3. Fixed in 4acbd07: a test of each kind on fixed text, the multi-line one and `import(…)` included.
+4. Fixed in 4acbd07 for `import(…)` with a comment or a template literal, and string-named bindings; triple-slash references are kept out, as the code has none and the Design lists none.
+5. Fixed in 4acbd07.
+6. Fixed in 4acbd07.
+7. Kept: no component has a subfolder, and the Design says "that folder".
