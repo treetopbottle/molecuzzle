@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Draws a game's Board as text, for inline snapshots, as the spec's README
 // draws them.
 //
@@ -9,12 +8,14 @@
 // Every Grid point is as wide as the longest label on the Board, a shorter
 // label in its first characters, and the columns are one character more
 // apart. A Bond along a column runs under the first characters of its labels.
+import type { Atom, ChangeResult, Game } from "../../src/puzzle/api.ts";
+
 const SUBSCRIPTS = "₀₁₂₃₄₅₆₇₈₉";
 
 /** An Atom as in a formula: CH₂, OH, C. */
-const label = a => a.el + (a.h ? "H" + (a.h > 1 ? SUBSCRIPTS[a.h] : "") : "");
+const label = (a: Atom): string => a.el + (a.h ? "H" + (a.h > 1 ? SUBSCRIPTS[a.h] : "") : "");
 
-export function draw(game) {
+export function draw(game: Game): string {
   const { puzzle, atoms, bonds } = game, order = game.order;
   const labels = atoms.map(a => [...label(a)]);
   const width = Math.max(...labels.map(l => l.length)), step = width + 1;
@@ -31,8 +32,8 @@ export function draw(game) {
 }
 
 /** Bonds a game's candidate Bond between the Atoms at two places, "row,col" from 1. */
-export function bondIndex(game, from, to) {
-  const at = p => game.atoms.findIndex(a => `${a.r + 1},${a.c + 1}` === p);
+export function bondIndex(game: Game, from: string, to: string): number {
+  const at = (p: string) => game.atoms.findIndex(a => `${a.r + 1},${a.c + 1}` === p);
   const [i, j] = [at(from), at(to)];
   const k = game.bonds.findIndex(e => (e.a === i && e.b === j) || (e.a === j && e.b === i));
   if (k < 0) throw new Error(`no candidate Bond between ${from} and ${to}`);
@@ -40,14 +41,14 @@ export function bondIndex(game, from, to) {
 }
 
 /** Clicks the Bond between two places `times` times (dir +1) and returns the last result. */
-export function click(game, from, to, times = 1, dir = 1) {
+export function click(game: Game, from: string, to: string, times = 1, dir: 1 | -1 = 1): ChangeResult | undefined {
   let result;
   for (let n = 0; n < times; n++) result = game.change(bondIndex(game, from, to), dir);
   return result;
 }
 
 /** Builds a puzzle's solution by clicking, as a Player would. */
-export function build(game) {
+export function build(game: Game): void {
   for (const [a, b, o] of game.puzzle.solution) {
     const k = game.bonds.findIndex(e => (e.a === a && e.b === b) || (e.a === b && e.b === a));
     for (let n = 0; n < o; n++) game.change(k, +1);

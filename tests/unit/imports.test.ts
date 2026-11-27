@@ -1,4 +1,3 @@
-// @ts-nocheck
 // The imports in src/ keep decision 0028: a component names only files in its
 // own folder, and the Glue only app.ts and the components' api.ts. Every file
 // named must exist, as a JSDoc type from a path that doesn't becomes any.
@@ -12,7 +11,7 @@ const GLUE = ["app.ts", "browser.ts"];
 const FOR_THE_GLUE = ["app.ts", "puzzle/api.ts", "storage/api.ts", "ui/api.ts"];
 
 // The .js and .ts files of src/, as paths from it.
-const files = readdirSync(SRC, { recursive: true })
+const files = readdirSync(SRC, { recursive: true, encoding: "utf8" })
   .map(f => f.split("\\").join("/"))
   .filter(f => /\.(js|ts)$/.test(f))
   .sort();
@@ -27,21 +26,21 @@ const KINDS = [
 ];
 
 /** The paths a text imports from, in order. */
-function specifiers(text) {
+function specifiers(text: string): string[] {
   return KINDS.flatMap(kind => [...text.matchAll(kind)])
     .sort((m, n) => m.index - n.index)
     .map(m => m[1]);
 }
 
 /** The files a file names by relative path, as paths from src/. */
-function named(file) {
+function named(file: string): string[] {
   return specifiers(readFileSync(join(SRC, file), "utf8"))
     .filter(path => path.startsWith("."))
     .map(path => normalize(join(dirname(file), path)).split("\\").join("/"));
 }
 
 const edges = files.flatMap(file => named(file).map(to => ({ from: file, to })));
-const show = ({ from, to }) => `${from} → ${to}`;
+const show = ({ from, to }: { from: string; to: string }): string => `${from} → ${to}`;
 
 test("it finds each kind of import, also over lines and with comments between", () => {
   const text = [

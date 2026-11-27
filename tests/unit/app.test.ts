@@ -1,27 +1,47 @@
-// @ts-nocheck
 import { describe, expect, test } from "vitest";
 import { startApp } from "../../src/app.ts";
 import { createGame } from "../../src/puzzle/game.js";
 import { PUZZLES } from "../../src/puzzle/puzzles.js";
+import type { Game, Saved } from "../../src/puzzle/api.ts";
+import type { BoardEntry, Progress, Store } from "../../src/storage/api.ts";
+import type { Handlers, SayResult, Ui, View } from "../../src/ui/api.ts";
 
-/** A store in memory, and a UI that records what it is asked to do. */
-function start(stored = { puzzles: {}, current: null }) {
-  const store = {
+/** The last of a list, which must have one. */
+function last<T>(list: T[]): T {
+  const item = list.at(-1);
+  if (item === undefined) throw new Error("none yet");
+  return item;
+}
+
+/**
+ * A store in memory, and a UI that records what it is asked to do. Both are
+ * typed as what startApp is given, so tsc checks they fit, as the real ones
+ * must; the UI's open keeps the Game it is given, which a method allows.
+ */
+function start(stored: Progress = { puzzles: {}, current: null }) {
+  const store: Store & { saved: Progress } = {
     saved: stored,
     load: () => store.saved,
     update(change) { store.saved = change(store.saved); return store.saved; },
   };
-  const ui = { opened: [], views: [], said: [], created: [] };
+  const opened: Game[] = [], views: View[] = [], said: SayResult[] = [];
+  const created: [string, Partial<Saved> | undefined][] = [];
+  let handlers: Handlers | undefined;
   startApp({
     puzzles: PUZZLES, store,
-    createGame(puzzle, saved) { ui.created.push([puzzle.id, saved]); return createGame(puzzle, saved); },
-    createUi(handlers) {
-      ui.handlers = handlers;
-      return { open: game => ui.opened.push(game), render: view => ui.views.push(view), say: result => ui.said.push(result) };
+    createGame(puzzle, saved) { created.push([puzzle.id, saved]); return createGame(puzzle, saved); },
+    createUi(given) {
+      handlers = given;
+      const ui: Ui = {
+        open(game: Game) { opened.push(game); },
+        render(view) { views.push(view); },
+        say(result) { said.push(result); },
+      };
+      return ui;
     },
   });
-  ui.view = () => ui.views.at(-1);
-  ui.game = () => ui.opened.at(-1);
+  if (!handlers) throw new Error("startApp made no UI");
+  const ui = { handlers, opened, views, said, created, view: () => last(views), game: () => last(opened) };
   return { store, ui };
 }
 
@@ -50,7 +70,7 @@ test("Progress.01 the open Puzzle is saved", () => {
 
 test("Progress.01 a solved Puzzle is marked solved, and the UI shows it", () => {
   const { store, ui } = start();
-  const k = (a, b) => ui.game().bonds.findIndex(e => e.a === a && e.b === b);
+  const k = (a: number, b: number) => ui.game().bonds.findIndex(e => e.a === a && e.b === b);
   ui.handlers.onChange(k(0, 1), 1);
   for (let n = 0; n < 3; n++) ui.handlers.onChange(k(1, 2), 1);
   expect(store.saved).toEqual({
@@ -83,7 +103,7 @@ test("Input.01, Input.03 changes, Undo, Reset and Show solution go to the game, 
 });
 
 describe("Progress.05, Progress.06", () => {
-  const entry = id => store => store.saved.boards?.[id];
+  const entry = (id: string) => (store: { saved: Progress }) => store.saved.boards?.[id];
 
   test("Progress.05 a change, Undo and Show solution keep the open Puzzle's Board, its undo history and whether the solution was shown", () => {
     const { store, ui } = start({ puzzles: {}, current: "acetic-acid" });
@@ -94,7 +114,7 @@ describe("Progress.05, Progress.06", () => {
     ui.handlers.onUndo();
     expect(aceticAcid(store)).toEqual({ bonds: [[1, 2, 1]], revealed: false, undo: [[]] });
     ui.handlers.onSolve();
-    expect(aceticAcid(store)).toEqual({ bonds: PUZZLES.find(p => p.id === "acetic-acid").solution, revealed: true, undo: [[], [[1, 2, 1]]] });
+    expect(aceticAcid(store)).toEqual({ bonds: PUZZLES.find(p => p.id === "acetic-acid")?.solution, revealed: true, undo: [[], [[1, 2, 1]]] });
   });
 
   test("Progress.05 Reset removes what was kept, and no boards are left", () => {
@@ -126,7 +146,7 @@ describe("Progress.05, Progress.06", () => {
   });
 
   test("Progress.05 opening a Puzzle goes on where it was left, and another Puzzle's Board stays kept", () => {
-    const kept = { bonds: [[1, 2, 1]], revealed: false, undo: [[]] };
+    const kept: BoardEntry = { bonds: [[1, 2, 1]], revealed: false, undo: [[]] };
     const { store, ui } = start({ puzzles: {}, current: "glycine", boards: { "acetic-acid": kept } });
     expect(ui.created).toEqual([["glycine", undefined]]);
     ui.handlers.onOpen(1);
