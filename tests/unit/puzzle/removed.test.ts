@@ -6,9 +6,7 @@ import { solve } from "../../../src/puzzle/solver.ts";
 import { createGame } from "../../../src/puzzle/game.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
 import { atomCount, formulaCount } from "../../helpers/formula.ts";
-
-/** The symbols a Puzzle's Atom may have: every Element's but H. */
-const PUZZLE_SYMBOLS: string[] = Object.keys(ELEMENTS).filter(s => s !== "H");
+import { PUZZLE_SYMBOLS } from "../../helpers/puzzles.ts";
 
 /** The Atoms of a formula, as counts per Element, so the order it is written in doesn't matter. */
 const atomsOf = (formula: string) => JSON.stringify(Object.entries(formulaCount(formula)).sort(([a], [b]) => a.localeCompare(b)));

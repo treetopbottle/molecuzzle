@@ -4,13 +4,13 @@
 import { candidateBonds, crossings } from "./grid.ts";
 import { solve } from "./solver.ts";
 import { ELEMENTS } from "./elements.ts";
-import type { Candidate, ElementSymbol, Puzzle } from "./api.ts";
+import type { Atom, Candidate, ElementSymbol, Puzzle } from "./api.ts";
 
 type Point = [number, number];
-/** An Atom of the Molecule: its Element and its hydrogens. */
-type Kind = { el: Exclude<ElementSymbol, "H">; h: number };
+/** An Atom of the Molecule, before it has a place: its Element and its hydrogens. */
+type Kind = Omit<Atom, "r" | "c">;
 /** A layout: its Atoms with their places, and its Grid. */
-type Layout = { atoms: (Kind & { r: number; c: number })[]; rows: number; cols: number };
+type Layout = { atoms: Atom[]; rows: number; cols: number };
 
 const ORDERS: Record<string, 1 | 2 | 3> = { "-": 1, "=": 2, "#": 3 };
 const isSymbol = (s: string): s is ElementSymbol => Object.hasOwn(ELEMENTS, s);
@@ -48,7 +48,11 @@ export function findLayout(text: string, { tries = 2000, maxRows = 6, maxCols = 
     for (const l of [x, y]) if (!labels.includes(l)) labels.push(l);
     bonds.push({ a: labels.indexOf(x), b: labels.indexOf(y), order: ORDERS[op] });
   }
-  const kinds = labels.map(atom).filter(k => k !== null); // all of them, as each label was read above
+  const kinds = labels.map(label => {
+    const kind = atom(label);
+    if (!kind) throw new Error(`can't read ${label}`); // each was read above
+    return kind;
+  });
   const neighbours = labels.map((_, i) => bonds.filter(e => e.a === i || e.b === i));
 
   const other = (e: { a: number; b: number }, x: number) => (e.a === x ? e.b : e.a);

@@ -6,9 +6,7 @@ import { createGame } from "../../../src/puzzle/game.ts";
 import { difficulty, dottedLines } from "../../../src/puzzle/difficulty.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
 import { atomCount, formulaCount } from "../../helpers/formula.ts";
-
-/** The symbols a Puzzle's Atom may have: every Element's but H. */
-const PUZZLE_SYMBOLS: string[] = Object.keys(ELEMENTS).filter(s => s !== "H");
+import { PUZZLE_SYMBOLS } from "../../helpers/puzzles.ts";
 
 describe("Puzzle.01 the puzzles", () => {
   test("Puzzle.09 each budget is the Bonds of its solution, and half of what its Atoms need", () => {

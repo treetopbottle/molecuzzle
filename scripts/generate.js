@@ -1,12 +1,12 @@
 // Searches for a grid layout of a Molecule that makes a puzzle with exactly
-// one solution, and prints it as an entry for src/puzzle/puzzles.js.
+// one solution, and prints it as an entry for src/puzzle/puzzles.ts.
 //
 //   node scripts/generate.js "CH3-C C=O C-OH" [tries] [maxRows] [maxCols] [seed]
 //
 // Bonds are written between labelled Atoms: a label is the Element and then
 // its hydrogens, as in a formula, with `:` and a name to tell Atoms with the
 // same label apart (CH2:a, CH2:b); `-` `=` `#` are the Bond order. The search
-// is findLayout in src/puzzle/generate.js.
+// is findLayout in src/puzzle/generate.ts.
 import { findLayout } from "../src/puzzle/generate.ts";
 import { difficulty, dottedLines } from "../src/puzzle/difficulty.ts";
 
