@@ -13,3 +13,11 @@ Checks at 3eee185, on Node 26.13.1: `npm run typecheck` exits 0; `npm run build`
 5. **note**, `docs/decisions.md:171`: 0011's Alternative about the old flat `src/app.js` was reworded, not given the new path, as `app.ts` would be false there. Right; no action.
 
 Checked with no finding: `tsconfig.json` has the Design's options; `package.json` and the README's Development list; no `app.js` or `browser.js` left outside the past plans; the build's entry and placeholder; `app.test.js`'s import; no `// @ts-nocheck` left after 3eee185; the commit messages.
+
+## Outcome
+
+1. Kept: step 2 types `boards` with Storage's `BoardEntry`, and step 3 types `createGame`'s `saved`, so the placeholder goes; step 2 doesn't carry it over.
+2. Kept, recorded here: the inferred store can't be used by strict code, so the Glue had a `Progress` of its own until step 2 gives it Storage's.
+3. Kept: as the Design says, the checks are only as good as the JSDoc until steps 2 to 4 and part 2.
+4. Kept: the renames held; from step 2 on, a move commit changes no text inside the moved file but its imports and `// @ts-nocheck`.
+5. Nothing to fix.
