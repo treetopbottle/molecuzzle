@@ -15,3 +15,11 @@ Probes at ce1b73e: `openPuzzle(page, "2")`, `build(page, { id: 1 })` and `const 
 5. **note**, 9cfb3da `vitest.config.ts:3`: the move commit adds `"tests/unit/**/*.test.ts"` to `include`, a new pattern, not one naming a moved file. Harmless, as the rename is still recorded (65%), but strictly it belongs in another commit.
 
 Checked with no finding: all 14 renames recorded as renames (65% to 99%), with `git log --follow` past them; the move commit's edits inside moved files; no `// @ts-nocheck` left; no old names outside the past plans; the unit tests import `schemas.ts`; Playwright's patterns and `globalSetup`, Vitest's include; no casts; `start`'s `unknown`; `box()`, `viewport()` and `clickBond`; `schemas.ts`; 40 e2e and 412 unit tests before and after; `@types/node` `^22.20.7`; the plan's line; the commit messages.
+
+## Outcome
+
+1. Fixed in 5a9999e: `colors` throws "no colour in …".
+2. Fixed in 5a9999e: `"types": ["node"]`.
+3. Fixed in 5a9999e: 0029's Cost says Node's types are the README's oldest Node's, and that this needs `skipLibCheck`; step 9 revisits both with the minimum.
+4. Fixed in 5a9999e: `Promise<Progress | null>`, and `progress.spec.ts` reads `stored?.boards`.
+5. Kept: the commits are reviewed, and the rename held.

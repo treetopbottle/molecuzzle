@@ -71,7 +71,7 @@ No step has a rule id except step 12, so the others have no split into tests and
 
 ### Part 2: TypeScript
 
-6. **The tests' tools, and the end-to-end tests.** `@types/node`; `tsconfig.json` adds `tests/` and the configs; `vitest.config.ts` runs `*.test.js` and `*.test.ts`; `playwright.config.ts`, its patterns `.spec.ts` and its `globalSetup` `build.ts`. To `.ts`: `tests/e2e/`, its helpers and build included, and `tests/helpers/schemas.js`, which `progress.spec` imports, so no end-to-end test loads a `.ts` file from a `.js` one.
+6. **The tests' tools, and the end-to-end tests.** `[DONE]` ([review](review-step-6.md)) `@types/node`; `tsconfig.json` adds `tests/` and the configs; `vitest.config.ts` runs `*.test.js` and `*.test.ts`; `playwright.config.ts`, its patterns `.spec.ts` and its `globalSetup` `build.ts`. To `.ts`: `tests/e2e/`, its helpers and build included, and `tests/helpers/schemas.js`, which `progress.spec` imports, so no end-to-end test loads a `.ts` file from a `.js` one.
 7. **The other helpers, and the tests outside the components.** To `.ts`: the rest of `tests/helpers/`, `draw.test`, `app.test` and `imports.test`.
 8. **Storage in TypeScript.** `progress.ts`, `progress.test.ts`.
 9. **The rules in TypeScript.** `elements.ts`, `grid.ts`, `game.ts`, `solver.ts` and `difficulty.ts`, with their tests; `src/puzzle/generate.js` and `scripts/generate.js` import the `.ts` files. First, run `scripts/generate.js` and `npm test` with Node 22.18 on a copy with these renames, and set the README's minimum and [0029](../../decisions.md#0029)'s cost to the Node the Design says.
