@@ -24,3 +24,28 @@ Commits reviewed: 008203e (docs: plan 10, the components' interfaces as types an
 18. **note**, `docs/plans/10-typescript/README.md:43`: "every file in `src/`" includes `index.html` and `style.css`. Limit the import test to `.js` and `.ts` files, so an HTML comment or a CSS `@import` can't match.
 19. **note**, `docs/decisions.md:170`, `:182`: 0011's and 0012's costs could say what 0028 changes. 0011 lists the Element symbols written in each component; 0028 writes them in `puzzle/api.ts` too, and `tsc` checks the Puzzle's against the UI's looks. 0012 rejected a second, hand-written description of the formats as one that drifts; 0028 adds one, the types, as its cost says. Neither is superseded, but a "Since 0028" line, as other entries have, keeps them current.
 20. **note**: checked with no finding: on Node 26 the step order otherwise keeps `npm run check` passing (Vitest and esbuild import `.ts` from `.js` and back; step 1 covers the build's entry and placeholder, step 11 `package.json`, `tests/e2e/build.js` and `scripts/screenshots.sh:14`; Vitest's include widens in step 6 and narrows in step 11; Playwright's patterns and `globalSetup` move in step 6). The interfaces of Storage, the Puzzle and the Glue match what `app.js`, `progress.js` and `game.js` offer and read; `Saved` and `BoardEntry` meet both ways, through `withEntry` and `createGame(…, progress.boards?.[id])`. 0028 and 0029 keep the why, the cost and the alternatives, apart from 6 and 7, and agree with 0006's note, 0010 and 0011.
+
+## Outcome
+
+All in 344c550; the steps are numbered after it, as step 6 was split in two.
+
+1. Fixed: step 9 moves the rules, with `src/puzzle/generate.js` and `scripts/generate.js`, and checks Node 22.18 first.
+2. Fixed: a file moves in a commit of its own, with `// @ts-nocheck`, and is typed in the next.
+3. Fixed: the new name goes everywhere the old one is, the backlog, comments and messages included; step 13's check leaves out the past plans, which Scope keeps as history.
+4. Fixed: a path in a rule's text is no change to the rule; Puzzle.06 and the other spec texts are named in steps 1 and 10, and Generate.01 keeps its split as its command is what the developer types.
+5. Fixed: step 1 lists `npm run typecheck` in the README.
+6. Fixed: 0029's alternative is JavaScript with JSDoc types, checked by `checkJs`, with no plan named.
+7. Fixed: 0028 lists one shared file of types, and why not.
+8. Fixed: `STORAGE_KEY` stays out of `storage/api.ts`.
+9. Fixed: `BoardModel` lists what `board.js` reads, `KeyElement.symbol` is one of the UI's `ELEMENTS`, and the key is `as const`.
+10. Fixed: a Puzzle's Atom has any symbol but H, as the schema.
+11. Fixed: `saved` stays a `Partial<Saved>`; only what `progress.ts` reads is `unknown`.
+12. Fixed: the fake's `open` takes the `Game`, which a method's parameter allows.
+13. Fixed: the Design says what part 1 checks; step 2 confirms that an `@import` resolves.
+14. Fixed: the Design says in advance which Node follows from a warning.
+15. Kept, as a cost in 0029: one `tsconfig`, as the end-to-end tests run the built page.
+16. Fixed: step 5 gets the UI's edges right.
+17. Fixed: step 6 is split into the end-to-end tests (6) and the other helpers and tests (7).
+18. Fixed: the import test reads only `.js` and `.ts` files.
+19. Fixed: 0011 and 0012 say what 0028 changes for them.
+20. Nothing to fix.
