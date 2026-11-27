@@ -14,19 +14,19 @@ Each diagram shows the files of one component; an arrow is an import. Arrows are
 
 `index.html` is the page and loads `style.css` and the Glue's `browser.ts`; nothing imports them.
 
-`ui.js` owns all the interface components on the webpage and when the Player does something it calls the handlers provided by `app.ts`.
+`ui.ts` owns all the interface components on the webpage and when the Player does something it calls the handlers provided by `app.ts`.
 
-`api.ts` offers `createUi` and its `Ui`, the `Handlers` it calls and the `View` it renders; it needs a `BoardModel`, what the Board reads of a game, and the status, counts, change result, Puzzles, Progress and key Elements, in the UI's terms. Its `LookSymbol` is the symbols `elements.js` has a look for, so `tsc` checks that the UI can draw each of the Puzzle's Elements.
+`api.ts` offers `createUi` and its `Ui`, the `Handlers` it calls and the `View` it renders; it needs a `BoardModel`, what the Board reads of a game, and the status, counts, change result, Puzzles, Progress and key Elements, in the UI's terms. Its `LookSymbol` is the symbols `elements.ts` has a look for, so `tsc` checks that the UI can draw each of the Puzzle's Elements.
 
 ```mermaid
 flowchart TD
   api["<code>api.ts</code><br/>the UI's interface"]
-  uijs["<code>ui.js</code><br/>owns the page"]
-  board["<code>board.js</code><br/>the Board in SVG"]
-  panel["<code>panel.js</code><br/>the open Puzzle, the rules and the key"]
-  list["<code>puzzle-list.js</code><br/>the list of Puzzles"]
-  messages["<code>messages.js</code><br/>the texts for the Player"]
-  looks["<code>elements.js</code><br/>how Elements look"]
+  uijs["<code>ui.ts</code><br/>owns the page"]
+  board["<code>board.ts</code><br/>the Board in SVG"]
+  panel["<code>panel.ts</code><br/>the open Puzzle, the rules and the key"]
+  list["<code>puzzle-list.ts</code><br/>the list of Puzzles"]
+  messages["<code>messages.ts</code><br/>the texts for the Player"]
+  looks["<code>elements.ts</code><br/>how Elements look"]
 
   api --> uijs
   api --> looks

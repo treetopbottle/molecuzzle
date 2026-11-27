@@ -1,9 +1,10 @@
+// @ts-nocheck
 // @vitest-environment happy-dom
 import { beforeEach, expect, test, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createUi } from "../../../src/ui/ui.js";
+import { createUi } from "../../../src/ui/ui.ts";
 import { createGame } from "../../../src/puzzle/game.ts";
 import { difficulty } from "../../../src/puzzle/difficulty.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.ts";

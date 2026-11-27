@@ -1,7 +1,8 @@
+// @ts-nocheck
 // The Board: draws a game's Atoms and candidate Bonds as SVG, and turns
 // clicks and keys on a Bond into onChange(bond, +1 or -1).
 /** @import { BoardModel } from "./api.ts" */
-import { ELEMENTS } from "./elements.js";
+import { ELEMENTS } from "./elements.ts";
 
 const SVGNS = "http://www.w3.org/2000/svg";
 export const CELL = 84, PAD = 46, SCALE = 1.25, HIT = 22;

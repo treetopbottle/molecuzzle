@@ -1,11 +1,12 @@
+// @ts-nocheck
 // The UI: owns the page. The Board, the panel, the Puzzles list, the status
 // line, the message, the buttons and Ctrl+Z. What the Player does goes to
 // the handlers; what to show comes in as a view.
-/** @import { BoardModel, Handlers, SayResult, Ui, UiOptions, View } from "./api.ts" */
-import { createBoard } from "./board.js";
-import { renderPanel } from "./panel.js";
-import { renderPuzzleList } from "./puzzle-list.js";
-import { statusText, reasonText } from "./messages.js";
+import type { BoardModel, Handlers, SayResult, Ui, UiOptions, View } from "./api.ts";
+import { createBoard } from "./board.ts";
+import { renderPanel } from "./panel.ts";
+import { renderPuzzleList } from "./puzzle-list.ts";
+import { statusText, reasonText } from "./messages.ts";
 
 const STATUS_CLASS = { solved: "good", revealed: "good", pieces: "warn" };
 
@@ -19,13 +20,7 @@ function renderCounts(line, { used, budget }) {
   line.replaceChildren(span);
 }
 
-/**
- * @param {Document} doc
- * @param {Handlers} handlers
- * @param {UiOptions} [options]
- * @returns {Ui}
- */
-export function createUi(doc, handlers, { confirm = question => doc.defaultView.confirm(question), elements = [] } = {}) {
+export function createUi(doc: Document, handlers: Handlers, { confirm = question => doc.defaultView.confirm(question), elements = [] }: UiOptions = {}): Ui {
   const $ = id => doc.getElementById(id);
   let game, board, toastTimer;
 

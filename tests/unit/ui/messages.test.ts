@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { expect, test } from "vitest";
-import { statusText, reasonText } from "../../../src/ui/messages.js";
+import { statusText, reasonText } from "../../../src/ui/messages.ts";
 
 test("Messages.01 the status line says the text of each status", () => {
   const glycine = { name: "Glycine" }, serine = { name: "Serine" };

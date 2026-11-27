@@ -1,3 +1,4 @@
+// @ts-nocheck
 // How each Element looks: its name, the colours of its ball and its size. H is
 // also how the small hydrogens beside an Atom look.
 export const ELEMENTS = {

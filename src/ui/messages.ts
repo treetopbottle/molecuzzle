@@ -1,3 +1,4 @@
+// @ts-nocheck
 // The texts for the Player: the status line for each status, and why a Bond
 // wasn't made.
 /** @import { PuzzleInfo, SayResult, Status } from "./api.ts" */

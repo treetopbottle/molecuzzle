@@ -1,6 +1,6 @@
 // The UI's interface: what it offers the Glue, and what it needs from the
 // others, in its own terms (decision 0028).
-import type { ELEMENTS } from "./elements.js";
+import type { ELEMENTS } from "./elements.ts";
 
 /** An Element the UI has a look for. */
 export type LookSymbol = keyof typeof ELEMENTS;
@@ -89,4 +89,4 @@ export interface UiOptions {
   elements?: KeyElement[];
 }
 
-export { createUi } from "./ui.js";
+export { createUi } from "./ui.ts";

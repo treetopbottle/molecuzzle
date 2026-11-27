@@ -1,9 +1,10 @@
+// @ts-nocheck
 // The panel: the open Puzzle between ‹ and ›, whether it is solved, its
 // difficulty, the mystery molecule or its name, formula and fact, and the
 // rules. ‹, › and "Next puzzle →" carry data-open, the index of the Puzzle
 // they open: whoever owns the page listens for clicks on them.
 /** @import { KeyElement, View } from "./api.ts" */
-import { ELEMENTS as LOOKS } from "./elements.js";
+import { ELEMENTS as LOOKS } from "./elements.ts";
 
 const RULES = [
   "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",

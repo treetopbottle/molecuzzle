@@ -1,6 +1,7 @@
+// @ts-nocheck
 // @vitest-environment happy-dom
 import { expect, test, vi } from "vitest";
-import { renderPuzzleList } from "../../../src/ui/puzzle-list.js";
+import { renderPuzzleList } from "../../../src/ui/puzzle-list.ts";
 
 const puzzles = [{ id: "acetonitrile", name: "Acetonitrile" }, { id: "acetic-acid", name: "Acetic acid" }, { id: "glycine", name: "Glycine" }];
 

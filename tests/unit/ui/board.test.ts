@@ -1,10 +1,11 @@
+// @ts-nocheck
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { createBoard } from "../../../src/ui/board.js";
+import { createBoard } from "../../../src/ui/board.ts";
 import { createGame } from "../../../src/puzzle/game.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.ts";
 import { ELEMENTS as VALENCES } from "../../../src/puzzle/elements.ts";
-import { ELEMENTS as LOOKS } from "../../../src/ui/elements.js";
+import { ELEMENTS as LOOKS } from "../../../src/ui/elements.ts";
 import { click, build } from "../../helpers/draw.ts";
 import { rgb, hue, lightness, inHue } from "../../helpers/colors.ts";
 

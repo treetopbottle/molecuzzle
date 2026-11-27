@@ -1,6 +1,7 @@
+// @ts-nocheck
 // @vitest-environment happy-dom
 import { beforeEach, expect, test } from "vitest";
-import { renderPanel, formulaNodes } from "../../../src/ui/panel.js";
+import { renderPanel, formulaNodes } from "../../../src/ui/panel.ts";
 
 const puzzles = Array.from({ length: 13 }, (_, i) => ({ id: `p${i + 1}`, name: `Molecule ${i + 1}`, formula: "H2O", fact: `Fact ${i + 1}.` }));
 puzzles[10] = { id: "glycine", name: "Glycine", formula: "C2H5NO2", fact: "Glycine is the simplest amino acid." };

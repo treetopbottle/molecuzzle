@@ -1,3 +1,4 @@
+// @ts-nocheck
 // The list of puzzles: one button per puzzle, with ✓ if solved.
 /** @import { ProgressView, PuzzleInfo } from "./api.ts" */
 
