@@ -50,13 +50,17 @@ export interface KeyElement {
   valence: number;
 }
 
-/** What the Player does. onReset and onSolve come only after the Player confirms. */
+/**
+ * What the Player does. onReset and onSolve come only after the Player
+ * confirms. Properties, not methods, so tsc checks the handlers given by
+ * what the UI passes them.
+ */
 export interface Handlers {
-  onChange(k: number, dir: 1 | -1): void;
-  onOpen(index: number): void;
-  onUndo(): void;
-  onReset(): void;
-  onSolve(): void;
+  onChange: (k: number, dir: 1 | -1) => void;
+  onOpen: (index: number) => void;
+  onUndo: () => void;
+  onReset: () => void;
+  onSolve: () => void;
 }
 
 /** What to show, beside the Board. */

@@ -1,7 +1,7 @@
 // The UI: owns the page. The Board, the panel, the Puzzles list, the status
 // line, the message, the buttons and Ctrl+Z. What the Player does goes to
 // the handlers; what to show comes in as a view.
-/** @import { Handlers, Ui, UiOptions, View } from "./api.ts" */
+/** @import { BoardModel, Handlers, SayResult, Ui, UiOptions, View } from "./api.ts" */
 import { createBoard } from "./board.js";
 import { renderPanel } from "./panel.js";
 import { renderPuzzleList } from "./puzzle-list.js";
@@ -42,7 +42,10 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); handlers.onUndo(); }
   });
 
-  /** Shows a game's Board, for the Puzzle just opened. */
+  /**
+   * Shows a game's Board, for the Puzzle just opened.
+   * @param {BoardModel} next
+   */
   function open(next) {
     game = next;
     board = createBoard($("board"), game, { onChange: handlers.onChange });
@@ -63,7 +66,10 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
     renderPuzzleList($("puzzles"), puzzles, progress, index, handlers.onOpen);
   }
 
-  /** Shows for a moment why a change made no Bond, if it has a reason. */
+  /**
+   * Shows for a moment why a change made no Bond, if it has a reason.
+   * @param {SayResult} result
+   */
   function say(result) {
     const text = reasonText(result);
     if (!text) return;
