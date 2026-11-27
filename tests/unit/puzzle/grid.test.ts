@@ -1,12 +1,12 @@
-// @ts-nocheck
 import { describe, expect, test } from "vitest";
 import { candidateBonds, crosses, connected } from "../../../src/puzzle/grid.ts";
 import { createGame } from "../../../src/puzzle/game.ts";
-import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import type { ElementSymbol } from "../../../src/puzzle/api.ts";
 import { draw } from "../../helpers/draw.ts";
+import { puzzle } from "../../helpers/puzzles.ts";
 
-const atoms = list => list.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
-const glycine = PUZZLES.find(p => p.id === "glycine");
+const atoms = (list: [ElementSymbol, number, number, number?][]) => list.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
+const glycine = puzzle("glycine");
 
 describe("Grid", () => {
   test("Grid.01 a Bond can go to the nearest Atom in the same row or column: Glycine", () => {
@@ -33,8 +33,12 @@ O
 
   test("Grid.02 in Glycine, OH 1,1 to NH₂ 1,2 and OH 1,1 to C 2,1 meet at OH 1,1, and don't cross", () => {
     const game = createGame(glycine);
-    const at = p => game.atoms.findIndex(a => `${a.r + 1},${a.c + 1}` === p);
-    const line = (x, y) => game.bonds.find(e => e.a === at(x) && e.b === at(y));
+    const at = (p: string) => game.atoms.findIndex(a => `${a.r + 1},${a.c + 1}` === p);
+    const line = (x: string, y: string) => {
+      const found = game.bonds.find(e => e.a === at(x) && e.b === at(y));
+      if (!found) throw new Error(`no Dotted line ${x} to ${y}`);
+      return found;
+    };
     expect(crosses(game.atoms, line("1,1", "1,2"), line("1,1", "2,1"))).toBe(false);
     expect(crosses(game.atoms, line("1,2", "2,2"), line("2,1", "2,2"))).toBe(false);
   });

@@ -1,8 +1,7 @@
-// @ts-nocheck
 // The state of one puzzle being played: Bond orders, undo history and its
 // status. No DOM, and no text for the Player: the UI words the statuses and
 // reasons.
-import type { Game, Puzzle, Saved } from "./api.ts";
+import type { Board, ChangeResult, Counts, Game, Puzzle, Saved, Status } from "./api.ts";
 import { ELEMENTS, MAX_ORDER } from "./elements.ts";
 import { candidateBonds, crosses, connected } from "./grid.ts";
 
@@ -16,23 +15,25 @@ export const UNDO_LIMIT = 100;
  * undo, since solving ends the undo history.
  */
 export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = false, undo: past = [] }: Partial<Saved> = {}): Game {
-  // An Atom's hydrogens are bonded from the start (Puzzle.07); a missing count is none.
-  const atoms = puzzle.atoms.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
+  // An Atom's hydrogens are bonded from the start (Puzzle.07).
+  const atoms = puzzle.atoms.map(([el, r, c, h]) => ({ el, r, c, h }));
   /** The Bonds an Atom takes from other Atoms: its valence minus its hydrogens. */
-  const room = i => ELEMENTS[atoms[i].el].valence - atoms[i].h;
+  const room = (i: number) => ELEMENTS[atoms[i].el].valence - atoms[i].h;
   const bonds = candidateBonds(atoms);
   const empty = () => bonds.map(() => 0);
 
-  const bondCount = (i, o) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? o[k] : 0), 0);
+  const bondCount = (i: number, o: number[]) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? o[k] : 0), 0);
 
-  /** A Board as Bond orders per candidate Bond, or null if it can't be on the Grid. */
-  function orders(board) {
-    if (!Array.isArray(board)) return null;
+  /**
+   * A Board as Bond orders per candidate Bond, or null if it can't be on the
+   * Grid: a Bond on no Dotted line, a pair bonded twice, or Bonds that cross.
+   * Its shape was checked by whoever stored it.
+   */
+  function orders(board: Board): number[] | null {
     const o = empty();
-    for (const bond of board) {
-      const [a, b, n] = Array.isArray(bond) ? bond : [];
+    for (const [a, b, n] of board) {
       const k = bonds.findIndex(e => e.a === a && e.b === b);
-      if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
+      if (k < 0 || o[k]) return null;
       o[k] = n;
     }
     if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
@@ -40,30 +41,31 @@ export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = fals
   }
 
   let order = empty();
-  let history = [];
+  let history: number[][] = [];
   let revealed = false; // the solution was shown, and the Board wasn't emptied since
   if (left !== undefined) {
-    const now = orders(left), before = Array.isArray(past) ? past.map(orders) : [null];
-    if (now && !before.includes(null)) {
+    const now = orders(left), before = past.map(orders);
+    const valid = before.filter(o => o !== null);
+    if (now && valid.length === before.length) {
       order = now;
-      history = before.slice(-UNDO_LIMIT);
+      history = valid.slice(-UNDO_LIMIT);
       revealed = shown === true && order.some(Boolean);
     }
   }
 
   /** What an Atom still needs: below 0 when it has too many Bonds. */
-  const remaining = i => room(i) - bondCount(i, order);
+  const remaining = (i: number) => room(i) - bondCount(i, order);
   // The Bonds of the solution: half of what the Atoms need together (Puzzle.09).
   const budget = atoms.reduce((t, _, i) => t + room(i), 0) / 2;
 
   /** The Bonds used, the budget, and the Atoms with too few and with too many Bonds (Valence.03). */
-  const counts = () => ({
+  const counts = (): Counts => ({
     used: order.reduce((t, n) => t + n, 0), budget,
     few: atoms.filter((_, i) => remaining(i) > 0).length,
     many: atoms.filter((_, i) => remaining(i) < 0).length,
   });
 
-  function status() {
+  function status(): Status {
     const { few, many } = counts();
     if (!order.some(Boolean)) return { kind: "empty" };
     if (few || many) return { kind: "open", few, many };
@@ -73,7 +75,7 @@ export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = fals
   const done = () => ["solved", "revealed"].includes(status().kind);
   if (status().kind === "solved") history = []; // Undo goes back only to the last solve (Bond.08, Bond.10)
 
-  function commit(next) {
+  function commit(next: number[]): void {
     history.push(order);
     if (history.length > UNDO_LIMIT) history.shift();
     order = next;
@@ -86,7 +88,7 @@ export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = fals
    * be made, the reason is "crossing"; other changes that change nothing have
    * no reason.
    */
-  function change(k, dir) {
+  function change(k: number, dir: 1 | -1): ChangeResult {
     if (done()) return { changed: false };
     const e = bonds[k], cur = order[k];
     let next = cur + dir;
@@ -102,8 +104,9 @@ export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = fals
   }
 
   function undo() {
-    if (!history.length) return false;
-    order = history.pop();
+    const before = history.pop();
+    if (!before) return false;
+    order = before;
     if (!order.some(Boolean)) revealed = false;
     return true;
   }
@@ -130,7 +133,10 @@ export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = fals
    * The Bonds as a Board: [atom, atom, order]. The candidate Bonds are
    * already by first Atom, then second, since the Atoms are in reading order.
    */
-  const toBoard = o => bonds.flatMap((e, k) => (o[k] ? [[e.a, e.b, o[k]]] : []));
+  const toBoard = (o: number[]): Board => bonds.flatMap((e, k): Board => {
+    const n = o[k];
+    return n === 1 || n === 2 || n === 3 ? [[e.a, e.b, n]] : [];
+  });
   const board = () => toBoard(order);
 
   /**
@@ -138,7 +144,7 @@ export function createGame(puzzle: Puzzle, { bonds: left, revealed: shown = fals
    * undo history oldest first, also when it is solved. Null with no Bonds and
    * nothing to undo.
    */
-  function saved() {
+  function saved(): Saved | null {
     if (!order.some(Boolean) && !history.length) return null;
     return { bonds: board(), revealed, undo: history.map(toBoard) };
   }

@@ -1,8 +1,8 @@
-// @ts-nocheck
 import { expect, test } from "vitest";
+import type { ElementSymbol } from "../../../src/puzzle/api.ts";
 import { solve } from "../../../src/puzzle/solver.ts";
 
-const atoms = list => list.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
+const atoms = (list: [ElementSymbol, number, number, number?][]) => list.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
 
 test("finds the one way to bond water", () => {
   expect(solve(atoms([["H", 0, 0], ["O", 0, 1], ["H", 0, 2]]))).toEqual([[1, 1]]);

@@ -1,10 +1,15 @@
-// @ts-nocheck
 // Where Bonds can go on a Grid: between an Atom and its nearest Atom to the
 // right, and its nearest Atom below.
+import type { Candidate } from "./api.ts";
 
-/** @param {{r:number,c:number}[]} atoms */
-export function candidateBonds(atoms) {
-  const bonds = [];
+/** Where an Atom is on the Grid: its row and column. */
+export interface Point {
+  r: number;
+  c: number;
+}
+
+export function candidateBonds(atoms: Point[]): Candidate[] {
+  const bonds: Candidate[] = [];
   atoms.forEach((a, i) => {
     let right = -1, down = -1;
     atoms.forEach((b, j) => {
@@ -18,7 +23,7 @@ export function candidateBonds(atoms) {
 }
 
 /** Whether two candidate Bonds cross each other between their Atoms. */
-export function crosses(atoms, e, f) {
+export function crosses(atoms: Point[], e: Candidate, f: Candidate): boolean {
   if (e.horizontal === f.horizontal) return false;
   const h = e.horizontal ? e : f, v = e.horizontal ? f : e;
   const r = atoms[h.a].r, c = atoms[v.a].c;
@@ -26,16 +31,15 @@ export function crosses(atoms, e, f) {
 }
 
 /** For each candidate Bond, the indexes of the candidate Bonds it crosses. */
-export function crossings(atoms, bonds) {
+export function crossings(atoms: Point[], bonds: Candidate[]): number[][] {
   return bonds.map(e => bonds.flatMap((f, j) => (crosses(atoms, e, f) ? [j] : [])));
 }
 
 /** Whether the Bonds with order > 0 join all Atoms into one piece. */
-export function connected(atomCount, bonds, order) {
+export function connected(atomCount: number, bonds: Candidate[], order: number[]): boolean {
   if (atomCount === 0) return true;
   const seen = new Set([0]), queue = [0];
-  while (queue.length) {
-    const u = queue.pop();
+  for (let u = queue.pop(); u !== undefined; u = queue.pop()) {
     bonds.forEach((e, k) => {
       if (!order[k] || (e.a !== u && e.b !== u)) return;
       const v = e.a === u ? e.b : e.a;

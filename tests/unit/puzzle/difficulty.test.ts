@@ -1,9 +1,6 @@
-// @ts-nocheck
 import { expect, test } from "vitest";
 import { difficulty, dottedLines } from "../../../src/puzzle/difficulty.ts";
-import { PUZZLES } from "../../../src/puzzle/puzzles.js";
-
-const puzzle = id => PUZZLES.find(p => p.id === id);
+import { puzzle } from "../../helpers/puzzles.ts";
 
 test("Puzzle.05 Glycine, with 5 Atoms and 5 Dotted lines, has 5 − 5 + 1 = 1 loop: difficulty 5 + 2 × 1 = 7", () => {
   expect([puzzle("glycine").atoms.length, dottedLines(puzzle("glycine"))]).toEqual([5, { dotted: 5, loops: 1 }]);

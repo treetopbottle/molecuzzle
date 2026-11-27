@@ -1,4 +1,3 @@
-// @ts-nocheck
 // The Elements a puzzle can use, with the number of Bonds each needs.
 import type { ElementSymbol } from "./api.ts";
 

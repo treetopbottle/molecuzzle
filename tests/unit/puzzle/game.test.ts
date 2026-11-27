@@ -1,16 +1,15 @@
-// @ts-nocheck
 import { describe, expect, test } from "vitest";
 import { createGame } from "../../../src/puzzle/game.ts";
 import { ELEMENTS } from "../../../src/puzzle/elements.ts";
+import type { Atom, Board, Puzzle } from "../../../src/puzzle/api.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw, click, build } from "../../helpers/draw.ts";
+import { puzzle } from "../../helpers/puzzles.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
-
-const puzzle = id => PUZZLES.find(p => p.id === id);
 
 // The Grid of the Grid.02 example, which isn't a Puzzle's: O at 1,2 and 3,2,
 // and CH₂ at 2,1 and 2,3. Its two Dotted lines cross, so it has no solution.
-const crossing = {
+const crossing: Puzzle = {
   id: "crossing", name: "Crossing", formula: "C2H4O2", fact: "Not a Puzzle.",
   rows: 3, cols: 3,
   atoms: [["O",0,1,0],["C",1,0,2],["C",1,2,2],["O",2,1,0]],
@@ -78,7 +77,7 @@ N
     expect(game.canUndo).toBe(false);
   });
 
-  test.each([
+  test.each<[string, string, Board, Board[]]>([
     ["a Bond that isn't on a Dotted line, Acetonitrile's [[0, 2, 1]]", "acetonitrile", [[0, 2, 1]], [[]]],
     ["a pair of Atoms bonded twice", "acetonitrile", [[0, 1, 1], [0, 1, 1]], [[]]],
     ["such a Board in the undo history", "acetonitrile", [[0, 1, 1]], [[], [[0, 2, 1]]]],
@@ -288,7 +287,7 @@ describe("Valence", () => {
 
   test("Valence.01, Valence.02 Acetic acid: O, CH₃, C and OH need 2, 1, 4 and 1; after C═O, C needs 2 and O is complete", () => {
     const game = createGame(puzzle("acetic-acid"));
-    const label = a => a.el + (a.h ? "H" + (a.h > 1 ? a.h : "") : "");
+    const label = (a: Atom) => a.el + (a.h ? "H" + (a.h > 1 ? a.h : "") : "");
     const needs = () => game.atoms.map((a, i) => `${label(a)} ${game.remaining(i)}`).join(", ");
     const complete = () => game.atoms.filter((_, i) => game.remaining(i) === 0).map(a => `${label(a)} ${a.r + 1},${a.c + 1}`);
     expect(needs()).toBe("O 2, CH3 1, C 4, OH 1");
@@ -345,7 +344,7 @@ describe("Saved", () => {
     click(game, "1,1", "2,1");
     click(game, "2,1", "3,1");
     expect(game.saved()).toEqual({ bonds: [[0, 1, 1], [1, 2, 1]], revealed: false, undo: [[], [[0, 1, 1]]] });
-    const again = createGame(puzzle("acetonitrile"), game.saved());
+    const again = createGame(puzzle("acetonitrile"), game.saved() ?? undefined);
     expect(again.saved()).toEqual(game.saved());
   });
 
@@ -360,7 +359,7 @@ describe("Saved", () => {
     const game = createGame(puzzle("acetonitrile"));
     build(game);
     expect(game.saved()).toEqual({ bonds: [[0, 1, 1], [1, 2, 3]], revealed: false, undo: [] });
-    const again = createGame(puzzle("acetonitrile"), game.saved());
+    const again = createGame(puzzle("acetonitrile"), game.saved() ?? undefined);
     expect(again.status()).toEqual({ kind: "solved" });
     expect(again.canUndo).toBe(false);
     expect(again.saved()).toEqual(game.saved());
