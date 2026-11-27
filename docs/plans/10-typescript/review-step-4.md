@@ -20,3 +20,11 @@ Probes in the worktree, each reverted before the next:
 5. **note**, `src/ui/messages.js:7`, `:22`: the comments say "a status from game.status()" and "a result of game.change()", the Puzzle's words; the UI's own would be the Board's status and a change's result.
 
 Checked with no finding: `ui/api.ts`'s types match the Design's list, with `Handlers` keeping `1 | -1`; `board.js` names nothing outside `src/ui/`; the Glue imports the UI only from `ui/api.ts`; `AppDeps.createUi` is `(handlers: Handlers) => Ui`; every check in the Design's `app.ts` and `browser.ts` now runs; the commit message.
+
+## Outcome
+
+1. Fixed in 410eea3: `Handlers`' members are properties of function type; `onOpen: (index: number | string) => void` now fails at `src/app.ts:26`.
+2. Kept: the Design's stated limit, until step 11.
+3. Kept: `LookSymbol` stays the keys of the UI's `ELEMENTS`; step 11 types `ELEMENTS` with `satisfies`, not `Record<LookSymbol, …>`. Step 5's `docs/architecture.md` names `LookSymbol`.
+4. Fixed in 410eea3.
+5. Fixed in 410eea3.
