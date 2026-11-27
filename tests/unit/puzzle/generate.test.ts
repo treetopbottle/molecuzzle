@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { expect, test } from "vitest";
 import { findLayout } from "../../../src/puzzle/generate.ts";
 import { candidateBonds } from "../../../src/puzzle/grid.ts";
@@ -14,7 +13,7 @@ test("Generate.01 finds the layout of Acetonitrile on which it is the only solut
 
 test("Generate.03 finds a layout of Caffeine, with its two rings, in 200 tries: at most 6 by 5, and its one solution is these Bonds", () => {
   const layout = findLayout("N:1-C:2 C:2=O:2 C:2-N:3 N:3-C:4 C:4=C:5 C:5-C:6 C:6=O:6 C:6-N:1 C:4-N:9 N:9=CH:8 CH:8-N:7 N:7-C:5 N:1-CH3:a N:3-CH3:b N:7-CH3:c", { tries: 200, seed: 1 });
-  expect(layout).not.toBeNull();
+  if (!layout) throw new Error("no layout of Caffeine");
   expect(layout.rows).toBeLessThanOrEqual(6);
   expect(layout.cols).toBeLessThanOrEqual(5);
   const atoms = layout.atoms.map(([el, r, c, h]) => ({ el, r, c, h }));
@@ -27,6 +26,7 @@ test("Generate.03 finds a layout of Caffeine, with its two rings, in 200 tries: 
 
 test("Generate.01 Atoms with the same label are told apart by a name after `:`", () => {
   const layout = findLayout("OH:a-CH2:a CH2:a-CH CH-OH:b CH-CH2:b CH2:b-OH:c", { tries: 2000, seed: 1 });
+  if (!layout) throw new Error("no layout");
   expect(layout.atoms.map(([el, , , h]) => el + h).sort()).toEqual(["C1", "C2", "C2", "O1", "O1", "O1"]);
   expect(layout.solution).toHaveLength(5);
 });

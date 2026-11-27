@@ -1,11 +1,12 @@
-// @ts-nocheck
 // Puzzles taken out of the game, kept for reference: no Puzzle may have the
 // id or the formula of one of them (Puzzle.06, decision 0022). Nothing in
 // the game imports this; the tests do. In the order of the spec's table of
-// removed Puzzles, each in the format of puzzles.js, with a layout from
+// removed Puzzles, each in the format of puzzles.ts, with a layout from
 // scripts/generate.js that has exactly one solution (decision 0023);
 // Ammonia and Water are one Atom each, with nothing to bond.
-export const REMOVED = [
+import type { Puzzle } from "./api.ts";
+
+export const REMOVED: Puzzle[] = [
   {
     id: "ammonia", name: "Ammonia", formula: "NH3",
     fact: "Ammonia is made from the nitrogen in air on a huge scale, mostly for fertilisers.",

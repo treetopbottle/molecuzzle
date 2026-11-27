@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, expect, test } from "vitest";
 import { REMOVED } from "../../../src/puzzle/removed.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.ts";
@@ -8,8 +7,11 @@ import { createGame } from "../../../src/puzzle/game.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
 import { atomCount, formulaCount } from "../../helpers/formula.ts";
 
+/** The symbols a Puzzle's Atom may have: every Element's but H. */
+const PUZZLE_SYMBOLS: string[] = Object.keys(ELEMENTS).filter(s => s !== "H");
+
 /** The Atoms of a formula, as counts per Element, so the order it is written in doesn't matter. */
-const atomsOf = formula => JSON.stringify(Object.entries(formulaCount(formula)).sort(([a], [b]) => a.localeCompare(b)));
+const atomsOf = (formula: string) => JSON.stringify(Object.entries(formulaCount(formula)).sort(([a], [b]) => a.localeCompare(b)));
 
 describe("Puzzle.06 the removed Puzzles", () => {
   test("are the 26 of the spec's table", () => {
@@ -68,7 +70,7 @@ describe("Puzzle.06 the removed Puzzles", () => {
 
     test("Puzzle.07 gives exactly the Atoms and hydrogens of its formula, each Atom on its own grid point, in reading order, with room for a Bond unless it is the only one", () => {
       expect(atomCount(p)).toEqual(formulaCount(p.formula));
-      expect(atoms.every(a => a.el in ELEMENTS && a.el !== "H" && a.r >= 0 && a.r < p.rows && a.c >= 0 && a.c < p.cols)).toBe(true);
+      expect(atoms.every(a => PUZZLE_SYMBOLS.includes(a.el) && a.r >= 0 && a.r < p.rows && a.c >= 0 && a.c < p.cols)).toBe(true);
       expect(atoms.length === 1 || atoms.every(a => ELEMENTS[a.el].valence - a.h >= 1)).toBe(true);
       expect(new Set(atoms.map(a => `${a.r},${a.c}`)).size).toBe(atoms.length);
       expect(atoms.every((a, i) => i === 0 || a.r > atoms[i - 1].r || (a.r === atoms[i - 1].r && a.c > atoms[i - 1].c))).toBe(true);

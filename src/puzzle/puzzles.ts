@@ -1,4 +1,3 @@
-// @ts-nocheck
 // The puzzles, in order of difficulty, easiest first, and a new one after
 // those of the same difficulty (decisions 0021, 0024). Atoms are [Element,
 // row, column, hydrogens], in reading order, each with the hydrogens bonded
