@@ -1,18 +1,31 @@
-// @ts-nocheck
 // Wires the Puzzles, the open game, Progress and the UI. No DOM:
 // browser.ts makes the dependencies and passes them in.
 import { markSolved } from "./storage/progress.js";
 import { difficulty } from "./puzzle/difficulty.js";
+import type { createGame } from "./puzzle/game.js";
+import type { createUi } from "./ui/ui.js";
 
-/**
- * @param {{ puzzles: object[], createGame: Function,
- *   store: { load(): object, update(change: Function): object },
- *   createUi: (handlers: object) => { open(game): void, render(view): void, say(result): void } }} deps
- */
-export function startApp({ puzzles, createGame, store, createUi }) {
+type Handlers = Parameters<typeof createUi>[1];
+
+/** The Progress that Storage keeps. */
+interface Progress {
+  puzzles: Record<string, string>;
+  current: string | null;
+  boards?: Record<string, NonNullable<Parameters<typeof createGame>[1]>>;
+}
+
+/** What the Glue is given: the Puzzles, and each component's part. */
+export interface AppDeps {
+  puzzles: Parameters<typeof createGame>[0][];
+  createGame: typeof createGame;
+  store: { load(): Progress; update(change: (p: Progress) => Progress): Progress };
+  createUi: (handlers: Handlers) => ReturnType<typeof createUi>;
+}
+
+export function startApp({ puzzles, createGame, store, createUi }: AppDeps): void {
   let progress = store.load();
   let index = Math.max(0, puzzles.findIndex(p => p.id === progress.current));
-  let game;
+  let game: ReturnType<typeof createGame>;
 
   const ui = createUi({
     onChange(k, dir) {
@@ -27,7 +40,7 @@ export function startApp({ puzzles, createGame, store, createUi }) {
   });
 
   /** Progress with the open Puzzle's saved() in boards, or without its entry when that is null. */
-  function withEntry(p) {
+  function withEntry(p: Progress): Progress {
     const id = puzzles[index].id, saved = game.saved();
     const { boards = {}, ...rest } = p;
     const { [id]: _, ...others } = boards;
@@ -42,7 +55,7 @@ export function startApp({ puzzles, createGame, store, createUi }) {
   }
 
   /** Opens a Puzzle where it was left, and saves its entry again as saved() gives it, so one createGame couldn't use is removed. */
-  function open(i) {
+  function open(i: number): void {
     index = i;
     game = createGame(puzzles[i], progress.boards?.[puzzles[i].id]);
     progress = store.update(p => withEntry({ ...p, current: puzzles[i].id }));
