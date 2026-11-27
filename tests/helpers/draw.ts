@@ -20,7 +20,7 @@ export function draw(game: Game): string {
   const labels = atoms.map(a => [...label(a)]);
   const width = Math.max(...labels.map(l => l.length)), step = width + 1;
   const W = (puzzle.cols - 1) * step + width, H = puzzle.rows * 2 - 1;
-  const grid = Array.from({ length: H }, () => Array(W).fill(" "));
+  const grid = Array.from({ length: H }, () => Array<string>(W).fill(" "));
   bonds.forEach((e, k) => {
     const A = atoms[e.a], B = atoms[e.b], o = order[k];
     const ch = e.horizontal ? " ─═≡"[o] : " │║⦀"[o];

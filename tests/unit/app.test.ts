@@ -114,7 +114,7 @@ describe("Progress.05, Progress.06", () => {
     ui.handlers.onUndo();
     expect(aceticAcid(store)).toEqual({ bonds: [[1, 2, 1]], revealed: false, undo: [[]] });
     ui.handlers.onSolve();
-    expect(aceticAcid(store)).toEqual({ bonds: PUZZLES.find(p => p.id === "acetic-acid")?.solution, revealed: true, undo: [[], [[1, 2, 1]]] });
+    expect(aceticAcid(store)).toEqual({ bonds: PUZZLES[1].solution, revealed: true, undo: [[], [[1, 2, 1]]] }); // Puzzle 2, Acetic acid
   });
 
   test("Progress.05 Reset removes what was kept, and no boards are left", () => {
