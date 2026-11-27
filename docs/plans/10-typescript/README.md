@@ -27,7 +27,7 @@ Left out:
 ### Tools
 
 - `typescript` 7 (7.0.2 now) as a development dependency, from step 1; `@types/node` 22 from step 6, for the tests and scripts.
-- `tsconfig.json`: `strict`, `noEmit`, `target` `es2022`, `module` and `moduleResolution` `nodenext`, `lib` `["es2022", "dom"]`, `allowImportingTsExtensions`, `erasableSyntaxOnly` and `verbatimModuleSyntax`; `allowJs` with `checkJs` off while JavaScript is left, so a `.ts` file sees a `.js` file's JSDoc signatures but no `.js` body is checked. Part 1 includes `src/`; step 6 adds `tests/` and the configs, step 12 `scripts/` and turns `allowJs` off.
+- `tsconfig.json`: `strict`, `noEmit`, `target` `es2022`, `module` and `moduleResolution` `nodenext`, `lib` `["es2022", "dom"]`, `allowImportingTsExtensions`, `erasableSyntaxOnly` and `verbatimModuleSyntax`; `skipLibCheck` from step 6, as happy-dom's types don't fit `@types/node` 22; `allowJs` with `checkJs` off while JavaScript is left, so a `.ts` file sees a `.js` file's JSDoc signatures but no `.js` body is checked. Part 1 includes `src/`; step 6 adds `tests/` and the configs, step 12 `scripts/` and turns `allowJs` off.
 - `npm run typecheck` runs `tsc -p .`; `npm run check` runs it first. The README lists it with the other Development commands.
 - Imports name the file as it is, `./game.ts` or `./game.js`, as Node, esbuild and Vitest need.
 - A file moves in a commit of its own: `git mv`, the import paths that name it, and `// @ts-nocheck` as its first line, so the check passes; the next commit takes that line out and types the body, a JSDoc type becoming a TypeScript one, comments kept. Git finds a rename only by content, so a rename with nothing else changed keeps the file's history for `git log --follow`.
