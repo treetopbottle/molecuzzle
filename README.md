@@ -62,7 +62,7 @@ flowchart TD
 
 ## Development
 
-Commands are run in this folder, with Node.js 22.12 or newer (an even-numbered release), and Podman (or Docker) for the screenshots:
+Commands are run in this folder, with Node.js 22.18 or newer (an even-numbered release), and Podman (or Docker) for the screenshots:
 
 - Install: `npm install`
 - Build: `npm run build` writes `dist/index.html`, the whole game in one file; open it in a browser, no server needed.
