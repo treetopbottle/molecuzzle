@@ -11,7 +11,7 @@ export interface BoardEntry {
   undo: Bond[][];
 }
 
-/** Which Puzzles are solved, by id; the open Puzzle; and the Boards of Puzzles in progress or solved. */
+/** Which Puzzles are solved, by id; the open Puzzle, null for none; and the Boards of Puzzles in progress or solved. */
 export interface Progress {
   puzzles: Record<string, "solved">;
   current: string | null;
