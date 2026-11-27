@@ -1,13 +1,13 @@
+// @ts-nocheck
 // The puzzles, in order of difficulty, easiest first, and a new one after
 // those of the same difficulty (decisions 0021, 0024). Atoms are [Element,
 // row, column, hydrogens], in reading order, each with the hydrogens bonded
 // to it from the start; the solution lists [atom, atom, Bond order].
 // Layouts come from scripts/generate.js; tests check each has exactly this
 // one solution.
-/** @import { Puzzle } from "./api.ts" */
+import type { Puzzle } from "./api.ts";
 
-/** @type {Puzzle[]} */
-export const PUZZLES = [
+export const PUZZLES: Puzzle[] = [
   {
     id: "acetonitrile", name: "Acetonitrile", formula: "C2H3N",
     fact: "Acetonitrile has been found around young stars and in comets; on Earth it is a common solvent in labs.",

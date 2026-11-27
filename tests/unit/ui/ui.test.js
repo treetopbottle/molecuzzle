@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { createUi } from "../../../src/ui/ui.js";
 import { createGame } from "../../../src/puzzle/game.ts";
 import { difficulty } from "../../../src/puzzle/difficulty.ts";
-import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { PUZZLES } from "../../../src/puzzle/puzzles.ts";
 
 // The page's body, from index.html, without its script.
 const page = resolve(dirname(fileURLToPath(import.meta.url)), "../../../src/ui/index.html");

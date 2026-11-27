@@ -7,7 +7,7 @@
 // its hydrogens, as in a formula, with `:` and a name to tell Atoms with the
 // same label apart (CH2:a, CH2:b); `-` `=` `#` are the Bond order. The search
 // is findLayout in src/puzzle/generate.js.
-import { findLayout } from "../src/puzzle/generate.js";
+import { findLayout } from "../src/puzzle/generate.ts";
 import { difficulty, dottedLines } from "../src/puzzle/difficulty.ts";
 
 // Arguments left out are findLayout's defaults, such as a Grid of at most 6

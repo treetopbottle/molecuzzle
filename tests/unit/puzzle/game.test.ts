@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { createGame } from "../../../src/puzzle/game.ts";
 import { ELEMENTS } from "../../../src/puzzle/elements.ts";
 import type { Atom, Board, Puzzle } from "../../../src/puzzle/api.ts";
-import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { PUZZLES } from "../../../src/puzzle/puzzles.ts";
 import { draw, click, build } from "../../helpers/draw.ts";
 import { puzzle } from "../../helpers/puzzles.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";

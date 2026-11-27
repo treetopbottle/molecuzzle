@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { startApp } from "../../src/app.ts";
 import { createGame } from "../../src/puzzle/game.ts";
-import { PUZZLES } from "../../src/puzzle/puzzles.js";
+import { PUZZLES } from "../../src/puzzle/puzzles.ts";
 import type { Game, Saved } from "../../src/puzzle/api.ts";
 import type { BoardEntry, Progress, Store } from "../../src/storage/api.ts";
 import type { Handlers, SayResult, Ui, View } from "../../src/ui/api.ts";

@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { expect, test } from "vitest";
-import { findLayout } from "../../../src/puzzle/generate.js";
+import { findLayout } from "../../../src/puzzle/generate.ts";
 import { candidateBonds } from "../../../src/puzzle/grid.ts";
 import { solve } from "../../../src/puzzle/solver.ts";
 

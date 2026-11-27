@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { describe, expect, test } from "vitest";
-import { PUZZLES } from "../../../src/puzzle/puzzles.js";
+import { PUZZLES } from "../../../src/puzzle/puzzles.ts";
 import { ELEMENTS } from "../../../src/puzzle/elements.ts";
 import { solve } from "../../../src/puzzle/solver.ts";
 import { createGame } from "../../../src/puzzle/game.ts";

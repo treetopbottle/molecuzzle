@@ -11,7 +11,7 @@ The Puzzles and the rules of the game: where Bonds can go, how they change, and 
 - Go on: a Puzzle can also start where it was left: from a [Board](schemas.md#board), whether the solution was shown ([Help.01](#help)), and its undo history. If that Board, or one in its history, can't be on its Grid, it starts with no Bonds, nothing to undo and the solution not shown: a Bond that isn't on a Dotted line, a pair of Atoms bonded twice, or Bonds that cross; an Atom with more Bonds than it needs is fine ([decision 0025](../decisions.md#0025)) (Puzzle.03)
 - Size: every Grid has at most 6 rows and 5 columns, so the Board fits a phone ([decision 0019](../decisions.md#0019)) (Puzzle.04)
 - Difficulty: a Puzzle's difficulty is the number of its Dotted lines, plus twice the number of those its solution leaves empty. Each Dotted line is a connection to look at, and each empty one a Bond to rule out; a ring that is only traced leaves none empty, so it isn't a choice ([decision 0021](../decisions.md#0021)) (Puzzle.05)
-- Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and in `src/puzzle/removed.js`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)). Each is a [Puzzle](schemas.md#puzzle) with exactly one solution, as Puzzle.01, Puzzle.04 and Puzzle.07 ask, but not in the game's order, and with any number of loops; Ammonia and Water are one Atom each, with no room for a Bond and an empty solution ([decision 0023](../decisions.md#0023)) (Puzzle.06)
+- Removed: Puzzles taken out of the game are kept, in the table of removed Puzzles below and in `src/puzzle/removed.ts`; no Puzzle has the id or the formula of a removed one ([decision 0022](../decisions.md#0022)). Each is a [Puzzle](schemas.md#puzzle) with exactly one solution, as Puzzle.01, Puzzle.04 and Puzzle.07 ask, but not in the game's order, and with any number of loops; Ammonia and Water are one Atom each, with no room for a Bond and an empty solution ([decision 0023](../decisions.md#0023)) (Puzzle.06)
 - Hydrogens: an Atom has a number of hydrogens bonded to it from the start. They aren't Atoms on the Grid, and no change touches them ([decision 0023](../decisions.md#0023)) (Puzzle.07)
 - Loops: every Puzzle after the first three has at least 2 loops ([decision 0024](../decisions.md#0024)) (Puzzle.08)
 - Budget: a Puzzle's budget is the number of Bonds its solution makes, a double Bond counting 2 and a triple 3: half of what its Atoms need together. It isn't stored, and it is not a limit: the Player can use more ([decision 0025](../decisions.md#0025)) (Puzzle.09)
@@ -80,7 +80,7 @@ Removed Puzzles, which aren't added again, and why, in the layout each had when 
 | Cyclohexanol | C₆H₁₂O | A plain ring of single Bonds on a narrow ladder, with one empty Dotted line: the Player traces the ring, with nothing to rule out; found too easy in play |
 | Cyclohexane-1,4-dione | C₆H₈O₂ | The same ring, with two C═O at its ends, each on a single Dotted line; found too easy in play |
 
-The Grids, solutions and facts are in `src/puzzle/puzzles.js`.
+The Grids, solutions and facts are in `src/puzzle/puzzles.ts`.
 
 Example (Puzzle.01, Puzzle.02):
 

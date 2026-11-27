@@ -1,7 +1,7 @@
 // The Boards drawn as text, as the spec's README draws them.
 import { expect, test } from "vitest";
 import { createGame } from "../../src/puzzle/game.ts";
-import { PUZZLES } from "../../src/puzzle/puzzles.js";
+import { PUZZLES } from "../../src/puzzle/puzzles.ts";
 import type { Game, Puzzle } from "../../src/puzzle/api.ts";
 import { draw } from "../helpers/draw.ts";
 

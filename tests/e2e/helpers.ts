@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { expect, type Locator, type Page } from "@playwright/test";
 import type { Puzzle } from "../../src/puzzle/api.ts";
 import type { Progress } from "../../src/storage/api.ts";
-import { PUZZLES } from "../../src/puzzle/puzzles.js";
+import { PUZZLES } from "../../src/puzzle/puzzles.ts";
 import { STORAGE_KEY } from "../../src/storage/progress.ts";
 
 export { PUZZLES, STORAGE_KEY };

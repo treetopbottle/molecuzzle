@@ -90,7 +90,7 @@ export interface Game {
 /** A game of a Puzzle, with no Bonds or where it was left. */
 export type CreateGame = (puzzle: Puzzle, saved?: Partial<Saved>) => Game;
 
-export { PUZZLES } from "./puzzles.js";
+export { PUZZLES } from "./puzzles.ts";
 export { createGame } from "./game.ts";
 export { ELEMENTS } from "./elements.ts";
 export { difficulty } from "./difficulty.ts";

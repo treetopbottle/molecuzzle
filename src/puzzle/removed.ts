@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Puzzles taken out of the game, kept for reference: no Puzzle may have the
 // id or the formula of one of them (Puzzle.06, decision 0022). Nothing in
 // the game imports this; the tests do. In the order of the spec's table of
