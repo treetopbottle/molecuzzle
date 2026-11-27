@@ -67,9 +67,10 @@ Commands are run in this folder, with Node.js 22.12 or newer (an even-numbered r
 - Install: `npm install`
 - Build: `npm run build` writes `dist/index.html`, the whole game in one file; open it in a browser, no server needed.
 - Browser for the end-to-end tests: `npx playwright install chromium`, or set `CHROMIUM_PATH` to a Chromium already installed (e.g. `/usr/bin/chromium`).
+- Type check: `npm run typecheck` checks the types with `tsc`; the build and the tests don't.
 - Test: `npm test` (unit and component tests), `npm run test:e2e` (end-to-end tests; builds first), `npm run test:screenshots` (compares the page with `docs/spec/screenshots/`, in Playwright's image; `CONTAINER=docker` to use Docker).
 - Screenshots: after an intended change to the look, `npm run test:screenshots -- --update-snapshots` makes them again; look at each in the diff before committing ([decision 0013](docs/decisions.md#0013)).
-- Check: `npm run check` builds and runs all tests, the screenshots included.
+- Check: `npm run check` checks the types, builds and runs all tests, the screenshots included.
 - New Puzzle: `node scripts/generate.js "<bonds>"` prints a layout with exactly one solution; see the comment at its top.
 
 ## Branch builds

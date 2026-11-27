@@ -4,16 +4,18 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.js",
+    "typecheck": "tsc -p .",
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:screenshots": "scripts/screenshots.sh",
-    "check": "npm run build && npm test && npm run test:e2e && npm run test:screenshots"
+    "check": "npm run typecheck && npm run build && npm test && npm run test:e2e && npm run test:screenshots"
   },
   "devDependencies": {
     "@playwright/test": "^1.65.0",
     "ajv": "^8.20.0",
     "esbuild": "^0.28.2",
     "happy-dom": "^21.0.4",
+    "typescript": "^7.0.2",
     "vitest": "^5.1.0"
   }
 }
