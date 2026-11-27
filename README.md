@@ -46,7 +46,7 @@ Domain entities, capitalized, each with an example the spec can reuse:
 
 ### How `src/` fits together
 
-The three components ([decision 0011](docs/decisions.md#0011)) and the Glue, `browser.ts` and `app.ts`, which wires them together and is not a component: it adds nothing of its own. An arrow is an import: the components don't import each other, only the Glue imports them. The files of each component are in [docs/architecture.md](docs/architecture.md).
+The three components ([decision 0011](docs/decisions.md#0011)) and the Glue, `browser.ts` and `app.ts`, which wires them together and is not a component: it adds nothing of its own. An arrow is an import: the components don't import each other, only the Glue imports them, each through its `api.ts` ([decision 0028](docs/decisions.md#0028)). The files of each component are in [docs/architecture.md](docs/architecture.md).
 
 ```mermaid
 flowchart TD
