@@ -1,6 +1,6 @@
 # 10: The components' interfaces as types, then TypeScript
 
-Status: Draft
+Status: Active
 
 Asked by the user, not from the backlog. The interfaces between the components are JSDoc in the files that use them, partly `object` and `Function`, and nothing checks them; `ui/board.js` types the game it is given with a type from `puzzle/game.js`, across the boundary of [decision 0011](../../decisions.md#0011). Part 1 writes each component's interface as types in its own `api.ts`, in the terms of the side that uses them, and `tsc` checks in the Glue that they fit ([decision 0028](../../decisions.md#0028)). Part 2 moves all the code, the tests and the scripts to TypeScript, strict, so the bodies are checked against those types too ([decision 0029](../../decisions.md#0029)).
 
