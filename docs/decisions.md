@@ -162,7 +162,7 @@ The Pages workflow doesn't run the tests: every branch that builds is published.
 <a id="0011"></a>
 ## 0011: Three components, wired in one place
 
-Accepted (2026-11-15)
+Accepted (2026-11-15). Since [0028](#0028), the Element symbols are also written out in `puzzle/api.ts`, and `tsc` checks in the Glue that the UI has a look for each of the Puzzle's; the valences and the undo limit stay copies that nothing checks.
 
 The code is three components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser) and UI (`src/ui/`: the page, what it shows and what the Player does). A component imports only from itself. `src/browser.js` and `src/app.js` are not a component: they import the components and wire them together, handing each what it needs from the others as arguments, and add nothing of their own, so they have no spec: what they do is in the features they wire. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component.
 
@@ -173,7 +173,7 @@ The code is three components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the
 <a id="0012"></a>
 ## 0012: Schemas as JSON files, checked by the tests
 
-Accepted (2026-11-15)
+Accepted (2026-11-15). Since [0028](#0028), the formats are also types, written by hand: a second description, as this entry's Alternatives warn, kept from drifting because the tests check the data against the schemas and `tsc` checks the code against the types.
 
 The schemas are JSON Schema files in `docs/spec/schemas/`, described in [schemas.md](spec/schemas.md). The tests check the data against them with Ajv: every Puzzle, the Board of a game, and the stored Progress.
 
@@ -345,7 +345,7 @@ Each component has an `api.ts`: the types of what it offers, the types of what i
 
 - **Why:** the interfaces were JSDoc in the files that use them, partly `object` and `Function`, and nothing checked them; the UI typed the game it is given with a type from the Puzzle, across [0011](#0011)'s boundary. TypeScript compares types by their shape, so a component can say exactly what it needs and still import only from itself, and the Glue, where the values already meet, is where the types meet. What drifted unseen now fails `tsc`: a status the rules add and the UI doesn't word, a field a Board entry in Storage lacks, an Element the UI has no look for.
 - **Cost:** a type both sides use is written twice, once by each, such as the status; one more file per component, and the Glue's imports go through it. The JSON schemas stay the description of the data that is stored or written by hand, so a Puzzle's format is in its schema and in its type: the tests check the data against the schema, `tsc` against the type. Values copied between components, such as the valences in the panel's rule and the undo limit, stay copies: a type can't check them.
-- **Alternatives:** types owned by the side that offers them, imported by the side that uses them: one copy, but a component imports from another. Types made from the JSON schemas: one source for the data, but a generator, and it covers only the data, not the functions between components. JSDoc typedefs that nothing checks: no tool, but they drift as the JSDoc did. An `index.ts` for the values next to `api.ts` for the types: two files per component, with nothing checked that one doesn't check.
+- **Alternatives:** types owned by the side that offers them, imported by the side that uses them: one copy, but a component imports from another. Types made from the JSON schemas: one source for the data, but a generator, and it covers only the data, not the functions between components. One shared file of types, such as `src/types.ts`, that every component and the Glue import: one copy of each type, the status included, but a fourth module that every component depends on, so they no longer import only from themselves ([0011](#0011)), and a change for one component is a change to all. JSDoc typedefs that nothing checks: no tool, but they drift as the JSDoc did. An `index.ts` for the values next to `api.ts` for the types: two files per component, with nothing checked that one doesn't check.
 
 <a id="0029"></a>
 ## 0029: TypeScript, checked by tsc and run as it is
@@ -355,5 +355,5 @@ Accepted (2026-11-27)
 The code, the tests and the scripts are TypeScript, strict, in only the syntax that can be erased (`erasableSyntaxOnly`): no enums, namespaces or parameter properties. `tsc` only checks (`noEmit`); esbuild bundles the code for the page, Vitest and Playwright run the tests, and Node runs the scripts with its type stripping, so nothing is compiled first and an import names its `.ts` file.
 
 - **Why:** with the interfaces of [0028](#0028) as types, the code that offers them is checked against them too, not only the Glue that wires them; JSDoc says it at much greater length. Erasable syntax keeps the code JavaScript with types, so each tool runs it as it ran the JavaScript, with no build of its own.
-- **Cost:** Node 22.18 or newer, for type stripping (was 22.12). Every file was renamed, so its history needs `git log --follow`. Casts where the DOM can't know what the page holds, such as the elements by id. esbuild and Node don't check types: a type error shows only in `npm run typecheck`, so a branch build ([0010](#0010)) may have one. `noUncheckedIndexedAccess` is off, so an index into an array is trusted; on, nearly every lookup of an Atom or a Bond needs a check or a `!`.
-- **Alternatives:** JavaScript checked through JSDoc (`checkJs`), as part 1 of plan 10 has it: no renames, but the types are comments, and strict it found 207 errors before the bodies were typed. TypeScript compiled by `tsc`: any syntax, but a compile step before the scripts and the tests run. Only the interfaces as types, with JavaScript bodies: the bodies unchecked.
+- **Cost:** a newer Node, for type stripping: 22.18 instead of 22.12, if it runs the scripts with no warning. Every file was renamed, so its history needs `git log --follow`. Casts where the DOM can't know what the page holds, such as the elements by id. esbuild and Node don't check types: a type error shows only in `npm run typecheck`, so a branch build ([0010](#0010)) may have one. `noUncheckedIndexedAccess` is off, so an index into an array is trusted; on, nearly every lookup of an Atom or a Bond needs a check or a `!`. One `tsconfig` for everything, so Node's types, such as `process`, are seen in `src/` too, and `tsc` doesn't flag Node-only code in the page; the end-to-end tests run the built page.
+- **Alternatives:** JavaScript with JSDoc types, checked by `checkJs`: no renames, but the types are comments, and strict it found 207 errors before the bodies were typed. TypeScript compiled by `tsc`: any syntax, but a compile step before the scripts and the tests run. Only the interfaces as types, with JavaScript bodies: the bodies unchecked.
