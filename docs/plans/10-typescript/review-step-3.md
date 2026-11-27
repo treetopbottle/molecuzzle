@@ -22,3 +22,13 @@ Probes in the worktree, each reverted before the next:
 7. **note**, `docs/architecture.md:38`: says the Glue's `app.ts` uses `difficulty.js`, now through `puzzle/api.ts`; for step 5.
 
 Checked with no finding: `Game` has every member `createGame` returns, with the right types; `Status`, `ChangeResult`, `Counts`, `Candidate`, `ElementSymbol`, `Puzzle` and `Board` match the code and the schemas; `api.ts` holds only types and the four values the Glue uses; the Glue imports the Puzzle only from `puzzle/api.ts`; step 2's finding 1 is resolved; the commit message.
+
+## Outcome
+
+1. Fixed in f47d5b9: the entry is a `Saved | undefined` before it goes to `createGame`; `Saved` with an extra `hints` now fails at `src/app.ts:52`.
+2. Kept, recorded here: step 4's `Handlers` keeps `1 | -1`.
+3. Fixed in f47d5b9: `Atom.el` is `Exclude<ElementSymbol, "H">`.
+4. Kept for step 9, where `game.ts`'s returns are typed.
+5. Kept for step 9: the default and its comment are looked at when `game.ts` is typed.
+6. Fixed in f47d5b9.
+7. Kept for step 5, which brings `docs/architecture.md` up to date.
