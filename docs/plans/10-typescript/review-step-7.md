@@ -15,3 +15,11 @@ Probes at d0ed826, each undone before the next, each failing tsc where it should
 5. **note**, process: b2206d7, step 7's move, was committed before step 6's review, its fixes and its `[DONE]`, though `docs/workflow/implement-a-step.md` has one step at a time. No harm came of it: the fixes touch `tests/e2e/helpers.ts` only at lines b2206d7 didn't change.
 
 Checked with no finding: all six renames recorded as renames (95% to 99%), with `git log --follow` past them; the move commit's edits; no old names left but finding 4; no casts or `@ts-` lines; the same expectations but finding 1, 413 tests before and after, `start`'s and `last()`'s throws only failing earlier; `click`'s return; `imports.test.ts`'s `encoding`; the fake `open`; the commit messages.
+
+## Outcome
+
+1. Fixed in 8a06026: `PUZZLES[1].solution`, Puzzle 2, as the test's `onOpen(1)` already takes it.
+2. Fixed in 8a06026.
+3. Kept: `number[]` matches what the e2e `colors` reads, with no cast.
+4. Fixed with this outcome: the Design's line names `imports.test.ts`.
+5. Kept, noted: step 8's move went in before this review too; from step 9 on, a step starts after the review of the one before is dealt with.
