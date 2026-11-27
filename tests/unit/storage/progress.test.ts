@@ -1,13 +1,13 @@
-// @ts-nocheck
 import { describe, expect, test } from "vitest";
 import { createProgressStore, markSolved, STORAGE_KEY } from "../../../src/storage/progress.ts";
+import type { KeyValueStorage } from "../../../src/storage/api.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
 
-function memoryStorage(initial = {}) {
-  const data = { ...initial };
-  return { data, getItem: k => data[k] ?? null, setItem: (k, v) => { data[k] = String(v); } };
+function memoryStorage(initial: Record<string, string> = {}) {
+  const data: Record<string, string> = { ...initial };
+  return { data, getItem: (k: string) => data[k] ?? null, setItem: (k: string, v: string) => { data[k] = String(v); } };
 }
-const load = storage => createProgressStore(storage).load();
+const load = (storage: KeyValueStorage | undefined) => createProgressStore(storage).load();
 
 describe("Progress", () => {
   test("Progress.01, Progress.03 saved in the format of the schema, and read back", () => {
