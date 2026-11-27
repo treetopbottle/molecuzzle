@@ -1,7 +1,6 @@
-// @ts-nocheck
 // The Board: draws a game's Atoms and candidate Bonds as SVG, and turns
 // clicks and keys on a Bond into onChange(bond, +1 or -1).
-/** @import { BoardModel } from "./api.ts" */
+import type { BoardModel } from "./api.ts";
 import { ELEMENTS } from "./elements.ts";
 
 const SVGNS = "http://www.w3.org/2000/svg";
@@ -12,30 +11,29 @@ const OFFSETS = [[], [0], [-4.5, 4.5], [-8, 0, 8]];
 // above-left, where no Dotted line runs.
 const HYDROGENS = [[-1, 1], [1, 1], [-1, -1]], H_R = 8.5, H_AT = 28;
 
-function el(tag, attrs, parent) {
+/** A point on the Grid: its row and column. */
+type Point = { r: number; c: number };
+
+function el(tag: string, attrs: Record<string, string | number>, parent: Element): SVGElement {
   const e = parent.ownerDocument.createElementNS(SVGNS, tag);
-  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  for (const k in attrs) e.setAttribute(k, String(attrs[k]));
   parent.appendChild(e);
   return e;
 }
 
 /** Where an Atom is, for people: row and column counted from 1. */
-export const place = a => `${a.r + 1},${a.c + 1}`;
+export const place = (a: Point): string => `${a.r + 1},${a.c + 1}`;
 
-/**
- * @param {SVGSVGElement} svg
- * @param {BoardModel} game
- * @param {{ onChange: (bond: number, dir: 1 | -1) => void }} handlers
- */
-export function createBoard(svg, game, { onChange }) {
+export function createBoard(svg: SVGSVGElement, game: BoardModel,
+  { onChange }: { onChange: (bond: number, dir: 1 | -1) => void }): { render(): void } {
   const { puzzle, atoms, bonds } = game;
-  const xy = a => [PAD + a.c * CELL, PAD + a.r * CELL];
+  const xy = (a: Point): [number, number] => [PAD + a.c * CELL, PAD + a.r * CELL];
   svg.replaceChildren();
   svg.classList.remove("solved", "pulse");
   let wasSolved = game.status().kind === "solved"; // a Board created solved doesn't pulse
   const width = PAD * 2 + (puzzle.cols - 1) * CELL, height = PAD * 2 + (puzzle.rows - 1) * CELL;
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  svg.setAttribute("width", width * SCALE);
+  svg.setAttribute("width", String(width * SCALE));
   svg.setAttribute("role", "group");
   svg.setAttribute("aria-label", `Board, ${puzzle.rows} by ${puzzle.cols}`);
 
@@ -87,7 +85,7 @@ export function createBoard(svg, game, { onChange }) {
       if (!o) el("line", { class: "maybe", x1, y1, x2, y2 }, lines);
       for (const d of OFFSETS[o])
         el("line", { class: "vis", x1: x1 + nx * d, y1: y1 + ny * d, x2: x2 + nx * d, y2: y2 + ny * d }, lines);
-      g.setAttribute("data-order", o);
+      g.setAttribute("data-order", String(o));
       g.setAttribute("aria-label", `${A.el} ${place(A)} to ${B.el} ${place(B)}: ${ORDER_NAMES[o]}`);
     });
     atoms.forEach((a, i) => {

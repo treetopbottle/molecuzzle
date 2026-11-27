@@ -1,15 +1,9 @@
-// @ts-nocheck
 // The texts for the Player: the status line for each status, and why a Bond
 // wasn't made.
-/** @import { PuzzleInfo, SayResult, Status } from "./api.ts" */
+import type { PuzzleInfo, SayResult, Status } from "./api.ts";
 
-/**
- * The status line for the Board's status.
- * @param {Status} status
- * @param {Pick<PuzzleInfo, "name">} puzzle
- * @returns {string}
- */
-export function statusText(status, puzzle) {
+/** The status line for the Board's status. */
+export function statusText(status: Status, puzzle: Pick<PuzzleInfo, "name">): string {
   switch (status.kind) {
     case "empty": return "Click a dotted line between two atoms to bond them.";
     case "open": return "Not every atom has the right number of bonds yet.";
@@ -19,12 +13,8 @@ export function statusText(status, puzzle) {
   }
 }
 
-/**
- * Why a change made no Bond, or null if there is no reason to give.
- * @param {SayResult} result
- * @returns {string | null}
- */
-export function reasonText(result) {
+/** Why a change made no Bond, or null if there is no reason to give. */
+export function reasonText(result: SayResult): string | null {
   switch (result.reason) {
     case "crossing": return "Bonds can't cross.";
     default: return null;

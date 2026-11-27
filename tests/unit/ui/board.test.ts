@@ -1,4 +1,3 @@
-// @ts-nocheck
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { createBoard } from "../../../src/ui/board.ts";
@@ -8,18 +7,22 @@ import { ELEMENTS as VALENCES } from "../../../src/puzzle/elements.ts";
 import { ELEMENTS as LOOKS } from "../../../src/ui/elements.ts";
 import { click, build } from "../../helpers/draw.ts";
 import { rgb, hue, lightness, inHue } from "../../helpers/colors.ts";
-
-const puzzle = id => PUZZLES.find(p => p.id === id);
+import { attr, one } from "../../helpers/dom.ts";
+import { puzzle } from "../../helpers/puzzles.ts";
 
 const aceticAcid = puzzle("acetic-acid");
-let svg;
+let svg: SVGSVGElement;
 beforeEach(() => {
   document.body.innerHTML = '<svg id="board"></svg>';
-  svg = document.getElementById("board");
+  svg = one<SVGSVGElement>(document, "#board");
 });
 
-const labels = selector => [...svg.querySelectorAll(selector)].map(e => e.getAttribute("aria-label"));
-const edge = name => [...svg.querySelectorAll(".edge")].find(e => e.getAttribute("aria-label").startsWith(name));
+const labels = (selector: string) => [...svg.querySelectorAll(selector)].map(e => e.getAttribute("aria-label"));
+const edge = (name: string) => {
+  const found = [...svg.querySelectorAll(".edge")].find(e => attr(e, "aria-label").startsWith(name));
+  if (!found) throw new Error(`no Dotted line ${name}`);
+  return found;
+};
 
 describe("Board", () => {
   test("Board.01, Board.04 every Element of the Puzzles has a look and a name", () => {
@@ -34,7 +37,7 @@ describe("Board", () => {
   });
 
   test("Board.01 each Element's colour: O red, N blue, C dark grey, S yellow, F light green, Cl green, Br dark red, I violet", () => {
-    const color = el => rgb(LOOKS[el].color);
+    const color = (el: keyof typeof LOOKS) => rgb(LOOKS[el].color);
     const red = inHue(345, 15), green = inHue(90, 150);
     expect(red(color("O"))).toBe(true);
     expect(inHue(200, 240)(color("N"))).toBe(true);
@@ -68,26 +71,32 @@ describe("Board", () => {
 
   /** Where each of the Board's hydrogens is: its Atom's place, and its centre in the svg. */
   const hydrogens = () => [...svg.querySelectorAll(".hydrogen")].map(h => {
-    const at = g => g.getAttribute("transform").match(/translate\(([-\d.]+),([-\d.]+)\)/).slice(1).map(Number);
-    const atom = h.closest(".atom"), [ax, ay] = at(atom), [dx, dy] = at(h);
+    const at = (g: Element) => {
+      const m = attr(g, "transform").match(/translate\(([-\d.]+),([-\d.]+)\)/);
+      if (!m) throw new Error("no translate");
+      return m.slice(1).map(Number);
+    };
+    const atom = h.closest(".atom");
+    if (!atom) throw new Error("a hydrogen outside an Atom");
+    const [ax, ay] = at(atom), [dx, dy] = at(h);
     return { h, atom, x: ax + dx, y: ay + dy, dx, dy };
   });
 
   test("Board.01 an Atom's hydrogens are small white balls with an H, on thin lines on the diagonals below it and then above it on the left", () => {
     createBoard(svg, createGame(aceticAcid), { onChange() {} });
     const all = hydrogens();
-    expect(all.map(({ atom }) => atom.getAttribute("aria-label").split(":")[0])).toEqual([
+    expect(all.map(({ atom }) => attr(atom, "aria-label").split(":")[0])).toEqual([
       "Carbon 2,1, with 3 hydrogens", "Carbon 2,1, with 3 hydrogens", "Carbon 2,1, with 3 hydrogens",
       "Oxygen 3,2, with 1 hydrogen",
     ]);
     expect(all.map(({ dx, dy }) => [Math.sign(dx), Math.sign(dy)])).toEqual([[-1, 1], [1, 1], [-1, -1], [-1, 1]]);
     for (const { h, atom } of all) {
-      const ball = h.querySelector("circle");
+      const ball = one(h, "circle");
       expect(Number(ball.getAttribute("r"))).toBe(8.5);
       expect(Number(ball.getAttribute("r"))).toBeLessThan(LOOKS.C.r / 2);
-      expect(hue(rgb(ball.getAttribute("fill")))).toBeNull();
-      expect(lightness(rgb(ball.getAttribute("fill")))).toBeGreaterThan(0.85);
-      expect(h.querySelector("text").textContent).toBe("H");
+      expect(hue(rgb(attr(ball, "fill")))).toBeNull();
+      expect(lightness(rgb(attr(ball, "fill")))).toBeGreaterThan(0.85);
+      expect(one(h, "text").textContent).toBe("H");
       expect(ball.classList.contains("body")).toBe(false); // it doesn't pulse with its Atom
       expect(atom.querySelectorAll(".fixed")).toHaveLength(atom.querySelectorAll(".hydrogen").length);
     }
@@ -102,7 +111,7 @@ describe("Board", () => {
       for (const { h, x, y } of hydrogens()) {
         checked++;
         expect(h.closest("[tabindex], [role=button], .edge")).toBeNull();
-        const r = Number(h.querySelector("circle").getAttribute("r"));
+        const r = Number(one(h, "circle").getAttribute("r"));
         for (const [hx, hy, w, ht] of hits)
           expect(x + r <= hx || x - r >= hx + w || y + r <= hy || y - r >= hy + ht).toBe(true);
       }

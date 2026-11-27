@@ -1,13 +1,13 @@
-// @ts-nocheck
 // @vitest-environment happy-dom
 import { expect, test, vi } from "vitest";
 import { renderPuzzleList } from "../../../src/ui/puzzle-list.ts";
+import { one } from "../../helpers/dom.ts";
 
 const puzzles = [{ id: "acetonitrile", name: "Acetonitrile" }, { id: "acetic-acid", name: "Acetic acid" }, { id: "glycine", name: "Glycine" }];
 
 test("List.01 one button per puzzle, with its state, the open one marked", () => {
   document.body.innerHTML = "<ol></ol>";
-  const list = document.querySelector("ol"), onPick = vi.fn();
+  const list = one<HTMLOListElement>(document, "ol"), onPick = vi.fn();
   renderPuzzleList(list, puzzles, { puzzles: { acetonitrile: "solved" } }, 2, onPick);
   const buttons = [...list.querySelectorAll("button")];
   expect(buttons.map(b => `${b.textContent} | ${b.getAttribute("aria-label")} | ${b.getAttribute("aria-current")}`))

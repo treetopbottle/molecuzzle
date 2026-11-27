@@ -1,9 +1,8 @@
-// @ts-nocheck
 // The panel: the open Puzzle between ‹ and ›, whether it is solved, its
 // difficulty, the mystery molecule or its name, formula and fact, and the
 // rules. ‹, › and "Next puzzle →" carry data-open, the index of the Puzzle
 // they open: whoever owns the page listens for clicks on them.
-/** @import { KeyElement, View } from "./api.ts" */
+import type { KeyElement, View } from "./api.ts";
 import { ELEMENTS as LOOKS } from "./elements.ts";
 
 const RULES = [
@@ -19,16 +18,16 @@ const SVGNS = "http://www.w3.org/2000/svg";
 const KEY = 52, KEY_R = 12, STICK = 12; // the size of a key figure, its ball and its sticks
 
 /** One figure of the key: the Element's ball, as many sticks round it as its number of bonds, and the number. */
-function keyFigure(doc, { symbol, valence }) {
+function keyFigure(doc: Document, { symbol, valence }: KeyElement): HTMLElement {
   const look = LOOKS[symbol], c = KEY / 2;
   const svg = doc.createElementNS(SVGNS, "svg");
   svg.setAttribute("viewBox", `0 0 ${KEY} ${KEY}`);
-  svg.setAttribute("width", KEY);
-  svg.setAttribute("height", KEY);
+  svg.setAttribute("width", String(KEY));
+  svg.setAttribute("height", String(KEY));
   svg.setAttribute("aria-hidden", "true");
-  const add = (tag, attrs) => {
+  const add = (tag: string, attrs: Record<string, string | number>) => {
     const e = doc.createElementNS(SVGNS, tag);
-    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    for (const k in attrs) e.setAttribute(k, String(attrs[k]));
     svg.appendChild(e);
     return e;
   };
@@ -48,9 +47,16 @@ function keyFigure(doc, { symbol, valence }) {
   return figure;
 }
 
-const BADGES = { solved: "✓ Solved" };
+const BADGES: Partial<Record<string, string>> = { solved: "✓ Solved" };
 
-function build(panel, elements) {
+/** The element the panel built that matches this selector. */
+function find<E extends Element = HTMLElement>(panel: HTMLElement, selector: string): E {
+  const e = panel.querySelector<E>(selector);
+  if (!e) throw new Error(`no ${selector} in the panel`);
+  return e;
+}
+
+function build(panel: HTMLElement, elements: KeyElement[]): void {
   const doc = panel.ownerDocument;
   panel.innerHTML = `
     <nav class="puzzle-nav" aria-label="Puzzle">
@@ -68,7 +74,7 @@ function build(panel, elements) {
     <p id="fact" class="legend" hidden></p>
     <button id="nextPuzzle" class="primary" hidden>Next puzzle →</button>
     <ol class="rules"></ol>`;
-  panel.querySelector(".rules").append(...RULES.map(rule => {
+  find(panel, ".rules").append(...RULES.map(rule => {
     const li = doc.createElement("li");
     li.textContent = rule;
     return li;
@@ -82,21 +88,24 @@ function build(panel, elements) {
 /**
  * Fills the panel, the first time from nothing, after that in place, so a
  * focused button keeps its focus.
- * @param {HTMLElement} panel
- * @param {Pick<View, "puzzles" | "index" | "progress" | "done" | "difficulty"> & { elements?: KeyElement[] }} view
  */
-export function renderPanel(panel, { puzzles, index, progress, done, difficulty, elements = [] }) {
+export function renderPanel(panel: HTMLElement,
+  { puzzles, index, progress, done, difficulty, elements = [] }: Pick<View, "puzzles" | "index" | "progress" | "done" | "difficulty"> & { elements?: KeyElement[] }): void {
   if (!panel.querySelector("nav")) build(panel, elements);
-  const $ = id => panel.querySelector(`#${id}`);
+  const $ = (id: string) => find(panel, `#${id}`);
   const puzzle = puzzles[index], last = index === puzzles.length - 1;
-  const opens = (button, i, can) => { button.disabled = !can; button.dataset.open = String(i); };
+  const opens = (id: string, i: number, can: boolean) => {
+    const button = find<HTMLButtonElement>(panel, `#${id}`);
+    button.disabled = !can;
+    button.dataset.open = String(i);
+  };
 
   $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
   $("difficulty").textContent = `Difficulty ${difficulty}`;
-  opens($("prev"), index - 1, index > 0);
-  opens($("next"), index + 1, !last);
+  opens("prev", index - 1, index > 0);
+  opens("next", index + 1, !last);
   const state = progress.puzzles[puzzle.id];
-  $("badge").textContent = BADGES[state] ?? "Unsolved";
+  $("badge").textContent = BADGES[state ?? ""] ?? "Unsolved";
   $("badge").className = `badge ${state ?? ""}`;
 
   $("title").textContent = done ? puzzle.name : "?";
@@ -104,12 +113,12 @@ export function renderPanel(panel, { puzzles, index, progress, done, difficulty,
   else $("formula").textContent = "Bond every atom to find out what it is.";
   $("fact").textContent = puzzle.fact;
   $("fact").hidden = !done;
-  opens($("nextPuzzle"), index + 1, !last);
+  opens("nextPuzzle", index + 1, !last);
   $("nextPuzzle").hidden = !done || last;
 }
 
 /** Formula with its numbers as subscripts, as DOM nodes. */
-export function formulaNodes(doc, formula) {
+export function formulaNodes(doc: Document, formula: string): Node[] {
   return formula.split(/(\d+)/).filter(Boolean).map(part => {
     if (!/^\d+$/.test(part)) return doc.createTextNode(part);
     const sub = doc.createElement("sub");
