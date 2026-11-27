@@ -69,13 +69,17 @@ export function viewport(page: Page): { width: number; height: number } {
 
 export const status = (page: Page): Locator => page.getByRole("status");
 
-/** The Progress the page stored. */
-export const storedProgress = (page: Page): Promise<Progress> =>
+/** The Progress the page stored, or null for none. */
+export const storedProgress = (page: Page): Promise<Progress | null> =>
   page.evaluate(key => JSON.parse(localStorage.getItem(key) ?? "null"), STORAGE_KEY);
 
 /** The text and border colours of an element, each as [r, g, b]. */
 export const colors = (locator: Locator): Promise<number[][]> =>
   locator.evaluate(e => [getComputedStyle(e).color, getComputedStyle(e).borderTopColor])
-    .then(css => css.map(c => (c.match(/\d+/g) ?? []).slice(0, 3).map(Number)));
+    .then(css => css.map(c => {
+      const digits = c.match(/\d+/g);
+      if (!digits) throw new Error(`no colour in ${c}`);
+      return digits.slice(0, 3).map(Number);
+    }));
 
 export { isGreen, isOrange } from "../helpers/colors.ts";

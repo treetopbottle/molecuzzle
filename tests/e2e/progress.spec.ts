@@ -42,7 +42,7 @@ test("Progress.03, Progress.05, Progress.06 what is stored is a Progress", async
   await openPuzzle(page, 1);
   await build(page, PUZZLES[0]);
   const stored = await storedProgress(page);
-  expect(stored.boards).toEqual({
+  expect(stored?.boards).toEqual({
     "acetic-acid": { bonds: [[1, 2, 1]], revealed: false, undo: [[]] },
     acetonitrile: { bonds: [[0, 1, 1], [1, 2, 3]], revealed: false, undo: [] },
   });

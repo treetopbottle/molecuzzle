@@ -11,7 +11,8 @@
     "verbatimModuleSyntax": true,
     "allowJs": true,
     "checkJs": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
   "include": ["src", "tests", "vitest.config.ts", "playwright.config.ts"]
 }
