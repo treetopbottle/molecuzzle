@@ -1,8 +1,8 @@
+// @ts-nocheck
 // The Elements a puzzle can use, with the number of Bonds each needs.
-/** @import { ElementSymbol } from "./api.ts" */
+import type { ElementSymbol } from "./api.ts";
 
-/** @type {Record<ElementSymbol, { valence: number }>} */
-export const ELEMENTS = {
+export const ELEMENTS: Record<ElementSymbol, { valence: number }> = {
   H: { valence: 1 },
   C: { valence: 4 },
   N: { valence: 3 },

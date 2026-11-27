@@ -4,8 +4,8 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createUi } from "../../../src/ui/ui.js";
-import { createGame } from "../../../src/puzzle/game.js";
-import { difficulty } from "../../../src/puzzle/difficulty.js";
+import { createGame } from "../../../src/puzzle/game.ts";
+import { difficulty } from "../../../src/puzzle/difficulty.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 
 // The page's body, from index.html, without its script.

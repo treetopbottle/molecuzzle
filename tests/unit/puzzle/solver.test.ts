@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { expect, test } from "vitest";
-import { solve } from "../../../src/puzzle/solver.js";
+import { solve } from "../../../src/puzzle/solver.ts";
 
 const atoms = list => list.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
 

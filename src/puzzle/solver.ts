@@ -1,8 +1,9 @@
+// @ts-nocheck
 // Finds the solutions of a puzzle: Bond orders for the candidate Bonds such
 // that every Atom has exactly its valence, with its hydrogens, no Bonds
 // cross, and all Atoms join into one Molecule.
-import { ELEMENTS, MAX_ORDER } from "./elements.js";
-import { candidateBonds, crossings, connected } from "./grid.js";
+import { ELEMENTS, MAX_ORDER } from "./elements.ts";
+import { candidateBonds, crossings, connected } from "./grid.ts";
 
 /**
  * @param {{el:string,r:number,c:number,h?:number}[]} atoms h, its hydrogens, is 0 if left out

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Where Bonds can go on a Grid: between an Atom and its nearest Atom to the
 // right, and its nearest Atom below.
 

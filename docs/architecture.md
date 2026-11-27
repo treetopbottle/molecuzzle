@@ -40,9 +40,9 @@ flowchart TD
 
 ## Puzzle
 
-The Puzzles and the rules. `game.js` keeps the Bonds of a Board and gives its status, its counts and budget, and the reasons.
+The Puzzles and the rules. `game.ts` keeps the Bonds of a Board and gives its status, its counts and budget, and the reasons.
 
-`solver.js`, `generate.js` and `removed.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts and `difficulty.js` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.js`, and `removed.js`, the Puzzles taken out of the game, to keep them out; the tests check the layouts in both. The Glue's `app.ts` uses `difficulty.js` too, through `api.ts`, for the difficulty the panel shows.
+`solver.ts`, `generate.js` and `removed.js` are not part of the game itself: `scripts/generate.js` uses `generate.js` to find new layouts and `difficulty.ts` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.js`, and `removed.js`, the Puzzles taken out of the game, to keep them out; the tests check the layouts in both. The Glue's `app.ts` uses `difficulty.ts` too, through `api.ts`, for the difficulty the panel shows.
 
 `api.ts` offers the `Puzzle`, the `Game` that `createGame` makes of it, with its status, counts and change result, and `Saved`, where a game was left; and it re-exports `PUZZLES`, `createGame`, `ELEMENTS` and `difficulty`. It needs nothing from the others.
 
@@ -51,12 +51,12 @@ flowchart TD
   api["<code>api.ts</code><br/>the Puzzle's interface"]
   puzzles["<code>puzzles.js</code><br/>the Puzzles"]
   removed["<code>removed.js</code><br/>the Puzzles taken out"]
-  game["<code>game.js</code><br/>a Puzzle being played"]
-  solver["<code>solver.js</code><br/>finds the solutions"]
+  game["<code>game.ts</code><br/>a Puzzle being played"]
+  solver["<code>solver.ts</code><br/>finds the solutions"]
   gen["<code>generate.js</code><br/>finds layouts for new Puzzles"]
-  diff["<code>difficulty.js</code><br/>how hard a Puzzle is"]
-  grid["<code>grid.js</code><br/>where Bonds can go"]
-  elements["<code>elements.js</code><br/>the Elements and their valence"]
+  diff["<code>difficulty.ts</code><br/>how hard a Puzzle is"]
+  grid["<code>grid.ts</code><br/>where Bonds can go"]
+  elements["<code>elements.ts</code><br/>the Elements and their valence"]
 
   api --> puzzles
   api --> game

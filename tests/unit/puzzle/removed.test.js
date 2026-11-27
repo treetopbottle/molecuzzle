@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 import { REMOVED } from "../../../src/puzzle/removed.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
-import { ELEMENTS } from "../../../src/puzzle/elements.js";
-import { solve } from "../../../src/puzzle/solver.js";
-import { createGame } from "../../../src/puzzle/game.js";
+import { ELEMENTS } from "../../../src/puzzle/elements.ts";
+import { solve } from "../../../src/puzzle/solver.ts";
+import { createGame } from "../../../src/puzzle/game.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
 import { atomCount, formulaCount } from "../../helpers/formula.ts";
 

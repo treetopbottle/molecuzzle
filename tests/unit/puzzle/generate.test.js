@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { findLayout } from "../../../src/puzzle/generate.js";
-import { candidateBonds } from "../../../src/puzzle/grid.js";
-import { solve } from "../../../src/puzzle/solver.js";
+import { candidateBonds } from "../../../src/puzzle/grid.ts";
+import { solve } from "../../../src/puzzle/solver.ts";
 
 test("Generate.01 finds the layout of Acetonitrile on which it is the only solution, its Atoms with their hydrogens", () => {
   expect(findLayout("CH3-C C#N", { tries: 2000, maxRows: 3, maxCols: 3, seed: 1 })).toEqual({

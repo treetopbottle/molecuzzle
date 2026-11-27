@@ -1,9 +1,9 @@
 // Searches for a Grid layout of a Molecule that makes a Puzzle with exactly
 // one solution. For the developer, through scripts/generate.js: its errors
 // are not for the Player.
-import { candidateBonds, crossings } from "./grid.js";
-import { solve } from "./solver.js";
-import { ELEMENTS } from "./elements.js";
+import { candidateBonds, crossings } from "./grid.ts";
+import { solve } from "./solver.ts";
+import { ELEMENTS } from "./elements.ts";
 
 /**
  * Bonds are written between labelled Atoms, e.g. "CH3-C C#N": a label is

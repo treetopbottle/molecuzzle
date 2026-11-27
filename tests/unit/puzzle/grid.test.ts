@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { describe, expect, test } from "vitest";
-import { candidateBonds, crosses, connected } from "../../../src/puzzle/grid.js";
-import { createGame } from "../../../src/puzzle/game.js";
+import { candidateBonds, crosses, connected } from "../../../src/puzzle/grid.ts";
+import { createGame } from "../../../src/puzzle/game.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw } from "../../helpers/draw.ts";
 

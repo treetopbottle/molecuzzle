@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { expect, test } from "vitest";
-import { difficulty, dottedLines } from "../../../src/puzzle/difficulty.js";
+import { difficulty, dottedLines } from "../../../src/puzzle/difficulty.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);

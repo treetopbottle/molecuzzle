@@ -91,6 +91,6 @@ export interface Game {
 export type CreateGame = (puzzle: Puzzle, saved?: Partial<Saved>) => Game;
 
 export { PUZZLES } from "./puzzles.js";
-export { createGame } from "./game.js";
-export { ELEMENTS } from "./elements.js";
-export { difficulty } from "./difficulty.js";
+export { createGame } from "./game.ts";
+export { ELEMENTS } from "./elements.ts";
+export { difficulty } from "./difficulty.ts";

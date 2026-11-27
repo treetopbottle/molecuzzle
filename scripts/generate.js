@@ -8,7 +8,7 @@
 // same label apart (CH2:a, CH2:b); `-` `=` `#` are the Bond order. The search
 // is findLayout in src/puzzle/generate.js.
 import { findLayout } from "../src/puzzle/generate.js";
-import { difficulty, dottedLines } from "../src/puzzle/difficulty.js";
+import { difficulty, dottedLines } from "../src/puzzle/difficulty.ts";
 
 // Arguments left out are findLayout's defaults, such as a Grid of at most 6
 // rows by 5 columns, as every Puzzle's (decision 0019).

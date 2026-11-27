@@ -131,7 +131,7 @@ Puzzle, Storage, the UI (in happy-dom) and the wiring in `src/app.ts` (with fake
 
 Accepted (2026-11-11)
 
-A solver (`src/puzzle/solver.js`) counts the solutions of a Grid; a test checks each Puzzle has exactly one, and that it is the one Show solution shows. Any Board where every Atom is complete and all join up is then that solution, so the game doesn't compare Molecules.
+A solver (`src/puzzle/solver.ts`) counts the solutions of a Grid; a test checks each Puzzle has exactly one, and that it is the one Show solution shows. Any Board where every Atom is complete and all join up is then that solution, so the game doesn't compare Molecules.
 
 - **Why:** a logic puzzle needs one answer to reason towards; with it, the game never has to match the Board against a Molecule.
 - **Cost:** some Molecules can't be Puzzles: any ring of alternating Bonds, such as Benzene, has two solutions. So has any even ring whose Bonds can be made one stronger and one weaker in turn, down to no Bond, while every Atom keeps its count and all stay joined: a purine such as adenine or guanine, or a β-lactam fused to a second ring, as in penicillin (found while making plan 09).
@@ -167,7 +167,7 @@ Accepted (2026-11-15). Since [0028](#0028), the Element symbols are also written
 The code is three components: Puzzle (`src/puzzle/`: the Puzzles, the rules, the solver and the generator), Storage (`src/storage/`: what is kept in the browser) and UI (`src/ui/`: the page, what it shows and what the Player does). A component imports only from itself. `src/browser.ts` and `src/app.ts` are not a component: they import the components and wire them together, handing each what it needs from the others as arguments, and add nothing of their own, so they have no spec: what they do is in the features they wire. The rules produce no text for the Player: they give a status or a reason, and the UI words it. The spec has a file per component.
 
 - **Why:** each component can be read, specified and tested on its own, and replaced: `app.ts` gets the storage and the Puzzles passed in, so tests can pass their own.
-- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know. What two components both need is written in each: the Element symbols in the Puzzle's and the UI's `elements.js` and in the Puzzle schema, the valences in `puzzle/elements.js` and in the rule the panel shows (since plan 08 the key of the panel gets them from the Glue, so only the rule's text is a copy), and the undo limit in `game.js`, `progress.ts` and the Progress schema. A new Element means changing all of those, and the spec.
+- **Cost:** more files and folders for a small game; every text goes through the UI, also for a status the rules already know. What two components both need is written in each: the Element symbols in the Puzzle's `elements.ts` and the UI's `elements.js` and in the Puzzle schema, the valences in `puzzle/elements.ts` and in the rule the panel shows (since plan 08 the key of the panel gets them from the Glue, so only the rule's text is a copy), and the undo limit in `game.ts`, `progress.ts` and the Progress schema. A new Element means changing all of those, and the spec.
 - **Alternatives:** the flat `src/` as it was: fewer files, but the boundaries were only in comments, and the wiring was mixed with the panel's DOM. A framework or a container for dependency injection: more than the page needs ([0006](#0006)). The wiring as a fourth component: but it adds nothing and has no spec.
 
 <a id="0012"></a>

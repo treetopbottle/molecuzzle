@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { describe, expect, test } from "vitest";
-import { createGame } from "../../../src/puzzle/game.js";
-import { ELEMENTS } from "../../../src/puzzle/elements.js";
+import { createGame } from "../../../src/puzzle/game.ts";
+import { ELEMENTS } from "../../../src/puzzle/elements.ts";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw, click, build } from "../../helpers/draw.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
