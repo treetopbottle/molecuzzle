@@ -4,7 +4,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import type { Puzzle } from "../../src/puzzle/api.ts";
 import type { Progress } from "../../src/storage/api.ts";
 import { PUZZLES } from "../../src/puzzle/puzzles.js";
-import { STORAGE_KEY } from "../../src/storage/progress.js";
+import { STORAGE_KEY } from "../../src/storage/progress.ts";
 
 export { PUZZLES, STORAGE_KEY };
 export const GAME_URL = pathToFileURL(resolve("dist/index.html")).href;

@@ -30,4 +30,4 @@ export interface KeyValueStorage {
   setItem(key: string, value: string): void;
 }
 
-export { createProgressStore, markSolved } from "./progress.js";
+export { createProgressStore, markSolved } from "./progress.ts";

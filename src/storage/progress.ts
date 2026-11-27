@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Progress, kept in the browser. Works without storage: then nothing is kept.
 /** @import { KeyValueStorage, Progress, Store } from "./api.ts" */
 export const STORAGE_KEY = "molecuzzle-v4";

@@ -74,4 +74,4 @@ flowchart TD
 
 ## Storage
 
-Two files, so no diagram: `progress.js` loads and updates the Progress in the storage it is given. `localStorage` is used at the moment. `api.ts` offers the `Progress`, with its `BoardEntry`s, and the `Store` that `createProgressStore` makes, and `markSolved`; it needs a `KeyValueStorage`, which `localStorage` fits.
+Two files, so no diagram: `progress.ts` loads and updates the Progress in the storage it is given. `localStorage` is used at the moment. `api.ts` offers the `Progress`, with its `BoardEntry`s, and the `Store` that `createProgressStore` makes, and `markSolved`; it needs a `KeyValueStorage`, which `localStorage` fits.

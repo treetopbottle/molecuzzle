@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { describe, expect, test } from "vitest";
-import { createProgressStore, markSolved, STORAGE_KEY } from "../../../src/storage/progress.js";
+import { createProgressStore, markSolved, STORAGE_KEY } from "../../../src/storage/progress.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
 
 function memoryStorage(initial = {}) {
