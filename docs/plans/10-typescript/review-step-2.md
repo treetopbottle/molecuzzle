@@ -14,3 +14,10 @@ The wrong JSDoc type, repeated in the worktree: `createProgressStore`'s `@return
 4. **note**, `src/storage/progress.js:2`: an `@import` that doesn't resolve gives `any` without an error, a wrong path as much as a misspelled name; the Design states this cost. Step 5's `imports.test.js` could also check that each named file exists, which would catch a wrong path.
 
 Checked with no finding: the Glue imports Storage only from `storage/api.ts`; `api.ts` holds only types and the two values the Glue uses, without `STORAGE_KEY`; `Bond`, `BoardEntry`, `Progress`, `Store` and `KeyValueStorage` match `progress.js` and the schemas; `Storage` fits `KeyValueStorage`; step 1's placeholder is gone; the commit message.
+
+## Outcome
+
+1. Kept, for step 3: `createGame` returns a `Game`, whose `saved()` gives a `Saved`, and with `puzzles` a `Puzzle[]` tsc checks `Saved` into `BoardEntry` and back; a probe of step 3, with `Saved.revealed` a string, fails at both.
+2. Kept, recorded here: the JSDoc was the least that let the Glue take Storage's `BoardEntry`; step 3 replaces both tags with the Puzzle's `Puzzle` and `Partial<Saved>`, in order.
+3. Fixed in 0dc3fe8.
+4. Kept for step 5: `imports.test.js` also checks that each file it names exists.
