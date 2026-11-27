@@ -28,7 +28,7 @@ export interface Saved {
 
 /** An Atom of a game: its symbol, row, column and hydrogens. */
 export interface Atom {
-  el: ElementSymbol;
+  el: Exclude<ElementSymbol, "H">;
   r: number;
   c: number;
   h: number;
@@ -87,6 +87,7 @@ export interface Game {
   saved(): Saved | null;
 }
 
+/** A game of a Puzzle, with no Bonds or where it was left. */
 export type CreateGame = (puzzle: Puzzle, saved?: Partial<Saved>) => Game;
 
 export { PUZZLES } from "./puzzles.js";

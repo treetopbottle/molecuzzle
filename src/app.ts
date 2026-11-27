@@ -1,7 +1,7 @@
 // Wires the Puzzles, the open game, Progress and the UI. No DOM:
 // browser.ts makes the dependencies and passes them in.
 import { markSolved, type Progress, type Store } from "./storage/api.ts";
-import { difficulty, type CreateGame, type Game, type Puzzle } from "./puzzle/api.ts";
+import { difficulty, type CreateGame, type Game, type Puzzle, type Saved } from "./puzzle/api.ts";
 import type { createUi } from "./ui/ui.js";
 
 type Handlers = Parameters<typeof createUi>[1];
@@ -49,7 +49,8 @@ export function startApp({ puzzles, createGame, store, createUi }: AppDeps): voi
   /** Opens a Puzzle where it was left, and saves its entry again as saved() gives it, so one createGame couldn't use is removed. */
   function open(i: number): void {
     index = i;
-    game = createGame(puzzles[i], progress.boards?.[puzzles[i].id]);
+    const left: Saved | undefined = progress.boards?.[puzzles[i].id]; // so a BoardEntry is checked as a whole Saved
+    game = createGame(puzzles[i], left);
     progress = store.update(p => withEntry({ ...p, current: puzzles[i].id }));
     ui.open(game);
     update();
