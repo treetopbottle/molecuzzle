@@ -5,7 +5,7 @@ import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { solve } from "../../../src/puzzle/solver.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { schemaErrors } from "../../helpers/schemas.ts";
-import { atomCount, formulaCount } from "../../helpers/formula.js";
+import { atomCount, formulaCount } from "../../helpers/formula.ts";
 
 /** The Atoms of a formula, as counts per Element, so the order it is written in doesn't matter. */
 const atomsOf = formula => JSON.stringify(Object.entries(formulaCount(formula)).sort(([a], [b]) => a.localeCompare(b)));

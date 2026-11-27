@@ -5,8 +5,8 @@ import { createGame } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { ELEMENTS as VALENCES } from "../../../src/puzzle/elements.js";
 import { ELEMENTS as LOOKS } from "../../../src/ui/elements.js";
-import { click, build } from "../../helpers/draw.js";
-import { rgb, hue, lightness, inHue } from "../../helpers/colors.js";
+import { click, build } from "../../helpers/draw.ts";
+import { rgb, hue, lightness, inHue } from "../../helpers/colors.ts";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Judging colours by hue and lightness, for the unit and end-to-end tests.
 // Colours are [r, g, b], each 0–255.
 

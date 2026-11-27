@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { candidateBonds, crosses, connected } from "../../../src/puzzle/grid.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
-import { draw } from "../../helpers/draw.js";
+import { draw } from "../../helpers/draw.ts";
 
 const atoms = list => list.map(([el, r, c, h = 0]) => ({ el, r, c, h }));
 const glycine = PUZZLES.find(p => p.id === "glycine");

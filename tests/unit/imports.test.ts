@@ -1,3 +1,4 @@
+// @ts-nocheck
 // The imports in src/ keep decision 0028: a component names only files in its
 // own folder, and the Glue only app.ts and the components' api.ts. Every file
 // named must exist, as a JSDoc type from a path that doesn't becomes any.

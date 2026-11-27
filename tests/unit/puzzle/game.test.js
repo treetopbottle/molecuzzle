@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { createGame } from "../../../src/puzzle/game.js";
 import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
-import { draw, click, build } from "../../helpers/draw.js";
+import { draw, click, build } from "../../helpers/draw.ts";
 import { schemaErrors } from "../../helpers/schemas.ts";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);

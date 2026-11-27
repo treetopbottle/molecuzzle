@@ -78,4 +78,4 @@ export const colors = (locator: Locator): Promise<number[][]> =>
   locator.evaluate(e => [getComputedStyle(e).color, getComputedStyle(e).borderTopColor])
     .then(css => css.map(c => (c.match(/\d+/g) ?? []).slice(0, 3).map(Number)));
 
-export { isGreen, isOrange } from "../helpers/colors.js";
+export { isGreen, isOrange } from "../helpers/colors.ts";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { describe, expect, test } from "vitest";
 import { startApp } from "../../src/app.ts";
 import { createGame } from "../../src/puzzle/game.js";

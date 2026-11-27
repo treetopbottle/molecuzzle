@@ -2,7 +2,7 @@
 
 This file describes how the files in `src/` fit together. It is split by component ([decision 0011](decisions.md#0011)) with the addition of Glue that ties it all together.
 
-Each component has an `api.ts`, its interface ([decision 0028](decisions.md#0028)): the types of what it offers and of what it needs from the others, in its own terms, and the values the Glue uses, re-exported. The Glue imports only `app.ts` and the `api.ts` files, and a component imports only from its own folder; `tests/unit/imports.test.js` checks both.
+Each component has an `api.ts`, its interface ([decision 0028](decisions.md#0028)): the types of what it offers and of what it needs from the others, in its own terms, and the values the Glue uses, re-exported. The Glue imports only `app.ts` and the `api.ts` files, and a component imports only from its own folder; `tests/unit/imports.test.ts` checks both.
 
 Each diagram shows the files of one component; an arrow is an import. Arrows are annotated with what happens at runtime (callbacks, the page loading files, the browser's storage). The component's files take their types from its `api.ts`, which the diagrams leave out.
 

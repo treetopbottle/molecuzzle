@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Counting Atoms per Element, in a formula and in a Puzzle, to compare them.
 
 /** A formula's Atoms, counted per Element: C2H4O2 is { C: 2, H: 4, O: 2 }. */

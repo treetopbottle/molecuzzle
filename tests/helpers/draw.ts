@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Draws a game's Board as text, for inline snapshots, as the spec's README
 // draws them.
 //

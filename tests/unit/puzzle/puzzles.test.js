@@ -5,7 +5,7 @@ import { solve } from "../../../src/puzzle/solver.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { difficulty, dottedLines } from "../../../src/puzzle/difficulty.js";
 import { schemaErrors } from "../../helpers/schemas.ts";
-import { atomCount, formulaCount } from "../../helpers/formula.js";
+import { atomCount, formulaCount } from "../../helpers/formula.ts";
 
 describe("Puzzle.01 the puzzles", () => {
   test("Puzzle.09 each budget is the Bonds of its solution, and half of what its Atoms need", () => {
