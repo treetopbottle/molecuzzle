@@ -37,6 +37,8 @@ How the code and its data are built.
 - [0012: Schemas as JSON files, checked by the tests](#0012)
 - [0016: Progress keeps its key while it only gains fields](#0016)
 - [0026: The generator places Atoms in line with their partners, and backs up](#0026)
+- [0028: Each component's interface is a file of types, in the terms of the side that uses them](#0028)
+- [0029: TypeScript, checked by tsc and run as it is](#0029)
 
 ### Testing and publishing
 
@@ -105,7 +107,7 @@ Progress is kept in `localStorage`, in the format of [Progress](spec/schemas.md#
 <a id="0006"></a>
 ## 0006: ES modules, built into one HTML file
 
-Accepted (2026-11-11)
+Accepted (2026-11-11). Partly superseded by [0029](#0029): the code is TypeScript, not plain JavaScript; esbuild still bundles it into one file.
 
 The code is plain JavaScript in ES modules in `src/`; `npm run build` bundles them with esbuild and inlines the bundle and CSS into `dist/index.html`. Dependencies are for development only.
 
@@ -333,3 +335,25 @@ Under "Puzzle <n> of <N>" the panel shows "Difficulty <d>", the open Puzzle's di
 - **Why:** the Player asked to see it, to know how hard a Puzzle is before starting it. The number is the one the list is ordered by, so it never falls along the list, and it needs no scale or names to keep up to date as Puzzles are added. The panel has the open Puzzle already; the Player chose it over the list.
 - **Cost:** the number has no unit, and its meaning, Dotted lines plus twice the empty ones, isn't explained on the page; a Player sees only that larger is harder. Two Puzzles of about the same number can still feel different ([0021](#0021)'s cost). The list doesn't show it, so to compare Puzzles the Player opens them. The line takes room at the top of the panel, which pushes the actions down on a phone; they still end well within the screen. A new measure of difficulty, such as one from a solver (backlog), would change the numbers Players have seen.
 - **Alternatives:** in the list, on each button: compare at a glance, but wider buttons on a phone. Words or stars, such as Easy, Medium and Hard: easier to read, but bands to choose and move as harder Puzzles come. Only its number, "Puzzle 18 of 30": nothing to add, but it says nothing of how much harder one is than the one before.
+
+<a id="0028"></a>
+## 0028: Each component's interface is a file of types, in the terms of the side that uses them
+
+Accepted (2026-11-27)
+
+Each component has an `api.ts`: the types of what it offers, the types of what it needs from the others, written in its own terms, and re-exports of the values the Glue uses. A component imports nothing from another, not even a type; the Glue imports only the `api.ts` files, and there `tsc` checks that what one component offers fits what another needs. A test checks the imports.
+
+- **Why:** the interfaces were JSDoc in the files that use them, partly `object` and `Function`, and nothing checked them; the UI typed the game it is given with a type from the Puzzle, across [0011](#0011)'s boundary. TypeScript compares types by their shape, so a component can say exactly what it needs and still import only from itself, and the Glue, where the values already meet, is where the types meet. What drifted unseen now fails `tsc`: a status the rules add and the UI doesn't word, a field a Board entry in Storage lacks, an Element the UI has no look for.
+- **Cost:** a type both sides use is written twice, once by each, such as the status; one more file per component, and the Glue's imports go through it. The JSON schemas stay the description of the data that is stored or written by hand, so a Puzzle's format is in its schema and in its type: the tests check the data against the schema, `tsc` against the type. Values copied between components, such as the valences in the panel's rule and the undo limit, stay copies: a type can't check them.
+- **Alternatives:** types owned by the side that offers them, imported by the side that uses them: one copy, but a component imports from another. Types made from the JSON schemas: one source for the data, but a generator, and it covers only the data, not the functions between components. JSDoc typedefs that nothing checks: no tool, but they drift as the JSDoc did. An `index.ts` for the values next to `api.ts` for the types: two files per component, with nothing checked that one doesn't check.
+
+<a id="0029"></a>
+## 0029: TypeScript, checked by tsc and run as it is
+
+Accepted (2026-11-27)
+
+The code, the tests and the scripts are TypeScript, strict, in only the syntax that can be erased (`erasableSyntaxOnly`): no enums, namespaces or parameter properties. `tsc` only checks (`noEmit`); esbuild bundles the code for the page, Vitest and Playwright run the tests, and Node runs the scripts with its type stripping, so nothing is compiled first and an import names its `.ts` file.
+
+- **Why:** with the interfaces of [0028](#0028) as types, the code that offers them is checked against them too, not only the Glue that wires them; JSDoc says it at much greater length. Erasable syntax keeps the code JavaScript with types, so each tool runs it as it ran the JavaScript, with no build of its own.
+- **Cost:** Node 22.18 or newer, for type stripping (was 22.12). Every file was renamed, so its history needs `git log --follow`. Casts where the DOM can't know what the page holds, such as the elements by id. esbuild and Node don't check types: a type error shows only in `npm run typecheck`, so a branch build ([0010](#0010)) may have one. `noUncheckedIndexedAccess` is off, so an index into an array is trusted; on, nearly every lookup of an Atom or a Bond needs a check or a `!`.
+- **Alternatives:** JavaScript checked through JSDoc (`checkJs`), as part 1 of plan 10 has it: no renames, but the types are comments, and strict it found 207 errors before the bodies were typed. TypeScript compiled by `tsc`: any syntax, but a compile step before the scripts and the tests run. Only the interfaces as types, with JavaScript bodies: the bodies unchecked.
