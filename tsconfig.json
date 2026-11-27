@@ -10,7 +10,8 @@
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true,
     "allowJs": true,
-    "checkJs": false
+    "checkJs": false,
+    "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "tests", "vitest.config.ts", "playwright.config.ts"]
 }
