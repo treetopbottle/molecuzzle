@@ -18,3 +18,12 @@ Type-check probes: tsc fails on an Atom `"H"` or `"Xx"`, a Bond order 4, a 3-mem
 6. **note**, `docs/plans/10-typescript/README.md:58`: the Design's "when `scripts/generate.js` and `src/puzzle/generate.js` first import `.ts` files" names the old file; it describes step 9's event, so as history it is accurate.
 
 Checked with no finding: all six renames recorded (96% to 99%), with `git log --follow` past them; the move commit's edits; Puzzle.06, `docs/spec/puzzle.md`, `docs/spec/schemas.md`, `docs/architecture.md`, decisions 0022 and 0023 and `removed.ts`'s comment name the new files; no `as`, `!`, `any` or `@ts-` lines; the tests assert the same; the commit messages. Outside this step: a disconnected Molecule throws a TypeError, not "can't read", as before.
+
+## Outcome
+
+1. Fixed in c2ac16e.
+2. Fixed in c2ac16e: `kinds` is a `map` that throws "can't read …", which can't happen, as each label was read.
+3. Kept: `op` comes from `[-=#]`, and the Scope leaves out `noUncheckedIndexedAccess`.
+4. Fixed in c2ac16e: `Layout.atoms` is `Atom[]`, and `Kind` is `Omit<Atom, "r" | "c">`.
+5. Fixed in c2ac16e: `PUZZLE_SYMBOLS` is in `tests/helpers/puzzles.ts`.
+6. Kept: the Design's line tells step 9's event, under the names it had.

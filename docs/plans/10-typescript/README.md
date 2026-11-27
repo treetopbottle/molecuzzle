@@ -75,7 +75,7 @@ No step has a rule id except step 12, so the others have no split into tests and
 7. **The other helpers, and the tests outside the components.** `[DONE]` ([review](review-step-7.md)) To `.ts`: the rest of `tests/helpers/`, `draw.test`, `app.test` and `imports.test`.
 8. **Storage in TypeScript.** `[DONE]` ([review](review-step-8.md)) `progress.ts`, `progress.test.ts`.
 9. **The rules in TypeScript.** `[DONE]` ([review](review-step-9.md)) `elements.ts`, `grid.ts`, `game.ts`, `solver.ts` and `difficulty.ts`, with their tests; `src/puzzle/generate.js` and `scripts/generate.js` import the `.ts` files. First, run `scripts/generate.js` and `npm test` with Node 22.18 on a copy with these renames, and set the README's minimum and [0029](../../decisions.md#0029)'s cost to the Node the Design says.
-10. **The Puzzles and the generator in TypeScript.** `puzzles.ts`, `removed.ts` and `generate.ts`, with their tests; `scripts/generate.js` imports `generate.ts`; Puzzle.06, `docs/spec/puzzle.md` and `docs/spec/schemas.md` name the new files.
+10. **The Puzzles and the generator in TypeScript.** `[DONE]` ([review](review-step-10.md)) `puzzles.ts`, `removed.ts` and `generate.ts`, with their tests; `scripts/generate.js` imports `generate.ts`; Puzzle.06, `docs/spec/puzzle.md` and `docs/spec/schemas.md` name the new files.
 11. **The UI in TypeScript.** `elements.ts`, `messages.ts`, `board.ts`, `panel.ts`, `puzzle-list.ts` and `ui.ts`, with `$`, and their tests.
 12. **The scripts in TypeScript, and no JavaScript left.** Generate.01.
     - (a) Spec and tests: Generate.01, the README's New Puzzle line and the backlog say `node scripts/generate.ts`; `generate-script.test.ts` runs `scripts/generate.ts`, which fails as there is none.
