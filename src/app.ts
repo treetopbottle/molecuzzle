@@ -2,16 +2,14 @@
 // browser.ts makes the dependencies and passes them in.
 import { markSolved, type Progress, type Store } from "./storage/api.ts";
 import { difficulty, type CreateGame, type Game, type Puzzle, type Saved } from "./puzzle/api.ts";
-import type { createUi } from "./ui/ui.js";
-
-type Handlers = Parameters<typeof createUi>[1];
+import type { Handlers, Ui } from "./ui/api.ts";
 
 /** What the Glue is given: the Puzzles, and each component's part. */
 export interface AppDeps {
   puzzles: Puzzle[];
   createGame: CreateGame;
   store: Store;
-  createUi: (handlers: Handlers) => ReturnType<typeof createUi>;
+  createUi: (handlers: Handlers) => Ui;
 }
 
 export function startApp({ puzzles, createGame, store, createUi }: AppDeps): void {

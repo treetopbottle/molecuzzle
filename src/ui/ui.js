@@ -1,6 +1,7 @@
 // The UI: owns the page. The Board, the panel, the Puzzles list, the status
 // line, the message, the buttons and Ctrl+Z. What the Player does goes to
 // the handlers; what to show comes in as a view.
+/** @import { Handlers, Ui, UiOptions, View } from "./api.ts" */
 import { createBoard } from "./board.js";
 import { renderPanel } from "./panel.js";
 import { renderPuzzleList } from "./puzzle-list.js";
@@ -20,11 +21,9 @@ function renderCounts(line, { used, budget }) {
 
 /**
  * @param {Document} doc
- * @param {{ onChange(k: number, dir: 1 | -1): void, onOpen(index: number): void,
- *   onUndo(): void, onReset(): void, onSolve(): void }} handlers
- *   onSolve and onReset come only after the Player confirms.
- * @param {{ confirm?: (question: string) => boolean, elements?: {symbol: string, valence: number}[] }} [options]
- *   elements: each Element's number of bonds, for the key of the panel, in its order.
+ * @param {Handlers} handlers
+ * @param {UiOptions} [options]
+ * @returns {Ui}
  */
 export function createUi(doc, handlers, { confirm = question => doc.defaultView.confirm(question), elements = [] } = {}) {
   const $ = id => doc.getElementById(id);
@@ -49,11 +48,7 @@ export function createUi(doc, handlers, { confirm = question => doc.defaultView.
     board = createBoard($("board"), game, { onChange: handlers.onChange });
   }
 
-  /**
-   * @param {{ puzzles: object[], index: number, progress: {puzzles: Record<string,string>},
-   *   status: {kind: string}, counts: {used: number, budget: number}, difficulty: number,
-   *   done: boolean, canUndo: boolean, hasBonds: boolean }} view
-   */
+  /** @param {View} view */
   function render(view) {
     const { puzzles, index, progress, status } = view;
     board.render();

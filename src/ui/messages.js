@@ -1,7 +1,13 @@
 // The texts for the Player: the status line for each status, and why a Bond
 // wasn't made.
+/** @import { PuzzleInfo, SayResult, Status } from "./api.ts" */
 
-/** The status line for a status from game.status(). */
+/**
+ * The status line for a status from game.status().
+ * @param {Status} status
+ * @param {Pick<PuzzleInfo, "name">} puzzle
+ * @returns {string}
+ */
 export function statusText(status, puzzle) {
   switch (status.kind) {
     case "empty": return "Click a dotted line between two atoms to bond them.";
@@ -12,7 +18,11 @@ export function statusText(status, puzzle) {
   }
 }
 
-/** Why a Bond wasn't made, for a result of game.change(), or null if there is no reason to give. */
+/**
+ * Why a Bond wasn't made, for a result of game.change(), or null if there is no reason to give.
+ * @param {SayResult} result
+ * @returns {string | null}
+ */
 export function reasonText(result) {
   switch (result.reason) {
     case "crossing": return "Bonds can't cross.";

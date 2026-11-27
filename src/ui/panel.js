@@ -2,6 +2,7 @@
 // difficulty, the mystery molecule or its name, formula and fact, and the
 // rules. ‹, › and "Next puzzle →" carry data-open, the index of the Puzzle
 // they open: whoever owns the page listens for clicks on them.
+/** @import { KeyElement, View } from "./api.ts" */
 import { ELEMENTS as LOOKS } from "./elements.js";
 
 const RULES = [
@@ -81,9 +82,7 @@ function build(panel, elements) {
  * Fills the panel, the first time from nothing, after that in place, so a
  * focused button keeps its focus.
  * @param {HTMLElement} panel
- * @param {{ puzzles: {id:string,name:string,formula:string,fact:string}[], index: number,
- *   progress: {puzzles: Record<string,string>}, done: boolean, difficulty: number,
- *   elements: {symbol: string, valence: number}[] }} view
+ * @param {Pick<View, "puzzles" | "index" | "progress" | "done" | "difficulty"> & { elements?: KeyElement[] }} view
  */
 export function renderPanel(panel, { puzzles, index, progress, done, difficulty, elements = [] }) {
   if (!panel.querySelector("nav")) build(panel, elements);

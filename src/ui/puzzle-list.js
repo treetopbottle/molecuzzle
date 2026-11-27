@@ -1,9 +1,10 @@
 // The list of puzzles: one button per puzzle, with ✓ if solved.
+/** @import { ProgressView, PuzzleInfo } from "./api.ts" */
 
 /**
  * @param {HTMLOListElement} list
- * @param {{id:string,name:string}[]} puzzles
- * @param {{puzzles: Record<string,string>}} progress
+ * @param {Pick<PuzzleInfo, "id" | "name">[]} puzzles
+ * @param {ProgressView} progress
  * @param {number} current index of the open puzzle
  * @param {(index: number) => void} onPick
  */

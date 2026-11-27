@@ -3,7 +3,7 @@
 import { startApp } from "./app.ts";
 import { PUZZLES, createGame, ELEMENTS } from "./puzzle/api.ts";
 import { createProgressStore } from "./storage/api.ts";
-import { createUi } from "./ui/ui.js";
+import { createUi } from "./ui/api.ts";
 
 // The Elements of the key in the panel, in its order: each with the number of Bonds it needs.
 const KEY = (["C", "N", "O", "S"] as const).map(symbol => ({ symbol, valence: ELEMENTS[symbol].valence }));
