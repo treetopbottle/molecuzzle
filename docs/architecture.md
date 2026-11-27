@@ -2,13 +2,13 @@
 
 This file describes how the files in `src/` fit together. It is split by component ([decision 0011](decisions.md#0011)) with the addition of Glue that ties it all together.
 
-Each component has an `api.ts`, its interface ([decision 0028](decisions.md#0028)): the types of what it offers and of what it needs from the others, in its own terms, and the values the Glue uses, re-exported. The Glue imports only the `api.ts` files, and a component imports only from its own folder; `tests/unit/imports.test.js` checks both.
+Each component has an `api.ts`, its interface ([decision 0028](decisions.md#0028)): the types of what it offers and of what it needs from the others, in its own terms, and the values the Glue uses, re-exported. The Glue imports only `app.ts` and the `api.ts` files, and a component imports only from its own folder; `tests/unit/imports.test.js` checks both.
 
 Each diagram shows the files of one component; an arrow is an import. Arrows are annotated with what happens at runtime (callbacks, the page loading files, the browser's storage). The component's files take their types from its `api.ts`, which the diagrams leave out.
 
 ## Glue
 
-`browser.ts` is the only file using the browser's globals: it makes the dependencies and starts `app.ts`, which wires the components together. `app.ts`'s `AppDeps` is what it is given: the Puzzles, `createGame`, the store and `createUi`, each typed by its component's `api.ts`. Where they meet, `tsc` checks that one component's types fit the other's: a game fits the UI's `BoardModel`, the Puzzle's status, counts and change result fit the UI's, a Puzzle and Progress fit what the UI shows of them, and the Puzzle's `Saved` and Storage's `BoardEntry` fit each other both ways.
+`browser.ts` is the only file using the browser's globals: it makes the dependencies and starts `app.ts`, which wires the components together. `app.ts`'s `AppDeps` is what it is given: the Puzzles, `createGame`, the store and `createUi`, each typed by its component's `api.ts`. Where they meet, `tsc` checks that one component's types fit the other's: a game fits the UI's `BoardModel`, the Puzzle's status, counts and change result fit the UI's, a Puzzle and Progress fit what the UI shows of them, and the Puzzle's `Saved` and Storage's `BoardEntry` fit each other both ways. In `browser.ts`, it checks that the UI has a look for each Element of the key.
 
 ## UI
 
@@ -29,6 +29,7 @@ flowchart TD
   looks["<code>elements.js</code><br/>how Elements look"]
 
   api --> uijs
+  api --> looks
   uijs --> board
   uijs --> panel
   uijs --> list
