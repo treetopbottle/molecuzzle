@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { expect } from "@playwright/test";

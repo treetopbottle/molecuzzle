@@ -1,6 +1,7 @@
+// @ts-nocheck
 // Run only by the phone project (playwright.config.js): touch and the small screen.
 import { test, expect } from "@playwright/test";
-import { start, clickBond, bond, openPuzzle } from "./helpers.js";
+import { start, clickBond, bond, openPuzzle } from "./helpers.ts";
 
 test("Layout.02 tapping a dotted line bonds, as a click does", async ({ page }) => {
   await start(page);

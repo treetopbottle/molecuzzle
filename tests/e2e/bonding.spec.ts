@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, bond, clickBond, status } from "./helpers.js";
+import { start, openPuzzle, bond, clickBond, status } from "./helpers.ts";
 
 test.beforeEach(async ({ page }) => {
   await start(page);

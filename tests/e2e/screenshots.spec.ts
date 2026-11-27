@@ -1,7 +1,8 @@
+// @ts-nocheck
 // The screenshots of docs/spec/ui.md, compared pixel for pixel. Only
 // scripts/screenshots.sh runs these, in Playwright's image (decision 0013).
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, clickBond, build, PUZZLES } from "./helpers.js";
+import { start, openPuzzle, clickBond, build, PUZZLES } from "./helpers.ts";
 
 test.describe("at 1280×800", () => {
   test.use({ viewport: { width: 1280, height: 800 } });

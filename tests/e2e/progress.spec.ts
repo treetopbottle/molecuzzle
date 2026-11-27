@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, clickBond, bond, build, status, storedProgress, PUZZLES } from "./helpers.js";
-import { schemaErrors } from "../helpers/schemas.js";
+import { start, openPuzzle, clickBond, bond, build, status, storedProgress, PUZZLES } from "./helpers.ts";
+import { schemaErrors } from "../helpers/schemas.ts";
 
 test("Progress.05 a Puzzle in progress, Undo included, is kept after the browser closes", async ({ page, context }) => {
   await start(page);

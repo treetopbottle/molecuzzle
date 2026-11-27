@@ -4,7 +4,7 @@ import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { solve } from "../../../src/puzzle/solver.js";
 import { createGame } from "../../../src/puzzle/game.js";
-import { schemaErrors } from "../../helpers/schemas.js";
+import { schemaErrors } from "../../helpers/schemas.ts";
 import { atomCount, formulaCount } from "../../helpers/formula.js";
 
 /** The Atoms of a formula, as counts per Element, so the order it is written in doesn't matter. */

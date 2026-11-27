@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { createProgressStore, markSolved, STORAGE_KEY } from "../../../src/storage/progress.js";
-import { schemaErrors } from "../../helpers/schemas.js";
+import { schemaErrors } from "../../helpers/schemas.ts";
 
 function memoryStorage(initial = {}) {
   const data = { ...initial };

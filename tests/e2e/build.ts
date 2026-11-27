@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { execFileSync } from "node:child_process";
 
 // The end-to-end tests run against dist/index.html, so build it first.

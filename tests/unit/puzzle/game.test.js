@@ -3,7 +3,7 @@ import { createGame } from "../../../src/puzzle/game.js";
 import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { PUZZLES } from "../../../src/puzzle/puzzles.js";
 import { draw, click, build } from "../../helpers/draw.js";
-import { schemaErrors } from "../../helpers/schemas.js";
+import { schemaErrors } from "../../helpers/schemas.ts";
 
 const puzzle = id => PUZZLES.find(p => p.id === id);
 

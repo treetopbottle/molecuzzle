@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { test, expect } from "@playwright/test";
-import { start } from "./helpers.js";
+import { start } from "./helpers.ts";
 
 test("Layout.01 wide screens have the Board left of the panel, narrow ones above it", async ({ page }) => {
   await start(page);

@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, clickBond, bond } from "./helpers.js";
+import { start, openPuzzle, clickBond, bond } from "./helpers.ts";
 
 test("Input.05 Reset asks first, and only after OK resets", async ({ page }) => {
   const reset = page.getByRole("button", { name: "Reset" }), undo = page.getByRole("button", { name: "Undo" });

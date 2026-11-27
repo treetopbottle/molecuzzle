@@ -4,7 +4,7 @@ import { ELEMENTS } from "../../../src/puzzle/elements.js";
 import { solve } from "../../../src/puzzle/solver.js";
 import { createGame } from "../../../src/puzzle/game.js";
 import { difficulty, dottedLines } from "../../../src/puzzle/difficulty.js";
-import { schemaErrors } from "../../helpers/schemas.js";
+import { schemaErrors } from "../../helpers/schemas.ts";
 import { atomCount, formulaCount } from "../../helpers/formula.js";
 
 describe("Puzzle.01 the puzzles", () => {

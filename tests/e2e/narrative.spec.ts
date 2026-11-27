@@ -1,6 +1,7 @@
+// @ts-nocheck
 // The "First day" narrative from docs/spec/narratives.md, end to end.
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, clickBond, build, status, bond, PUZZLES } from "./helpers.js";
+import { start, openPuzzle, clickBond, build, status, bond, PUZZLES } from "./helpers.ts";
 
 test("First day", async ({ page }) => {
   // Noor opens Molecuzzle: Puzzle 1, a mystery molecule of three atoms in a

@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { test, expect } from "@playwright/test";
-import { start, openPuzzle, build, PUZZLES, storedProgress, GAME_URL } from "./helpers.js";
+import { start, openPuzzle, build, PUZZLES, storedProgress, GAME_URL } from "./helpers.ts";
 
 test("Board.04, Panel.01, Panel.02 a puzzle starts with no Bonds and its name hidden", async ({ page }) => {
   await start(page);

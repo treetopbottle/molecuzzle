@@ -1,3 +1,4 @@
+// @ts-nocheck
 // The schemas of docs/spec/schemas/, all in one Ajv, so the $refs between
 // them resolve.
 import Ajv2020 from "ajv/dist/2020.js";

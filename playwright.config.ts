@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { defineConfig } from "@playwright/test";
 
 // Uses Playwright's own Chromium (npx playwright install chromium), or the
@@ -12,16 +13,16 @@ const screenshots = process.env.MOLECUZZLE_SCREENSHOTS === "1";
 
 export default defineConfig({
   testDir: "tests/e2e",
-  globalSetup: screenshots ? undefined : "./tests/e2e/build.js",
+  globalSetup: screenshots ? undefined : "./tests/e2e/build.ts",
   fullyParallel: true,
   reporter: process.env.CI ? "dot" : "list",
   use: { launchOptions, trace: "retain-on-failure" },
   projects: [
-    { name: "desktop", testIgnore: /(screenshots|phone)\.spec\.js/, use: { viewport: { width: 1280, height: 800 } } },
-    { name: "phone", testMatch: /(layout|phone)\.spec\.js/, use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
+    { name: "desktop", testIgnore: /(screenshots|phone)\.spec\.ts/, use: { viewport: { width: 1280, height: 800 } } },
+    { name: "phone", testMatch: /(layout|phone)\.spec\.ts/, use: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
     ...(screenshots ? [{
       name: "screenshots",
-      testMatch: /screenshots\.spec\.js/,
+      testMatch: /screenshots\.spec\.ts/,
       snapshotPathTemplate: "docs/spec/screenshots/{arg}{ext}",
       // Playwright's default tolerance, written out.
       expect: { toHaveScreenshot: { threshold: 0.2, maxDiffPixels: 0 } },
