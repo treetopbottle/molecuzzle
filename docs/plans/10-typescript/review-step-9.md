@@ -17,3 +17,11 @@ Type-check probes: `toBoard` without the `n === 1 || 2 || 3` narrowing fails at 
 5. **note**, `src/puzzle/difficulty.ts` in 26d6c0c: the move gave `dottedLines` a return type its JSDoc never had, beyond "the types their JSDoc gave". Harmless; the rename is still recorded (68%).
 
 Checked with no finding: all 9 renames recorded (68% to 99%), with `git log --follow` past them; the move commit's edits; no `@ts-nocheck`, casts, `!`, `@ts-` lines or `any` left; no old names outside the past plans but finding 3; the README and 0029 say 22.18, and CI stays on Node 22; step 3's findings 4 and 5 resolved; `undo()`, the `valid` filter, `toBoard` and `connected` equivalent; Puzzle.03 lists the three reasons the game still checks; the tests assert the same; the commit messages.
+
+## Outcome
+
+1. Fixed in 9e00aed: `@types/node` is `~22.18.13`, which npm dedupes for happy-dom and Vitest; `skipLibCheck` is still needed, as 22.18's types don't fit happy-dom's either, and 0029 says so.
+2. Fixed in 9e00aed: `createGame`'s doc says the shape is the schema's, as Storage checks it.
+3. Fixed with this outcome: the Design's example names `./game.ts`.
+4. Kept for step 11: `board.test` and `draw.test` take their Puzzles from `puzzle(id)` when they are typed.
+5. Kept: harmless, and the rename held.
