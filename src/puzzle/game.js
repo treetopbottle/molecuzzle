@@ -12,6 +12,8 @@ export const UNDO_LIMIT = 100;
  * its history, can't be on the Grid, it starts with no Bonds, nothing to
  * undo and the solution not shown. A solved Board starts with nothing to
  * undo, since solving ends the undo history.
+ * @param {any} puzzle
+ * @param {{ bonds?: number[][], revealed?: boolean, undo?: number[][][] }} [saved]
  */
 export function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
   // An Atom's hydrogens are bonded from the start (Puzzle.07); a missing count is none.

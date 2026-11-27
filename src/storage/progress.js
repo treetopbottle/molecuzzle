@@ -1,4 +1,5 @@
 // Progress, kept in the browser. Works without storage: then nothing is kept.
+/** @import { KeyValueStorage, Progress, Store } from "./api.ts" */
 export const STORAGE_KEY = "molecuzzle-v4";
 
 const UNDO_MAX = 100;
@@ -35,7 +36,8 @@ function read(storage) {
 /**
  * The Progress in this storage (localStorage, or undefined for none).
  * load() reads it; update(change) saves change(progress) and returns it.
- * @param {Storage | undefined} storage
+ * @param {KeyValueStorage | undefined} storage
+ * @returns {Store}
  */
 export function createProgressStore(storage) {
   let progress;
@@ -51,7 +53,12 @@ export function createProgressStore(storage) {
   return { load, update };
 }
 
-/** Marks a puzzle solved; returns the same Progress if it already was. */
+/**
+ * Marks a puzzle solved; returns the same Progress if it already was.
+ * @param {Progress} progress
+ * @param {string} id
+ * @returns {Progress}
+ */
 export function markSolved(progress, id) {
   if (progress.puzzles[id] === "solved") return progress;
   return { ...progress, puzzles: { ...progress.puzzles, [id]: "solved" } };

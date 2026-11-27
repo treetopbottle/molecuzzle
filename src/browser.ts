@@ -4,7 +4,7 @@ import { startApp } from "./app.ts";
 import { PUZZLES } from "./puzzle/puzzles.js";
 import { createGame } from "./puzzle/game.js";
 import { ELEMENTS } from "./puzzle/elements.js";
-import { createProgressStore } from "./storage/progress.js";
+import { createProgressStore } from "./storage/api.ts";
 import { createUi } from "./ui/ui.js";
 
 // The Elements of the key in the panel, in its order: each with the number of Bonds it needs.

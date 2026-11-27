@@ -1,24 +1,17 @@
 // Wires the Puzzles, the open game, Progress and the UI. No DOM:
 // browser.ts makes the dependencies and passes them in.
-import { markSolved } from "./storage/progress.js";
+import { markSolved, type Progress, type Store } from "./storage/api.ts";
 import { difficulty } from "./puzzle/difficulty.js";
 import type { createGame } from "./puzzle/game.js";
 import type { createUi } from "./ui/ui.js";
 
 type Handlers = Parameters<typeof createUi>[1];
 
-/** The Progress that Storage keeps. */
-interface Progress {
-  puzzles: Record<string, string>;
-  current: string | null;
-  boards?: Record<string, NonNullable<Parameters<typeof createGame>[1]>>;
-}
-
 /** What the Glue is given: the Puzzles, and each component's part. */
 export interface AppDeps {
   puzzles: Parameters<typeof createGame>[0][];
   createGame: typeof createGame;
-  store: { load(): Progress; update(change: (p: Progress) => Progress): Progress };
+  store: Store;
   createUi: (handlers: Handlers) => ReturnType<typeof createUi>;
 }
 
