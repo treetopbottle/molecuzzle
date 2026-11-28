@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Searches for a grid layout of a Molecule that makes a puzzle with exactly
 // one solution, and prints it as an entry for src/puzzle/puzzles.ts.
 //
@@ -17,11 +16,11 @@ const [spec, ...numbers] = process.argv.slice(2);
 const [tries, maxRows, maxCols, seed] = numbers.map(Number);
 if (!spec) { console.error("usage: node scripts/generate.ts \"<bonds>\" [tries] [maxRows] [maxCols] [seed]"); process.exit(1); }
 
-let layout;
+let layout: ReturnType<typeof findLayout>;
 try {
   layout = findLayout(spec, { tries, maxRows, maxCols, seed });
 } catch (e) {
-  if (!e.message.startsWith("can't read ")) throw e;
+  if (!(e instanceof Error) || !e.message.startsWith("can't read ")) throw e;
   console.error(e.message);
   process.exit(1);
 }
@@ -32,9 +31,9 @@ const { dotted, loops } = dottedLines(layout);
 // Each Atom by its label as in a formula, CH₂, and every point as wide as the
 // longest label, as in the spec's drawings: a shorter one, or · for no Atom,
 // is padded.
-const label = (el, h) => el + (h ? "H" + (h > 1 ? "₀₁₂₃₄₅₆₇₈₉"[h] : "") : "");
+const label = (el: string, h: number) => el + (h ? "H" + (h > 1 ? "₀₁₂₃₄₅₆₇₈₉"[h] : "") : "");
 const width = Math.max(...atoms.map(([el, , , h]) => label(el, h).length));
-const grid = Array.from({ length: rows }, () => Array(cols).fill("·"));
+const grid = Array.from({ length: rows }, (): string[] => Array(cols).fill("·"));
 for (const [el, r, c, h] of atoms) grid[r][c] = label(el, h);
 console.log(grid.map(row => ("  // " + row.map(p => p.padEnd(width)).join(" ")).trimEnd()).join("\n"));
 console.log(`  rows: ${rows}, cols: ${cols}, // difficulty ${difficulty(layout)}: ${dotted} Dotted lines, ${loops} loops`);

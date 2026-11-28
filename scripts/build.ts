@@ -1,4 +1,3 @@
-// @ts-nocheck
 // Builds dist/index.html: src/ui/index.html with src/ui/style.css and the
 // JavaScript bundled from src/browser.ts inlined, so the game is one file
 // that opens from disk.
@@ -6,7 +5,7 @@ import { build } from "esbuild";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 
 const root = new URL("..", import.meta.url);
-const src = path => new URL(`src/${path}`, root);
+const src = (path: string) => new URL(`src/${path}`, root);
 
 const [html, css, js] = await Promise.all([
   readFile(src("ui/index.html"), "utf8"),
@@ -15,7 +14,7 @@ const [html, css, js] = await Promise.all([
     .then(r => r.outputFiles[0].text),
 ]);
 
-const replace = (text, find, by) => {
+const replace = (text: string, find: string, by: string): string => {
   if (!text.includes(find)) throw new Error(`build: ${find} not found in src/ui/index.html`);
   return text.replace(find, () => by);
 };
