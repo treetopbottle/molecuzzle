@@ -41,3 +41,10 @@ Checked with no finding:
 - CI's `npm run build` runs `scripts/build.ts` on the latest Node 22.
 - Decision 0029 still describes the code.
 - The commit messages.
+
+## Outcome
+
+1. Fixed in 1093630: `tests/unit/typescript.test.ts` fails on any `.js`, `.mjs` or `.cjs` file in `src/`, `tests/` or `scripts/`; step 12's line and decision 0029 say so.
+2. Fixed in 1093630: the Design's `ui/api.ts` bullet names `board.ts` and `messages.ts`; step 13 checks the Design too.
+3. Kept: `findLayout` throws only `Error`s, and rethrowing anything else is the better behavior.
+4. Kept: the move follows the Design's steps, and the test's typing is small.
