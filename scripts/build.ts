@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Builds dist/index.html: src/ui/index.html with src/ui/style.css and the
 // JavaScript bundled from src/browser.ts inlined, so the game is one file
 // that opens from disk.

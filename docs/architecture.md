@@ -42,7 +42,7 @@ flowchart TD
 
 The Puzzles and the rules. `game.ts` keeps the Bonds of a Board and gives its status, its counts and budget, and the reasons.
 
-`solver.ts`, `generate.ts` and `removed.ts` are not part of the game itself: `scripts/generate.js` uses `generate.ts` to find new layouts and `difficulty.ts` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.ts`, and `removed.ts`, the Puzzles taken out of the game, to keep them out; the tests check the layouts in both. The Glue's `app.ts` uses `difficulty.ts` too, through `api.ts`, for the difficulty the panel shows.
+`solver.ts`, `generate.ts` and `removed.ts` are not part of the game itself: `scripts/generate.ts` uses `generate.ts` to find new layouts and `difficulty.ts` to score them, and the tests use the solver and the difficulty to check the Puzzles in `puzzles.ts`, and `removed.ts`, the Puzzles taken out of the game, to keep them out; the tests check the layouts in both. The Glue's `app.ts` uses `difficulty.ts` too, through `api.ts`, for the difficulty the panel shows.
 
 `api.ts` offers the `Puzzle`, the `Game` that `createGame` makes of it, with its status, counts and change result, and `Saved`, where a game was left; and it re-exports `PUZZLES`, `createGame`, `ELEMENTS` and `difficulty`. It needs nothing from the others.
 

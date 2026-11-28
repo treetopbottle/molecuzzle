@@ -2,7 +2,7 @@
 // those of the same difficulty (decisions 0021, 0024). Atoms are [Element,
 // row, column, hydrogens], in reading order, each with the hydrogens bonded
 // to it from the start; the solution lists [atom, atom, Bond order].
-// Layouts come from scripts/generate.js; tests check each has exactly this
+// Layouts come from scripts/generate.ts; tests check each has exactly this
 // one solution.
 import type { Puzzle } from "./api.ts";
 

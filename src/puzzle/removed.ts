@@ -2,7 +2,7 @@
 // id or the formula of one of them (Puzzle.06, decision 0022). Nothing in
 // the game imports this; the tests do. In the order of the spec's table of
 // removed Puzzles, each in the format of puzzles.ts, with a layout from
-// scripts/generate.js that has exactly one solution (decision 0023);
+// scripts/generate.ts that has exactly one solution (decision 0023);
 // Ammonia and Water are one Atom each, with nothing to bond.
 import type { Puzzle } from "./api.ts";
 

@@ -1,7 +1,8 @@
+// @ts-nocheck
 // Searches for a grid layout of a Molecule that makes a puzzle with exactly
 // one solution, and prints it as an entry for src/puzzle/puzzles.ts.
 //
-//   node scripts/generate.js "CH3-C C=O C-OH" [tries] [maxRows] [maxCols] [seed]
+//   node scripts/generate.ts "CH3-C C=O C-OH" [tries] [maxRows] [maxCols] [seed]
 //
 // Bonds are written between labelled Atoms: a label is the Element and then
 // its hydrogens, as in a formula, with `:` and a name to tell Atoms with the
@@ -14,7 +15,7 @@ import { difficulty, dottedLines } from "../src/puzzle/difficulty.ts";
 // rows by 5 columns, as every Puzzle's (decision 0019).
 const [spec, ...numbers] = process.argv.slice(2);
 const [tries, maxRows, maxCols, seed] = numbers.map(Number);
-if (!spec) { console.error("usage: node scripts/generate.js \"<bonds>\" [tries] [maxRows] [maxCols] [seed]"); process.exit(1); }
+if (!spec) { console.error("usage: node scripts/generate.ts \"<bonds>\" [tries] [maxRows] [maxCols] [seed]"); process.exit(1); }
 
 let layout;
 try {

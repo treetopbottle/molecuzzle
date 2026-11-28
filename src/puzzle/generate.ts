@@ -1,5 +1,5 @@
 // Searches for a Grid layout of a Molecule that makes a Puzzle with exactly
-// one solution. For the developer, through scripts/generate.js: its errors
+// one solution. For the developer, through scripts/generate.ts: its errors
 // are not for the Player.
 import { candidateBonds, crossings } from "./grid.ts";
 import { solve } from "./solver.ts";

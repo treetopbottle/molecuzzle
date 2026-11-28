@@ -11,7 +11,7 @@ set -eu
 cd "$(dirname "$0")/.."
 engine=${CONTAINER:-podman}
 version=$(node -p 'require("@playwright/test/package.json").version')
-node scripts/build.js
+node scripts/build.ts
 # A plain rootful Docker daemon would write root-owned files into the repo, so
 # it runs as this user. Everywhere else the container's root already writes as
 # this user: Podman, rootless Docker, Docker Desktop. With userns-remap neither
