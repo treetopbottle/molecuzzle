@@ -20,3 +20,16 @@ Behaviour, old against new: the real Glue (`startApp` with `PUZZLES`, `createGam
 10. **note**, `tests/helpers/dom.ts:5`: `one`'s default `E = HTMLElement` types SVG children as HTML elements (`one(h, "circle")` in board.test); harmless where used.
 
 Checked with no finding: all 11 renames recorded (84% to 99%), with `git log --follow` past them; the move commit's edits; no old names outside the past plans; no `!`, `any` or `@ts-nocheck` left; the tests assert the same but finding 7; the comments kept; the commit messages.
+
+## Outcome
+
+1. Fixed in bc80acc: `win()` is `Window & typeof globalThis`, and the target is checked with `win().Element`.
+2. Fixed in bc80acc.
+3. Fixed in bc80acc: the parameter is annotated.
+4. Fixed in bc80acc: `ELEMENTS` `satisfies` its shape, and `LookSymbol` stays its nine keys.
+5. Fixed in bc80acc: 0029's cost names the check `$(id, SVGSVGElement)` would give, and what it costs.
+6. Kept: the comment says why, and the case shows the UI words a reason it doesn't know as none.
+7. Kept: it matches the code, which always has the button.
+8. Fixed in bc80acc: a unit test stubs `confirm` and passes none; it fails if the default calls itself.
+9. Fixed in bc80acc.
+10. Kept: harmless where used.
