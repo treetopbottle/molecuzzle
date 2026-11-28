@@ -1,6 +1,6 @@
 // The imports in src/ keep decision 0028: a component names only files in its
 // own folder, and the Glue only app.ts and the components' api.ts. Every file
-// named must exist, as a JSDoc type from a path that doesn't becomes any.
+// named must exist.
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -63,7 +63,7 @@ test("it finds each kind of import, also over lines and with comments between", 
   ]);
 });
 
-test("it finds the imports of the files in src/: a value, a type, a re-export and a JSDoc @import", () => {
+test("it finds the imports of the files in src/: a value, a type and a re-export", () => {
   expect(named("app.ts")).toEqual(["storage/api.ts", "puzzle/api.ts", "ui/api.ts"]);
   expect(named("storage/api.ts")).toEqual(["storage/progress.ts"]);
   expect(named("storage/progress.ts")).toEqual(["storage/api.ts"]);

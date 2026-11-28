@@ -1,6 +1,6 @@
 # Molecuzzle
 
-A puzzle game in the browser where you bond atoms on a grid until they form a real molecule; plain JavaScript, built into one HTML file.
+A puzzle game in the browser where you bond atoms on a grid until they form a real molecule; TypeScript, built into one HTML file.
 
 **Play it: <https://treetopbottle.github.io/molecuzzle/>** (built from `main`)
 
