@@ -140,7 +140,7 @@ Then it has 7 − 6 + 1 = 2 loops
 
 ### Generate
 
-- Layout: `node scripts/generate.js "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order, and its difficulty ([Puzzle.05](#puzzle)); the same arguments print the same layout (Generate.01)
+- Layout: `node scripts/generate.ts "<bonds>" [tries] [maxRows] [maxCols] [seed]` searches for a Grid of at most `maxRows` by `maxCols`, 6 by 5 if they are left out ([Puzzle.04](#puzzle)), on which the Molecule with these Bonds is the only solution, and prints its `rows`, `cols`, `atoms` and `solution` as in a [Puzzle](schemas.md#puzzle), the Atoms in reading order, and its difficulty ([Puzzle.05](#puzzle)); the same arguments print the same layout (Generate.01)
 - None: if it can't read a Bond, or a Bond has an Atom whose Element is H or isn't in the [table of valences](#board), or whose hydrogens leave it no room for a Bond, it stops with "can't read <bond>", and if no try has exactly one solution, these Bonds, with "no unique layout found": so also for Bonds that don't give each Atom its valence (Generate.02)
 - Rings: as it places each Atom in line with its partners already placed, inside the Grid, and goes back when one has no place, it finds layouts of Molecules with several rings, which Atoms placed as a tree rarely close ([decision 0026](../decisions.md#0026)) (Generate.03)
 

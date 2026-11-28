@@ -1,11 +1,10 @@
-// @ts-nocheck
-// scripts/generate.js, run as the developer runs it.
+// scripts/generate.ts, run as the developer runs it.
 import { expect, test } from "vitest";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-const script = fileURLToPath(new URL("../../../scripts/generate.js", import.meta.url));
-const run = (...args) => spawnSync(process.execPath, [script, ...args], { encoding: "utf8" });
+const script = fileURLToPath(new URL("../../../scripts/generate.ts", import.meta.url));
+const run = (...args: string[]) => spawnSync(process.execPath, [script, ...args], { encoding: "utf8" });
 
 test("Generate.01 the script prints the layout of Acetonitrile, its Atoms with their hydrogens", () => {
   const { stdout, status } = run("CH3-C C#N", "2000", "3", "3", "1");
@@ -38,7 +37,9 @@ test("the script draws a layout with only one-letter labels, every point one cha
 test("Generate.01 with no size given, the script looks for a Grid of at most 6 by 5", () => {
   const { stdout, status } = run("N:1-C:2 C:2=O:2 C:2-N:3 N:3-C:4 C:4=C:5 C:5-C:6 C:6=O:6 C:6-N:1 C:4-N:9 N:9=CH:8 CH:8-N:7 N:7-C:5 N:1-CH3:a N:3-CH3:b N:7-CH3:c");
   expect(status).toBe(0);
-  const [, rows, cols] = stdout.match(/rows: (\d+), cols: (\d+)/).map(Number);
+  const size = stdout.match(/rows: (\d+), cols: (\d+)/);
+  if (!size) throw new Error("no rows and cols printed");
+  const [, rows, cols] = size.map(Number);
   expect(rows).toBeLessThanOrEqual(6);
   expect(cols).toBeLessThanOrEqual(5);
   expect([rows, cols]).toEqual([6, 5]); // Caffeine's layout uses the 6th row
