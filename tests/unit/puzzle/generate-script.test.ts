@@ -1,3 +1,4 @@
+// @ts-nocheck
 // scripts/generate.js, run as the developer runs it.
 import { expect, test } from "vitest";
 import { spawnSync } from "node:child_process";
