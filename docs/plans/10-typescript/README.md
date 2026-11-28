@@ -1,6 +1,6 @@
 # 10: The components' interfaces as types, then TypeScript
 
-Status: Active
+Status: Done (2026-11-28)
 
 Asked by the user, not from the backlog. The interfaces between the components are JSDoc in the files that use them, partly `object` and `Function`, and nothing checks them; `ui/board.js` types the game it is given with a type from `puzzle/game.js`, across the boundary of [decision 0011](../../decisions.md#0011). Part 1 writes each component's interface as types in its own `api.ts`, in the terms of the side that uses them, and `tsc` checks in the Glue that they fit ([decision 0028](../../decisions.md#0028)). Part 2 moves all the code, the tests and the scripts to TypeScript, strict, so the bodies are checked against those types too ([decision 0029](../../decisions.md#0029)).
 
@@ -80,4 +80,4 @@ No step has a rule id except step 12, so the others have no split into tests and
 12. **The scripts in TypeScript, and no JavaScript left.** `[DONE]` ([review](review-step-12.md)) Generate.01.
     - (a) Spec and tests: Generate.01, the README's New Puzzle line and the backlog say `node scripts/generate.ts`; `generate-script.test.ts` runs `scripts/generate.ts`, which fails as there is none.
     - (b) Implementation: move `scripts/generate.js` and `scripts/build.js` to `.ts`, with the script's top comment and usage message; `npm run build`, `tests/e2e/build.ts` and `scripts/screenshots.sh` run `scripts/build.ts`. `tsconfig.json` adds `scripts/` and drops `allowJs`; `vitest.config.ts` runs only `*.test.ts`; `tests/unit/typescript.test.ts` fails on any `.js` file in `src/`, `tests/` or `scripts/`, as tsc reads none, failing only on an import of one, so none can come back unseen.
-13. **Finish.** No rule ids. The README's first line says TypeScript, not plain JavaScript; check that the README, `docs/architecture.md`, this plan's Design where it describes the code as it is, the spec, the decisions, the backlog and the code name no `.js` file of `src/`, `tests/` or `scripts/`, and that decisions 0028 and 0029 still say what was done. `Status: Done` in the plan and the table.
+13. **Finish.** `[DONE]` ([review](review-decisions.md)) No rule ids. The README's first line says TypeScript, not plain JavaScript; check that the README, `docs/architecture.md`, this plan's Design where it describes the code as it is, the spec, the decisions, the backlog and the code name no `.js` file of `src/`, `tests/` or `scripts/`, and that decisions 0028 and 0029 still say what was done. `Status: Done` in the plan and the table.

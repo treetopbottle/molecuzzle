@@ -31,3 +31,14 @@ Checked with no finding:
 - **Old names.** The README, `docs/architecture.md` (diagrams included), the spec (Generate.01, Puzzle.06, `schemas.md`, `README.md`), the decisions, the backlog, `index.html`'s comment and `scripts/generate.ts`'s comment and usage message name no `.js` file of `src/`, `tests/` or `scripts/`.
 - **Leftovers.** No review Outcome leaves work that belongs in the backlog. The Scope's exclusions (`noUncheckedIndexedAccess`, one tsconfig, no type check in CI) are recorded as 0029's cost, and the linter is already a backlog item.
 - **Spec.** The plan changed no Player-facing behavior outside Generate.01's command.
+
+## Outcome
+
+1. Fixed in 25897de: 0029, the test's comment and step 12's line say tsc reads no `.js` file, failing only on an import of one.
+2. Fixed in 25897de: the JSDoc comments and cases are gone; "the .js and .ts files of src/" stays, as the test still lists both.
+3. Fixed in 25897de: step 13 checks the Design where it describes the code as it is; its account of the move keeps the names it had.
+4. Fixed in 25897de: 0028 says tests and scripts import any file, and that the Glue imports `app.ts` too.
+5. Fixed in 25897de: 0028's cost says the types are trusted between components, and data from outside goes through Storage's checks.
+6. Fixed in 25897de: 0029's alternatives name a loader or the flag.
+7. Fixed in 25897de: 0012 says they are held together only where the same data is checked by both.
+8. Fixed in 25897de: "the Node scripts".
