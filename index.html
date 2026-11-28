@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Molecuzzle</title>
-<!-- scripts/build.js replaces this link and the script below with style.css and the bundle of src/browser.js -->
+<!-- scripts/build.ts replaces this link and the script below with style.css and the bundle of src/browser.ts -->
 <style>
 :root {
   --bg: #0e1320; --panel: #161d2e; --panel-2: #1d2639; --line: #2a3550;
@@ -107,24 +107,25 @@ p { margin: 0; }
 </main>
 <div id="toast" role="alert"></div>
 <script>
+"use strict";
 (() => {
-  // src/storage/progress.js
+  // src/storage/progress.ts
   var STORAGE_KEY = "molecuzzle-v4";
   var UNDO_MAX = 100;
   var isObject = (x) => typeof x === "object" && x !== null && !Array.isArray(x);
-  var isIndex = (x) => Number.isInteger(x) && x >= 0;
+  var isIndex = (x) => typeof x === "number" && Number.isInteger(x) && x >= 0;
   var isBoard = (b) => Array.isArray(b) && b.every((bond) => Array.isArray(bond) && bond.length === 3 && isIndex(bond[0]) && isIndex(bond[1]) && [1, 2, 3].includes(bond[2]));
   var isEntry = (e) => isObject(e) && isBoard(e.bonds) && typeof e.revealed === "boolean" && Array.isArray(e.undo) && e.undo.length <= UNDO_MAX && e.undo.every(isBoard);
   function read(storage2) {
     const empty = { puzzles: {}, current: null };
     try {
       const data = JSON.parse(storage2?.getItem(STORAGE_KEY) ?? "null");
-      if (!data || typeof data !== "object") return empty;
+      if (!isObject(data)) return empty;
       const puzzles = {};
       for (const [id, state] of Object.entries(isObject(data.puzzles) ? data.puzzles : {}))
         if (state === "solved") puzzles[id] = state;
       const progress = { puzzles, current: typeof data.current === "string" ? data.current : null };
-      const boards = Object.fromEntries(Object.entries(isObject(data.boards) ? data.boards : {}).filter(([, e]) => isEntry(e)));
+      const boards = Object.fromEntries(Object.entries(isObject(data.boards) ? data.boards : {}).filter((entry) => isEntry(entry[1])));
       if (Object.keys(boards).length) progress.boards = boards;
       return progress;
     } catch {
@@ -152,114 +153,7 @@ p { margin: 0; }
     return { ...progress, puzzles: { ...progress.puzzles, [id]: "solved" } };
   }
 
-  // src/puzzle/grid.js
-  function candidateBonds(atoms) {
-    const bonds = [];
-    atoms.forEach((a, i) => {
-      let right = -1, down = -1;
-      atoms.forEach((b, j) => {
-        if (b.r === a.r && b.c > a.c && (right < 0 || b.c < atoms[right].c)) right = j;
-        if (b.c === a.c && b.r > a.r && (down < 0 || b.r < atoms[down].r)) down = j;
-      });
-      if (right >= 0) bonds.push({ a: i, b: right, horizontal: true });
-      if (down >= 0) bonds.push({ a: i, b: down, horizontal: false });
-    });
-    return bonds;
-  }
-  function crosses(atoms, e, f) {
-    if (e.horizontal === f.horizontal) return false;
-    const h = e.horizontal ? e : f, v = e.horizontal ? f : e;
-    const r = atoms[h.a].r, c = atoms[v.a].c;
-    return c > atoms[h.a].c && c < atoms[h.b].c && r > atoms[v.a].r && r < atoms[v.b].r;
-  }
-  function connected(atomCount, bonds, order) {
-    if (atomCount === 0) return true;
-    const seen = /* @__PURE__ */ new Set([0]), queue = [0];
-    while (queue.length) {
-      const u = queue.pop();
-      bonds.forEach((e, k) => {
-        if (!order[k] || e.a !== u && e.b !== u) return;
-        const v = e.a === u ? e.b : e.a;
-        if (!seen.has(v)) {
-          seen.add(v);
-          queue.push(v);
-        }
-      });
-    }
-    return seen.size === atomCount;
-  }
-
-  // src/puzzle/difficulty.js
-  function dottedLines({ atoms }) {
-    const dotted = candidateBonds(atoms.map(([el2, r, c]) => ({ el: el2, r, c }))).length;
-    return { dotted, loops: dotted - atoms.length + 1 };
-  }
-  function difficulty(puzzle) {
-    const { dotted } = dottedLines(puzzle);
-    return dotted + 2 * (dotted - puzzle.solution.length);
-  }
-
-  // src/app.js
-  function startApp({ puzzles, createGame: createGame2, store, createUi: createUi2 }) {
-    let progress = store.load();
-    let index = Math.max(0, puzzles.findIndex((p) => p.id === progress.current));
-    let game;
-    const ui = createUi2({
-      onChange(k, dir) {
-        const result = game.change(k, dir);
-        ui.say(result);
-        if (result.changed) keep();
-      },
-      onOpen: open,
-      onUndo() {
-        if (game.undo()) keep();
-      },
-      onReset() {
-        if (game.reset()) keep();
-      },
-      onSolve() {
-        game.showSolution();
-        keep();
-      }
-    });
-    function withEntry(p) {
-      const id = puzzles[index].id, saved = game.saved();
-      const { boards = {}, ...rest } = p;
-      const { [id]: _, ...others } = boards;
-      const next = saved ? { ...others, [id]: saved } : others;
-      return Object.keys(next).length ? { ...rest, boards: next } : rest;
-    }
-    function keep() {
-      progress = store.update(withEntry);
-      update();
-    }
-    function open(i) {
-      index = i;
-      game = createGame2(puzzles[i], progress.boards?.[puzzles[i].id]);
-      progress = store.update((p) => withEntry({ ...p, current: puzzles[i].id }));
-      ui.open(game);
-      update();
-    }
-    function update() {
-      const puzzle = puzzles[index], status = game.status();
-      if (status.kind === "solved" && progress.puzzles[puzzle.id] !== "solved")
-        progress = store.update((p) => markSolved(p, puzzle.id));
-      ui.render({
-        puzzles,
-        index,
-        progress,
-        status,
-        counts: game.counts(),
-        difficulty: difficulty(puzzle),
-        done: game.done(),
-        canUndo: game.canUndo,
-        hasBonds: game.order.some(Boolean)
-      });
-    }
-    open(index);
-  }
-
-  // src/puzzle/puzzles.js
+  // src/puzzle/puzzles.ts
   var PUZZLES = [
     {
       id: "acetonitrile",
@@ -563,7 +457,7 @@ p { margin: 0; }
     }
   ];
 
-  // src/puzzle/elements.js
+  // src/puzzle/elements.ts
   var ELEMENTS = {
     H: { valence: 1 },
     C: { valence: 4 },
@@ -577,21 +471,55 @@ p { margin: 0; }
   };
   var MAX_ORDER = 3;
 
-  // src/puzzle/game.js
+  // src/puzzle/grid.ts
+  function candidateBonds(atoms) {
+    const bonds = [];
+    atoms.forEach((a, i) => {
+      let right = -1, down = -1;
+      atoms.forEach((b, j) => {
+        if (b.r === a.r && b.c > a.c && (right < 0 || b.c < atoms[right].c)) right = j;
+        if (b.c === a.c && b.r > a.r && (down < 0 || b.r < atoms[down].r)) down = j;
+      });
+      if (right >= 0) bonds.push({ a: i, b: right, horizontal: true });
+      if (down >= 0) bonds.push({ a: i, b: down, horizontal: false });
+    });
+    return bonds;
+  }
+  function crosses(atoms, e, f) {
+    if (e.horizontal === f.horizontal) return false;
+    const h = e.horizontal ? e : f, v = e.horizontal ? f : e;
+    const r = atoms[h.a].r, c = atoms[v.a].c;
+    return c > atoms[h.a].c && c < atoms[h.b].c && r > atoms[v.a].r && r < atoms[v.b].r;
+  }
+  function connected(atomCount, bonds, order) {
+    if (atomCount === 0) return true;
+    const seen = /* @__PURE__ */ new Set([0]), queue = [0];
+    for (let u = queue.pop(); u !== void 0; u = queue.pop()) {
+      bonds.forEach((e, k) => {
+        if (!order[k] || e.a !== u && e.b !== u) return;
+        const v = e.a === u ? e.b : e.a;
+        if (!seen.has(v)) {
+          seen.add(v);
+          queue.push(v);
+        }
+      });
+    }
+    return seen.size === atomCount;
+  }
+
+  // src/puzzle/game.ts
   var UNDO_LIMIT = 100;
   function createGame(puzzle, { bonds: left, revealed: shown = false, undo: past = [] } = {}) {
-    const atoms = puzzle.atoms.map(([el2, r, c, h = 0]) => ({ el: el2, r, c, h }));
+    const atoms = puzzle.atoms.map(([el2, r, c, h]) => ({ el: el2, r, c, h }));
     const room = (i) => ELEMENTS[atoms[i].el].valence - atoms[i].h;
     const bonds = candidateBonds(atoms);
     const empty = () => bonds.map(() => 0);
     const bondCount = (i, o) => bonds.reduce((t, e, k) => t + (e.a === i || e.b === i ? o[k] : 0), 0);
     function orders(board2) {
-      if (!Array.isArray(board2)) return null;
       const o = empty();
-      for (const bond of board2) {
-        const [a, b, n] = Array.isArray(bond) ? bond : [];
+      for (const [a, b, n] of board2) {
         const k = bonds.findIndex((e) => e.a === a && e.b === b);
-        if (k < 0 || o[k] || !Number.isInteger(n) || n < 1 || n > MAX_ORDER) return null;
+        if (k < 0 || o[k]) return null;
         o[k] = n;
       }
       if (o.some((n, k) => n && o.some((m, j) => m && crosses(atoms, bonds[k], bonds[j])))) return null;
@@ -601,10 +529,11 @@ p { margin: 0; }
     let history = [];
     let revealed = false;
     if (left !== void 0) {
-      const now = orders(left), before = Array.isArray(past) ? past.map(orders) : [null];
-      if (now && !before.includes(null)) {
+      const now = orders(left), before = past.map(orders);
+      const valid = before.filter((o) => o !== null);
+      if (now && valid.length === before.length) {
         order = now;
-        history = before.slice(-UNDO_LIMIT);
+        history = valid.slice(-UNDO_LIMIT);
         revealed = shown === true && order.some(Boolean);
       }
     }
@@ -646,8 +575,9 @@ p { margin: 0; }
       return { changed: true };
     }
     function undo() {
-      if (!history.length) return false;
-      order = history.pop();
+      const before = history.pop();
+      if (!before) return false;
+      order = before;
       if (!order.some(Boolean)) revealed = false;
       return true;
     }
@@ -666,7 +596,10 @@ p { margin: 0; }
       if (!done()) revealed = true;
       if (next.some((o, k) => o !== order[k])) commit(next);
     }
-    const toBoard = (o) => bonds.flatMap((e, k) => o[k] ? [[e.a, e.b, o[k]]] : []);
+    const toBoard = (o) => bonds.flatMap((e, k) => {
+      const n = o[k];
+      return n === 1 || n === 2 || n === 3 ? [[e.a, e.b, n]] : [];
+    });
     const board = () => toBoard(order);
     function saved() {
       if (!order.some(Boolean) && !history.length) return null;
@@ -696,7 +629,78 @@ p { margin: 0; }
     };
   }
 
-  // src/ui/elements.js
+  // src/puzzle/difficulty.ts
+  function dottedLines({ atoms }) {
+    const dotted = candidateBonds(atoms.map(([el2, r, c]) => ({ el: el2, r, c }))).length;
+    return { dotted, loops: dotted - atoms.length + 1 };
+  }
+  function difficulty(puzzle) {
+    const { dotted } = dottedLines(puzzle);
+    return dotted + 2 * (dotted - puzzle.solution.length);
+  }
+
+  // src/app.ts
+  function startApp({ puzzles, createGame: createGame2, store, createUi: createUi2 }) {
+    let progress = store.load();
+    let index = Math.max(0, puzzles.findIndex((p) => p.id === progress.current));
+    let game;
+    const ui = createUi2({
+      onChange(k, dir) {
+        const result = game.change(k, dir);
+        ui.say(result);
+        if (result.changed) keep();
+      },
+      onOpen: open,
+      onUndo() {
+        if (game.undo()) keep();
+      },
+      onReset() {
+        if (game.reset()) keep();
+      },
+      onSolve() {
+        game.showSolution();
+        keep();
+      }
+    });
+    function withEntry(p) {
+      const id = puzzles[index].id, saved = game.saved();
+      const { boards = {}, ...rest } = p;
+      const { [id]: _, ...others } = boards;
+      const next = saved ? { ...others, [id]: saved } : others;
+      return Object.keys(next).length ? { ...rest, boards: next } : rest;
+    }
+    function keep() {
+      progress = store.update(withEntry);
+      update();
+    }
+    function open(i) {
+      index = i;
+      const left = progress.boards?.[puzzles[i].id];
+      game = createGame2(puzzles[i], left);
+      progress = store.update((p) => withEntry({ ...p, current: puzzles[i].id }));
+      ui.open(game);
+      update();
+    }
+    function update() {
+      const puzzle = puzzles[index], status = game.status();
+      if (status.kind === "solved" && progress.puzzles[puzzle.id] !== "solved")
+        progress = store.update((p) => markSolved(p, puzzle.id));
+      ui.render({
+        puzzles,
+        index,
+        progress,
+        status,
+        counts: game.counts(),
+        difficulty: difficulty(puzzle),
+        done: game.done(),
+        canUndo: game.canUndo,
+        hasBonds: game.order.some(Boolean)
+      });
+    }
+    open(index);
+  }
+
+  // src/ui/elements.ts
   var ELEMENTS2 = {
     H: { name: "Hydrogen", color: "#eef2f7", stroke: "#9aa6b8", text: "#2a2f38", r: 17 },
     C: { name: "Carbon", color: "#454b55", stroke: "#1e2228", text: "#ffffff", r: 22 },
@@ -709,7 +713,7 @@ p { margin: 0; }
     I: { name: "Iodine", color: "#7d3fa8", stroke: "#45205f", text: "#ffffff", r: 22 }
   };
 
-  // src/ui/board.js
+  // src/ui/board.ts
   var SVGNS = "http://www.w3.org/2000/svg";
   var CELL = 84;
   var PAD = 46;
@@ -722,7 +726,7 @@ p { margin: 0; }
   var H_AT = 28;
   function el(tag, attrs, parent) {
     const e = parent.ownerDocument.createElementNS(SVGNS, tag);
-    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    for (const k in attrs) e.setAttribute(k, String(attrs[k]));
     parent.appendChild(e);
     return e;
   }
@@ -735,7 +739,7 @@ p { margin: 0; }
     let wasSolved = game.status().kind === "solved";
     const width = PAD * 2 + (puzzle.cols - 1) * CELL, height = PAD * 2 + (puzzle.rows - 1) * CELL;
     svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-    svg.setAttribute("width", width * SCALE);
+    svg.setAttribute("width", String(width * SCALE));
     svg.setAttribute("role", "group");
     svg.setAttribute("aria-label", `Board, ${puzzle.rows} by ${puzzle.cols}`);
     const cells = el("g", { "aria-hidden": "true" }, svg), edgesLayer = el("g", {}, svg), atomsLayer = el("g", {}, svg);
@@ -787,7 +791,7 @@ p { margin: 0; }
         if (!o) el("line", { class: "maybe", x1, y1, x2, y2 }, lines);
         for (const d of OFFSETS[o])
           el("line", { class: "vis", x1: x1 + nx * d, y1: y1 + ny * d, x2: x2 + nx * d, y2: y2 + ny * d }, lines);
-        g.setAttribute("data-order", o);
+        g.setAttribute("data-order", String(o));
         g.setAttribute("aria-label", `${A.el} ${place(A)} to ${B.el} ${place(B)}: ${ORDER_NAMES[o]}`);
       });
       atoms.forEach((a, i) => {
@@ -805,7 +809,7 @@ p { margin: 0; }
     return { render };
   }
 
-  // src/ui/panel.js
+  // src/ui/panel.ts
   var RULES = [
     "Bonds run straight along a row or column, between atoms with nothing in between. The dotted lines show where they can go.",
     "Click a dotted line to bond. Click again for a double, then a triple bond; once more removes it. Right-click lowers it.",
@@ -822,12 +826,12 @@ p { margin: 0; }
     const look = ELEMENTS2[symbol], c = KEY / 2;
     const svg = doc.createElementNS(SVGNS2, "svg");
     svg.setAttribute("viewBox", `0 0 ${KEY} ${KEY}`);
-    svg.setAttribute("width", KEY);
-    svg.setAttribute("height", KEY);
+    svg.setAttribute("width", String(KEY));
+    svg.setAttribute("height", String(KEY));
     svg.setAttribute("aria-hidden", "true");
     const add = (tag, attrs) => {
       const e = doc.createElementNS(SVGNS2, tag);
-      for (const k in attrs) e.setAttribute(k, attrs[k]);
+      for (const k in attrs) e.setAttribute(k, String(attrs[k]));
       svg.appendChild(e);
       return e;
     };
@@ -847,6 +851,11 @@ p { margin: 0; }
     return figure;
   }
   var BADGES = { solved: "\u2713 Solved" };
+  function find(panel, selector) {
+    const e = panel.querySelector(selector);
+    if (!e) throw new Error(`no ${selector} in the panel`);
+    return e;
+  }
   function build(panel, elements) {
     const doc = panel.ownerDocument;
     panel.innerHTML = `
@@ -865,7 +874,7 @@ p { margin: 0; }
     <p id="fact" class="legend" hidden></p>
     <button id="nextPuzzle" class="primary" hidden>Next puzzle \u2192</button>
     <ol class="rules"></ol>`;
-    panel.querySelector(".rules").append(...RULES.map((rule) => {
+    find(panel, ".rules").append(...RULES.map((rule) => {
       const li = doc.createElement("li");
       li.textContent = rule;
       return li;
@@ -877,16 +886,17 @@ p { margin: 0; }
   }
   function renderPanel(panel, { puzzles, index, progress, done, difficulty: difficulty2, elements = [] }) {
     if (!panel.querySelector("nav")) build(panel, elements);
-    const $ = (id) => panel.querySelector(`#${id}`);
+    const $ = (id) => find(panel, `#${id}`);
     const puzzle = puzzles[index], last = index === puzzles.length - 1;
-    const opens = (button, i, can) => {
+    const opens = (id, i, can) => {
+      const button = find(panel, `#${id}`);
       button.disabled = !can;
       button.dataset.open = String(i);
     };
     $("counter").textContent = `Puzzle ${index + 1} of ${puzzles.length}`;
     $("difficulty").textContent = `Difficulty ${difficulty2}`;
-    opens($("prev"), index - 1, index > 0);
-    opens($("next"), index + 1, !last);
+    opens("prev", index - 1, index > 0);
+    opens("next", index + 1, !last);
     const state = progress.puzzles[puzzle.id];
     $("badge").textContent = BADGES[state] ?? "Unsolved";
     $("badge").className = `badge ${state ?? ""}`;
@@ -895,7 +905,7 @@ p { margin: 0; }
     else $("formula").textContent = "Bond every atom to find out what it is.";
     $("fact").textContent = puzzle.fact;
     $("fact").hidden = !done;
-    opens($("nextPuzzle"), index + 1, !last);
+    opens("nextPuzzle", index + 1, !last);
     $("nextPuzzle").hidden = !done || last;
   }
   function formulaNodes(doc, formula) {
@@ -907,7 +917,7 @@ p { margin: 0; }
     });
   }
 
-  // src/ui/puzzle-list.js
+  // src/ui/puzzle-list.ts
   function renderPuzzleList(list, puzzles, progress, current, onPick) {
     const doc = list.ownerDocument;
     list.replaceChildren(...puzzles.map((p, i) => {
@@ -925,7 +935,7 @@ p { margin: 0; }
     }));
   }
 
-  // src/ui/messages.js
+  // src/ui/messages.ts
   function statusText(status, puzzle) {
     switch (status.kind) {
       case "empty":
@@ -949,7 +959,7 @@ p { margin: 0; }
     }
   }
 
-  // src/ui/ui.js
+  // src/ui/ui.ts
   var STATUS_CLASS = { solved: "good", revealed: "good", pieces: "warn" };
   function renderCounts(line, { used, budget }) {
     const span = line.ownerDocument.createElement("span");
@@ -959,10 +969,21 @@ p { margin: 0; }
     span.classList.toggle("warn", used > budget);
     line.replaceChildren(span);
   }
-  function createUi(doc, handlers, { confirm = (question) => doc.defaultView.confirm(question), elements = [] } = {}) {
-    const $ = (id) => doc.getElementById(id);
-    let game, board, toastTimer;
+  function createUi(doc, handlers, options = {}) {
+    function win() {
+      const view = doc.defaultView;
+      if (!view) throw new Error("the page has no window");
+      return view;
+    }
+    const { confirm = (question) => win().confirm(question), elements = [] } = options;
+    function $(id) {
+      const e = doc.querySelector(`#${id}`);
+      if (!e) throw new Error(`no #${id} in the page`);
+      return e;
+    }
+    let board, toastTimer;
     $("info").addEventListener("click", (e) => {
+      if (!(e.target instanceof win().Element)) return;
       const button = e.target.closest("button[data-open]");
       if (button && !button.disabled) handlers.onOpen(Number(button.dataset.open));
     });
@@ -979,12 +1000,12 @@ p { margin: 0; }
         handlers.onUndo();
       }
     });
-    function open(next) {
-      game = next;
+    function open(game) {
       board = createBoard($("board"), game, { onChange: handlers.onChange });
     }
     function render(view) {
       const { puzzles, index, progress, status } = view;
+      if (!board) throw new Error("render before open");
       board.render();
       renderPanel($("info"), { ...view, elements });
       renderCounts($("counts"), view.counts);
@@ -1002,13 +1023,13 @@ p { margin: 0; }
       const toast = $("toast");
       toast.textContent = text;
       toast.className = "show";
-      doc.defaultView.clearTimeout(toastTimer);
-      toastTimer = doc.defaultView.setTimeout(() => toast.className = "", 1800);
+      win().clearTimeout(toastTimer);
+      toastTimer = win().setTimeout(() => toast.className = "", 1800);
     }
     return { open, render, say };
   }
 
-  // src/browser.js
+  // src/browser.ts
   var KEY2 = ["C", "N", "O", "S"].map((symbol) => ({ symbol, valence: ELEMENTS[symbol].valence }));
   var storage;
   try {
