@@ -39,6 +39,7 @@ How the code and its data are built.
 - [0026: The generator places Atoms in line with their partners, and backs up](#0026)
 - [0028: Each component's interface is a file of types, in the terms of the side that uses them](#0028)
 - [0029: TypeScript, checked by tsc and run as it is](#0029)
+- [0030: The look is one theme, in `src/ui/theme.ts`](#0030)
 
 ### Testing and publishing
 
@@ -357,3 +358,14 @@ The code, the tests and the Node scripts are TypeScript, strict, in only the syn
 - **Why:** with the interfaces of [0028](#0028) as types, the code that offers them is checked against them too, not only the Glue that wires them; JSDoc says it at much greater length. Erasable syntax keeps the code JavaScript with types, so each tool runs it as it ran the JavaScript, with no build of its own.
 - **Cost:** a newer Node, for type stripping: 22.18 instead of 22.12, the first Node 22 that strips types with no flag and no warning. Every file was renamed, so its history needs `git log --follow`. The page's elements are typed as the kind the code says they are (`querySelector<SVGSVGElement>`), which neither tsc nor the DOM checks; passing the class, `$("board", SVGSVGElement)`, would check it with `instanceof`, for one more argument at every lookup. esbuild and Node don't check types: a type error shows only in `npm run typecheck`, so a branch build ([0010](#0010)) may have one. `noUncheckedIndexedAccess` is off, so an index into an array is trusted; on, nearly every lookup of an Atom or a Bond needs a check or a `!`. Node's types are those of the oldest Node the README names, so `tsc` flags an API newer than that; `@types/node` 22.18's don't fit happy-dom's, so `skipLibCheck` is on, and no dependency's declaration files are checked. One `tsconfig` for everything, so Node's types, such as `process`, are seen in `src/` too, and `tsc` doesn't flag Node-only code in the page; the end-to-end tests run the built page.
 - **Alternatives:** JavaScript with JSDoc types, checked by `checkJs`: no renames, but the types are comments, and strict it found 207 errors before the bodies were typed. The scripts run through a loader such as `tsx`, or with `--experimental-strip-types`: Node 22.12 would do, but a dependency, or a flag on every command. TypeScript compiled by `tsc`: any syntax, but a compile step before the scripts and the tests run. Only the interfaces as types, with JavaScript bodies: the bodies unchecked.
+
+<a id="0030"></a>
+## 0030: The look is one theme, in `src/ui/theme.ts`
+
+Accepted (2026-11-28)
+
+Every colour of the page, its font and its corners are in one theme object in `src/ui/theme.ts`, with how each Element's ball looks. The UI sets the page's part as CSS variables on the page's root, `--<name>`, when it starts; `style.css` uses only those variables, and `elements.ts` takes the balls from the theme. `tests/unit/ui/theme.test.ts` checks that `style.css` uses each variable and no other, and has no colours or fonts of its own. Sizes, spacing and the Board's geometry stay where they are used.
+
+- **Why:** the look can be changed in one file, and another theme is a copy of `DARK` with other values; its type is `DARK`'s, so `tsc` flags a theme that leaves out a value. The Board's balls are SVG attributes, which can't read CSS variables, so a theme in CSS alone would not hold them, and the tests read their colours from `elements.ts`.
+- **Cost:** `style.css` alone has no colours: the page shows them only once the script has run, and to read a rule's colour, look it up in the theme. A theme changes the screenshots ([0013](#0013)), which are then made again. No way to switch themes on the page yet.
+- **Alternatives:** the variables in a `:root` block of `style.css` or a `theme.css`, with the balls' colours left in `elements.ts`: plain CSS, but the look in two places. The balls drawn with CSS classes per Element, so all of the theme is CSS: every Element needs its rules, and the tests would read colours from CSS instead of `elements.ts`.

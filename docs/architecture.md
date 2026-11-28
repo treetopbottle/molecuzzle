@@ -12,7 +12,7 @@ Each diagram shows the files of one component; an arrow is an import. Arrows are
 
 ## UI
 
-`index.html` is the page and loads `style.css` and the Glue's `browser.ts`; nothing imports them.
+`index.html` is the page and loads `style.css` and the Glue's `browser.ts`; nothing imports them. `style.css` has no colours of its own: `theme.ts` holds the look, its colours, font and corners, which `ui.ts` sets as CSS variables, and the colours and sizes of the balls, which `elements.ts` takes ([decision 0030](decisions.md#0030)).
 
 `ui.ts` owns all the interface components on the webpage and when the Player does something it calls the handlers provided by `app.ts`.
 
@@ -27,6 +27,7 @@ flowchart TD
   list["<code>puzzle-list.ts</code><br/>the list of Puzzles"]
   messages["<code>messages.ts</code><br/>the texts for the Player"]
   looks["<code>elements.ts</code><br/>how Elements look"]
+  theme["<code>theme.ts</code><br/>the look: colours, font, corners"]
 
   api --> uijs
   api --> looks
@@ -36,6 +37,8 @@ flowchart TD
   uijs --> messages
   board --> looks
   panel --> looks
+  uijs --> theme
+  looks --> theme
 ```
 
 ## Puzzle

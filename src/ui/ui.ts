@@ -1,11 +1,12 @@
-// The UI: owns the page. The Board, the panel, the Puzzles list, the status
-// line, the message, the buttons and Ctrl+Z. What the Player does goes to
-// the handlers; what to show comes in as a view.
+// The UI: owns the page, and gives it the theme. The Board, the panel, the
+// Puzzles list, the status line, the message, the buttons and Ctrl+Z. What
+// the Player does goes to the handlers; what to show comes in as a view.
 import type { BoardModel, Counts, Handlers, SayResult, Ui, UiOptions, View } from "./api.ts";
 import { createBoard } from "./board.ts";
 import { renderPanel } from "./panel.ts";
 import { renderPuzzleList } from "./puzzle-list.ts";
 import { statusText, reasonText } from "./messages.ts";
+import { applyTheme } from "./theme.ts";
 
 const STATUS_CLASS: Partial<Record<string, string>> = { solved: "good", revealed: "good", pieces: "warn" };
 
@@ -27,6 +28,7 @@ export function createUi(doc: Document, handlers: Handlers, options: UiOptions =
     return view;
   }
   const { confirm = (question: string) => win().confirm(question), elements = [] } = options;
+  applyTheme(doc.documentElement);
   /** The page's element with this id, of the kind it is; for the developer, it throws if the page has none. */
   function $<E extends Element = HTMLElement>(id: string): E {
     const e = doc.querySelector<E>(`#${id}`);
