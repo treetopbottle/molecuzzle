@@ -1,6 +1,6 @@
-// The code, the tests and the scripts are TypeScript (decision 0029): tsc
-// sees a .js file only through a .ts file that imports it, and Vitest runs
-// only .test.ts files, so a .js file anywhere else would go unchecked.
+// The code, the tests and the Node scripts are TypeScript (decision 0029):
+// tsc reads no .js file, failing only on an import of one, and Vitest runs
+// only .test.ts files, so any other .js file would go unchecked.
 import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { expect, test } from "vitest";

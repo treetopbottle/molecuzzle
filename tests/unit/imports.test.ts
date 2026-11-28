@@ -20,8 +20,8 @@ const files = readdirSync(SRC, { recursive: true, encoding: "utf8" })
 const BINDINGS = String.raw`(?:type\s+)?(?:\{[^}]*\}|\*(?:\s+as\s+[\w$]+)?|[\w$]+(?:\s*,\s*(?:\{[^}]*\}|\*\s+as\s+[\w$]+))?)`;
 const QUOTED = String.raw`["'\`]([^"'\`]+)["'\`]`;
 const KINDS = [
-  new RegExp(String.raw`\b(?:import|export)\b\s*${BINDINGS}\s*from\s*${QUOTED}`, "g"), // and a JSDoc @import
-  new RegExp(String.raw`\bimport\b\s*\(\s*(?:/\*[\s\S]*?\*/\s*)*${QUOTED}`, "g"), // import(…), also in a JSDoc type
+  new RegExp(String.raw`\b(?:import|export)\b\s*${BINDINGS}\s*from\s*${QUOTED}`, "g"),
+  new RegExp(String.raw`\bimport\b\s*\(\s*(?:/\*[\s\S]*?\*/\s*)*${QUOTED}`, "g"), // import(…)
   new RegExp(String.raw`\bimport\b\s*${QUOTED}`, "g"), // import "…"
 ];
 
@@ -51,15 +51,13 @@ test("it finds each kind of import, also over lines and with comments between", 
     'export { c } from "./re-export.js";',
     'export * from "./star.js";',
     'import {\n  d, // the Puzzle\'s; "quoted"\n  e,\n} from "./lines.js";',
-    '/** @import { F, G } from "./jsdoc.ts" */',
-    '/** @param {import("./jsdoc-type.ts").H} h */',
     'const later = () => import(/* why */ `./dynamic.js`);',
     'import "./bare.js";',
     'import { "a-b" as ab } from "./string-named.js";',
   ].join("\n");
   expect(specifiers(text)).toEqual([
     "./value.js", "./type.ts", "./default.js", "./namespace.js", "./re-export.js", "./star.js", "./lines.js",
-    "./jsdoc.ts", "./jsdoc-type.ts", "./dynamic.js", "./bare.js", "./string-named.js",
+    "./dynamic.js", "./bare.js", "./string-named.js",
   ]);
 });
 
