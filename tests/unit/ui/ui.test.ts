@@ -87,6 +87,22 @@ test("Input.04 Show solution asks first, and only after OK calls onSolve", () =>
   expect(confirm.mock.calls).toEqual([["Show the solution?"], ["Show the solution?"]]);
 });
 
+test("Input.04 with no confirm of its own, createUi asks with the page's window", () => {
+  const confirm = vi.fn(() => true);
+  vi.stubGlobal("confirm", confirm); // happy-dom's window has none
+  try {
+    const ui = createUi(document, handlers);
+    const game = createGame(PUZZLES[8]);
+    ui.open(game);
+    ui.render(view(8, game));
+    button("Show solution").click();
+    expect(confirm.mock.calls).toEqual([["Show the solution?"]]);
+    expect(handlers.onSolve).toHaveBeenCalledTimes(1);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
 test("Input.05 Reset asks first, and only after OK calls onReset", () => {
   const answers = [false, true], confirm = vi.fn(() => answers.shift() ?? false);
   const { ui, game } = show(1, { confirm });

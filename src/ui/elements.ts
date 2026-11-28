@@ -10,4 +10,4 @@ export const ELEMENTS = {
   Cl: { name: "Chlorine", color: "#3cb44b", stroke: "#1e6b27", text: "#0f2412", r: 22 },
   Br: { name: "Bromine",  color: "#9e2a2b", stroke: "#561516", text: "#ffffff", r: 22 },
   I:  { name: "Iodine",   color: "#7d3fa8", stroke: "#45205f", text: "#ffffff", r: 22 },
-};
+} satisfies Record<string, { name: string; color: string; stroke: string; text: string; r: number }>;

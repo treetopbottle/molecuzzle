@@ -1,9 +1,9 @@
 // The Boards drawn as text, as the spec's README draws them.
 import { expect, test } from "vitest";
 import { createGame } from "../../src/puzzle/game.ts";
-import { PUZZLES } from "../../src/puzzle/puzzles.ts";
 import type { Game, Puzzle } from "../../src/puzzle/api.ts";
 import { draw } from "../helpers/draw.ts";
+import { puzzle } from "../helpers/puzzles.ts";
 
 const solved = (puzzle: Puzzle): Game => {
   const game = createGame(puzzle);
@@ -12,8 +12,7 @@ const solved = (puzzle: Puzzle): Game => {
 };
 
 test("Atoms by their labels as in a formula, every point as wide as the longest: Glycine, with no Bonds and solved", () => {
-  const glycine = PUZZLES.find(p => p.id === "glycine");
-  if (!glycine) throw new Error("no Glycine");
+  const glycine = puzzle("glycine");
   expect(draw(createGame(glycine))).toBe(`
 OH··NH₂
 ·   ·

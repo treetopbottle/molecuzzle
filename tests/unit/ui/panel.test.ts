@@ -15,7 +15,7 @@ beforeEach(() => {
 
 // What the Glue gives: each Element's number of Bonds, in the order of the key.
 const elements: KeyElement[] = [{ symbol: "C", valence: 4 }, { symbol: "N", valence: 3 }, { symbol: "O", valence: 2 }, { symbol: "S", valence: 2 }];
-const view = (index: number, { solved = [] as string[], done = false, difficulty = 7 } = {}) => ({
+const view = (index: number, { solved = [], done = false, difficulty = 7 }: { solved?: string[]; done?: boolean; difficulty?: number } = {}) => ({
   puzzles, index, done, elements, difficulty,
   progress: { puzzles: Object.fromEntries(solved.map(id => [id, "solved"])), current: puzzles[index].id },
 });

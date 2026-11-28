@@ -105,7 +105,7 @@ export function renderPanel(panel: HTMLElement,
   opens("prev", index - 1, index > 0);
   opens("next", index + 1, !last);
   const state = progress.puzzles[puzzle.id];
-  $("badge").textContent = BADGES[state ?? ""] ?? "Unsolved";
+  $("badge").textContent = BADGES[state] ?? "Unsolved";
   $("badge").className = `badge ${state ?? ""}`;
 
   $("title").textContent = done ? puzzle.name : "?";

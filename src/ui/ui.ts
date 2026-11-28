@@ -20,8 +20,8 @@ function renderCounts(line: HTMLElement, { used, budget }: Counts): void {
 }
 
 export function createUi(doc: Document, handlers: Handlers, options: UiOptions = {}): Ui {
-  /** The page's window, for its dialogs and timers. */
-  function win(): Window {
+  /** The page's window, for its dialogs, timers and classes. */
+  function win(): Window & typeof globalThis {
     const view = doc.defaultView;
     if (!view) throw new Error("the page has no window");
     return view;
@@ -36,7 +36,7 @@ export function createUi(doc: Document, handlers: Handlers, options: UiOptions =
   let board: { render(): void } | undefined, toastTimer: number | undefined;
 
   $("info").addEventListener("click", e => {
-    if (!(e.target instanceof Element)) return;
+    if (!(e.target instanceof win().Element)) return;
     const button = e.target.closest<HTMLButtonElement>("button[data-open]");
     if (button && !button.disabled) handlers.onOpen(Number(button.dataset.open));
   });
